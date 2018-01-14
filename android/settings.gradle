@@ -1,0 +1,3 @@
+rootProject.name = 'mobidex'
+
+include ':app'
