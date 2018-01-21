@@ -7,10 +7,23 @@
     "test": "jest"
   },
   "dependencies": {
+    "0x.js": "^0.30.0",
+    "assert": "^1.4.1",
+    "bignumber.js": "^5.0.0",
+    "bn.js": "^4.11.8",
+    "buffer": "^5.0.8",
+    "dns.js": "^1.0.1",
+    "ethjs-provider-http": "^0.1.6",
+    "ethjs-query": "^0.3.3",
+    "ethjs-signer": "^0.1.1",
     "lodash": "^4.17.4",
+    "node-libs-react-native": "github:abec/node-libs-react-native",
+    "process": "^0.11.0",
     "react": "16.2.0",
     "react-native": "^0.52.0",
+    "react-native-crypto": "^2.1.2",
     "react-native-elements": "^0.19.0",
+    "react-native-randombytes": "^3.0.0",
     "react-native-vector-icons": "^4.5.0",
     "react-redux": "^5.0.6",
     "react-router-native": "^4.2.0",
@@ -18,13 +31,18 @@
     "redux-actions": "^2.2.1",
     "redux-devtools": "^3.4.1",
     "redux-devtools-extension": "^2.13.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "underscore": "^1.8.3",
+    "url": "~0.10.1",
+    "web3": "^0.20.4",
+    "web3-contracts-loader": "github:abec/web3-contracts-loader"
   },
   "devDependencies": {
     "babel-jest": "22.0.6",
     "babel-preset-react-native": "4.0.0",
     "jest": "22.0.6",
-    "react-test-renderer": "16.2.0"
+    "react-test-renderer": "16.2.0",
+    "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "jest": {
     "preset": "react-native"
