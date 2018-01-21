@@ -7,11 +7,19 @@ import BN from "bn.js";
 import HttpProvider from "ethjs-provider-http";
 import Eth from "ethjs-query";
 import { sign } from "ethjs-signer";
-import * as Web3 from "web3";
+import Tx from "ethereumjs-tx";
+import Web3 from "web3";
 
-const address = "0x9bca8678b0239b604a26A57CBE76DC0D16d61e1F";
-const privateKey = "0x2e3a718ef4b1cc2ab905cec11430fa0f89acbfed6cd55639923adf2af17d3bc3";
-const eth = new Eth(new HttpProvider("http://localhost:8545"));
+// Local account
+// const address = "0x9bca8678b0239b604a26A57CBE76DC0D16d61e1F";
+// const privateKey = "0x2e3a718ef4b1cc2ab905cec11430fa0f89acbfed6cd55639923adf2af17d3bc3";
+
+// Kovan account
+const address = "0x004a47EABdc8524Fe5A1cFB0e3D15C2c255479e3";
+const privateKey = "0x63861eae41f4291336420cc3730abcb4633ae89c231ce989f90472a3231fbdca";
+
+// const eth = new Eth(new HttpProvider("http://localhost:8545"));
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 export default class CreateOrder extends Component {
   constructor(props) {
@@ -19,24 +27,55 @@ export default class CreateOrder extends Component {
 
     this.state = {
       nonce: null,
-      signature: null
+      tx: null,
+      receipt: null
     };
   }
 
+  // componentDidMount() {
+  //   eth.getTransactionCount(address).then((nonce) => {
+  //     let signature = sign({
+  //       to: "0xce31a19193d4b23f4e9d6163d7247243bAF801c3",
+  //       value: 300000,
+  //       gas: new BN("43092000"),
+  //       // when sending a raw transactions it"s necessary to set the gas price, currently 0.00000002 ETH
+  //       gasPrice: new BN("20000000000"),
+  //       nonce: nonce,
+  //     }, privateKey);
+
+  //     this.setState({ nonce, signature });
+  //   }).catch((err) => {
+  //     console.warn(err);
+  //   });
+  // }
+
   componentDidMount() {
-    eth.getTransactionCount(address).then((nonce) => {
-      let signature = sign({
+    web3.eth.getTransactionCount(address, (err, nonce) => {
+      if (err) {
+        return;
+      }
+
+      let tx = new Tx({
         to: "0xce31a19193d4b23f4e9d6163d7247243bAF801c3",
         value: 300000,
-        gas: new BN("43092000"),
-        // when sending a raw transactions it"s necessary to set the gas price, currently 0.00000002 ETH
+        gas: new BN("2100000"),
+        // when sending a raw transactions it's necessary to set the gas price, currently 0.00000002 ETH
         gasPrice: new BN("20000000000"),
         nonce: nonce,
-      }, privateKey);
+      });
+      tx.sign(new Buffer(privateKey.substring(2), "hex"));
 
-      this.setState({ nonce, signature });
-    }).catch((err) => {
-      console.warn(err);
+      let serialized = tx.serialize();
+
+      web3.eth.sendRawTransaction(`0x${serialized.toString("hex")}`, (err, receipt) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        this.setState({ nonce, receipt, tx: serialized });
+      });
+
+      
     });
   }
 
@@ -65,7 +104,7 @@ export default class CreateOrder extends Component {
           </Link>
         </View>
         <View>
-          <Text>{this.state.signature}</Text>
+          <Text>{this.state.receipt}</Text>
         </View>
       </View>
     );
