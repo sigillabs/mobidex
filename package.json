@@ -3,23 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "prepare": "npm run patch",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "patch": "sed -i.bk 's/self/global/g' ./node_modules/@0xproject/connect/node_modules/isomorphic-fetch/fetch-npm-browserify.js"
   },
   "dependencies": {
     "0x.js": "^0.30.0",
-    "assert": "^1.4.1",
+    "@0xproject/connect": "^0.5.1",
     "bignumber.js": "^5.0.0",
-    "bn.js": "^4.11.8",
-    "buffer": "^5.0.8",
-    "dns.js": "^1.0.1",
     "ethereumjs-tx": "^1.3.3",
     "ethjs-provider-http": "^0.1.6",
     "ethjs-query": "^0.3.3",
     "ethjs-signer": "^0.1.1",
+    "isomorphic-fetch": "file:../isomorphic-fetch",
     "lodash": "^4.17.4",
     "node-libs-react-native": "github:abec/node-libs-react-native",
-    "process": "^0.11.0",
     "react": "16.2.0",
     "react-native": "^0.52.0",
     "react-native-crypto": "^2.1.2",
@@ -32,18 +31,21 @@
     "redux-actions": "^2.2.1",
     "redux-devtools": "^3.4.1",
     "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "underscore": "^1.8.3",
     "url": "~0.10.1",
     "web3": "^0.20.4",
-    "web3-contracts-loader": "github:abec/web3-contracts-loader"
+    "web3-contracts-loader": "github:abec/web3-contracts-loader",
+    "web3-provider-engine": "^13.5.6"
   },
   "devDependencies": {
     "babel-jest": "22.0.6",
     "babel-preset-react-native": "4.0.0",
+    "babylon": "^6.18.0",
     "jest": "22.0.6",
-    "react-test-renderer": "16.2.0",
-    "rn-nodeify": "github:tradle/rn-nodeify"
+    "metro-bundler": "^0.22.1",
+    "react-test-renderer": "16.2.0"
   },
   "jest": {
     "preset": "react-native"

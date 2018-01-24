@@ -1,1 +1,8 @@
+export const ADD_ERRORS = "ADD_ERRORS";
 export const ADD_ORDERS = "ADD_ORDERS";
+export const ADD_TRANSACTIONS = "ADD_TRANSACTIONS";
+export const CHANGE_ACCOUNT = "CHANGE_ACCOUNT";
+export const SET_QUOTE_CURRENCY = "SET_QUOTE_CURRENCY";
+export const SET_PRODUCT = "SET_PRODUCT";
+export const START_LOADING = "START_LOADING";
+export const STOP_LOADING = "STOP_LOADING";

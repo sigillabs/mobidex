@@ -9,24 +9,8 @@ export default class Accounts extends Component {
       <View>
         <Text>Accounts</Text>
         <View>
-          <Link to="/accounts">
-            <Text>Accounts</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders">
-            <Text>Trade</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/1/details">
-            <Text>Order Details</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/create">
-            <Text>Create Order</Text>
-          </Link>
+          <Text>Address</Text>
+          <Text>{this.props.account}</Text>
         </View>
       </View>
     );
