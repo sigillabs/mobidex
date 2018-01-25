@@ -6,7 +6,6 @@ const initialState = [];
 
 export default handleActions({
   [Actions.ADD_ORDERS]: (state, action) => {
-    let orders = action.payload.map(data => _.assign(new Order(), data));
-    return _.unionBy(orders, state, "id");
+    return _.unionBy(state, action.payload, "orderHash");
   }
 }, initialState);

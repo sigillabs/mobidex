@@ -1,5 +1,7 @@
+import * as _ from "lodash";
 import React, { Component } from "react";
 import { View, Text } from "react-native";
+import { Button, Card } from "react-native-elements";
 import { Link } from "react-router-native";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
@@ -28,7 +30,7 @@ export default class OrderDetails extends Component {
     };
   }
 
-  async componentDidMount() {
+  fillOrder = () => {
     const DECIMALS = 18;
     const NULL_ADDRESS = ZeroEx.NULL_ADDRESS;
     const WETH_ADDRESS = await zeroEx.tokenRegistry.getTokenAddressByNameIfExistsAsync("WETH");
@@ -65,33 +67,18 @@ export default class OrderDetails extends Component {
     } catch(err) {
       console.error(err);
     }
-  }
+  };
 
   render() {
+    let order = _.find(this.props.orders, { orderHash: this.props.match.params.id });
     return (
-      <View>
-        <Text>Order Details</Text>
-        <View>
-          <Link to="/accounts">
-            <Text>Accounts</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders">
-            <Text>Trade</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/1/details">
-            <Text>Order Details</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/create">
-            <Text>Create Order</Text>
-          </Link>
-        </View>
-      </View>
+      <Card title={order.orderHash}>
+        <Button
+          large
+          icon={{ name: "cached" }}
+          title="Fill Order"
+          onPress={this.fillOrder} />
+      </Card>
     );
   }
 }

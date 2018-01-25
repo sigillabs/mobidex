@@ -1,34 +1,27 @@
 import React, { Component } from "react";
 import { Dimensions, StyleSheet, View, Text } from "react-native";
-import { Button, FormLabel, FormInput } from "react-native-elements";
+import { List, ListItem } from "react-native-elements";
 import { Link } from "react-router-native";
 
 export default class Orders extends Component {
   render() {
     return (
-      <View>
-        <Text>Orders</Text>
-        <View>
-          <Link to="/accounts">
-            <Text>Accounts</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders">
-            <Text>Trade</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/1/details">
-            <Text>Order Details</Text>
-          </Link>
-        </View>
-        <View>
-          <Link to="/orders/create">
-            <Text>Create Order</Text>
-          </Link>
-        </View>
-      </View>
+      <List containerStyle={{
+        marginBottom: 20,
+        flex: 1,
+        width: this.props.device.layout.width
+      }}>
+        {
+          this.props.orders.map((order, index) => (
+            <Link key={index} to={`/orders/${order.orderHash}/details`}>
+              <ListItem
+                title={order.orderHash}
+                leftIcon={{ name: "av-timer" }}
+              />
+            </Link>
+          ))
+        }
+      </List>
     );
   }
 }
