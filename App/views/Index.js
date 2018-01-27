@@ -1,6 +1,7 @@
 import Main from "./Main";
 import Loader from "./Loader";
-export { Main, Loader };
+import Onboarding from "./Onboarding";
+export { Main, Loader, Onboarding };
 
 export * from "./accounts";
 export * from "./trade";

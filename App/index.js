@@ -1,31 +1,14 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { AppRegistry, Dimensions, StyleSheet, Text, View } from "react-native";
-import { NativeRouter as Router, Route, Link } from "react-router-native";
-import { connect, Provider } from "react-redux";
+import { StyleSheet } from "react-native";
+import { Provider } from "react-redux";
 import { createStore } from "redux";
+import MobidexRouter from "./router";
 import { configureStore } from "./store";
-import { Loader, Main, Accounts, Orders, OrderDetails, CreateOrder } from "./views";
-import { loadOrders } from "./thunks/orders";
+import { loadOrders, loadKeyPair } from "./thunks";
+import { Loader } from "./views";
 
 const STORE = configureStore();
-
-const mapStateToProps = (state, ownProps) => {
-  return state
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    dispatch: dispatch
-  }
-}
-
-const ConnectedMain = connect(mapStateToProps, mapDispatchToProps)(Main);
-const ConnectedLoader = connect(mapStateToProps, mapDispatchToProps)(Loader);
-const ConnectedAccounts = connect(mapStateToProps, mapDispatchToProps)(Accounts);
-const ConnectedOrders = connect(mapStateToProps, mapDispatchToProps)(Orders);
-const ConnectedOrderDetails = connect(mapStateToProps, mapDispatchToProps)(OrderDetails);
-const ConnectedCreateOrder = connect(mapStateToProps, mapDispatchToProps)(CreateOrder);
 
 export default class Mobidex extends Component {
   constructor(props) {
@@ -40,6 +23,7 @@ export default class Mobidex extends Component {
 
   componentDidMount() {
     STORE.dispatch(loadOrders());
+    STORE.dispatch(loadKeyPair());
 
     this.cleanup.push(STORE.subscribe((state) => {
       this.setState({
@@ -48,30 +32,10 @@ export default class Mobidex extends Component {
     }))
   }
 
-  renderLoader() {
-    return ( <ConnectedLoader /> );
-  }
-
-  renderRoutes() {
-    return (
-      <Router>
-        <View>
-          <Route path="/" component={ConnectedMain} exact />
-          <Route path="/accounts" component={ConnectedAccounts} exact />
-          <Route path="/orders" component={ConnectedOrders} exact />
-          <Route path="/orders/create" component={ConnectedCreateOrder} exact />
-          <Route path="/orders/:id/details" component={ConnectedOrderDetails} exact />
-        </View>
-      </Router>
-    );
-  }
-
   render () {
     return (
       <Provider store={STORE}>
-        <View style={styles.container}>
-          {this.state.loading ? this.renderLoader() : this.renderRoutes()}
-        </View>
+        {this.state.loading ? <Loader /> : <MobidexRouter />}
       </Provider>
     )
   }

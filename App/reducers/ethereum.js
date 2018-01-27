@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import { AsyncStorage } from "react-native";
 import { handleActions } from "redux-actions";
 import * as Web3 from "web3";
 import { ZeroEx } from "0x.js";
@@ -9,7 +10,7 @@ function getActiveInitialState() {
   const web3 = new Web3(web3.currentProvider);
 
   return {
-    account: null,
+    keys: null,
     web3: web3,
     zeroEx: new ZeroEx(web3.currentProvider),
     active: true,
@@ -19,7 +20,7 @@ function getActiveInitialState() {
 
 function getInactiveInitialState() {
   return {
-    account: null,
+    keys: null,
     web3: null,
     zeroEx: null,
     active: false,
@@ -36,11 +37,11 @@ function getInitialState() {
 }
 
 export default handleActions({
-  [Actions.CHANGE_ACCOUNT]: (state, action) => {
+  [Actions.CHANGE_KEYS]: (state, action) => {
     if (action.payload) {
-      state.account = action.payload;
+      state.keys = action.payload;
     } else {
-      state.account = null;
+      state.keys = null;
     }
     return state;
   },

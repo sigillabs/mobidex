@@ -11,14 +11,5 @@ export function configureStore(initialState) {
     middleware = composeWithDevTools(middleware);
   }
 
-  const store = createStore(rootReducer, initialState, middleware);
-
-  if (module.hot) {
-    module.hot.accept("../reducers", () => {
-      const nextReducer = require("../reducers");
-      store.replaceReducer(nextReducer);
-    });
-  }
-
-  return store;
+  return createStore(rootReducer, initialState, middleware);
 }

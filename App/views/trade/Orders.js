@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Dimensions, StyleSheet, View, Text } from "react-native";
+import { TouchableHighlight } from "react-native";
 import { List, ListItem } from "react-native-elements";
-import { Link } from "react-router-native";
+import { Actions } from "react-native-router-flux";
 
 export default class Orders extends Component {
   render() {
@@ -13,12 +13,12 @@ export default class Orders extends Component {
       }}>
         {
           this.props.orders.map((order, index) => (
-            <Link key={index} to={`/orders/${order.orderHash}/details`}>
+            <TouchableHighlight key={index} onPress={() => (Actions.orderDetails({ orderHash: order.orderHash }))}>
               <ListItem
                 title={order.orderHash}
                 leftIcon={{ name: "av-timer" }}
               />
-            </Link>
+            </TouchableHighlight>
           ))
         }
       </List>

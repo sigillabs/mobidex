@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button, FormLabel, FormInput, FormValidationMessage } from "react-native-elements";
-import { Link } from "react-router-native";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
 import { ZeroEx } from "0x.js";

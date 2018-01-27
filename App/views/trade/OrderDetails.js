@@ -2,7 +2,6 @@ import * as _ from "lodash";
 import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { Button, Card } from "react-native-elements";
-import { Link } from "react-router-native";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
 import { ZeroEx } from "0x.js";
@@ -30,7 +29,7 @@ export default class OrderDetails extends Component {
     };
   }
 
-  fillOrder = () => {
+  fillOrder = async () => {
     const DECIMALS = 18;
     const NULL_ADDRESS = ZeroEx.NULL_ADDRESS;
     const WETH_ADDRESS = await zeroEx.tokenRegistry.getTokenAddressByNameIfExistsAsync("WETH");
@@ -70,7 +69,8 @@ export default class OrderDetails extends Component {
   };
 
   render() {
-    let order = _.find(this.props.orders, { orderHash: this.props.match.params.id });
+    let { orderHash } = this.props.navigation.state.params;
+    let order = _.find(this.props.orders, { orderHash });
     return (
       <Card title={order.orderHash}>
         <Button
