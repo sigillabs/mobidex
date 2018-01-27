@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ActionConst, Reducer, Router, Stack, Scene } from "react-native-router-flux";
 import { connect } from "react-redux";
-import { Onboarding, Main, Accounts, Orders, OrderDetails, CreateOrder } from "./views";
+import { Loader, Onboarding, Menu, Accounts, Orders, OrderDetails, CreateOrder } from "./views";
 
 const reducerCreate = params => {
   const defaultReducer = new Reducer(params);
@@ -14,7 +14,7 @@ const reducerCreate = params => {
 const getSceneStyle = () => ({
   backgroundColor: "#F5FCFF",
   shadowOpacity: 1,
-  shadowRadius: 3,
+  shadowRadius: 3
 });
 
 const mapStateToProps = (state, ownProps) => {
@@ -27,7 +27,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-const ConnectedMain = connect(mapStateToProps, mapDispatchToProps)(Main);
+const ConnectedLoader = connect(mapStateToProps, mapDispatchToProps)(Loader);
+const ConnectedMenu = connect(mapStateToProps, mapDispatchToProps)(Menu);
 const ConnectedOnboarding = connect(mapStateToProps, mapDispatchToProps)(Onboarding);
 const ConnectedAccounts = connect(mapStateToProps, mapDispatchToProps)(Accounts);
 const ConnectedOrders = connect(mapStateToProps, mapDispatchToProps)(Orders);
@@ -39,12 +40,13 @@ export default class MobidexRouter extends Component {
     return (
       <Router createReducer={reducerCreate} getSceneStyle={getSceneStyle} uriPrefix={"mobidex.io"}>
         <Stack key="root">
-          <Scene key="main" path="/" component={ConnectedMain} hideNavBar type={ActionConst.REPLACE} />
+          <Scene key="loading" component={ConnectedLoader} hideNavBar />
           <Scene key="accounts" path="/accounts" title="Accounts" component={ConnectedAccounts} />
           <Scene key="orders" path="/orders" title="Trade View" component={ConnectedOrders} />
           <Scene key="createOrder" path="/orders/create" title="Create Order" component={ConnectedCreateOrder} />
           <Scene key="orderDetails" path="/order/:orderHash/details" title="Order Details" component={ConnectedOrderDetails} />
           <Scene key="onboarding" path="/onboarding" title="Onboarding" component={ConnectedOnboarding} />
+          <Scene key="menu" component={ConnectedMenu} hideNavBar />
         </Stack>
       </Router>
     );

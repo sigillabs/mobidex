@@ -1,12 +1,20 @@
 import React, { Component } from "react";
-import { Dimensions, StyleSheet, View, Text } from "react-native";
+import { View, Text, TouchableHighlight } from "react-native";
+import { Card, Header, Icon } from "react-native-elements";
+import { Actions } from "react-native-router-flux";
 
 export default class Accounts extends Component {
   render() {
-    console.warn(this.props.ethereum);
+    let address = this.props.ethereum.wallet.getAddress().toString("hex");
     return (
       <View>
-        <Text></Text>
+        <Header>
+          <TouchableHighlight onPress={() => (Actions.menu())}>
+            <Icon name="menu" />
+          </TouchableHighlight>
+        </Header>
+        <Card title={address}>
+        </Card>
       </View>
     );
   }

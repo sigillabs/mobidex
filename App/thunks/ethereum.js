@@ -1,32 +1,14 @@
+import * as crypto from "crypto";
 import { AsyncStorage } from "react-native";
-import { Actions } from "react-native-router-flux";
-import { ZeroEx } from "0x.js";
-import BigNumber from "bignumber.js";
-import { HttpClient } from "@0xproject/connect";
-import { signOrder } from "../utils/orders";
-import { addErrors, changeKeys, startLoading, stopLoading } from "../actions";
+import Wallet from "ethereumjs-wallet";
+import { changeWallet } from "../actions";
 
-const BASE_URL = "https://api.radarrelay.com/0x/v0";
-
-export function loadKeyPair() {
+// Would like to password protect using Ethereum Secret Storage
+// `wallet.toV3("nopass")` is very expensive.
+export function generateWallet() {
   return async (dispatch) => {
-    dispatch(startLoading());
-
-    let client = new HttpClient(BASE_URL);
-
-    try {
-      console.warn("here");
-      let keys = await AsyncStorage.getItem("key");
-
-      if (keys) {
-        dispatch(changeKeys(keys));
-      } else {
-        Actions.onboarding();
-      }
-    } catch(err) {
-      dispatch(addErrors([err]));
-    }
-
-    dispatch(stopLoading());
+    let wallet = await Wallet.generate();
+    await AsyncStorage.setItem("wallet", wallet.getPrivateKey().toString("hex"));
+    changeWallet(wallet);
   };
 }

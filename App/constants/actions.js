@@ -1,7 +1,7 @@
 export const ADD_ERRORS = "ADD_ERRORS";
 export const ADD_ORDERS = "ADD_ORDERS";
 export const ADD_TRANSACTIONS = "ADD_TRANSACTIONS";
-export const CHANGE_KEYS = "CHANGE_KEYS";
+export const CHANGE_WALLET = "CHANGE_WALLET";
 export const SET_QUOTE_CURRENCY = "SET_QUOTE_CURRENCY";
 export const SET_PRODUCT = "SET_PRODUCT";
 export const START_LOADING = "START_LOADING";

@@ -1,16 +1,20 @@
 import * as _ from "lodash";
 import { AsyncStorage } from "react-native";
 import { handleActions } from "redux-actions";
+import * as ZeroClientProvider from "web3-provider-engine/zero";
 import * as Web3 from "web3";
 import { ZeroEx } from "0x.js";
 import { getClient, ContractDefinitionLoader } from "web3-contracts-loader";
 import * as Actions from "../constants/actions";
 
 function getActiveInitialState() {
-  const web3 = new Web3(web3.currentProvider);
+  // const web3 = new Web3(web3.currentProvider);
+  const web3 = new Web3(ZeroClientProvider({
+    rpcUrl: "https://kovan.infura.io/"
+  }));
 
   return {
-    keys: null,
+    wallet: null,
     web3: web3,
     zeroEx: new ZeroEx(web3.currentProvider),
     active: true,
@@ -20,7 +24,7 @@ function getActiveInitialState() {
 
 function getInactiveInitialState() {
   return {
-    keys: null,
+    wallet: null,
     web3: null,
     zeroEx: null,
     active: false,
@@ -37,11 +41,11 @@ function getInitialState() {
 }
 
 export default handleActions({
-  [Actions.CHANGE_KEYS]: (state, action) => {
+  [Actions.CHANGE_WALLET]: (state, action) => {
     if (action.payload) {
-      state.keys = action.payload;
+      state.wallet = action.payload;
     } else {
-      state.keys = null;
+      state.wallet = null;
     }
     return state;
   },

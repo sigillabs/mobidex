@@ -2,14 +2,12 @@ import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import { HttpClient } from "@0xproject/connect";
 import { signOrder } from "../utils/orders";
-import { addErrors, addOrders, addTransactions, startLoading, stopLoading } from "../actions";
+import { addErrors, addOrders, addTransactions } from "../actions";
 
 const BASE_URL = "https://api.radarrelay.com/0x/v0";
 
 export function loadOrders() {
   return async (dispatch) => {
-    dispatch(startLoading());
-
     let client = new HttpClient(BASE_URL);
 
     try {
@@ -18,7 +16,5 @@ export function loadOrders() {
     } catch(err) {
       dispatch(addErrors([err]));
     }
-
-    dispatch(stopLoading());
   };
 }

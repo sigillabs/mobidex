@@ -1,12 +1,8 @@
-import * as _ from "lodash";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
 import MobidexRouter from "./router";
 import { configureStore } from "./store";
-import { loadOrders, loadKeyPair } from "./thunks";
-import { Loader } from "./views";
+import { initialLoad } from "./thunks";
 
 const STORE = configureStore();
 
@@ -22,8 +18,7 @@ export default class Mobidex extends Component {
   }
 
   componentDidMount() {
-    STORE.dispatch(loadOrders());
-    STORE.dispatch(loadKeyPair());
+    STORE.dispatch(initialLoad());
 
     this.cleanup.push(STORE.subscribe((state) => {
       this.setState({
@@ -35,17 +30,8 @@ export default class Mobidex extends Component {
   render () {
     return (
       <Provider store={STORE}>
-        {this.state.loading ? <Loader /> : <MobidexRouter />}
+        <MobidexRouter loading={this.state.loading} />
       </Provider>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF"
-  }
-})
