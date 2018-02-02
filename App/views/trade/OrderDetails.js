@@ -70,7 +70,7 @@ export default class OrderDetails extends Component {
 
   render() {
     let { orderHash } = this.props.navigation.state.params;
-    let order = _.find(this.props.orders, { orderHash });
+    let order = _.find(this.props.trade.orders, { orderHash });
     return (
       <Card title={order.orderHash}>
         <Button

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Provider } from "react-redux";
+import { View } from "react-native";
+import { Provider, connect } from "react-redux";
 import MobidexRouter from "./router";
 import { configureStore } from "./store";
-import { initialLoad } from "./thunks";
+import { load as initialLoad } from "./thunks";
 
 const STORE = configureStore();
 
@@ -10,27 +11,21 @@ export default class Mobidex extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      loading: true
-    };
-
     this.cleanup = [];
   }
 
   componentDidMount() {
-    STORE.dispatch(initialLoad());
+    STORE.dispatch(initialLoad(STORE));
 
-    this.cleanup.push(STORE.subscribe((state) => {
-      this.setState({
-        loading: STORE.getState().global.loading
-      })
-    }))
+    // this.cleanup.push(STORE.subscribe((state) => {
+    //   console.warn(STORE.getState().trade.orders);
+    // }));
   }
 
   render () {
     return (
       <Provider store={STORE}>
-        <MobidexRouter loading={this.state.loading} />
+        <MobidexRouter />
       </Provider>
     )
   }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { TouchableHighlight } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
+import { gotoOrders } from "../thunks"
 
 export default class Menu extends Component {
   render() {
@@ -17,7 +18,7 @@ export default class Menu extends Component {
             leftIcon={{ name: "av-timer" }}
           />
         </TouchableHighlight>
-        <TouchableHighlight onPress={() => (Actions.orders())}>
+        <TouchableHighlight onPress={() => (this.props.dispatch(gotoOrders()))}>
           <ListItem
             title="Trade"
             leftIcon={{ name: "av-timer" }}

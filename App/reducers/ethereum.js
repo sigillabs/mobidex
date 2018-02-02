@@ -1,47 +1,66 @@
 import * as _ from "lodash";
-import { AsyncStorage } from "react-native";
 import { handleActions } from "redux-actions";
-import * as ZeroClientProvider from "web3-provider-engine/zero";
-import * as Web3 from "web3";
-import { ZeroEx } from "0x.js";
-import { getClient, ContractDefinitionLoader } from "web3-contracts-loader";
+import ZeroClientProvider from "web3-provider-engine/zero";
+import ProviderEngine from "web3-provider-engine";
+import Web3 from "web3";
+import ethUtil from "ethereumjs-util";
+import sigUtil from "eth-sig-util";
 import * as Actions from "../constants/actions";
 
-function getActiveInitialState() {
-  // const web3 = new Web3(web3.currentProvider);
-  const web3 = new Web3(ZeroClientProvider({
-    rpcUrl: "https://kovan.infura.io/"
-  }));
+function getInitialState() {
+  const engine = ZeroClientProvider({
+    rpcUrl: "https://kovan.infura.io/",
+    getAccounts: (cb) => {
+      cb(null, [ `0x${state.wallet.getAddress().toString("hex").toLowerCase()}` ]);
+    },
+    // tx signing
+    processTransaction: (params, cb) => {
+      console.warn("processTransaction", params);
+      cb(null, null);
+    },
+    // old style msg signing
+    processMessage: (params, cb) => {
+      // params.chainId = 42;
+      // const tx = new EthereumTx(params)
+      // tx.sign(state.wallet.getPrivateKey());
+      // cb(null, tx.serialize());
 
-  return {
+      const message = ethUtil.stripHexPrefix(params.data);
+      console.warn(message);
+      var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), state.wallet.getPrivateKey());
+      console.warn(msgSig);
+      var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
+      console.warn(rawMsgSig);
+      cb(null, rawMsgSig);
+    },
+    // personal_sign msg signing
+    processPersonalMessage: (params, cb) => {
+      console.warn("processPersonalMessage", params);
+      cb(null, null);
+    },
+    processTypedMessage: (params, cb) => {
+      console.warn("processTypedMessage", params);
+      cb(null, null);
+    }
+  });
+  const web3 = new Web3(engine);
+  const state = {
     wallet: null,
     web3: web3,
-    zeroEx: new ZeroEx(web3.currentProvider),
     active: true,
-    transactions: []
-  }
-}
+    transactions: [],
+    tokens: []
+  };
 
-function getInactiveInitialState() {
-  return {
-    wallet: null,
-    web3: null,
-    zeroEx: null,
-    active: false,
-    transactions: []
-  }
-}
-
-function getInitialState() {
-  if (typeof web3 !== "undefined") {
-    return getActiveInitialState();
-  } else {
-    return getInactiveInitialState();
-  }
+  return state;
 }
 
 export default handleActions({
-  [Actions.CHANGE_WALLET]: (state, action) => {
+  [Actions.ADD_TRANSACTIONS]: (state, action) => {
+    state.transactions = _.union(state.transactions, action.payload);
+    return state;
+  },
+  [Actions.SET_WALLET]: (state, action) => {
     if (action.payload) {
       state.wallet = action.payload;
     } else {
@@ -49,8 +68,8 @@ export default handleActions({
     }
     return state;
   },
-  [Actions.ADD_TRANSACTIONS]: (state, action) => {
-    state.transactions = _.union(state.transactions, action.payload);
+  [Actions.SET_TOKENS]: (state, action) => {
+    state.tokens = action.payload;
     return state;
   }
 }, getInitialState());

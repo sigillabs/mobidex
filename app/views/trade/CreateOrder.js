@@ -1,10 +1,13 @@
+import moment from "moment";
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button, FormLabel, FormInput, FormValidationMessage } from "react-native-elements";
 import BigNumber from "bignumber.js";
-import Web3 from "web3";
 import { ZeroEx } from "0x.js";
 import { HttpClient } from "@0xproject/connect";
+import { submitOrder } from "../../thunks";
+import { getZeroExContractAddress } from "../../utils/ethereum";
+import { signOrder } from "../../utils/orders";
 
 export default class CreateOrder extends Component {
   constructor(props) {
@@ -48,6 +51,27 @@ export default class CreateOrder extends Component {
     }
   };
 
+  submit = async () => {
+    let { web3 } = this.props.ethereum;
+    let address = this.props.ethereum.wallet.getAddress().toString("hex").toLowerCase();
+    let order = {
+      "maker": `0x${address}`,
+      "makerFee": new BigNumber(0),
+      "makerTokenAddress": this.props.trade.settings.quoteToken.address,
+      "makerTokenAmount": this.state.price.mul(this.state.amount),
+      "taker": ZeroEx.NULL_ADDRESS,
+      "takerFee": new BigNumber(0),
+      "takerTokenAddress": "0x6ff6c0ff1d68b964901f986d4c9fa3ac68346570",
+      "takerTokenAmount": this.state.amount,
+      "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
+      "feeRecipient": ZeroEx.NULL_ADDRESS,
+      "salt": ZeroEx.generatePseudoRandomSalt(),
+      "exchangeContractAddress": await getZeroExContractAddress(web3)
+    };
+    let signedOrder = await signOrder(web3, order);
+    this.props.dispatch(submitOrder(signedOrder));
+  }
+
   render() {
     const styles = getStyles(this.props.device.layout);
 
@@ -69,6 +93,7 @@ export default class CreateOrder extends Component {
         </View>
         <Button
           large
+          onPress={this.submit}
           icon={{name: 'cached'}}
           title='Submit Order' />
       </View>

@@ -41,11 +41,11 @@ export default class MobidexRouter extends Component {
       <Router createReducer={reducerCreate} getSceneStyle={getSceneStyle} uriPrefix={"mobidex.io"}>
         <Stack key="root">
           <Scene key="loading" component={ConnectedLoader} hideNavBar />
+          <Scene key="onboarding" path="/onboarding" title="Onboarding" component={ConnectedOnboarding} hideNavBar />
           <Scene key="accounts" path="/accounts" title="Accounts" component={ConnectedAccounts} />
           <Scene key="orders" path="/orders" title="Trade View" component={ConnectedOrders} />
           <Scene key="createOrder" path="/orders/create" title="Create Order" component={ConnectedCreateOrder} />
           <Scene key="orderDetails" path="/order/:orderHash/details" title="Order Details" component={ConnectedOrderDetails} />
-          <Scene key="onboarding" path="/onboarding" title="Onboarding" component={ConnectedOnboarding} />
           <Scene key="menu" component={ConnectedMenu} hideNavBar />
         </Stack>
       </Router>

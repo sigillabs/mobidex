@@ -4,7 +4,8 @@ import * as Actions from "../constants/actions";
 export const addErrors = createAction(Actions.ADD_ERRORS);
 export const addOrders = createAction(Actions.ADD_ORDERS);
 export const addTransactions = createAction(Actions.ADD_TRANSACTIONS);
-export const changeWallet = createAction(Actions.CHANGE_WALLET);
-export const startLoading = createAction(Actions.START_LOADING);
-export const stopLoading = createAction(Actions.STOP_LOADING);
-
+export const setWallet = createAction(Actions.SET_WALLET);
+export const setBaseToken = createAction(Actions.SET_QUOTE_TOKEN);
+export const setQuoteToken = createAction(Actions.SET_BASE_TOKEN);
+export const setNetwork = createAction(Actions.SET_NETWORK);
+export const setTokens = createAction(Actions.SET_TOKENS);
