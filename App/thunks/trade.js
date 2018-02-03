@@ -44,7 +44,6 @@ export function loadOrder(orderHash) {
 export function submitOrder(signedOrder) {
   return async (dispatch) => {
     let client = new HttpClient(BASE_URL);
-    console.warn(signedOrder);
 
     try {
       await client.submitOrderAsync(signedOrder);

@@ -20,3 +20,11 @@ export async function signOrder(web3, order) {
     ecSignature
   };
 }
+
+export async function fillOrder(web3, order) {
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const fillAmount = order.takerTokenAmount;
+  const txHash = await zeroEx.exchange.fillOrderAsync(order, fillAmount, true, account.toLowerCase());
+  const receipt = await zeroEx.awaitTransactionMinedAsync(txHash);
+}
