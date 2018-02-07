@@ -2,15 +2,14 @@ import React, { Component } from "react";
 import { TouchableHighlight } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
-import { gotoOrders } from "../thunks"
+import { connect } from "react-redux";
+import { gotoOrders } from "../../thunks"
 
-export default class Menu extends Component {
+export class Navigation extends Component {
   render() {
     return (
       <List containerStyle={{
-        marginBottom: 20,
-        flex: 1,
-        width: this.props.device.layout.width
+        width: this.props.width
       }}>
         <TouchableHighlight onPress={() => (Actions.accounts())}>
           <ListItem
@@ -34,3 +33,19 @@ export default class Menu extends Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    width: state.device.layout.width
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    dispatch: dispatch
+  }
+}
+
+const ConnectedNavigation = connect(mapStateToProps, mapDispatchToProps)(Navigation);
+
+export default ConnectedNavigation;

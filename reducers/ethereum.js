@@ -20,17 +20,9 @@ function getInitialState() {
     },
     // old style msg signing
     processMessage: (params, cb) => {
-      // params.chainId = 42;
-      // const tx = new EthereumTx(params)
-      // tx.sign(state.wallet.getPrivateKey());
-      // cb(null, tx.serialize());
-
       const message = ethUtil.stripHexPrefix(params.data);
-      console.warn(message);
-      var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), state.wallet.getPrivateKey());
-      console.warn(msgSig);
-      var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
-      console.warn(rawMsgSig);
+      const msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), state.wallet.getPrivateKey());
+      const rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
       cb(null, rawMsgSig);
     },
     // personal_sign msg signing

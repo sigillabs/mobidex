@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card } from "react-native-elements";
-import { generateWallet } from "../thunks";
-import ReduxWrapper from "./ReduxWrapper";
+import { generateWallet } from "../../thunks";
 
-export default class OnboardingBase extends Component {
+export default class OnboardingScreen extends Component {
   submit = () => {
     this.props.dispatch(generateWallet((dispatch) => {
       this.props.navigator.push({
