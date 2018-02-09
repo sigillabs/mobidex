@@ -1,12 +1,18 @@
 import { combineReducers } from "redux";
 import device from "./device";
 import errors from "./errors";
-import ethereum from "./ethereum";
-import trade from "./trade";
+import settings from "./settings";
+import orders from "./orders";
+import startup from "./startup";
+import tokens from "./tokens";
+import wallet from "./wallet";
 
 export default combineReducers({
   device,
   errors,
-  ethereum,
-  trade
+  orders,
+  settings,
+  startup,
+  tokens,
+  wallet
 });

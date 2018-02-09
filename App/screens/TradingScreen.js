@@ -32,7 +32,7 @@ class TradingScreen extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     layout: state.device.layout,
-    orders: state.trade.orders
+    orders: state.orders
   }
 }
 

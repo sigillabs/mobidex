@@ -12,21 +12,15 @@ class WalletScreen extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  if (state.ethereum.wallet) {
-    return {
-      address: state.ethereum.wallet.getAddress().toString("hex")
-    }
-  } else {
-    return {
-      address: null
-    }
-  }
+  return {
+    address: state.wallet.address
+  };
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     dispatch: dispatch
-  }
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletScreen);

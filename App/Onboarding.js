@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Card } from "react-native-elements";
-import { generateWallet } from "../../thunks";
+import { connect } from "react-redux";
+import { generateWallet } from "../thunks";
 
-export default class OnboardingScreen extends Component {
+class Onboarding extends Component {
   submit = () => {
-    this.props.dispatch(generateWallet((dispatch) => {
-      this.props.navigation.navigate("Wallet");
-    }));
+    this.props.dispatch(generateWallet());
   }
 
   render() {
@@ -24,3 +23,5 @@ export default class OnboardingScreen extends Component {
     );
   }
 }
+
+export default connect(() => ({}), dispatch => ({ dispatch }))(Onboarding);

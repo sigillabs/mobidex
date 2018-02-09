@@ -63,19 +63,18 @@ export function submitOrder(signedOrder, action) {
   };
 }
 
-export function createSignSubmitOrder(price, amount) {
+export function createSignSubmitOrder(web3, price, amount) {
   return async (dispatch, getState) => {
-    let { ethereum, trade } = getState();
-    let { web3, wallet } = ethereum;
-    let address = wallet.getAddress().toString("hex").toLowerCase();
+    let { wallet, trade, settings } = getState();
+    let address = wallet.address.toLowerCase();
     let order = {
       "maker": `0x${address}`,
       "makerFee": new BigNumber(0),
-      "makerTokenAddress": trade.settings.quoteToken.address,
+      "makerTokenAddress": settings.quoteToken.address,
       "makerTokenAmount": price.mul(amount),
       "taker": ZeroEx.NULL_ADDRESS,
       "takerFee": new BigNumber(0),
-      "takerTokenAddress": trade.settings.baseToken.address,
+      "takerTokenAddress": settings.baseToken.address,
       "takerTokenAmount": amount,
       "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
       "feeRecipient": ZeroEx.NULL_ADDRESS,

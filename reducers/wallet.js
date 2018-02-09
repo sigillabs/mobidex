@@ -7,11 +7,11 @@ import ethUtil from "ethereumjs-util";
 import sigUtil from "eth-sig-util";
 import * as Actions from "../constants/actions";
 
-function getInitialState() {
+function getWeb3(privateKey, address) {
   const engine = ZeroClientProvider({
     rpcUrl: "https://kovan.infura.io/",
     getAccounts: (cb) => {
-      cb(null, [ `0x${state.wallet.getAddress().toString("hex").toLowerCase()}` ]);
+      cb(null, [ address.toString("hex").toLowerCase() ]);
     },
     // tx signing
     processTransaction: (params, cb) => {
@@ -21,7 +21,7 @@ function getInitialState() {
     // old style msg signing
     processMessage: (params, cb) => {
       const message = ethUtil.stripHexPrefix(params.data);
-      const msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), state.wallet.getPrivateKey());
+      const msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privateKey);
       const rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
       cb(null, rawMsgSig);
     },
@@ -35,33 +35,22 @@ function getInitialState() {
       cb(null, null);
     }
   });
-  const web3 = new Web3(engine);
-  const state = {
-    wallet: null,
-    web3: web3,
-    active: true,
-    transactions: [],
-    tokens: []
-  };
+  return new Web3(engine);
+}
 
-  return state;
+function getInitialState() {
+  return {
+    privateKey: null,
+    address: null,
+    web3: null
+  };
 }
 
 export default handleActions({
-  [Actions.ADD_TRANSACTIONS]: (state, action) => {
-    state.transactions = _.union(state.transactions, action.payload);
-    return state;
-  },
   [Actions.SET_WALLET]: (state, action) => {
-    if (action.payload) {
-      state.wallet = action.payload;
-    } else {
-      state.wallet = null;
-    }
-    return state;
-  },
-  [Actions.SET_TOKENS]: (state, action) => {
-    state.tokens = action.payload;
-    return state;
+    let privateKey = `0x${ethUtil.stripHexPrefix(action.payload.getPrivateKey().toString("hex"))}`;
+    let address = `0x${ethUtil.stripHexPrefix(action.payload.getAddress().toString("hex"))}`;
+    let web3 = getWeb3(privateKey, address);
+    return { privateKey, address, web3 };
   }
 }, getInitialState());
