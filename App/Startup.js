@@ -18,13 +18,13 @@ class Startup extends Component {
 
   render() {
     let Splash = this.props.splashComponent;
-    let Navigator = this.props.navigatorComponent;
+    let Main = this.props.mainComponent;
     let Onboarding = this.props.onboardingComponent;
 
     if (this.props.wallet && this.props.tokens) {
       if (this.props.web3) {
         return (
-          <Navigator />
+          <Main />
         );
       } else {
         return (

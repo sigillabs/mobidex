@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "npm run patch",
+    "postinstall": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "patch": "sed -i.bk 's/self/global/g' ./node_modules/@0xproject/connect/node_modules/isomorphic-fetch/fetch-npm-browserify.js"
