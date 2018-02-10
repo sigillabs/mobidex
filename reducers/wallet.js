@@ -21,7 +21,7 @@ function getWeb3(privateKey, address) {
     // old style msg signing
     processMessage: (params, cb) => {
       const message = ethUtil.stripHexPrefix(params.data);
-      const msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privateKey);
+      const msgSig = ethUtil.ecsign(new Buffer(message, "hex"), new Buffer(ethUtil.stripHexPrefix(privateKey), "hex"));
       const rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
       cb(null, rawMsgSig);
     },

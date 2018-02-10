@@ -18,8 +18,9 @@ export function loadWallet() {
   };
 }
 
-export function loadTokens(web3) {
-  return async (dispatch) => {
+export function loadTokens() {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
     let zeroEx = await getZeroExClient(web3);
     let tokens = await zeroEx.tokenRegistry.getTokensAsync();
     dispatch(setTokens(tokens));

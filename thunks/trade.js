@@ -1,6 +1,5 @@
 import { HttpClient } from "@0xproject/connect";
 import { ZeroEx } from "0x.js";
-import { Actions } from "react-native-router-flux";
 import BigNumber from "bignumber.js";
 import moment from "moment";
 import { getZeroExContractAddress } from "../utils/ethereum";
@@ -9,17 +8,6 @@ import { addErrors, addOrders, addTransactions } from "../actions";
 
 // const BASE_URL = "https://api.radarrelay.com/0x/v0";
 const BASE_URL = "http://localhost:8000/relayer/v0";
-
-export function gotoOrders() {
-  return async (dispatch) => {
-    Actions.loading();
-
-    await dispatch(loadOrders());
-
-    Actions.pop();
-    Actions.orders();
-  };
-}
 
 export function loadOrders() {
   return async (dispatch, getState) => {
@@ -47,28 +35,26 @@ export function loadOrder(orderHash) {
   };
 }
 
-export function submitOrder(signedOrder, action) {
+export function submitOrder(signedOrder) {
   return async (dispatch, getState) => {
     let client = new HttpClient(BASE_URL);
 
     try {
       await client.submitOrderAsync(signedOrder);
       await dispatch(loadOrder(signedOrder.orderHash));
-      if (action && Actions[action]) {
-        Actions[action]();
-      }
     } catch(err) {
       dispatch(addErrors([err]));
     }
   };
 }
 
-export function createSignSubmitOrder(web3, price, amount) {
+export function createSignSubmitOrder(price, amount) {
   return async (dispatch, getState) => {
     let { wallet, trade, settings } = getState();
+    let web3 = wallet.web3;
     let address = wallet.address.toLowerCase();
     let order = {
-      "maker": `0x${address}`,
+      "maker": address,
       "makerFee": new BigNumber(0),
       "makerTokenAddress": settings.quoteToken.address,
       "makerTokenAmount": price.mul(amount),

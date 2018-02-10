@@ -5,6 +5,10 @@ import { connect } from "react-redux";
 import { loadOrders } from "../../thunks";
 
 class TradingScreen extends Component {
+  componentDidMount() {
+    this.props.dispatch(loadOrders());
+  }
+
   render() {
     return (
       <List containerStyle={{
@@ -14,11 +18,9 @@ class TradingScreen extends Component {
       }}>
         {
           this.props.orders.map(({ orderHash }, index) => (
-            <TouchableHighlight key={index} onPress={() => (this.props.navigator.push({
-              passProps: { orderHash }
-            }))}>
+            <TouchableHighlight key={index} onPress={() => (this.props.navigation.navigate("OrderDetails", { orderHash }))}>
               <ListItem
-                title={order.orderHash}
+                title={orderHash}
                 leftIcon={{ name: "av-timer" }}
               />
             </TouchableHighlight>
@@ -29,17 +31,4 @@ class TradingScreen extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    layout: state.device.layout,
-    orders: state.orders
-  }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    dispatch: dispatch
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TradingScreen);
+export default connect((state) => ({ ...state.device, orders: state.orders }), (dispatch) => ({ dispatch }))(TradingScreen);

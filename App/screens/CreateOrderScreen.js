@@ -2,11 +2,19 @@ import moment from "moment";
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button, FormLabel, FormInput, FormValidationMessage } from "react-native-elements";
+import { connect } from "react-redux";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
+import NormalHeader from "../headers/Normal";
 import { createSignSubmitOrder, gotoOrders } from "../../thunks";
 
-export default class CreateOrder extends Component {
+class CreateOrderScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: <NormalHeader navigation={navigation} />
+    };
+  };
+
   constructor(props) {
     super(props);
 
@@ -46,16 +54,14 @@ export default class CreateOrder extends Component {
 
   submit = async () => {
     let { price, amount } = this.state;
-    
-    if (await this.props.dispatch(createSignSubmitOrder(price, amount))) {
-      this.props.dispatch(gotoOrders());
-    } else {
-      Actions.refresh(this.props);
+    let result = await this.props.dispatch(createSignSubmitOrder(price, amount));
+    if (result) {
+      this.props.navigation.navigate("Trading");
     }
   }
 
   render() {
-    const styles = getStyles(this.props.device.layout);
+    const styles = getStyles(this.props.layout);
 
     return (
       <View style={[styles.form]}>
@@ -106,3 +112,5 @@ function getStyles (layout) {
     }
   })
 }
+
+export default connect((state, ownProps) => ({ ...state.device, ...ownProps, ...state.wallet }), (dispatch) => ({ dispatch }))(CreateOrderScreen);

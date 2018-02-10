@@ -40,6 +40,7 @@
     "react-native-secure-randombytes": "^2.2.3",
     "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.0.0",
+    "react-navigation-redux-helpers": "^1.0.1",
     "react-redux": "^5.0.6",
     "react-router-native": "^4.2.0",
     "react-timer-mixin": "^0.13.3",
