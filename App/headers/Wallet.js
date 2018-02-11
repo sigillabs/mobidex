@@ -10,8 +10,8 @@ export default class extends Component {
       <Header
         centerComponent={{ text: "Mobidex", style: { color: "white" } }}
         rightComponent={(
-          <TouchableHighlight onPress={() => this.props.navigation.navigate("CreateOrder")}>
-            <Icon name="add" color="white" />
+          <TouchableHighlight onPress={() => this.props.navigation.navigate("SendTokens")}>
+            <Icon name="send" color="white" />
           </TouchableHighlight>
         )}
       />

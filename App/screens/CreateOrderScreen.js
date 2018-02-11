@@ -1,8 +1,9 @@
 import moment from "moment";
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Button, FormLabel, FormInput, FormValidationMessage } from "react-native-elements";
+import { Button, Input } from "react-native-elements";
 import { connect } from "react-redux";
+import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import NormalHeader from "../headers/Normal";
@@ -66,24 +67,36 @@ class CreateOrderScreen extends Component {
     return (
       <View style={[styles.form]}>
         <View>
-          <FormLabel>Price</FormLabel>
-          <FormInput onChangeText={this.onSetPrice} keyboardType="numeric" />
-          {this.state.priceError ? (<FormValidationMessage>Price should be numeric and greater than `0`.</FormValidationMessage>) : null}
+          <Input
+            placeholder="Price"
+            displayError={this.state.priceError}
+            onChangeText={this.onSetPrice}
+            keyboardType="numeric"
+            errorMessage={"Price should be numeric and greater than `0`."}
+            errorStyle={{ color: "red" }}
+            icon={<Icon name="money" size={24} color="black" />}
+          />
         </View>
         <View>
-          <FormLabel>Amount</FormLabel>
-          <FormInput onChangeText={this.onSetAmount} keyboardType="numeric" />
-          {this.state.amountError ? (<FormValidationMessage>Amounts should be numeric and greater than `0`.</FormValidationMessage>) : null}
+          <Input
+            placeholder="Amount"
+            displayError={this.state.priceError}
+            onChangeText={this.onSetAmount}
+            keyboardType="numeric"
+            errorMessage={"Amounts should be numeric and greater than `0`."}
+            errorStyle={{ color: "red" }}
+            icon={<Icon name="money" size={24} color="black" />}
+          />
         </View>
         <View style={[styles.subtotal]}>
-          <FormLabel>Sub Total</FormLabel>
+          <Text>Sub Total</Text>
           <Text style={[styles.subtotalText]}>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
         </View>
         <Button
           large
           onPress={this.submit}
-          icon={{name: 'cached'}}
-          title='Submit Order' />
+          icon={<Icon name="check" size={24} color="white" />}
+          text="Submit Order" />
       </View>
     );
   }
