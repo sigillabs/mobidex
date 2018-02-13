@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { Button, Card } from "react-native-elements";
+import { Button, Card, Text } from "react-native-elements";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
 import { fillOrder } from "../../utils/orders";
@@ -40,10 +41,10 @@ class OrderDetailsScreen extends Component {
     return (
       <Card title={order.orderHash}>
         <Button
-          large
-          icon={{ name: "cached" }}
-          title="Fill Order"
-          onPress={this.fillOrder} />
+            large
+            icon={<Icon name="send" size={20} color="white" />}
+            onPress={this.fillOrder}
+            text="Fill Order" />
       </Card>
     );
   }

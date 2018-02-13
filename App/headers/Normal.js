@@ -9,7 +9,7 @@ export default class extends Component {
       <Header
         leftComponent={(
           <TouchableHighlight onPress={() => this.props.navigation.goBack(null)}>
-            <Icon name="arrow-back" size={40} color="white" />
+            <Icon name="arrow-back" color="white" />
           </TouchableHighlight>
         )}
         centerComponent={{ text: "Mobidex", style: { color: "white" } }} />
