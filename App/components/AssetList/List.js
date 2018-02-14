@@ -30,4 +30,4 @@ class AssetList extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device.layout, ...state.settings, tokens: state.tokens, assets: state.assets }), (dispatch) => ({ dispatch }))(AssetList);
+export default connect((state) => ({ ...state.device.layout, ...state.settings, assets: state.assets }), (dispatch) => ({ dispatch }))(AssetList);

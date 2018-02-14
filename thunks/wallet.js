@@ -1,7 +1,15 @@
 import * as _ from "lodash";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
-import { setWallet, setTokens, setQuoteToken, setBaseToken, finishedLoadingTokens, finishedLoadingWallet } from "../actions";
+import {
+  addTransactions,
+  setWallet,
+  setTokens,
+  setQuoteToken,
+  setBaseToken,
+  finishedLoadingTokens,
+  finishedLoadingWallet
+} from "../actions";
 import { getZeroExClient } from "../utils/ethereum";
 
 // Would like to password protect using Ethereum Secret Storage
@@ -26,4 +34,23 @@ export function loadWallet() {
       return null;
     }
   };
+}
+
+export function loadTransactions() {
+  return async (dispatch, getState) => {
+    // Need index of 0x.
+    // let client = new HttpClient(BASE_URL);
+
+    // try {
+    //   dispatch(addOrders(await client.getOrdersAsync()));
+    //   return true;
+    // } catch(err) {
+    //   dispatch(addErrors([err]));
+    //   return false;
+    // }
+  };
+}
+
+export function saveTransactions() {
+
 }

@@ -8,7 +8,8 @@ const BASE_URL = "http://localhost:8000/relayer/v0";
 const initialState = {
   quoteToken: null,
   baseToken: null,
-  relayerEndpoint: BASE_URL
+  relayerEndpoint: BASE_URL,
+  tokens: []
 };
 
 export default handleActions({
@@ -22,6 +23,12 @@ export default handleActions({
     return {
       ...state,
       baseToken: action.payload
+    };
+  },
+  [Actions.SET_TOKENS]: (state, action) => {
+    return {
+      ...state,
+      tokens: action.payload
     };
   }
 }, initialState);

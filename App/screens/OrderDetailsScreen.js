@@ -50,4 +50,4 @@ class OrderDetailsScreen extends Component {
   }
 }
 
-export default connect(state => ({ wallet: state.wallet, orders: state.orders }), dispatch => ({ dispatch }))(OrderDetailsScreen);
+export default connect(state => ({ wallet: state.wallet, orders: state.relayer.orders }), dispatch => ({ dispatch }))(OrderDetailsScreen);

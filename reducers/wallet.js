@@ -38,19 +38,27 @@ function getWeb3(privateKey, address) {
   return new Web3(engine);
 }
 
-function getInitialState() {
-  return {
-    privateKey: null,
-    address: null,
-    web3: null
-  };
-}
+const initialState = {
+  web3: null,
+  privateKey: null,
+  address: null,
+  assets: [],
+  transactions: []
+};
 
 export default handleActions({
   [Actions.SET_WALLET]: (state, action) => {
     let privateKey = `0x${ethUtil.stripHexPrefix(action.payload.getPrivateKey().toString("hex"))}`;
     let address = `0x${ethUtil.stripHexPrefix(action.payload.getAddress().toString("hex"))}`;
     let web3 = getWeb3(privateKey, address);
-    return { privateKey, address, web3 };
+    return { ...state, privateKey, address, web3 };
+  },
+  [Actions.ADD_TRANSACTIONS]: (state, action) => {
+    let transactions = _.unionBy(state.transactions, action.payload, "transactionId");
+    return { ...state, transactions: transactions };
+  },
+  [Actions.ADD_ASSETS]: (state, action) => {
+    let assets = _.unionBy(state.assets, action.payload, "address");
+    return { ...state, assets: assets };
   }
-}, getInitialState());
+}, initialState);

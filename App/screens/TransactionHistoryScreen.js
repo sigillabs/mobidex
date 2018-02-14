@@ -17,4 +17,4 @@ class TransactionHistoryScreen extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device, transactions: state.transactions }), (dispatch) => ({ dispatch }))(TransactionHistoryScreen);
+export default connect((state) => ({ ...state.device, transactions: state.wallet.transactions }), (dispatch) => ({ dispatch }))(TransactionHistoryScreen);

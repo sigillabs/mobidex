@@ -50,7 +50,7 @@ export function submitOrder(signedOrder) {
 
 export function createSignSubmitOrder(price, amount) {
   return async (dispatch, getState) => {
-    let { wallet, trade, settings } = getState();
+    let { wallet, settings } = getState();
     let web3 = wallet.web3;
     let address = wallet.address.toLowerCase();
     let order = {

@@ -6,6 +6,7 @@ import TradingHeader from "./App/headers/Trading";
 import WalletHeader from "./App/headers/Wallet";
 import SettingsHeader from "./App/headers/Settings";
 import TransactionsHeader from "./App/headers/Transactions";
+import PortfolioScreen from "./App/screens/PortfolioScreen";
 import ReceiveTokensScreen from "./App/screens/ReceiveTokensScreen";
 import SendTokensScreen from "./App/screens/SendTokensScreen";
 import TokenSettingsScreen from "./App/screens/TokenSettingsScreen";
@@ -32,7 +33,7 @@ const TradingStack = StackNavigator({
   CreateOrder: { screen: CreateOrderScreen },
   OrderDetails: { screen: OrderDetailsScreen }
 }, {
-  initialRouteName: "CreateOrder",
+  initialRouteName: "Trading",
   navigationOptions: ({ navigation }) => {
     const params = navigation.state.params || {};
 

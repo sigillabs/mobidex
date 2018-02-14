@@ -12,4 +12,4 @@ class PortfolioScreen extends Component {
   }
 }
 
-export default connect(state => ({ address: state.wallet.address, tokens: state.tokens }), dispatch => ({ dispatch }))(PortfolioScreen);
+export default connect(state => ({ address: state.wallet.address, tokens: state.settings.tokens }), dispatch => ({ dispatch }))(PortfolioScreen);

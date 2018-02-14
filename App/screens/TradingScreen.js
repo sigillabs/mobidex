@@ -17,4 +17,4 @@ class TradingScreen extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device, orders: state.orders }), (dispatch) => ({ dispatch }))(TradingScreen);
+export default connect((state) => ({ ...state.device, orders: state.relayer.orders }), (dispatch) => ({ dispatch }))(TradingScreen);

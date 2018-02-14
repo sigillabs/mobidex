@@ -22,4 +22,4 @@ class BidItem extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.settings, tokens: state.tokens }), (dispatch) => ({ dispatch }))(BidItem);
+export default connect((state) => ({ ...state.settings }), (dispatch) => ({ dispatch }))(BidItem);

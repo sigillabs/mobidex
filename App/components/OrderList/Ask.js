@@ -22,4 +22,4 @@ class AskItem extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.settings, tokens: state.tokens }), (dispatch) => ({ dispatch }))(AskItem);
+export default connect((state) => ({ ...state.settings }), (dispatch) => ({ dispatch }))(AskItem);
