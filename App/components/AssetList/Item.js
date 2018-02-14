@@ -4,12 +4,14 @@ import { Text } from "react-native-elements";
 
 export default class AssetItem extends Component {
   render() {
-    let { token, balance } = this.props;
+    let { asset } = this.props;
+    let { symbol, balance } = asset;
 
     return (
       <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        <Text>{token.symbol.toString()}</Text>
-        <Text>{balance}</Text>
+        <Text>{symbol.toString()}</Text>
+        <Text> </Text>
+        <Text>{balance.toFixed(6)}</Text>
       </View>
     );
   }

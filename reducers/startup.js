@@ -14,8 +14,15 @@ export default handleActions({
       ...state,
       wallet: true
     }
+  },
+  [Actions.FINISHED_LOADING_ASSETS]: (state, action) => {
+    return {
+      ...state,
+      assets: true
+    }
   }
 }, {
   wallet: false,
-  tokens: false
+  tokens: false,
+  assets: false
 });

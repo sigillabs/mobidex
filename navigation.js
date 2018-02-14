@@ -48,7 +48,7 @@ const WalletStack = StackNavigator({
   SendTokens: { screen: SendTokensScreen },
   Portfolio: { screen: PortfolioScreen },
 }, {
-  initialRouteName: "ReceiveTokens",
+  initialRouteName: "Portfolio",
   navigationOptions: ({ navigation }) => {
     const params = navigation.state.params || {};
 

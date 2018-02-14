@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import * as _ from "lodash";
 import moment from "moment";
 import { AsyncStorage } from "react-native";
@@ -39,13 +40,15 @@ export function loadWallet() {
   };
 }
 
-export function loadAssets(cache = true) {
+export function loadAssets(force = false) {
   return async (dispatch, getState) => {
     let assets = await cache("assets", async () => {
       let { wallet: { web3 }, settings: { tokens } } = getState();
-      let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(address))));
+      let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(web3, address))));
       return tokens.map((token, index) => ({ ...token, balance: balances[index] }));
-    });
+    }, force ? 0 : 60*60*24);
+
+    assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }))
 
     dispatch(addAssets(assets));
     return assets;

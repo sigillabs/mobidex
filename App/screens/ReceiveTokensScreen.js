@@ -3,8 +3,15 @@ import { View, TouchableHighlight } from "react-native";
 import { Card, Header, Icon, Text } from "react-native-elements";
 import { connect } from "react-redux";
 import ethUtil from "ethereumjs-util";
+import NormalHeader from "../headers/Normal";
 
 class ReceiveTokensScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: <NormalHeader navigation={navigation} />
+    };
+  };
+
   render() {
     let { address } = this.props;
     let uri = `https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${ethUtil.stripHexPrefix(this.props.address)}`;
