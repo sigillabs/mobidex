@@ -1,7 +1,9 @@
 import * as _ from "lodash";
+import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
 import {
+  addAssets,
   addTransactions,
   setWallet,
   setTokens,
@@ -10,7 +12,8 @@ import {
   finishedLoadingTokens,
   finishedLoadingWallet
 } from "../actions";
-import { getZeroExClient } from "../utils/ethereum";
+import { getTokenBalance } from "../utils/ethereum";
+import { cache } from "../utils/cache";
 
 // Would like to password protect using Ethereum Secret Storage
 // `wallet.toV3("nopass")` is very expensive.
@@ -33,6 +36,19 @@ export function loadWallet() {
     } else {
       return null;
     }
+  };
+}
+
+export function loadAssets(cache = true) {
+  return async (dispatch, getState) => {
+    let assets = await cache("assets", async () => {
+      let { wallet: { web3 }, settings: { tokens } } = getState();
+      let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(address))));
+      return tokens.map((token, index) => ({ ...token, balance: balances[index] }));
+    });
+
+    dispatch(addAssets(assets));
+    return assets;
   };
 }
 

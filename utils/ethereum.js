@@ -76,3 +76,9 @@ export async function getZeroExTokens(web3) {
   let zeroEx = await getZeroExClient(web3);
   return await zeroEx.tokenRegistry.getTokensAsync();
 }
+
+export async function getTokenBalance(web3, address) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  return await zeroEx.token.getBalanceAsync(address, account.toString().toLowerCase());
+}

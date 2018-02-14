@@ -1,4 +1,3 @@
-import moment from "moment";
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button, Input } from "react-native-elements";
