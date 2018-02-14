@@ -4,6 +4,16 @@ import Wallet from "ethereumjs-wallet";
 import { setWallet, setTokens, setQuoteToken, setBaseToken, finishedLoadingTokens, finishedLoadingWallet } from "../actions";
 import { getZeroExClient } from "../utils/ethereum";
 
+// Would like to password protect using Ethereum Secret Storage
+// `wallet.toV3("nopass")` is very expensive.
+export function generateWallet() {
+  return async (dispatch) => {
+    let wallet = await Wallet.generate();
+    await AsyncStorage.setItem("wallet", wallet.getPrivateKey().toString("hex"));
+    dispatch(setWallet(wallet));
+  };
+}
+
 export function loadWallet() {
   return async (dispatch) => {
     let privateKey = await AsyncStorage.getItem("wallet");
@@ -15,17 +25,5 @@ export function loadWallet() {
     } else {
       return null;
     }
-  };
-}
-
-export function loadTokens() {
-  return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
-    let tokens = await zeroEx.tokenRegistry.getTokensAsync();
-    dispatch(setTokens(tokens));
-    dispatch(setQuoteToken(_.find(tokens, { symbol: "ZRX" })));
-    dispatch(setBaseToken(_.reject(tokens, { symbol: "ZRX" })[0]));
-    dispatch(finishedLoadingTokens());
   };
 }

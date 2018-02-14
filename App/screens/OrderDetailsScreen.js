@@ -11,7 +11,7 @@ class OrderDetailsScreen extends Component {
     return {
       header: <NormalHeader navigation={navigation} />
     };
-  };  
+  };
 
   constructor(props) {
     super(props);

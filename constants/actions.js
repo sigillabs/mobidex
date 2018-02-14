@@ -7,4 +7,5 @@ export const SET_WALLET = "SET_WALLET";
 export const SET_BASE_TOKEN = "SET_BASE_TOKEN";
 export const SET_QUOTE_TOKEN = "SET_QUOTE_TOKEN";
 export const SET_TOKENS = "SET_TOKENS";
+export const SET_BALANCE = "SET_BALANCE";
 export const SET_NETWORK = "SET_NETWORK";

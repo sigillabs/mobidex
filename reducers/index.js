@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import assets from "./assets";
 import device from "./device";
 import errors from "./errors";
 import navigation from "./navigation";
@@ -10,6 +11,7 @@ import transactions from "./transactions";
 import wallet from "./wallet";
 
 export default combineReducers({
+  assets,
   device,
   errors,
   navigation,

@@ -45,6 +45,7 @@ const TradingStack = StackNavigator({
 const WalletStack = StackNavigator({
   ReceiveTokens: { screen: ReceiveTokensScreen },
   SendTokens: { screen: SendTokensScreen },
+  Portfolio: { screen: PortfolioScreen },
 }, {
   initialRouteName: "ReceiveTokens",
   navigationOptions: ({ navigation }) => {
@@ -75,7 +76,7 @@ export default TabNavigator({
   Trading: { screen: TradingStack },
   Transactions: { screen: TransactionsStack }
 }, {
-  initialRouteName: "Trading",
+  initialRouteName: "Wallet",
   navigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, tintColor }) => {
       const { routeName } = navigation.state;
