@@ -6,6 +6,7 @@ import settings from "./settings";
 import orders from "./orders";
 import startup from "./startup";
 import tokens from "./tokens";
+import transactions from "./transactions";
 import wallet from "./wallet";
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
   settings,
   startup,
   tokens,
+  transactions,
   wallet
 });
