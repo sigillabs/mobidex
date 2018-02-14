@@ -13,8 +13,10 @@ export function loadTokens() {
     });
 
     dispatch(setTokens(tokens));
-    dispatch(setQuoteToken(_.find(tokens, { symbol: "ZRX" })));
-    dispatch(setBaseToken(_.reject(tokens, { symbol: "ZRX" })[0]));
+    dispatch(setQuoteToken(_.find(tokens, { symbol: "WETH" })));
+    dispatch(setBaseToken(_.find(tokens, { symbol: "ZRX" })));
     dispatch(finishedLoadingTokens());
+
+    return tokens;
   };
 }
