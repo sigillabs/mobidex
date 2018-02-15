@@ -28,3 +28,11 @@ export async function fillOrder(web3, order) {
   const txHash = await zeroEx.exchange.fillOrderAsync(order, fillAmount, true, account.toLowerCase());
   const receipt = await zeroEx.awaitTransactionMinedAsync(txHash);
 }
+
+export async function cancelOrder(web3, order) {
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const fillAmount = order.takerTokenAmount;
+  const txHash = await zeroEx.exchange.cancelOrderAsync(order);
+  const receipt = await zeroEx.awaitTransactionMinedAsync(txHash);
+}

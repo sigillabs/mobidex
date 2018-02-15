@@ -8,7 +8,9 @@ import AssetList from "../components/AssetList";
 class PortfolioScreen extends Component {
   render() {
     return (
-      <AssetList assets={this.props.assets} />
+      <AssetList assets={this.props.assets} onPress={(asset) => {
+        
+      }} />
     );
   }
 }

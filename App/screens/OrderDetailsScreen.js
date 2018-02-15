@@ -4,7 +4,7 @@ import { Button, Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
-import { fillOrder } from "../../utils/orders";
+import { fillOrder, cancelOrder } from "../../utils/orders";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -26,10 +26,10 @@ class OrderDetailsScreen extends Component {
   getOrder = () => {
     const { navigation: { state: { params: { orderHash } } }, orders } = this.props;
     return _.find(orders, { orderHash });
-  }
+  };
 
   fillOrder = async () => {
-    const { wallet: { web3 } } = this.props;
+    const { web3, address } = this.props;
     const order = this.getOrder();
     
     let receipt = await fillOrder(web3, order);
@@ -37,17 +37,19 @@ class OrderDetailsScreen extends Component {
   };
 
   render() {
+    const { address } = this.props;
     const order = this.getOrder();
+    const isMine = order.maker === address;
     return (
       <Card title={order.orderHash}>
-        <Button
-            large
-            icon={<Icon name="send" size={20} color="white" />}
-            onPress={this.fillOrder}
-            text="Fill Order" />
+        {!isMine ? (<Button
+                    large
+                    icon={<Icon name="send" size={20} color="white" />}
+                    onPress={this.fillOrder}
+                    text="Fill Order" />) : null}
       </Card>
     );
   }
 }
 
-export default connect(state => ({ wallet: state.wallet, orders: state.relayer.orders }), dispatch => ({ dispatch }))(OrderDetailsScreen);
+export default connect(state => ({ ...state.wallet, orders: state.relayer.orders }), dispatch => ({ dispatch }))(OrderDetailsScreen);
