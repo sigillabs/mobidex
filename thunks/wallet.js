@@ -57,16 +57,32 @@ export function loadAssets(force = false) {
 
 export function loadTransactions() {
   return async (dispatch, getState) => {
-    // Need index of 0x.
-    // let client = new HttpClient(BASE_URL);
-
-    // try {
-    //   dispatch(addOrders(await client.getOrdersAsync()));
-    //   return true;
-    // } catch(err) {
-    //   dispatch(addErrors([err]));
-    //   return false;
-    // }
+    let { wallet: { address } } = getState();
+    try {
+      let options = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        }
+      };
+      let promises = [
+        fetch(`http://inf0x.com:9200/0x-kovan-fills/logs/_search?q=maker:${address}%20OR%20taker:${address}`, options),
+        fetch(`http://inf0x.com:9200/0x-kovan-cancels/logs/_search?q=maker:${address}%20OR%20taker:${address}`, options)
+      ];
+      let [ fills, cancels ] = await Promise.all(promises);
+      let fillsJSON = await fills.json();
+      let cancelsJSON = await cancels.json();
+      dispatch(addTransactions(fillsJSON.hits.hits.map(log => ({
+        id: log._id,
+        status: "FILLED"
+      }))));
+      dispatch(addTransactions(cancelsJSON.hits.hits.map(log => ({
+        id: log._id,
+        status: "CANCELLED"
+      }))));
+    } catch(err) {
+      console.error(err)
+    }
   };
 }
 

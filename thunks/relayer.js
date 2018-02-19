@@ -3,7 +3,7 @@ import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import moment from "moment";
 import { getZeroExContractAddress } from "../utils/ethereum";
-import { signOrder } from "../utils/orders";
+import { cancelOrder as cancelOrderUtil, signOrder } from "../utils/orders";
 import { addErrors, addOrders, addTransactions } from "../actions";
 
 // const BASE_URL = "https://api.radarrelay.com/0x/v0";
@@ -79,5 +79,17 @@ export function createSignSubmitOrder(price, amount) {
 
     dispatch(addOrders([ signedOrder ]));
     return true;
+  };
+}
+
+export function cancelOrder(order) {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
+    let txhash = await cancelOrderUtil(web3, order);
+
+    dispatch(addTransactions({
+      id: txhash,
+      status: "CANCELLING"
+    }));
   };
 }

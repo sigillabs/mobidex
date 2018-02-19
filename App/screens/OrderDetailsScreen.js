@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
 import { fillOrder, cancelOrder } from "../../utils/orders";
+import { addTransactions } from "../../actions";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -33,8 +34,11 @@ class OrderDetailsScreen extends Component {
     const { web3, address } = this.props;
     const order = this.getOrder();
     
-    let receipt = await fillOrder(web3, order);
-    console.warn(receipt);
+    let txHash = await fillOrder(web3, order);
+    this.props.dispatch(addTransactions([ {
+      id: txHash,
+      status: "FILLING"
+    } ]));
   };
 
   render() {
@@ -114,13 +118,13 @@ function getStyles(height) {
       flexDirection: "row",
       justifyContent: "flex-start",
       alignItems: "center",
-      height: 25
+      height: 20
     },
     wrapper: {
       flex: 1,
       flexDirection: "column",
       justifyContent: "flex-start",
-      alignItems: "center"
+      alignItems: "stretch"
     },
     container: {
       height: height
