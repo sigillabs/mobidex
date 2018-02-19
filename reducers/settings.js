@@ -9,7 +9,8 @@ const initialState = {
   quoteToken: null,
   baseToken: null,
   relayerEndpoint: BASE_URL,
-  tokens: []
+  baseTokens: [],
+  quoteTokens: []
 };
 
 export default handleActions({
@@ -19,16 +20,22 @@ export default handleActions({
       quoteToken: action.payload
     };
   },
+  [Actions.SET_QUOTE_TOKENS]: (state, action) => {
+    return {
+      ...state,
+      quoteTokens: action.payload
+    };
+  },
   [Actions.SET_BASE_TOKEN]: (state, action) => {
     return {
       ...state,
       baseToken: action.payload
     };
   },
-  [Actions.SET_TOKENS]: (state, action) => {
+  [Actions.SET_BASE_TOKENS]: (state, action) => {
     return {
       ...state,
-      tokens: action.payload
+      baseTokens: action.payload
     };
   }
 }, initialState);

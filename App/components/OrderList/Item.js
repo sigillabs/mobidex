@@ -1,10 +1,35 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
+import { connect } from "react-redux";
+import { getTokenByAddress } from "../../../utils/ethereum";
 
-export default class OrderItem extends Component {
+class OrderItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ready: false,
+      priceToken: null,
+      amountToken: null
+    };
+  }
+
+  async componentDidMount() {
+    this.setState({
+      ready: true,
+      priceToken: await getTokenByAddress(this.props.web3, this.props.priceTokenAddress),
+      amountToken: await getTokenByAddress(this.props.web3, this.props.amountTokenAddress)
+    });
+  }
+
   render() {
-    let { orderType, price, priceToken, amount, amountToken } = this.props;
+    if (!this.state.ready) {
+      return null;
+    }
+
+    let { orderType, price, amount } = this.props;
+    let { priceToken, amountToken } = this.state;
     let priceSymbol = priceToken.symbol;
     let amountSymbol = amountToken.symbol;
 
@@ -20,3 +45,5 @@ export default class OrderItem extends Component {
     );
   }
 }
+
+export default connect((state) => ({ ...state.wallet }), (dispatch) => ({ dispatch }))(OrderItem);

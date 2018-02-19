@@ -1,4 +1,5 @@
 import { ZeroEx } from "0x.js";
+import { AsyncStorage } from "react-native";
 
 export async function getNetworkId(web3) {
   return await new Promise((resolve, reject) => {
@@ -42,4 +43,19 @@ export async function getTokenBalance(web3, address) {
   let zeroEx = await getZeroExClient(web3);
   let account = await getAccount(web3);
   return await zeroEx.token.getBalanceAsync(address, account.toString().toLowerCase());
+}
+
+export async function getTokenByAddress(web3, address) {
+  let key = `token:${address}`;
+  let json = await AsyncStorage.getItem(key);
+
+  if (json) {
+    return JSON.parse(json);
+  }
+
+  let zeroEx = await getZeroExClient(web3);
+  let token = await zeroEx.tokenRegistry.getTokenIfExistsAsync(address);
+  await AsyncStorage.setItem(key, JSON.stringify(token));
+
+  return token;
 }

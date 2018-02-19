@@ -9,5 +9,6 @@ export const finishedLoadingTokens = createAction(Actions.FINISHED_LOADING_TOKEN
 export const finishedLoadingWallet = createAction(Actions.FINISHED_LOADING_WALLET);
 export const setWallet = createAction(Actions.SET_WALLET);
 export const setQuoteToken = createAction(Actions.SET_QUOTE_TOKEN);
+export const setQuoteTokens = createAction(Actions.SET_QUOTE_TOKENS);
 export const setBaseToken = createAction(Actions.SET_BASE_TOKEN);
-export const setTokens = createAction(Actions.SET_TOKENS);
+export const setBaseTokens = createAction(Actions.SET_BASE_TOKENS);

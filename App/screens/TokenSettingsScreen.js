@@ -46,12 +46,14 @@ class TokenSettingsScreen extends Component {
       <View>
         {this.state.quote ? null : <TokenDropdown
             title="Base Token"
+            tokens={this.props.baseTokens}
             token={this.props.baseToken}
             show={this.state.base}
             onPress={this.onPress("base")}
             onSelect={this.onSelect("base")} />}
         {this.state.base ? null : <TokenDropdown
             title="Quote Token"
+            tokens={this.props.quoteTokens}
             token={this.props.quoteToken}
             show={this.state.quote}
             onPress={this.onPress("quote")}

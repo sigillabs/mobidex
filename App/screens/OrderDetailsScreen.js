@@ -46,6 +46,7 @@ class OrderDetailsScreen extends Component {
     const order = this.getOrder();
     const isMine = order.maker === address;
     const orderType = this.props.quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
+    const tokens = this.props.quoteTokens.concat(this.props.baseTokens);
     let amount = null;
     let amountSymbol = null;
     let price = null;
@@ -55,17 +56,17 @@ class OrderDetailsScreen extends Component {
     switch(orderType) {
       case "bid":
       amount = order.takerTokenAmount;
-      amountSymbol = _.find(this.props.tokens, { address: order.takerTokenAddress }).symbol;
+      amountSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
       price = order.takerTokenAmount.div(order.makerTokenAmount);
-      priceSymbol = _.find(this.props.tokens, { address: order.makerTokenAddress }).symbol;
+      priceSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
       subtotal = order.makerTokenAmount;
       break;
 
       case "ask":
       amount = order.makerTokenAmount;
-      amountSymbol = _.find(this.props.tokens, { address: order.makerTokenAddress }).symbol;
+      amountSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
       price = order.makerTokenAmount.div(order.takerTokenAmount);
-      priceSymbol = _.find(this.props.tokens, { address: order.takerTokenAddress }).symbol;
+      priceSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
       subtotal = order.takerTokenAmount;
       break;
     }

@@ -41,4 +41,4 @@ class TokenDropdown extends Component {
   }
 }
 
-export default connect(state => ({ tokens: state.settings.tokens, ...state.device.layout }), dispatch => ({ dispatch }))(TokenDropdown);
+export default connect(state => ({ ...state.device.layout }), dispatch => ({ dispatch }))(TokenDropdown);
