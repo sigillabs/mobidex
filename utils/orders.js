@@ -24,14 +24,10 @@ export async function signOrder(web3, order) {
 export async function fillOrder(web3, order) {
   const zeroEx = await getZeroExClient(web3);
   const account = await getAccount(web3);
-  const fillAmount = order.takerTokenAmount;
-  return await zeroEx.exchange.fillOrderAsync(order, fillAmount, true, account.toLowerCase());
-  // const receipt = await zeroEx.awaitTransactionMinedAsync(txHash);
+  return await zeroEx.exchange.fillOrderAsync(order, order.takerTokenAmount, true, account.toLowerCase());
 }
 
 export async function cancelOrder(web3, order) {
   const zeroEx = await getZeroExClient(web3);
-  const txHash = await zeroEx.exchange.cancelOrderAsync(order);
-  return txHash;
-  // const receipt = await zeroEx.awaitTransactionMinedAsync(txHash);
+  return await zeroEx.exchange.cancelOrderAsync(order);
 }

@@ -52,9 +52,9 @@
     "redux-thunk": "^2.2.0",
     "underscore": "^1.8.3",
     "url": "~0.10.1",
-    "web3": "^0.20.4",
+    "web3": "^0.20.5",
     "web3-contracts-loader": "github:abec/web3-contracts-loader",
-    "web3-provider-engine": "github:metamask/provider-engine"
+    "web3-provider-engine": "^13.6.5"
   },
   "devDependencies": {
     "babel-jest": "22.0.6",

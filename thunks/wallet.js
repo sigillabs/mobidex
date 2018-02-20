@@ -37,7 +37,7 @@ export function loadAssets(force = false) {
       let { wallet: { web3 }, settings: { baseTokens } } = getState();
       let balances = await Promise.all(baseTokens.map(({ address }) => (getTokenBalance(web3, address))));
       return baseTokens.map((token, index) => ({ ...token, balance: balances[index] }));
-    }, force ? 0 : 60*60*24);
+    }, force ? 0 : 60);
 
     assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }))
 
@@ -64,10 +64,12 @@ export function loadTransactions() {
       let fillsJSON = await fills.json();
       let cancelsJSON = await cancels.json();
       dispatch(addTransactions(fillsJSON.hits.hits.map(log => ({
+        ...log._source,
         id: log._id,
         status: "FILLED"
       }))));
       dispatch(addTransactions(cancelsJSON.hits.hits.map(log => ({
+        ...log._source,
         id: log._id,
         status: "CANCELLED"
       }))));
@@ -75,8 +77,4 @@ export function loadTransactions() {
       console.error(err)
     }
   };
-}
-
-export function saveTransactions() {
-
 }

@@ -3,8 +3,7 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
-import Finished from "./Finished";
-import Pending from "./Pending";
+import Item from "./Item";
 
 class TransactionsList extends Component {
   render() {
@@ -16,25 +15,10 @@ class TransactionsList extends Component {
         }}>
           {
             this.props.transactions
-            .filter(({ status }) => status === "FILLING" || status === "CANCELLING")
-            .map((tx, index) => (
-              <TouchableOpacity key={`bid-${index}`} onPress={() => (this.props.onPress(tx))}>
-                <ListItem
-                  title={<Pending transaction={tx} />}
-                  leftIcon={{ name: "refresh" }}
-                />
-              </TouchableOpacity>
-            ))
-          }
-          {
-            this.props.transactions
             .filter(({ status }) => status === "FILLED" || status === "CANCELLED")
             .map((tx, index) => (
               <TouchableOpacity key={`ask-${index}`} onPress={() => (this.props.onPress(tx))}>
-                <ListItem
-                  title={<Finished transaction={tx} />}
-                  leftIcon={{ name: "" }}
-                />
+                <ListItem title={<Item transaction={tx} />} />
               </TouchableOpacity>
             ))
           }

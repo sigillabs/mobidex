@@ -3,6 +3,7 @@ import { handleActions } from "redux-actions";
 import ZeroClientProvider from "web3-provider-engine/zero";
 import ProviderEngine from "web3-provider-engine";
 import Web3 from "web3";
+import EthTx from "ethereumjs-tx";
 import ethUtil from "ethereumjs-util";
 import sigUtil from "eth-sig-util";
 import * as Actions from "../constants/actions";
@@ -14,9 +15,16 @@ function getWeb3(privateKey, address) {
       cb(null, [ address.toString("hex").toLowerCase() ]);
     },
     // tx signing
-    processTransaction: (params, cb) => {
-      console.warn("processTransaction", params);
-      cb(null, null);
+    // processTransaction: (params, cb) => {
+    //   console.warn("processTransaction", params);
+    //   cb(null, null);
+    // },
+    signTransaction: (tx, cb) => {
+      let ethTx = new EthTx(tx);
+      ethTx.sign(new Buffer(ethUtil.stripHexPrefix(privateKey), "hex"));
+      // ethTx.sign(`0x${ethUtil.stripHexPrefix(privateKey)}`);
+      // console.error(ethTx.serialize().toString("hex"));
+      return cb(null, `0x${ethTx.serialize().toString("hex")}`);
     },
     // old style msg signing
     processMessage: (params, cb) => {

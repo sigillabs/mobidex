@@ -3,12 +3,22 @@ import { HttpClient } from "@0xproject/connect";
 import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import moment from "moment";
-import { getZeroExContractAddress, getTokenByAddress } from "../utils/ethereum";
-import { cancelOrder as cancelOrderUtil, signOrder } from "../utils/orders";
+import { loadTransactions } from "../thunks";
+import {
+  getZeroExClient,
+  getZeroExContractAddress,
+  getTokenAllowance,
+  getTokenByAddress,
+  guaranteeWETHAmount,
+  setTokenUnlimitedAllowance,
+  isWETHAddress
+} from "../utils/ethereum";
+import { cancelOrder as cancelOrderUtil, fillOrder as fillOrderUtil, signOrder } from "../utils/orders";
 import {
   addErrors,
   addOrders,
-  addTransactions,
+  addProcessingOrders,
+  removeProcessingOrders,
   setBaseToken,
   setBaseTokens,
   setQuoteToken,
@@ -85,6 +95,7 @@ export function createSignSubmitOrder(price, amount) {
   return async (dispatch, getState) => {
     let { wallet, settings } = getState();
     let web3 = wallet.web3;
+    let zeroEx = await getZeroExClient(web3);
     let address = wallet.address.toLowerCase();
     let order = {
       "maker": address,
@@ -100,10 +111,37 @@ export function createSignSubmitOrder(price, amount) {
       "salt": ZeroEx.generatePseudoRandomSalt(),
       "exchangeContractAddress": await getZeroExContractAddress(web3)
     };
-    let signedOrder = await signOrder(web3, order);
-    let client = new HttpClient(settings.relayerEndpoint);
 
+    // Guarantee WETH is available.
     try {
+      if ((await isWETHAddress(web3, order.makerTokenAddress))) {
+        await guaranteeWETHAmount(web3, order.makerTokenAmount);
+      }
+    } catch(err) {
+      console.error(err);
+      await dispatch(addErrors([err]));
+      return false;
+    }
+
+    // Make sure allowance is available.
+    try {
+      let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
+      if (order.makerTokenAmount.gt(allowance)) {
+        let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
+        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      }
+    } catch(err) {
+      console.error(err);
+      await dispatch(addErrors([err]));
+      return false;
+    }
+
+    // Sign
+    let signedOrder = await signOrder(web3, order);
+
+    // Submit
+    try {
+      let client = new HttpClient(settings.relayerEndpoint);
       await client.submitOrderAsync(signedOrder);
     } catch(err) {
       await dispatch(addErrors([err]));
@@ -119,10 +157,33 @@ export function cancelOrder(order) {
   return async (dispatch, getState) => {
     let { wallet: { web3 } } = getState();
     let txhash = await cancelOrderUtil(web3, order);
+  };
+}
 
-    dispatch(addTransactions({
-      id: txhash,
-      status: "CANCELLING"
-    }));
+export function fillOrder(order) {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
+    let zeroEx = await getZeroExClient(web3);
+    let allowance = await getTokenAllowance(web3, order.takerTokenAddress);
+    let fillAmount = new BigNumber(order.takerTokenAmount);
+
+    try {
+      dispatch(addProcessingOrders(order.orderHash));
+
+      if (fillAmount.gt(allowance)) {
+        let txhash = await setTokenUnlimitedAllowance(web3, order.takerTokenAddress);
+        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      }
+
+      let txhash = await fillOrderUtil(web3, order);
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+
+      dispatch(loadTransactions());
+    } catch(err) {
+      console.error(err);
+      dispatch(addErrors([err]));
+    } finally {
+      dispatch(removeProcessingOrders(order.orderHash));
+    }
   };
 }

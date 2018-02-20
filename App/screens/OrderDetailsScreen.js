@@ -5,8 +5,7 @@ import { Button, Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
-import { fillOrder, cancelOrder } from "../../utils/orders";
-import { addTransactions } from "../../actions";
+import { fillOrder, cancelOrder } from "../../thunks";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -34,17 +33,13 @@ class OrderDetailsScreen extends Component {
     const { web3, address } = this.props;
     const order = this.getOrder();
     
-    let txHash = await fillOrder(web3, order);
-    this.props.dispatch(addTransactions([ {
-      id: txHash,
-      status: "FILLING"
-    } ]));
+    this.props.dispatch(fillOrder(order));
   };
 
   render() {
     const { address } = this.props;
     const order = this.getOrder();
-    const isMine = order.maker === address;
+    const isMine = order.maker === address && false;
     const orderType = this.props.quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
     const tokens = this.props.quoteTokens.concat(this.props.baseTokens);
     let amount = null;

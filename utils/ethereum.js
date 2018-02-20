@@ -1,4 +1,5 @@
 import { ZeroEx } from "0x.js";
+import BigNumber from "bignumber.js";
 import { AsyncStorage } from "react-native";
 
 export async function getNetworkId(web3) {
@@ -58,4 +59,39 @@ export async function getTokenByAddress(web3, address) {
   await AsyncStorage.setItem(key, JSON.stringify(token));
 
   return token;
+}
+
+export async function getTokenAllowance(web3, address) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  return await zeroEx.token.getProxyAllowanceAsync(address, account);
+}
+
+export async function setTokenUnlimitedAllowance(web3, address) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  return await zeroEx.token.setUnlimitedProxyAllowanceAsync(address, account);
+}
+
+export async function isWETHAddress(web3, address) {
+  let token = await getTokenByAddress(web3, address);
+  return token && token.symbol == "WETH";
+}
+
+export async function wrapETH(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  let token = zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  return await zeroEx.etherToken.depositAsync(token.address, new BigNumber(amount), account);
+}
+
+export async function guaranteeWETHAmount(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
+  let token = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let balance = new BigNumber(await getTokenBalance(web3, token.address));
+  if (!(balance.gte(amount))) {
+    return wrapETH(web3, balance);
+  } else {
+    return null;
+  }
 }
