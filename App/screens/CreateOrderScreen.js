@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Button, Input } from "react-native-elements";
+import { Card, Button, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
@@ -61,11 +61,9 @@ class CreateOrderScreen extends Component {
   }
 
   render() {
-    const styles = getStyles(this.props.layout);
-
     return (
-      <View style={[styles.form]}>
-        <View>
+      <Card title={`Create Order`}>
+        <View style={{ marginBottom: 10 }}>
           <Input
             placeholder="Price"
             displayError={this.state.priceError}
@@ -74,9 +72,8 @@ class CreateOrderScreen extends Component {
             errorMessage={"Price should be numeric and greater than `0`."}
             errorStyle={{ color: "red" }}
             icon={<Icon name="money" size={24} color="black" />}
+            containerStyle={{ width: "100%", marginBottom: 10 }}
           />
-        </View>
-        <View>
           <Input
             placeholder="Amount"
             displayError={this.state.priceError}
@@ -85,44 +82,28 @@ class CreateOrderScreen extends Component {
             errorMessage={"Amounts should be numeric and greater than `0`."}
             errorStyle={{ color: "red" }}
             icon={<Icon name="money" size={24} color="black" />}
+            containerStyle={{ width: "100%", marginBottom: 10 }}
           />
         </View>
-        <View style={[styles.subtotal]}>
-          <Text>Sub Total</Text>
-          <Text style={[styles.subtotalText]}>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
+        <View style={{ height: 30 }}>
+          <View style={{
+            flex: 1,
+            flexDirection: "row"
+          }}>
+            <Text>Sub Total</Text>
+            <Text>: </Text>
+            <Text>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
+          </View>
         </View>
+        <View style={{ marginBottom: 10 }} />
         <Button
           large
           onPress={this.submit}
           icon={<Icon name="check" size={24} color="white" />}
           text="Submit Order" />
-      </View>
+      </Card>
     );
   }
-}
-
-function getStyles (layout) {
-  return StyleSheet.create({
-    form: {
-      width: layout.width,
-      flexDirection: "column",
-      justifyContent: "center",
-      paddingRight: 5,
-      paddingLeft: 5
-    },
-    subtotal: {
-      flexDirection: "column",
-      justifyContent: "center",
-      marginTop: 10,
-      marginBottom: 20
-    },
-    subtotalText: {
-      flexDirection: "column",
-      justifyContent: "center",
-      marginRight: 5,
-      marginLeft: 20
-    }
-  })
 }
 
 export default connect((state, ownProps) => ({ ...state.device, ...ownProps, ...state.wallet }), (dispatch) => ({ dispatch }))(CreateOrderScreen);

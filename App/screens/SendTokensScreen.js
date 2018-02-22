@@ -52,35 +52,33 @@ class SendTokensScreen extends Component {
 
   render() {
     return (
-      <Card title={`Send`} wrapperStyle={[styles.wrapper]}>
-        <Input
-            placeholder="Amount"
-            displayError={this.state.amountError}
-            onChangeText={this.onSetAmount}
-            keyboardType="numeric"
-            errorMessage={"Amount should be numeric and greater than `0`."}
-            errorStyle={{ color: "red" }}
-            icon={<Icon name="money" size={24} color="black" />} />
-        <Input
-            placeholder="Address"
-            onChangeText={this.onSetAddress}
-            keyboardType="ascii-capable"
-            icon={<Icon name="user" size={24} color="black" />} />
+      <Card title={`Send`}>
+        <View style={{ marginBottom: 10 }}>
+          <Input
+              placeholder="Amount"
+              displayError={this.state.amountError}
+              onChangeText={this.onSetAmount}
+              keyboardType="numeric"
+              errorMessage={"Amount should be numeric and greater than `0`."}
+              errorStyle={{ color: "red" }}
+              icon={<Icon name="money" size={24} color="black" />}
+              containerStyle={{ width: "100%", marginBottom: 10 }} />
+          <Input
+              placeholder="Address"
+              onChangeText={this.onSetAddress}
+              keyboardType="ascii-capable"
+              icon={<Icon name="user" size={24} color="black" />}
+              containerStyle={{ width: "100%", marginBottom: 10 }} />
+        </View>
         <Button
           large
           onPress={this.submit}
           icon={<Icon name="check" size={24} color="white" />}
-          text={`Send`} />
+          text={`Send`}
+          style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-styles = StyleSheet.create({
-  wrapper: {
-    flexDirection: "column",
-    justifyContent: "flex-start"
-  }
-});
-
-export default connect(state => ({ address: state.wallet.address }), dispatch => ({ dispatch }))(SendTokensScreen);
+export default connect(state => ({ ...state.device.layout, address: state.wallet.address }), dispatch => ({ dispatch }))(SendTokensScreen);
