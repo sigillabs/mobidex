@@ -8,18 +8,18 @@ import AssetItem from "./Item";
 
 class AssetList extends Component {
   render() {
-    let { assets } = this.props;
+    let { assets, asset } = this.props;
 
     return (
       <ScrollView>
-        <List containerStyle={{
-          flex: 1,
+        <List containerStyle={[{
           width: this.props.width
-        }}>
+        }, this.props.style]}>
           {
             assets.map((asset, index) => (
               <TouchableOpacity key={`asset-${index}`} onPress={() => (this.props.onPress(asset))}>
                 <ListItem
+                  containerStyle={[ this.props.asset && this.props.asset.address === asset.address && styles.highlight ]}
                   title={<AssetItem asset={asset} />}
                   leftIcon={{ name: "add" }}
                 />
@@ -33,3 +33,11 @@ class AssetList extends Component {
 }
 
 export default connect((state) => ({ ...state.device.layout, ...state.settings }), (dispatch) => ({ dispatch }))(AssetList);
+
+const styles = {
+  highlight: {
+    backgroundColor: "#2089dc",
+    borderColor: "#2089dc",
+    borderWidth: 1
+  }
+};

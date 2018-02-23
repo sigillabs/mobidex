@@ -1,0 +1,67 @@
+import React, { Component } from "react";
+import { View } from "react-native";
+import { Avatar, Button, Text } from "react-native-elements";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { summarizeAddress } from "../../utils/display";
+
+export default class AssetDetails extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showAddress: false
+    };
+  }
+
+  receive = () => {
+    if (this.props.onAction) {
+      this.props.onAction("receive");
+    }
+  };
+
+  send = () => {
+    if (this.props.onAction) {
+      this.props.onAction("send");
+    }
+  };
+
+  toggleShowAddress = () => {
+    this.setState({ showAddress: !this.state.showAddress });
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Avatar
+            large
+            rounded
+            // source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"}}
+            activeOpacity={0.7}
+            onPress={this.toggleShowAddress}
+          />
+          <View style={{ height: 10 }} />
+          <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? this.props.address : summarizeAddress(this.props.address)}</Text>
+        </View>
+        
+        <View style={{ height: 50 }}>
+          <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <Button
+              large
+              text="Receive"
+              icon={<Icon name="home" color="white" />}
+              buttonStyle={{ borderRadius: 0 }}
+              onPress={this.receive} />
+            <View style={{ width: 10 }} />
+            <Button
+              large
+              text="Send"
+              icon={<Icon name="send" color="white" />}
+              buttonStyle={{ borderRadius: 0 }}
+              onPress={this.send} />
+          </View>
+        </View>
+      </View>
+    );
+  }
+}

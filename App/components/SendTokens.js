@@ -6,22 +6,16 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import { sendTokens, sendEthereum } from "../../thunks";
-import NormalHeader from "../headers/Normal";
 
-class SendTokensScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: <NormalHeader navigation={navigation} />
-    };
-  };
-
+class SendTokens extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       amount: new BigNumber(0),
       amountError: false,
-      address: ""
+      address: "",
+      addressError: false
     };
   }
 
@@ -43,16 +37,17 @@ class SendTokensScreen extends Component {
   };
 
   submit = async () => {
-    let { price, amount } = this.state;
-    let result = await this.props.dispatch(createSignSubmitOrder(price, amount));
+    let { token } = this.props;
+    let { address, amount } = this.state;
+    let result = await this.props.dispatch(sendTokens(token.address, address, amount));
     if (result) {
-      this.props.navigation.navigate("Trading");
+      this.props.close();
     }
   }
 
   render() {
     return (
-      <Card title={`Send`}>
+      <Card title={`Send ${this.props.token.symbol}`}>
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -81,4 +76,4 @@ class SendTokensScreen extends Component {
   }
 }
 
-export default connect(state => ({ ...state.device.layout, address: state.wallet.address }), dispatch => ({ dispatch }))(SendTokensScreen);
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendTokens);

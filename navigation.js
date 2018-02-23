@@ -7,8 +7,6 @@ import WalletHeader from "./App/headers/Wallet";
 import SettingsHeader from "./App/headers/Settings";
 import TransactionsHeader from "./App/headers/Transactions";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
-import ReceiveTokensScreen from "./App/screens/ReceiveTokensScreen";
-import SendTokensScreen from "./App/screens/SendTokensScreen";
 import TokenSettingsScreen from "./App/screens/TokenSettingsScreen";
 import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
@@ -46,8 +44,6 @@ const TradingStack = StackNavigator({
 });
 
 const WalletStack = StackNavigator({
-  ReceiveTokens: { screen: ReceiveTokensScreen },
-  SendTokens: { screen: SendTokensScreen },
   Portfolio: { screen: PortfolioScreen },
 }, {
   initialRouteName: "Portfolio",

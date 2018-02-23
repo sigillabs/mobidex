@@ -8,7 +8,7 @@ export default class AssetItem extends Component {
     let { symbol, balance } = asset;
 
     return (
-      <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
+      <View style={[ styles.container]}>
         <Text>{symbol.toString()}</Text>
         <Text> </Text>
         <Text>{balance.toFixed(6)}</Text>
@@ -16,3 +16,12 @@ export default class AssetItem extends Component {
     );
   }
 }
+
+const styles = {
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  }
+};
