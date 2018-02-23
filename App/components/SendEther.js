@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { sendTokens } from "../../thunks";
+import { sendEther } from "../../thunks";
 
-class SendTokens extends Component {
+class SendEther extends Component {
   constructor(props) {
     super(props);
 
@@ -37,9 +37,8 @@ class SendTokens extends Component {
   };
 
   submit = async () => {
-    let { token } = this.props;
     let { address, amount } = this.state;
-    let result = await this.props.dispatch(sendTokens(token.address, address, amount));
+    let result = await this.props.dispatch(sendEther(address, amount));
     if (result) {
       this.props.close();
     }
@@ -47,7 +46,7 @@ class SendTokens extends Component {
 
   render() {
     return (
-      <Card title={`Send ${this.props.token.symbol}`}>
+      <Card title="Send Ether">
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -76,4 +75,4 @@ class SendTokens extends Component {
   }
 }
 
-export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendTokens);
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendEther);

@@ -5,9 +5,10 @@ import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
 import AssetList from "../components/AssetList";
 import AssetDetails from "../components/AssetDetails";
-import EmptyAssetDetails from "../components/EmptyAssetDetails";
+import EthereumAssetDetails from "../components/EthereumAssetDetails";
 import ReceiveTokens from "../components/ReceiveTokens";
 import SendTokens from "../components/SendTokens";
+import SendEther from "../components/SendEther";
 
 class PortfolioScreen extends Component {
   constructor(props) {
@@ -23,15 +24,19 @@ class PortfolioScreen extends Component {
   renderAssetDetails() {
     if (!this.state.token) {
       return (
-        <EmptyAssetDetails />
+        <EthereumAssetDetails onAction={(action) => {
+          switch(action) {
+            case "send":
+            this.setState({ showSend: true, showReceive: false });
+            break;
+
+            case "receive":
+            this.setState({ showSend: false, showReceive: true });
+            break;
+          }
+        }} />
       );
     }
-
-    // if (this.state.token === "ETH") {
-    //   return (
-
-    //   );
-    // }
 
     return (
       <AssetDetails address={this.props.address} asset={this.state.token} onAction={(action) => {
@@ -50,7 +55,11 @@ class PortfolioScreen extends Component {
 
   render() {
     if (this.state.showSend) {
-      return <SendTokens token={this.state.token} close={() => (this.setState({ showSend: false }))} />;
+      if (this.state.token) {
+        return <SendTokens token={this.state.token} close={() => (this.setState({ showSend: false }))} />;
+      } else {
+        return <SendEther token={this.state.token} close={() => (this.setState({ showSend: false }))} />;
+      }
     }
 
     if (this.state.showReceive) {

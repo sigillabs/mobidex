@@ -2,15 +2,25 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Avatar, Button, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { connect } from "react-redux";
 import { summarizeAddress } from "../../utils/display";
+import { getBalance } from "../../utils/ethereum";
 
-export default class AssetDetails extends Component {
+class EthereumAssetDetails extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showAddress: false
+      showAddress: false,
+      balance: null,
+      ready: false
     };
+  }
+
+  async componentDidMount() {
+    let { web3, address } = this.props;
+    let balance = await getBalance(web3, address);
+    this.setState({ ready: true, balance: balance });
   }
 
   receive = () => {
@@ -30,8 +40,9 @@ export default class AssetDetails extends Component {
   };
 
   render() {
-    let { asset, address } = this.props;
-    let { balance } = asset;
+    if (!this.state.ready) return null;
+
+    let { address } = this.props;
 
     return (
       <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
@@ -43,8 +54,8 @@ export default class AssetDetails extends Component {
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />
-          <Text style={{ marginTop: 10, marginBottom: 10 }}>{balance.toFixed(4)}</Text>
-          <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? address : summarizeAddress(address)}</Text>
+          <Text style={{ marginTop: 10, marginBottom: 10 }}>{this.state.balance.toFixed(4)}</Text>
+          <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? this.props.address : summarizeAddress(this.props.address)}</Text>
         </View>
         
         <View style={{ height: 50 }}>
@@ -68,3 +79,5 @@ export default class AssetDetails extends Component {
     );
   }
 }
+
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(EthereumAssetDetails);

@@ -26,6 +26,18 @@ export async function getAccount(web3) {
   });
 }
 
+export async function getBalance(web3, address) {
+  return await new Promise((resolve, reject) => {
+    web3.eth.getBalance(address, (err, balance) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(balance);
+      }
+    });
+  });
+}
+
 export async function getZeroExClient(web3) {
   return new ZeroEx(web3.currentProvider, { networkId: await getNetworkId(web3) });
 }

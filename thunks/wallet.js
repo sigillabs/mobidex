@@ -78,3 +78,17 @@ export function loadTransactions() {
     }
   };
 }
+
+export function sendTokens(token, to, amount) {
+  return async (dispatch, getState) => {
+    let { wallet: { address } } = getState();
+    
+  };
+}
+
+export function sendEther(to, amount) {
+  return async (dispatch, getState) => {
+    let { wallet: { address } } = getState();
+    
+  };
+}
