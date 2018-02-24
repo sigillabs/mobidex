@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
 import { getTokenByAddress } from "../../../utils/ethereum";
+import { formatAmountWithDecimals } from "../../../utils/display";
 
 class OrderItem extends Component {
   constructor(props) {
@@ -38,9 +39,9 @@ class OrderItem extends Component {
         {orderType === "bid" ? 
             (<Text>Bid </Text>)
           : (<Text>Ask </Text>)}
-        <Text>{amount.toString()} {amountSymbol}</Text>
+        <Text>{formatAmountWithDecimals(amount, amountToken.decimals)} {amountSymbol.symbol}</Text>
         <Text> for </Text>
-        <Text>{price.toString()} {priceSymbol}</Text>
+        <Text>{formatAmountWithDecimals(price, priceToken.decimals)} {priceToken.symbol}</Text>
       </View>
     );
   }

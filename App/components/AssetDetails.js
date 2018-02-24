@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Avatar, Button, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { summarizeAddress } from "../../utils/display";
+import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 
 export default class AssetDetails extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export default class AssetDetails extends Component {
 
   render() {
     let { asset, address } = this.props;
-    let { balance } = asset;
+    let { balance, decimals } = asset;
 
     return (
       <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
@@ -43,7 +43,7 @@ export default class AssetDetails extends Component {
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />
-          <Text style={{ marginTop: 10, marginBottom: 10 }}>{balance.toFixed(4)}</Text>
+          <Text style={{ marginTop: 10, marginBottom: 10 }}>{formatAmountWithDecimals(balance, decimals)}</Text>
           <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? address : summarizeAddress(address)}</Text>
         </View>
         

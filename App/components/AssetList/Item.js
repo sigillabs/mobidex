@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
+import { formatAmountWithDecimals } from "../../../utils/display";
 
 export default class AssetItem extends Component {
   render() {
     let { asset } = this.props;
-    let { symbol, balance } = asset;
+    let { symbol, balance, decimals } = asset;
 
     return (
       <View style={[ styles.container]}>
         <Text>{symbol.toString()}</Text>
         <Text> </Text>
-        <Text>{balance.toFixed(6)}</Text>
+        <Text>{formatAmountWithDecimals(balance, decimals)}</Text>
       </View>
     );
   }

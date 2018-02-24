@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
 import { fillOrder, cancelOrder } from "../../thunks";
+import { formatAmount, formatAmountWithDecimals } from "../../utils/display";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -44,24 +45,30 @@ class OrderDetailsScreen extends Component {
     const tokens = this.props.quoteTokens.concat(this.props.baseTokens);
     let amount = null;
     let amountSymbol = null;
+    let amountDecimals = null;
     let price = null;
     let priceSymbol = null;
+    let priceDecimals = null;
     let subtotal = null;
 
     switch(orderType) {
       case "bid":
       amount = order.takerTokenAmount;
       amountSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
+      amountDecimals = _.find(tokens, { address: order.takerTokenAddress }).decimals;
       price = order.takerTokenAmount.div(order.makerTokenAmount);
       priceSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
+      priceDecimals = _.find(tokens, { address: order.makerTokenAddress }).decimals;
       subtotal = order.makerTokenAmount;
       break;
 
       case "ask":
       amount = order.makerTokenAmount;
       amountSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
+      amountDecimals = _.find(tokens, { address: order.makerTokenAddress }).decimals;
       price = order.makerTokenAmount.div(order.takerTokenAmount);
       priceSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
+      priceDecimals = _.find(tokens, { address: order.takerTokenAddress }).decimals;
       subtotal = order.takerTokenAmount;
       break;
     }
@@ -74,17 +81,17 @@ class OrderDetailsScreen extends Component {
         <View style={[ styles.row ]}>
           <Text>Price:</Text>
           <Text> </Text>
-          <Text>{price.toString(6)} {priceSymbol}</Text>
+          <Text>{formatAmountWithDecimals(price, priceDecimals)} {priceSymbol}</Text>
         </View>
         <View style={[ styles.row ]}>
           <Text>Amount:</Text>
           <Text> </Text>
-          <Text>{amount.toString(6)} {amountSymbol}</Text>
+          <Text>{formatAmountWithDecimals(amount, amountDecimals)} {amountSymbol}</Text>
         </View>
         <View style={[ styles.row ]}>
           <Text>Subtotal:</Text>
           <Text> </Text>
-          <Text>{subtotal.toFixed(6)} {priceSymbol}</Text>
+          <Text>{formatAmount(subtotal)} {priceSymbol}</Text>
         </View>
         <View style={[ styles.row ]}>
           <Text>Fees:</Text>
@@ -94,7 +101,7 @@ class OrderDetailsScreen extends Component {
         <View style={[ styles.row ]}>
           <Text>Total:</Text>
           <Text> </Text>
-          <Text>{subtotal.toFixed(6)} {priceSymbol}</Text>
+          <Text>{formatAmount(subtotal)} {priceSymbol}</Text>
         </View>
 
         {!isMine ? (<Button

@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Avatar, Button, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
-import { summarizeAddress } from "../../utils/display";
+import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 import { getBalance } from "../../utils/ethereum";
 
 class EthereumAssetDetails extends Component {
@@ -54,7 +54,7 @@ class EthereumAssetDetails extends Component {
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />
-          <Text style={{ marginTop: 10, marginBottom: 10 }}>{this.state.balance.toFixed(4)}</Text>
+          <Text style={{ marginTop: 10, marginBottom: 10 }}>{formatAmountWithDecimals(this.state.balance, 18)}</Text>
           <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? this.props.address : summarizeAddress(this.props.address)}</Text>
         </View>
         

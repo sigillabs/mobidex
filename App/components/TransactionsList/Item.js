@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
+import { formatAmountWithDecimals } from "../../../utils/display";
 import { getTokenByAddress } from "../../../utils/ethereum";
 
 class FinishedTransactionItem extends Component {
@@ -38,9 +39,9 @@ class FinishedTransactionItem extends Component {
 
     return (
       <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        <Text>{filledMakerTokenAmount} {makerToken.symbol}</Text>
+        <Text>{formatAmountWithDecimals(filledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
         <Text> for </Text>
-        <Text>{filledTakerTokenAmount} {takerToken.symbol}</Text>
+        <Text>{formatAmountWithDecimals(filledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
       </View>
     );
   }
