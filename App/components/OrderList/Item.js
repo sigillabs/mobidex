@@ -35,16 +35,37 @@ class OrderItem extends Component {
     let amountSymbol = amountToken.symbol;
 
     return (
-      <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        {orderType === "bid" ? 
-            (<Text>Bid </Text>)
-          : (<Text>Ask </Text>)}
-        <Text>{formatAmountWithDecimals(amount, amountToken.decimals)} {amountSymbol.symbol}</Text>
-        <Text> for </Text>
-        <Text>{formatAmountWithDecimals(price, priceToken.decimals)} {priceToken.symbol}</Text>
+      <View>
+        <View style={styles.container}>
+          <Text style={styles.datum}>{formatAmountWithDecimals(amount, amountToken.decimals)}</Text>
+          <Text style={styles.datum}>{formatAmountWithDecimals(price, priceToken.decimals)}</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.header}>Amount</Text>
+          <Text style={styles.header}>Price</Text>
+        </View>
       </View>
     );
   }
 }
+
+const styles = {
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  datum: {
+    textAlign: "center",
+    flex: 1
+  },
+  header: {
+    textAlign: "center",
+    color: "gray",
+    flex: 1,
+    fontSize: 10
+  }
+};
 
 export default connect((state) => ({ ...state.wallet }), (dispatch) => ({ dispatch }))(OrderItem);
