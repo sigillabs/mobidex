@@ -11,7 +11,6 @@ import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
 import OrderDetailsScreen from "./App/screens/OrderDetailsScreen";
 import TransactionHistoryScreen from "./App/screens/TransactionHistoryScreen";
-import MyOrdersScreen from "./App/screens/MyOrdersScreen";
 
 const TransactionsStack = StackNavigator({
   History: { screen: TransactionHistoryScreen }
@@ -28,7 +27,6 @@ const TransactionsStack = StackNavigator({
 
 const TradingStack = StackNavigator({
   Trading: { screen: TradingScreen },
-  MyOrders: { screen: MyOrdersScreen },
   CreateOrder: { screen: CreateOrderScreen },
   OrderDetails: { screen: OrderDetailsScreen }
 }, {
