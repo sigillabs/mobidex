@@ -44,4 +44,4 @@ class OrderList extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device.layout, ...state.settings }), (dispatch) => ({ dispatch }))(OrderList);
+export default connect((state) => ({ ...state.device.layout }), (dispatch) => ({ dispatch }))(OrderList);

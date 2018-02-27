@@ -19,11 +19,9 @@ import {
   addOrders,
   addProcessingOrders,
   removeProcessingOrders,
-  setBaseToken,
-  setBaseTokens,
-  setQuoteToken,
-  setQuoteTokens,
-  finishedLoadingTokens
+  setProducts,
+  setTokens,
+  finishedLoadingProducts
 } from "../actions";
 
 export function loadOrders() {
@@ -54,24 +52,21 @@ export function loadOrder(orderHash) {
   };
 }
 
-export function loadTokens() {
+export function loadProductsAndTokens() {
   return async (dispatch, getState) => {
     let { settings: { relayerEndpoint }, wallet: { web3 } } = getState();
     let client = new HttpClient(relayerEndpoint);
 
     try {
       let pairs = await client.getTokenPairsAsync();
-      let tokensA = _.uniqBy(pairs.map(pair => pair.tokenA), "address");
-      let tokensB = _.uniqBy(pairs.map(pair => pair.tokenB), "address");
-      let baseTokens = await Promise.all(tokensA.map(t => getTokenByAddress(web3, t.address)));
-      let quoteTokens = await Promise.all(tokensB.map(t => getTokenByAddress(web3, t.address)));
-      dispatch(setBaseTokens(baseTokens))
-      dispatch(setBaseToken(baseTokens[0]))
-      dispatch(setQuoteTokens(quoteTokens))
-      dispatch(setQuoteToken(quoteTokens[0]))
-      dispatch(finishedLoadingTokens());
+      let tokensA = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenA.address)));
+      let tokensB = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenB.address)));
+      let tokens = _.unionBy(tokensA, tokensB, "address");
+      dispatch(setTokens(tokens))
+      dispatch(setProducts(pairs))
+      dispatch(finishedLoadingProducts());
     } catch(err) {
-      console.warn(err)
+      console.warn(err.message, err.stack);
       dispatch(addErrors([err]));
     }
   };

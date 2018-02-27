@@ -3,10 +3,10 @@ import { handleActions } from "redux-actions";
 import * as Actions from "../constants/actions";
 
 export default handleActions({
-  [Actions.FINISHED_LOADING_TOKENS]: (state, action) => {
+  [Actions.FINISHED_LOADING_PRODUCTS]: (state, action) => {
     return {
       ...state,
-      tokens: true
+      products: true
     }
   },
   [Actions.FINISHED_LOADING_WALLET]: (state, action) => {
@@ -23,6 +23,6 @@ export default handleActions({
   }
 }, {
   wallet: false,
-  tokens: false,
+  products: false,
   assets: false
 });

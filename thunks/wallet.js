@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
-import { addAssets, addTransactions, setWallet, setQuoteToken, setBaseToken, finishedLoadingWallet } from "../actions";
+import { addAssets, addTransactions, setWallet, finishedLoadingWallet } from "../actions";
 import { getTokenBalance } from "../utils/ethereum";
 import { cache } from "../utils/cache";
 

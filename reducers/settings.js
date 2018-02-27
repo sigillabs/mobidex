@@ -6,36 +6,7 @@ import * as Actions from "../constants/actions";
 const BASE_URL = "http://localhost:8000/relayer/v0";
 
 const initialState = {
-  quoteToken: null,
-  baseToken: null,
   relayerEndpoint: BASE_URL,
-  baseTokens: [],
-  quoteTokens: []
 };
 
-export default handleActions({
-  [Actions.SET_QUOTE_TOKEN]: (state, action) => {
-    return {
-      ...state,
-      quoteToken: action.payload
-    };
-  },
-  [Actions.SET_QUOTE_TOKENS]: (state, action) => {
-    return {
-      ...state,
-      quoteTokens: action.payload
-    };
-  },
-  [Actions.SET_BASE_TOKEN]: (state, action) => {
-    return {
-      ...state,
-      baseToken: action.payload
-    };
-  },
-  [Actions.SET_BASE_TOKENS]: (state, action) => {
-    return {
-      ...state,
-      baseTokens: action.payload
-    };
-  }
-}, initialState);
+export default handleActions({}, initialState);

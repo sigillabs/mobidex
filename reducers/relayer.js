@@ -4,7 +4,9 @@ import * as Actions from "../constants/actions";
 
 const initialState = {
   orders: [],
-  processing: []
+  processing: [],
+  products: [],
+  tokens: []
 };
 
 export default handleActions({
@@ -18,5 +20,11 @@ export default handleActions({
   [Actions.REMOVE_PROCESSING_ORDERS]: (state, action) => {
     let processing = _.difference(state.processing, action.payload);
     return { ...state, processing: processing };
+  },
+  [Actions.SET_PRODUCTS]: (state, action) => {
+    return { ...state, products: action.payload };
+  },
+  [Actions.SET_TOKENS]: (state, action) => {
+    return { ...state, tokens: action.payload };
   }
 }, initialState);

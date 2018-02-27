@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { finishedStartup } from "../actions";
-import { loadAssets, loadWallet, loadTokens } from "../thunks";
+import { loadAssets, loadWallet, loadProductsAndTokens } from "../thunks";
 
 class Startup extends Component {
   componentDidMount() {
@@ -11,11 +11,11 @@ class Startup extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (nextProps.wallet && !nextProps.tokens) {
-      this.props.dispatch(loadTokens())
+    if (nextProps.wallet && !nextProps.products) {
+      this.props.dispatch(loadProductsAndTokens())
     }
 
-    if (nextProps.wallet && nextProps.tokens && !nextProps.assets) {
+    if (nextProps.wallet && nextProps.products && !nextProps.assets) {
       this.props.dispatch(loadAssets())
     }
   }
@@ -25,7 +25,7 @@ class Startup extends Component {
     let Main = this.props.mainComponent;
     let Onboarding = this.props.onboardingComponent;
 
-    if (this.props.wallet && this.props.tokens) {
+    if (this.props.wallet && this.props.products) {
       if (this.props.web3) {
         return (
           <Main />

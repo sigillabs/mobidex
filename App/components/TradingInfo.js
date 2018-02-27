@@ -9,14 +9,22 @@ class TradingInfo extends Component {
   render() {
     return (
       <View>
-
+        <View style={styles.row}>
+          <TokenDropdown
+              title="Base Token"
+              tokens={this.props.baseTokens}
+              token={this.props.baseToken}
+              show={this.state.base}
+              onPress={this.onPress("base")}
+              onSelect={this.onSelect("base")} />
+        </View>
       </View>
     );
   }
 }
 
 const styles = {
-  container: {
+  row: {
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -33,6 +41,5 @@ const styles = {
     fontSize: 10
   }
 };
-
 
 export default connect(state => ({ ...state.device.layout }), dispatch => ({ dispatch }))(TradingInfo);

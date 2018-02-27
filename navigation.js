@@ -7,7 +7,6 @@ import WalletHeader from "./App/headers/Wallet";
 import SettingsHeader from "./App/headers/Settings";
 import TransactionsHeader from "./App/headers/Transactions";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
-import TokenSettingsScreen from "./App/screens/TokenSettingsScreen";
 import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
 import OrderDetailsScreen from "./App/screens/OrderDetailsScreen";
@@ -56,21 +55,7 @@ const WalletStack = StackNavigator({
   }
 });
 
-const SettingsStack = StackNavigator({
-  TokenSettings: { screen: TokenSettingsScreen },
-}, {
-  initialRouteName: "TokenSettings",
-  navigationOptions: ({ navigation }) => {
-    const params = navigation.state.params || {};
-
-    return {
-      header: <SettingsHeader navigation={navigation} />
-    };
-  }
-});
-
 export default TabNavigator({
-  Settings: { screen: SettingsStack },
   Wallet: { screen: WalletStack },
   Trading: { screen: TradingStack },
   Transactions: { screen: TransactionsStack }
@@ -81,8 +66,6 @@ export default TabNavigator({
       const { routeName } = navigation.state;
 
       switch(routeName) {
-        case "Settings":
-        return <IonIcon name="ios-settings" size={25} color={tintColor} />;
         case "Wallet":
         return <IonIcon name="md-briefcase" size={25} color={tintColor} />;
         case "Trading":
