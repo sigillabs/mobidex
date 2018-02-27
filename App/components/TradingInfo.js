@@ -1,22 +1,32 @@
+import BigNumber from "bignumber.js";
 import * as _ from "lodash";
 import React, { Component } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Card, Text, Overlay, List, ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { connect } from "react-redux";
+import { formatAmountWithDecimals } from "../../utils/display";
+import { findHighestBid, findLowestAsk, calculateBidPrice, calculateAskPrice } from "../../utils/orders";
 
 class TradingInfo extends Component {
   render() {
+    let highestBid = findHighestBid(this.props.orders, this.props.quoteToken);
+    let lowestAsk = findLowestAsk(this.props.orders, this.props.quoteToken);
+    let highestBidPrice = highestBid !== null ? calculateBidPrice(highestBid) : new BigNumber(0);
+    let lowestAskPrice = lowestAsk !== null ? calculateAskPrice(lowestAsk) : new BigNumber(0);
+    let spread = lowestAskPrice.sub(highestBidPrice);
+
     return (
-      <View>
+      <View style={{ height: 60 }}>
         <View style={styles.row}>
-          <TokenDropdown
-              title="Base Token"
-              tokens={this.props.baseTokens}
-              token={this.props.baseToken}
-              show={this.state.base}
-              onPress={this.onPress("base")}
-              onSelect={this.onSelect("base")} />
+          <Text style={styles.datum}>{formatAmountWithDecimals(highestBidPrice, this.props.quoteToken.decimals)}</Text>
+          <Text style={styles.datum}>{formatAmountWithDecimals(lowestAskPrice, this.props.quoteToken.decimals)}</Text>
+          <Text style={styles.datum}>{formatAmountWithDecimals(spread, this.props.quoteToken.decimals)}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.header}>Highest Bid</Text>
+          <Text style={styles.header}>Lowest Ask</Text>
+          <Text style={styles.header}>Bid/Ask Spread</Text>
         </View>
       </View>
     );
@@ -42,4 +52,4 @@ const styles = {
   }
 };
 
-export default connect(state => ({ ...state.device.layout }), dispatch => ({ dispatch }))(TradingInfo);
+export default connect(state => ({ ...state.device.layout, tokens: state.relayer.tokens }), dispatch => ({ dispatch }))(TradingInfo);

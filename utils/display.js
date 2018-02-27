@@ -12,6 +12,7 @@ export function summarizeAddress(address) {
 }
 
 export function formatAmountWithDecimals(amount, decimals) {
+  if (amount === null) return formatAmount(0);
   return formatAmount(new BigNumber(amount).div(10**decimals));
 }
 

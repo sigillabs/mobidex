@@ -5,7 +5,7 @@ import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { loadOrders } from "../../thunks";
 import OrderList from "../components/OrderList";
-// import TradingInfo from "../components/TradingInfo";
+import TradingInfo from "../components/TradingInfo";
 import TokenFilterBar from "../components/TokenFilterBar";
 
 class TradingScreen extends Component {
@@ -29,11 +29,19 @@ class TradingScreen extends Component {
     return _.uniqBy(this.props.products.map(p => p.tokenB).map(t => _.find(this.props.tokens, { address: t.address })), "address");
   }
 
+  baseTokens() {
+    return _.uniqBy(this.props.products.map(p => p.tokenA).map(t => _.find(this.props.tokens, { address: t.address })), "address");
+  }
+
   render() {
+    let quoteTokens = this.quoteTokens();
+    let orders = this.filteredOrders();
+
     return (
       <View>
-        <TokenFilterBar tokens={this.quoteTokens()} selected={this.state.quoteToken} onPress={quoteToken => this.setState({ quoteToken })} />
-        <OrderList quoteToken={this.state.quoteToken} orders={this.filteredOrders()} onPress={({ orderHash }) => (this.props.navigation.navigate("OrderDetails", { orderHash }))} />
+        <TokenFilterBar tokens={quoteTokens} selected={this.state.quoteToken} onPress={quoteToken => this.setState({ quoteToken })} />
+        <TradingInfo quoteToken={this.state.quoteToken} orders={orders} />
+        <OrderList quoteToken={this.state.quoteToken} orders={orders} onPress={({ orderHash }) => (this.props.navigation.navigate("OrderDetails", { orderHash }))} />
       </View>
     );
   }
