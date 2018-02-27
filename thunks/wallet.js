@@ -34,9 +34,9 @@ export function loadWallet() {
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
     let assets = await cache("assets", async () => {
-      let { wallet: { web3 }, settings: { baseTokens } } = getState();
-      let balances = await Promise.all(baseTokens.map(({ address }) => (getTokenBalance(web3, address))));
-      return baseTokens.map((token, index) => ({ ...token, balance: balances[index] }));
+      let { wallet: { web3 }, relayer: { tokens } } = getState();
+      let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(web3, address))));
+      return tokens.map((token, index) => ({ ...token, balance: balances[index] }));
     }, force ? 0 : 60);
 
     assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }))

@@ -31,18 +31,16 @@ class OrderItem extends Component {
 
     let { orderType, price, amount } = this.props;
     let { priceToken, amountToken } = this.state;
-    let priceSymbol = priceToken.symbol;
-    let amountSymbol = amountToken.symbol;
 
     return (
       <View>
         <View style={styles.container}>
-          <Text style={styles.datum}>{formatAmountWithDecimals(amount, amountToken.decimals)}</Text>
-          <Text style={styles.datum}>{formatAmountWithDecimals(price, priceToken.decimals)}</Text>
+          <Text style={styles.datum}>{formatAmountWithDecimals(price, priceToken.decimals)} {priceToken.symbol}</Text>
+          <Text style={styles.datum}>{formatAmountWithDecimals(amount, amountToken.decimals)} {amountToken.symbol}</Text>
         </View>
         <View style={styles.container}>
-          <Text style={styles.header}>Amount</Text>
           <Text style={styles.header}>Price</Text>
+          <Text style={styles.header}>Amount</Text>
         </View>
       </View>
     );
