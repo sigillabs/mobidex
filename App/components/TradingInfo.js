@@ -17,7 +17,7 @@ class TradingInfo extends Component {
     let spread = lowestAskPrice.sub(highestBidPrice);
 
     return (
-      <View style={{ height: 60 }}>
+      <View style={styles.container}>
         <View style={styles.row}>
           <Text style={styles.datum}>{formatAmountWithDecimals(highestBidPrice, this.props.quoteToken.decimals)}</Text>
           <Text style={styles.datum}>{formatAmountWithDecimals(lowestAskPrice, this.props.quoteToken.decimals)}</Text>
@@ -34,6 +34,11 @@ class TradingInfo extends Component {
 }
 
 const styles = {
+  container: {
+    height: 30,
+    marginTop: 10,
+    marginBottom: 10
+  },
   row: {
     flex: 1,
     flexDirection: "row",

@@ -1,19 +1,17 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { ScrollView } from "react-native";
-import { ButtonGroup } from "react-native-elements";
+import { View, ScrollView } from "react-native";
+import { ButtonGroup, Text } from "react-native-elements";
 import { connect } from "react-redux";
 
 class TokenFilterBar extends Component {
-  render() {
-    let { tokens, selected } = this.props;
-    let selectedIndex = _.indexOf(tokens, selected);
+  renderGroup(title, tokens, selectedIndex, onPress) {
     return (
-      <ScrollView horizontal={true}>
+      <View style={styles.group}>
         <ButtonGroup
             onPress={(index) => {
-              if (this.props.onPress) {
-                this.props.onPress(tokens[index]);
+              if (onPress) {
+                onPress(tokens[index]);
               }
             }}
             selectedIndex={selectedIndex > -1 ? selectedIndex : 0}
@@ -22,12 +20,64 @@ class TokenFilterBar extends Component {
             containerStyle={[styles.container, this.props.containerStyle]}
             buttonStyle={[styles.button, this.props.buttonStyles]}
         />
+        <Text style={styles.groupText}>{title}</Text>
+      </View>
+    );
+  }
+
+  renderDivider() {
+    return (
+      <View style={styles.divider} />
+    );
+  }
+
+  render() {
+    let {
+      quoteTokens,
+      baseTokens,
+      selectedQuoteToken,
+      selectedBaseToken,
+      onQuoteTokenSelect,
+      onBaseTokenSelect
+    } = this.props;
+    let selectedQuoteTokenIndex = _.indexOf(quoteTokens, selectedQuoteToken);
+    let selectedBaseTokenIndex = _.indexOf(baseTokens, selectedBaseToken);
+    return (
+      <ScrollView horizontal={true}>
+        {this.renderGroup("Quote", quoteTokens, selectedQuoteTokenIndex, onQuoteTokenSelect)}
+        {this.renderDivider()}
+        {this.renderGroup("Base", baseTokens, selectedBaseTokenIndex, onBaseTokenSelect)}
       </ScrollView>
     );
   }
 }
 
 const styles = {
+  divider: {
+    backgroundColor: "gray",
+    height: 30,
+    width: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 5,
+    marginBottom: 5
+  },
+  group: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
+  },
+  groupText: {
+    color: "gray",
+    fontSize: 10
+  },
+  row: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
   container: {
     borderRadius: 0,
     borderWidth: 0,

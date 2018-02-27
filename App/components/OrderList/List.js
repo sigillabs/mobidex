@@ -17,6 +17,7 @@ class OrderList extends Component {
           {
             this.props.orders
             .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.quoteToken.address)
+            .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.baseToken.address)
             .map((order, index) => (
               <TouchableOpacity key={`bid-${index}`} onPress={() => (this.props.onPress(order))}>
                 <ListItem
@@ -28,7 +29,8 @@ class OrderList extends Component {
           }
           {
             this.props.orders
-            .filter(({ makerTokenAddress }) => makerTokenAddress !== this.props.quoteToken.address)
+            .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.quoteToken.address)
+            .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.baseToken.address)
             .map((order, index) => (
               <TouchableOpacity key={`ask-${index}`} onPress={() => (this.props.onPress(order))}>
                 <ListItem

@@ -13,7 +13,8 @@ class TradingScreen extends Component {
     super(props);
 
     this.state = {
-      quoteToken: _.find(props.tokens, { address: props.products[0].tokenB.address })
+      quoteToken: _.find(props.tokens, { address: props.products[0].tokenB.address }),
+      baseToken: _.find(props.tokens, { address: props.products[0].tokenA.address })
     };
   }
 
@@ -35,13 +36,24 @@ class TradingScreen extends Component {
 
   render() {
     let quoteTokens = this.quoteTokens();
+    let baseTokens = this.baseTokens();
     let orders = this.filteredOrders();
 
     return (
       <View>
-        <TokenFilterBar tokens={quoteTokens} selected={this.state.quoteToken} onPress={quoteToken => this.setState({ quoteToken })} />
+        <TokenFilterBar
+            quoteTokens={quoteTokens}
+            baseTokens={baseTokens}
+            selectedQuoteToken={this.state.quoteToken}
+            selectedBaseToken={this.state.baseToken}
+            onQuoteTokenSelect={quoteToken => this.setState({ quoteToken })}
+            onBaseTokenSelect={baseToken => this.setState({ baseToken })} />
         <TradingInfo quoteToken={this.state.quoteToken} orders={orders} />
-        <OrderList quoteToken={this.state.quoteToken} orders={orders} onPress={({ orderHash }) => (this.props.navigation.navigate("OrderDetails", { orderHash }))} />
+        <OrderList
+            quoteToken={this.state.quoteToken}
+            baseToken={this.state.baseToken}
+            orders={orders}
+            onPress={({ orderHash }) => (this.props.navigation.navigate("OrderDetails", { orderHash }))} />
       </View>
     );
   }
