@@ -35,6 +35,7 @@ class TradingScreen extends Component {
   }
 
   render() {
+    let { quoteToken, baseToken } = this.state;
     let quoteTokens = this.quoteTokens();
     let baseTokens = this.baseTokens();
     let orders = this.filteredOrders();
@@ -44,16 +45,16 @@ class TradingScreen extends Component {
         <TokenFilterBar
             quoteTokens={quoteTokens}
             baseTokens={baseTokens}
-            selectedQuoteToken={this.state.quoteToken}
-            selectedBaseToken={this.state.baseToken}
+            selectedQuoteToken={quoteToken}
+            selectedBaseToken={baseToken}
             onQuoteTokenSelect={quoteToken => this.setState({ quoteToken })}
             onBaseTokenSelect={baseToken => this.setState({ baseToken })} />
-        <TradingInfo quoteToken={this.state.quoteToken} orders={orders} />
+        <TradingInfo quoteToken={quoteToken} orders={orders} />
         <OrderList
-            quoteToken={this.state.quoteToken}
-            baseToken={this.state.baseToken}
+            quoteToken={quoteToken}
+            baseToken={baseToken}
             orders={orders}
-            onPress={({ orderHash }) => (this.props.navigation.navigate("OrderDetails", { orderHash }))} />
+            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken }))} />
       </View>
     );
   }

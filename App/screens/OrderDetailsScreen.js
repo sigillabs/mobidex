@@ -25,24 +25,18 @@ class OrderDetailsScreen extends Component {
     };
   }
 
-  getOrder = () => {
-    const { navigation: { state: { params: { orderHash } } }, orders } = this.props;
-    return _.find(orders, { orderHash });
-  };
-
   fillOrder = async () => {
     const { web3, address } = this.props;
-    const order = this.getOrder();
+    const { navigation: { state: { params: { order } } } } = this.props;
     
     this.props.dispatch(fillOrder(order));
   };
 
   render() {
-    const { address } = this.props;
-    const order = this.getOrder();
+    const { navigation: { state: { params: { order, quoteToken } } } } = this.props;
+    const { tokens, address } = this.props;
     const isMine = order.maker === address && false;
-    const orderType = this.props.quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
-    const tokens = this.props.quoteTokens.concat(this.props.baseTokens);
+    const orderType = quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
     let amount = null;
     let amountSymbol = null;
     let amountDecimals = null;
@@ -135,4 +129,4 @@ function getStyles(height) {
   });
 }
 
-export default connect(state => ({ ...state.settings, ...state.wallet, ...state.device.layout, orders: state.relayer.orders }), dispatch => ({ dispatch }))(OrderDetailsScreen);
+export default connect(state => ({ ...state.relayer, ...state.wallet, ...state.device.layout }), dispatch => ({ dispatch }))(OrderDetailsScreen);
