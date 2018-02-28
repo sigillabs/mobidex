@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import ethUtil from "ethereumjs-util";
+import { ZeroEx } from "0x.js";
 
 export function summarizeAddress(address) {
   if (!address) return address;
@@ -13,7 +14,8 @@ export function summarizeAddress(address) {
 
 export function formatAmountWithDecimals(amount, decimals) {
   if (amount === null) return formatAmount(0);
-  return formatAmount(new BigNumber(amount).div(10**decimals));
+  if (!decimals) return formatAmount(amount);
+  return formatAmount(ZeroEx.toUnitAmount(new BigNumber(amount), decimals));
 }
 
 export function formatAmount(amount) {

@@ -13,13 +13,20 @@ import {
   setTokenUnlimitedAllowance,
   isWETHAddress
 } from "../utils/ethereum";
-import { cancelOrder as cancelOrderUtil, fillOrder as fillOrderUtil, signOrder } from "../utils/orders";
+import {
+  cancelOrder as cancelOrderUtil,
+  fillOrder as fillOrderUtil,
+  convertLimitOrderToZeroExOrder,
+  signOrder
+} from "../utils/orders";
 import {
   addErrors,
   addOrders,
   addProcessingOrders,
   removeProcessingOrders,
   setProducts,
+  setBaseToken,
+  setQuoteToken,
   setTokens,
   finishedLoadingProducts
 } from "../actions";
@@ -62,8 +69,10 @@ export function loadProductsAndTokens() {
       let tokensA = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenA.address)));
       let tokensB = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenB.address)));
       let tokens = _.unionBy(tokensA, tokensB, "address");
-      dispatch(setTokens(tokens))
-      dispatch(setProducts(pairs))
+      dispatch(setTokens(tokens));
+      dispatch(setProducts(pairs));
+      dispatch(setQuoteToken(_.find(tokens, { symbol: "WETH" })));
+      dispatch(setBaseToken(_.find(tokens, { symbol: "ZRX" })));
       dispatch(finishedLoadingProducts());
     } catch(err) {
       console.warn(err.message, err.stack);
@@ -86,21 +95,18 @@ export function submitOrder(signedOrder) {
   };
 }
 
-export function createSignSubmitOrder(price, amount) {
+export function createSignSubmitOrder(side, price, amount) {
   return async (dispatch, getState) => {
     let { wallet, settings } = getState();
-    let web3 = wallet.web3;
+    let { quoteToken, baseToken } = settings;
+    let { web3, address } = wallet;
     let zeroEx = await getZeroExClient(web3);
-    let address = wallet.address.toLowerCase();
     let order = {
-      "maker": address,
+      ...convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount),
+      "maker": address.toLowerCase(quoteToken, baseToken, side, price, amount),
       "makerFee": new BigNumber(0),
-      "makerTokenAddress": settings.quoteToken.address,
-      "makerTokenAmount": price.mul(amount),
       "taker": ZeroEx.NULL_ADDRESS,
       "takerFee": new BigNumber(0),
-      "takerTokenAddress": settings.baseToken.address,
-      "takerTokenAmount": amount,
       "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
       "feeRecipient": ZeroEx.NULL_ADDRESS,
       "salt": ZeroEx.generatePseudoRandomSalt(),

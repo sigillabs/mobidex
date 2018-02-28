@@ -3,27 +3,19 @@ import React, { Component } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
+import { setBaseToken, setQuoteToken } from "../../actions";
 import { loadOrders } from "../../thunks";
 import OrderList from "../components/OrderList";
 import TradingInfo from "../components/TradingInfo";
 import TokenFilterBar from "../components/TokenFilterBar";
 
 class TradingScreen extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      quoteToken: _.find(props.tokens, { address: props.products[0].tokenB.address }),
-      baseToken: _.find(props.tokens, { address: props.products[0].tokenA.address })
-    };
-  }
-
   componentDidMount() {
     this.props.dispatch(loadOrders());
   }
 
   filteredOrders() {
-    return this.props.orders.filter(order => order.makerTokenAddress === this.state.quoteToken.address || order.takerTokenAddress === this.state.quoteToken.address)
+    return this.props.orders.filter(order => order.makerTokenAddress === this.props.quoteToken.address || order.takerTokenAddress === this.props.quoteToken.address)
   }
 
   quoteTokens() {
@@ -35,7 +27,7 @@ class TradingScreen extends Component {
   }
 
   render() {
-    let { quoteToken, baseToken } = this.state;
+    let { quoteToken, baseToken } = this.props;
     let quoteTokens = this.quoteTokens();
     let baseTokens = this.baseTokens();
     let orders = this.filteredOrders();
@@ -47,17 +39,17 @@ class TradingScreen extends Component {
             baseTokens={baseTokens}
             selectedQuoteToken={quoteToken}
             selectedBaseToken={baseToken}
-            onQuoteTokenSelect={quoteToken => this.setState({ quoteToken })}
-            onBaseTokenSelect={baseToken => this.setState({ baseToken })} />
-        <TradingInfo quoteToken={quoteToken} orders={orders} />
+            onQuoteTokenSelect={quoteToken => this.props.dispatch(setQuoteToken(quoteToken))}
+            onBaseTokenSelect={baseToken => this.props.dispatch(setBaseToken(baseToken))} />
+        <TradingInfo orders={orders} />
         <OrderList
             quoteToken={quoteToken}
             baseToken={baseToken}
             orders={orders}
-            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken }))} />
+            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))} />
       </View>
     );
   }
 }
 
-export default connect((state) => ({ ...state.device, ...state.relayer }), (dispatch) => ({ dispatch }))(TradingScreen);
+export default connect((state) => ({ ...state.device, ...state.relayer, ...state.settings }), (dispatch) => ({ dispatch }))(TradingScreen);

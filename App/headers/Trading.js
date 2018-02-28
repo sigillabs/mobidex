@@ -1,18 +1,20 @@
 import React, { Component } from "react";
-import { TouchableHighlight } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Header } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 
 export default class extends Component {
   render() {
+    let { quoteToken, baseToken } = this.props;
+
     return (
       <Header
         centerComponent={{ text: "Mobidex", style: { color: "white" } }}
         rightComponent={(
-          <TouchableHighlight onPress={() => this.props.navigation.navigate("CreateOrder")}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate("CreateOrder")}>
             <Icon name="add" color="white" />
-          </TouchableHighlight>
+          </TouchableOpacity>
         )}
       />
     );

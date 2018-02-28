@@ -5,23 +5,23 @@ import { View, TouchableOpacity } from "react-native";
 import { Card, Text, Overlay, List, ListItem } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { connect } from "react-redux";
-import { formatAmountWithDecimals } from "../../utils/display";
+import { formatAmount } from "../../utils/display";
 import { findHighestBid, findLowestAsk, calculateBidPrice, calculateAskPrice } from "../../utils/orders";
 
 class TradingInfo extends Component {
   render() {
-    let highestBid = findHighestBid(this.props.orders, this.props.quoteToken);
-    let lowestAsk = findLowestAsk(this.props.orders, this.props.quoteToken);
-    let highestBidPrice = highestBid !== null ? calculateBidPrice(highestBid) : new BigNumber(0);
-    let lowestAskPrice = lowestAsk !== null ? calculateAskPrice(lowestAsk) : new BigNumber(0);
+    let highestBid = findHighestBid(this.props.orders, this.props.quoteToken, this.props.baseToken);
+    let lowestAsk = findLowestAsk(this.props.orders, this.props.quoteToken, this.props.baseToken);
+    let highestBidPrice = highestBid !== null ? calculateBidPrice(highestBid, this.props.quoteToken, this.props.baseToken) : new BigNumber(0);
+    let lowestAskPrice = lowestAsk !== null ? calculateAskPrice(lowestAsk, this.props.quoteToken, this.props.baseToken) : new BigNumber(0);
     let spread = lowestAskPrice.sub(highestBidPrice);
 
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.datum}>{formatAmountWithDecimals(highestBidPrice, this.props.quoteToken.decimals)}</Text>
-          <Text style={styles.datum}>{formatAmountWithDecimals(lowestAskPrice, this.props.quoteToken.decimals)}</Text>
-          <Text style={styles.datum}>{formatAmountWithDecimals(spread, this.props.quoteToken.decimals)}</Text>
+          <Text style={styles.datum}>{formatAmount(highestBidPrice)}</Text>
+          <Text style={styles.datum}>{formatAmount(lowestAskPrice)}</Text>
+          <Text style={styles.datum}>{formatAmount(spread)}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.header}>Highest Bid</Text>
@@ -57,4 +57,4 @@ const styles = {
   }
 };
 
-export default connect(state => ({ ...state.device.layout, tokens: state.relayer.tokens }), dispatch => ({ dispatch }))(TradingInfo);
+export default connect(state => ({ ...state.device.layout, ...state.settings, tokens: state.relayer.tokens }), dispatch => ({ dispatch }))(TradingInfo);

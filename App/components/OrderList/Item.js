@@ -2,41 +2,39 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
+import { ZeroEx } from "0x.js";
 import { getTokenByAddress } from "../../../utils/ethereum";
-import { formatAmountWithDecimals } from "../../../utils/display";
+import { formatAmount } from "../../../utils/display";
 
 class OrderItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      ready: false,
-      priceToken: null,
-      amountToken: null
-    };
-  }
-
-  async componentDidMount() {
-    this.setState({
-      ready: true,
-      priceToken: await getTokenByAddress(this.props.web3, this.props.priceTokenAddress),
-      amountToken: await getTokenByAddress(this.props.web3, this.props.amountTokenAddress)
-    });
-  }
-
   render() {
-    if (!this.state.ready) {
-      return null;
+    let { order, quoteToken, baseToken, address } = this.props;
+    let price, amount;
+
+    if (order.maker.toLowerCase() !== address.toLowerCase()) {
+      // This should not happen... get of here!
     }
 
-    let { orderType, price, amount } = this.props;
-    let { priceToken, amountToken } = this.state;
+    if (order.makerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()) {
+      // BID
+      amount = ZeroEx.toUnitAmount(order.takerTokenAmount, baseToken.decimals);
+      price = ZeroEx.toUnitAmount(order.makerTokenAmount, quoteToken.decimals).div(amount);
+    } else if (order.takerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()) {
+      // ASK
+      amount = ZeroEx.toUnitAmount(order.makerTokenAmount, baseToken.decimals);
+      price = ZeroEx.toUnitAmount(order.takerTokenAmount, quoteToken.decimals).div(amount);
+    } else {
+      // This should not happen... get of here!
+    }
+
+    console.warn(price, quoteToken.decimals);
+    console.warn(amount, baseToken.decimals);
 
     return (
       <View>
         <View style={styles.container}>
-          <Text style={styles.datum}>{formatAmountWithDecimals(price, priceToken.decimals)} {priceToken.symbol}</Text>
-          <Text style={styles.datum}>{formatAmountWithDecimals(amount, amountToken.decimals)} {amountToken.symbol}</Text>
+          <Text style={styles.datum}>{formatAmount(price)} {quoteToken.symbol}</Text>
+          <Text style={styles.datum}>{formatAmount(amount)} {baseToken.symbol}</Text>
         </View>
         <View style={styles.container}>
           <Text style={styles.header}>Price</Text>
@@ -66,4 +64,4 @@ const styles = {
   }
 };
 
-export default connect((state) => ({ ...state.wallet }), (dispatch) => ({ dispatch }))(OrderItem);
+export default connect((state) => ({ ...state.wallet, ...state.settings }), (dispatch) => ({ dispatch }))(OrderItem);

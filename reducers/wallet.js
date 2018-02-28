@@ -7,10 +7,11 @@ import EthTx from "ethereumjs-tx";
 import ethUtil from "ethereumjs-util";
 import sigUtil from "eth-sig-util";
 import * as Actions from "../constants/actions";
+import { getURLFromNetwork } from "../utils/ethereum";
 
-function getWeb3(privateKey, address) {
+function getWeb3(network, privateKey, address) {
   const engine = ZeroClientProvider({
-    rpcUrl: "https://kovan.infura.io/",
+    rpcUrl: getURLFromNetwork(network),
     getAccounts: (cb) => {
       cb(null, [ address.toString("hex").toLowerCase() ]);
     },
@@ -56,9 +57,10 @@ const initialState = {
 
 export default handleActions({
   [Actions.SET_WALLET]: (state, action) => {
-    let privateKey = `0x${ethUtil.stripHexPrefix(action.payload.getPrivateKey().toString("hex"))}`;
-    let address = `0x${ethUtil.stripHexPrefix(action.payload.getAddress().toString("hex"))}`;
-    let web3 = getWeb3(privateKey, address);
+    let { network, wallet } = action.payload;
+    let privateKey = `0x${ethUtil.stripHexPrefix(wallet.getPrivateKey().toString("hex"))}`;
+    let address = `0x${ethUtil.stripHexPrefix(wallet.getAddress().toString("hex"))}`;
+    let web3 = getWeb3(network, privateKey, address);
     return { ...state, privateKey, address, web3 };
   },
   [Actions.ADD_TRANSACTIONS]: (state, action) => {

@@ -11,5 +11,8 @@ export const finishedLoadingWallet = createAction(Actions.FINISHED_LOADING_WALLE
 export const removeProcessingOrders = createAction(Actions.REMOVE_PROCESSING_ORDERS);
 export const setWallet = createAction(Actions.SET_WALLET);
 export const setProducts = createAction(Actions.SET_PRODUCTS);
+export const setBaseToken = createAction(Actions.SET_BASE_TOKEN);
+export const setQuoteToken = createAction(Actions.SET_QUOTE_TOKEN);
 export const setTokens = createAction(Actions.SET_TOKENS);
+export const setNetwork = createAction(Actions.SET_NETWORK);
 

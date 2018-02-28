@@ -2,6 +2,16 @@ import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import { AsyncStorage } from "react-native";
 
+export function getURLFromNetwork(network) {
+  switch(network) {
+    case "mainnet":
+    return "https://mainnet.infura.io/";
+
+    default:
+    return "https://kovan.infura.io/";
+  }
+}
+
 export async function getNetworkId(web3) {
   return await new Promise((resolve, reject) => {
     web3.version.getNetwork((err, network) => {

@@ -3,8 +3,7 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
-import Ask from "./Ask";
-import Bid from "./Bid";
+import OrderItem from "./Item";
 
 class OrderList extends Component {
   render() {
@@ -21,7 +20,7 @@ class OrderList extends Component {
             .map((order, index) => (
               <TouchableOpacity key={`bid-${index}`} onPress={() => (this.props.onPress(order))}>
                 <ListItem
-                  title={<Bid order={order} />}
+                  title={<OrderItem order={order} />}
                   leftIcon={{ name: "add" }}
                 />
               </TouchableOpacity>
@@ -34,7 +33,7 @@ class OrderList extends Component {
             .map((order, index) => (
               <TouchableOpacity key={`ask-${index}`} onPress={() => (this.props.onPress(order))}>
                 <ListItem
-                  title={<Ask order={order} />}
+                  title={<OrderItem order={order} />}
                   leftIcon={{ name: "remove" }}
                 />
               </TouchableOpacity>
@@ -46,4 +45,4 @@ class OrderList extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device.layout }), (dispatch) => ({ dispatch }))(OrderList);
+export default connect((state) => ({ ...state.device.layout, ...state.settings }), (dispatch) => ({ dispatch }))(OrderList);

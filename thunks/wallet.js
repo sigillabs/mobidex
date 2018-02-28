@@ -10,19 +10,21 @@ import { cache } from "../utils/cache";
 // Would like to password protect using Ethereum Secret Storage
 // `wallet.toV3("nopass")` is very expensive.
 export function generateWallet() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    let { settings: { network } } = getState();
     let wallet = await Wallet.generate();
     await AsyncStorage.setItem("wallet", wallet.getPrivateKey().toString("hex"));
-    dispatch(setWallet(wallet));
+    dispatch(setWallet({network, wallet}));
   };
 }
 
 export function loadWallet() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    let { settings: { network } } = getState();
     let privateKey = await AsyncStorage.getItem("wallet");
     if (privateKey) {
       let wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
-      dispatch(setWallet(wallet));
+      dispatch(setWallet({network, wallet}));
       dispatch(finishedLoadingWallet());
       return wallet;
     } else {

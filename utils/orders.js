@@ -3,6 +3,33 @@ import * as _ from "lodash";
 import { ZeroEx, Order as UnsignedOrder, SignedOrder } from "0x.js";
 import { getZeroExClient, getAccount } from "./ethereum";
 
+export function convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount) {
+  let order = {
+    makerTokenAddress: null,
+    makerTokenAmount: null,
+    takerTokenAddress: null,
+    takerTokenAmount: null
+  };
+
+  switch(side) {
+    case "bid":
+    order.makerTokenAddress = quoteToken.address;
+    order.makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).mul(amount), quoteToken.decimals);
+    order.takerTokenAddress = baseToken.address;
+    order.takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), baseToken.decimals);
+    break;
+
+    case "ask":
+    order.makerTokenAddress = baseToken.address;
+    order.makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), baseToken.decimals);
+    order.takerTokenAddress = quoteToken.address;
+    order.takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).mul(amount), quoteToken.decimals);
+    break;
+  }
+
+  return order;
+}
+
 export async function signOrder(web3, order) {
   const zeroEx = await getZeroExClient(web3);
   const account = await getAccount(web3);
@@ -33,22 +60,26 @@ export async function cancelOrder(web3, order) {
   return await zeroEx.exchange.cancelOrderAsync(order);
 }
 
-export function calculateBidPrice(order) {
-  return new BigNumber(order.makerTokenAmount).div(order.takerTokenAmount);
+export function calculateBidPrice(order, quoteToken, baseToken) {
+  let quote = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), quoteToken.decimals);
+  let amount = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+  return quote.div(amount);
 }
 
-export function calculateAskPrice(order) {
-  return new BigNumber(order.takerTokenAmount).div(order.makerTokenAmount);
+export function calculateAskPrice(order, quoteToken, baseToken) {
+  let quote = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), quoteToken.decimals);
+  let amount = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+  return quote.div(amount);
 }
 
-export function findHighestBid(orders, quoteToken) {
+export function findHighestBid(orders, quoteToken, baseToken) {
   let highestBid = null;
 
   for (let order of orders) {
     if (quoteToken.address === order.makerTokenAddress) {
       if (highestBid === null) {
         highestBid = order;
-      } else if (calculateBidPrice(order).gt(calculateBidPrice(highestBid))) {
+      } else if (calculateBidPrice(order, quoteToken, baseToken).gt(calculateBidPrice(highestBid, quoteToken, baseToken))) {
         highestBid = order;
       }
     }
@@ -57,14 +88,14 @@ export function findHighestBid(orders, quoteToken) {
   return highestBid;
 }
 
-export function findLowestAsk(orders, quoteToken) {
+export function findLowestAsk(orders, quoteToken, baseToken) {
   let lowestAsk = null;
 
   for (let order of orders) {
     if (quoteToken.address === order.takerTokenAddress) {
       if (lowestAsk === null) {
         lowestAsk = order;
-      } else if (calculateAskPrice(order).lt(calculateAskPrice(lowestAsk))) {
+      } else if (calculateAskPrice(order, quoteToken, baseToken).lt(calculateAskPrice(lowestAsk, quoteToken, baseToken))) {
         lowestAsk = order;
       }
     }

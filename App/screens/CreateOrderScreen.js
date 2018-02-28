@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Card, Button, Input } from "react-native-elements";
+import { Card, Button, ButtonGroup, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import NormalHeader from "../headers/Normal";
 import { createSignSubmitOrder, gotoOrders } from "../../thunks";
+
+const SIDES = ["bid", "ask"];
+const TITLES = ["Create Buy Order", "Create Sell Order"];
 
 class CreateOrderScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -19,6 +22,7 @@ class CreateOrderScreen extends Component {
     super(props);
 
     this.state = {
+      side: 0,
       amount: new BigNumber(0),
       amountError: false,
       price: new BigNumber(0),
@@ -53,8 +57,12 @@ class CreateOrderScreen extends Component {
   };
 
   submit = async () => {
-    let { price, amount } = this.state;
-    let result = await this.props.dispatch(createSignSubmitOrder(price, amount));
+    let { quoteToken, baseToken } = this.props;
+    let { side, price, amount } = this.state;
+    let makerAmount, makerToken, takerAmount, takerToken;
+
+    let result = await this.props.dispatch(createSignSubmitOrder(SIDES[side], price, amount));
+
     if (result) {
       this.props.navigation.navigate("Trading");
     }
@@ -62,8 +70,18 @@ class CreateOrderScreen extends Component {
 
   render() {
     return (
-      <Card title={`Create Order`}>
-        <View style={{ marginBottom: 10 }}>
+      <Card title={TITLES[this.state.side]}>
+        <ButtonGroup
+            onPress={(index) => {
+              this.setState({ side: index });
+            }}
+            selectedIndex={this.state.side}
+            buttons={SIDES}
+            containerBorderRadius={0}
+            containerStyle={styles.container}
+            buttonStyle={styles.button}
+        />
+        <View style={{ marginTop: 10, marginBottom: 10 }}>
           <Input
             placeholder="Price"
             displayError={this.state.priceError}
@@ -100,10 +118,28 @@ class CreateOrderScreen extends Component {
           large
           onPress={this.submit}
           icon={<Icon name="check" size={24} color="white" />}
-          text="Submit Order" />
+          text="Submit Order"
+          style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-export default connect((state, ownProps) => ({ ...state.device, ...ownProps, ...state.wallet }), (dispatch) => ({ dispatch }))(CreateOrderScreen);
+const styles = {
+  container: {
+    borderRadius: 0,
+    borderWidth: 0,
+    height: 40,
+    padding: 0,
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+  },
+  button: {
+    paddingLeft: 10,
+    paddingRight: 10
+  }
+};
+
+export default connect((state, ownProps) => ({ ...state.device, ...state.settings, ...state.wallet, ...ownProps }), (dispatch) => ({ dispatch }))(CreateOrderScreen);
