@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
-import { addAssets, addTransactions, setWallet, finishedLoadingWallet } from "../actions";
+import { addAssets, addTransactions, setWallet } from "../actions";
 import { getTokenBalance } from "../utils/ethereum";
 import { cache } from "../utils/cache";
 
@@ -25,7 +25,6 @@ export function loadWallet() {
     if (privateKey) {
       let wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
       dispatch(setWallet({network, wallet}));
-      dispatch(finishedLoadingWallet());
       return wallet;
     } else {
       return null;

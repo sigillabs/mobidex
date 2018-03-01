@@ -15,8 +15,7 @@ class Onboarding extends Component {
         <Card title="Create Your Wallet">
           <Button
             large
-            icon={{ name: "cached" }}
-            title="Generate"
+            text="Generate"
             onPress={this.submit} />
         </Card>
       </View>

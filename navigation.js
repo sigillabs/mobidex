@@ -6,8 +6,10 @@ import TradingHeader from "./App/headers/Trading";
 import WalletHeader from "./App/headers/Wallet";
 import SettingsHeader from "./App/headers/Settings";
 import TransactionsHeader from "./App/headers/Transactions";
+import MyOrdersScreen from "./App/screens/MyOrdersScreen";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
 import TradingScreen from "./App/screens/TradingScreen";
+import TransactionsProcessingScreen from "./App/screens/TransactionsProcessingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
 import OrderDetailsScreen from "./App/screens/OrderDetailsScreen";
 import TransactionHistoryScreen from "./App/screens/TransactionHistoryScreen";
@@ -26,9 +28,11 @@ const TransactionsStack = StackNavigator({
 });
 
 const TradingStack = StackNavigator({
+  TransactionsProcessing: { screen: TransactionsProcessingScreen },
   Trading: { screen: TradingScreen },
   CreateOrder: { screen: CreateOrderScreen },
-  OrderDetails: { screen: OrderDetailsScreen }
+  OrderDetails: { screen: OrderDetailsScreen },
+  MyOrders: { screen: MyOrdersScreen }
 }, {
   initialRouteName: "Trading",
   navigationOptions: ({ navigation }) => {
@@ -67,9 +71,9 @@ export default TabNavigator({
         case "Wallet":
         return <IonIcon name="md-briefcase" size={25} color={tintColor} />;
         case "Trading":
-        return <FAIcon name="exchange" size={25} color={tintColor} />
+        return <FAIcon name="exchange" size={25} color={tintColor} />;
         case "Transactions":
-        return <FAIcon name="list" size={25} color={tintColor} />
+        return <FAIcon name="list" size={25} color={tintColor} />;
       }
     },
   })

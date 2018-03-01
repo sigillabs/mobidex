@@ -32,10 +32,16 @@ class OrderDetailsScreen extends Component {
     this.props.dispatch(fillOrder(order));
   };
 
+  cancelOrder = async () => {
+    const { navigation: { state: { params: { order } } } } = this.props;
+    
+    this.props.dispatch(cancelOrder(order));
+  };
+
   render() {
     const { navigation: { state: { params: { order, quoteToken } } } } = this.props;
     const { tokens, address } = this.props;
-    const isMine = order.maker === address && false;
+    const isMine = order.maker === address;
     const orderType = quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
     let amount = null;
     let amountSymbol = null;
@@ -99,10 +105,17 @@ class OrderDetailsScreen extends Component {
         </View>
 
         {!isMine ? (<Button
-                    large
-                    icon={<Icon name="send" size={20} color="white" />}
-                    onPress={this.fillOrder}
-                    text="Fill Order" />) : null}
+            large
+            icon={<Icon name="send" size={20} color="white" />}
+            onPress={this.fillOrder}
+            text="Fill Order"
+            style={[ styles.button ]} />) : null}
+        {isMine ? (<Button
+            large
+            icon={<Icon name="cancel" size={20} color="white" />}
+            onPress={this.cancelOrder}
+            text="Cancel Order"
+            style={[ styles.button ]} />) : null}
       </Card>
     );
   }
@@ -125,8 +138,11 @@ function getStyles(height) {
     },
     container: {
       height: height
+    },
+    button: {
+      marginTop: 10
     }
   });
 }
 
-export default connect(state => ({ ...state.relayer, ...state.wallet, ...state.device.layout }), dispatch => ({ dispatch }))(OrderDetailsScreen);
+export default connect(state => ({ ...state.device, ...state.settings, ...state.wallet, ...state.relayer }), dispatch => ({ dispatch }))(OrderDetailsScreen);

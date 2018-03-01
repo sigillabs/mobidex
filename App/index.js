@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StackNavigator, TabNavigator } from "react-navigation";
 import { Provider } from "react-redux";
 import configureStore from "../store";
+import Err from "./Error";
 import Main from "./Main";
 import Onboarding from "./Onboarding";
 import Startup from "./Startup";
@@ -13,7 +14,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Startup splashComponent={Splash} mainComponent={Main} onboardingCompnent={Onboarding} />
+        <Startup splashComponent={Splash} mainComponent={Main} onboardingCompnent={Onboarding} errorComponent={Err} />
       </Provider>
     );
   }

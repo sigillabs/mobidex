@@ -3,6 +3,8 @@ import { HttpClient } from "@0xproject/connect";
 import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import moment from "moment";
+import { NavigationActions } from "react-navigation";
+import { setError } from "../actions";
 import { loadTransactions } from "../thunks";
 import {
   getZeroExClient,
@@ -20,15 +22,13 @@ import {
   signOrder
 } from "../utils/orders";
 import {
-  addErrors,
   addOrders,
   addProcessingOrders,
   removeProcessingOrders,
   setProducts,
   setBaseToken,
   setQuoteToken,
-  setTokens,
-  finishedLoadingProducts
+  setTokens
 } from "../actions";
 
 export function loadOrders() {
@@ -40,7 +40,7 @@ export function loadOrders() {
       dispatch(addOrders(await client.getOrdersAsync()));
       return true;
     } catch(err) {
-      dispatch(addErrors([err]));
+      dispatch(setError(err));
       return false;
     }
   };
@@ -54,7 +54,7 @@ export function loadOrder(orderHash) {
     try {
       dispatch(addOrders([ await client.getOrderAsync(signedOrder.orderHash) ]));
     } catch(err) {
-      dispatch(addErrors([err]));
+      dispatch(setError(err));
     }
   };
 }
@@ -73,34 +73,19 @@ export function loadProductsAndTokens() {
       dispatch(setProducts(pairs));
       dispatch(setQuoteToken(_.find(tokens, { symbol: "WETH" })));
       dispatch(setBaseToken(_.find(tokens, { symbol: "ZRX" })));
-      dispatch(finishedLoadingProducts());
     } catch(err) {
-      console.warn(err.message, err.stack);
-      dispatch(addErrors([err]));
-    }
-  };
-}
-
-export function submitOrder(signedOrder) {
-  return async (dispatch, getState) => {
-    let { settings: { relayerEndpoint } } = getState();
-    let client = new HttpClient(relayerEndpoint);
-
-    try {
-      await client.submitOrderAsync(signedOrder);
-      await dispatch(loadOrder(signedOrder.orderHash));
-    } catch(err) {
-      dispatch(addErrors([err]));
+      dispatch(setError(err));
     }
   };
 }
 
 export function createSignSubmitOrder(side, price, amount) {
   return async (dispatch, getState) => {
-    let { wallet, settings } = getState();
-    let { quoteToken, baseToken } = settings;
-    let { web3, address } = wallet;
+    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
+
+    let { wallet: { web3, address }, settings: { relayerEndpoint, quoteToken, baseToken } } = getState();
     let zeroEx = await getZeroExClient(web3);
+    let relayerClient = new HttpClient(relayerEndpoint);
     let order = {
       ...convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount),
       "maker": address.toLowerCase(quoteToken, baseToken, side, price, amount),
@@ -112,65 +97,65 @@ export function createSignSubmitOrder(side, price, amount) {
       "salt": ZeroEx.generatePseudoRandomSalt(),
       "exchangeContractAddress": await getZeroExContractAddress(web3)
     };
+    let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
 
-    // Guarantee WETH is available.
     try {
+      // Guarantee WETH is available.
       if ((await isWETHAddress(web3, order.makerTokenAddress))) {
         await guaranteeWETHAmount(web3, order.makerTokenAmount);
       }
-    } catch(err) {
-      console.error(err);
-      await dispatch(addErrors([err]));
-      return false;
-    }
 
-    // Make sure allowance is available.
-    try {
-      let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
+      // Make sure allowance is available.
       if (order.makerTokenAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
+
+      // Sign
+      let signedOrder = await signOrder(web3, order);
+
+      // Submit
+      let relayerOrder = await relayerClient.submitOrderAsync(signedOrder);
+      console.warn(relayerOrder)
+
+      dispatch(addOrders([ signedOrder ]));
     } catch(err) {
-      console.error(err);
-      await dispatch(addErrors([err]));
-      return false;
+      dispatch(NavigationActions.back());
+      await dispatch(setError(err));
     }
-
-    // Sign
-    let signedOrder = await signOrder(web3, order);
-
-    // Submit
-    try {
-      let client = new HttpClient(settings.relayerEndpoint);
-      await client.submitOrderAsync(signedOrder);
-    } catch(err) {
-      await dispatch(addErrors([err]));
-      return false;
-    }
-
-    dispatch(addOrders([ signedOrder ]));
-    return true;
   };
 }
 
 export function cancelOrder(order) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let txhash = await cancelOrderUtil(web3, order);
+    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
+
+    let { wallet: { web3, address } } = getState();
+
+    try {
+      if (order.maker !== address) {
+        throw new Error("Cannot cancel order that is not yours");
+      }
+
+      let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    } catch(err) {
+      dispatch(NavigationActions.back());
+      dispatch(setError(err));
+    }
   };
 }
 
 export function fillOrder(order) {
   return async (dispatch, getState) => {
+    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
+
     let { wallet: { web3 } } = getState();
     let zeroEx = await getZeroExClient(web3);
     let allowance = await getTokenAllowance(web3, order.takerTokenAddress);
     let fillAmount = new BigNumber(order.takerTokenAmount);
 
     try {
-      dispatch(addProcessingOrders(order.orderHash));
-
       if (fillAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.takerTokenAddress);
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
@@ -181,10 +166,8 @@ export function fillOrder(order) {
 
       dispatch(loadTransactions());
     } catch(err) {
-      console.error(err);
-      dispatch(addErrors([err]));
-    } finally {
-      dispatch(removeProcessingOrders(order.orderHash));
+      dispatch(NavigationActions.back());
+      dispatch(setError(err));
     }
   };
 }

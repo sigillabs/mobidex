@@ -55,9 +55,9 @@ export async function fillOrder(web3, order) {
   return await zeroEx.exchange.fillOrderAsync(order, order.takerTokenAmount, true, account.toLowerCase());
 }
 
-export async function cancelOrder(web3, order) {
+export async function cancelOrder(web3, order, amount) {
   const zeroEx = await getZeroExClient(web3);
-  return await zeroEx.exchange.cancelOrderAsync(order);
+  return await zeroEx.exchange.cancelOrderAsync(order, new BigNumber(amount));
 }
 
 export function calculateBidPrice(order, quoteToken, baseToken) {
@@ -102,4 +102,25 @@ export function findLowestAsk(orders, quoteToken, baseToken) {
   }
 
   return lowestAsk;
+}
+
+export function productTokenAddresses(products, attr) {
+  let tokenA = [], tokenB = [];
+
+  switch(attr) {
+    case "tokenA":
+    tokenA = products.map(p => p.tokenA.address);
+    break;
+
+    case "tokenB":
+    tokenB = products.map(p => p.tokenB.address);
+    break;
+
+    default:
+    tokenA = products.map(p => p.tokenA.address);
+    tokenB = products.map(p => p.tokenB.address);
+    break;
+  }
+
+  return _.uniq(tokenA.concat(tokenB));
 }

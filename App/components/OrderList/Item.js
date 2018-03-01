@@ -27,9 +27,6 @@ class OrderItem extends Component {
       // This should not happen... get of here!
     }
 
-    console.warn(price, quoteToken.decimals);
-    console.warn(amount, baseToken.decimals);
-
     return (
       <View>
         <View style={styles.container}>

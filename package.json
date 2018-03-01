@@ -20,7 +20,6 @@
     "ethjs-provider-http": "^0.1.6",
     "ethjs-query": "^0.3.3",
     "ethjs-signer": "^0.1.1",
-    "isomorphic-fetch": "file:../isomorphic-fetch",
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
     "node-libs-react-native": "github:abec/node-libs-react-native",

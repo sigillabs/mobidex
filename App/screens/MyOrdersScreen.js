@@ -7,10 +7,16 @@ import { setBaseToken, setQuoteToken } from "../../actions";
 import { loadOrders } from "../../thunks";
 import { productTokenAddresses } from "../../utils/orders";
 import OrderList from "../components/OrderList";
-import TradingInfo from "../components/TradingInfo";
 import TokenFilterBar from "../components/TokenFilterBar";
+import NormalHeader from "../headers/Normal";
 
-class TradingScreen extends Component {
+class MyOrdersScreen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: <NormalHeader navigation={navigation} />
+    };
+  };
+
   constructor(props) {
     super(props);
 
@@ -22,9 +28,10 @@ class TradingScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { tokens, orders, products, quoteToken, baseToken } = nextProps;
+    let { address, tokens, orders, products, quoteToken, baseToken } = nextProps;
 
     let filteredOrders = orders
+    .filter(order => order.maker === address || order.taker === address)
     .filter(order => order.makerTokenAddress === quoteToken.address || order.takerTokenAddress === quoteToken.address);
     let quoteTokens = productTokenAddresses(products, "tokenB").map(address => _.find(tokens, { address }));
     let baseTokens = productTokenAddresses(products, "tokenA").map(address => _.find(tokens, { address }));
@@ -49,7 +56,6 @@ class TradingScreen extends Component {
             selectedBaseToken={baseToken}
             onQuoteTokenSelect={quoteToken => this.props.dispatch(setQuoteToken(quoteToken))}
             onBaseTokenSelect={baseToken => this.props.dispatch(setBaseToken(baseToken))} />
-        <TradingInfo orders={filteredOrders} />
         <OrderList
             quoteToken={quoteToken}
             baseToken={baseToken}
@@ -60,4 +66,4 @@ class TradingScreen extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device, ...state.relayer, ...state.settings }), (dispatch) => ({ dispatch }))(TradingScreen);
+export default connect((state) => ({ ...state.device, ...state.settings, ...state.wallet, ...state.relayer }), (dispatch) => ({ dispatch }))(MyOrdersScreen);
