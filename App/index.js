@@ -14,7 +14,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Startup splashComponent={Splash} mainComponent={Main} onboardingCompnent={Onboarding} errorComponent={Err} />
+        <Startup splashComponent={Splash} mainComponent={Main} onboardingComponent={Onboarding} errorComponent={Err} />
       </Provider>
     );
   }

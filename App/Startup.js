@@ -16,9 +16,10 @@ class Startup extends Component {
 
   async componentDidMount(nextProps) {
     try {
-      await this.props.dispatch(loadWallet());
-      await this.props.dispatch(loadProductsAndTokens());
-      await this.props.dispatch(loadAssets(true));
+      if (await this.props.dispatch(loadWallet())) {
+        await this.props.dispatch(loadProductsAndTokens());
+        await this.props.dispatch(loadAssets(true));
+      }
     } catch(err) {
       setError(err);
     } finally {
@@ -44,7 +45,16 @@ class Startup extends Component {
 
     if (!this.props.web3) {
       return (
-        <Onboarding />
+        <Onboarding onFinish={async () => {
+          try {
+            await this.props.dispatch(loadProductsAndTokens());
+            await this.props.dispatch(loadAssets(true));
+          } catch(err) {
+            setError(err);
+          } finally {
+            this.setState({ finished: true });
+          }
+        }} />
       );
     }
 
