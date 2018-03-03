@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Card } from "react-native-elements";
+import { Button, Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { setError } from "../actions";
@@ -10,7 +10,8 @@ class Err extends Component {
   };
 
   render() {
-    let { message } = this.props.error;
+    let { message, stack } = this.props.error;
+    console.error(this.props.error)
 
     return (
       <Card title={message}>

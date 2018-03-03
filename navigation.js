@@ -9,7 +9,6 @@ import TransactionsHeader from "./App/headers/Transactions";
 import MyOrdersScreen from "./App/screens/MyOrdersScreen";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
 import TradingScreen from "./App/screens/TradingScreen";
-import TransactionsProcessingScreen from "./App/screens/TransactionsProcessingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
 import OrderDetailsScreen from "./App/screens/OrderDetailsScreen";
 import TransactionHistoryScreen from "./App/screens/TransactionHistoryScreen";
@@ -28,7 +27,6 @@ const TransactionsStack = StackNavigator({
 });
 
 const TradingStack = StackNavigator({
-  TransactionsProcessing: { screen: TransactionsProcessingScreen },
   Trading: { screen: TradingScreen },
   CreateOrder: { screen: CreateOrderScreen },
   OrderDetails: { screen: OrderDetailsScreen },

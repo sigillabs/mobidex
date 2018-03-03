@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import { sendEther } from "../../thunks";
+import GlobalStyles from "../../styles";
 
 class SendEther extends Component {
   constructor(props) {
@@ -39,36 +40,32 @@ class SendEther extends Component {
   submit = async () => {
     let { address, amount } = this.state;
     let result = await this.props.dispatch(sendEther(address, amount));
-    if (result) {
-      this.props.close();
-    }
-  }
+    this.props.close();
+  };
 
   render() {
     return (
       <Card title="Send Ether">
-        <View style={{ marginBottom: 10 }}>
-          <Input
-              placeholder="Amount"
-              displayError={this.state.amountError}
-              onChangeText={this.onSetAmount}
-              keyboardType="numeric"
-              errorMessage={"Amount should be numeric and greater than `0`."}
-              errorStyle={{ color: "red" }}
-              icon={<Icon name="money" size={24} color="black" />}
-              containerStyle={{ width: "100%", marginBottom: 10 }} />
-          <Input
-              placeholder="Address"
-              onChangeText={this.onSetAddress}
-              keyboardType="ascii-capable"
-              icon={<Icon name="user" size={24} color="black" />}
-              containerStyle={{ width: "100%", marginBottom: 10 }} />
-        </View>
+        <Input
+            placeholder="Amount"
+            displayError={this.state.amountError}
+            onChangeText={this.onSetAmount}
+            keyboardType="numeric"
+            errorMessage={"Amount should be numeric and greater than `0`."}
+            errorStyle={{ color: "red" }}
+            icon={<Icon name="money" size={24} color="black" />}
+            containerStyle={{ width: "100%", marginBottom: 10 }} />
+        <Input
+            placeholder="Address"
+            onChangeText={this.onSetAddress}
+            keyboardType="ascii-capable"
+            icon={<Icon name="user" size={24} color="black" />}
+            containerStyle={{ width: "100%", marginBottom: 10 }} />
         <Button
           large
           onPress={this.submit}
           icon={<Icon name="check" size={24} color="white" />}
-          text={`Send`}
+          text={"Send"}
           style={{ width: "100%" }} />
       </Card>
     );

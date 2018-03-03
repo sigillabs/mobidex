@@ -1,6 +1,8 @@
 import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import { AsyncStorage } from "react-native";
+import { NavigationActions } from "react-navigation";
+import { setError } from "../actions";
 
 export function getURLFromNetwork(network) {
   switch(network) {
@@ -103,17 +105,44 @@ export async function isWETHAddress(web3, address) {
 export async function wrapETH(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
   let account = await getAccount(web3);
-  let token = zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
-  return await zeroEx.etherToken.depositAsync(token.address, new BigNumber(amount), account);
+  let { address, decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  return await zeroEx.etherToken.depositAsync(address, value, account.toLowerCase());
+}
+
+export async function unwrapETH(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  let { address, decimals } = zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  return await zeroEx.etherToken.withdrawAsync(address, value, account.toLowerCase());
 }
 
 export async function guaranteeWETHAmount(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
-  let token = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
-  let balance = new BigNumber(await getTokenBalance(web3, token.address));
+  let { address } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let balance = new BigNumber(await getTokenBalance(web3, address));
   if (!(balance.gte(amount))) {
     return wrapETH(web3, balance);
   } else {
     return null;
   }
+}
+
+export async function sendEther(web3, to, amount) {
+  let sender = await getAccount(web3);
+  let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), 18).toString();
+  return await new Promise((resolve, reject) => {
+    web3.eth.sendTransaction({ from: sender, to, value }, function(err, transactionHash) {
+      if (err) return reject(err);
+      return resolve(transactionHash);
+    });
+  });
+}
+
+export async function sendTokens(web3, { address, decimals }, to, amount) {
+  let account = await getAccount(web3);
+  let zeroEx = await getZeroExClient(web3);
+  let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  return await zeroEx.token.transferAsync(address, account.toLowerCase(), to.toLowerCase(), value);
 }

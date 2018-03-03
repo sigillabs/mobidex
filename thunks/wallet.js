@@ -3,8 +3,8 @@ import * as _ from "lodash";
 import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
-import { addAssets, addTransactions, setWallet } from "../actions";
-import { getTokenBalance } from "../utils/ethereum";
+import { addAssets, addTransactions, addProcessing, setError, setWallet, setTransactionHash } from "../actions";
+import { getZeroExClient, sendTokens as sendTokensUtil, sendEther as sendEtherUtil, getTokenBalance } from "../utils/ethereum";
 import { cache } from "../utils/cache";
 
 // Would like to password protect using Ethereum Secret Storage
@@ -43,7 +43,6 @@ export function loadAssets(force = false) {
     assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }))
 
     dispatch(addAssets(assets));
-    return assets;
   };
 }
 
@@ -82,14 +81,47 @@ export function loadTransactions() {
 
 export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
-    let { wallet: { address } } = getState();
-    
+    let { wallet: { web3 } } = getState();
+    let zeroEx = await getZeroExClient(web3);
+    try {
+      let txhash = await sendTokensUtil(web3, token, to, amount);
+      dispatch(setTxHash(txhash));
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      await Promise.all([
+        dispatch(loadAssets(true)),
+        dispatch(loadTransactions(true))
+      ]);
+    } catch(err) {
+      await dispatch(setError(err));
+    } finally {
+      await dispatch(setTxHash(null));
+    }
   };
 }
 
 export function sendEther(to, amount) {
   return async (dispatch, getState) => {
-    let { wallet: { address } } = getState();
-    
+    let { wallet: { web3 } } = getState();
+    let zeroEx = await getZeroExClient(web3);
+    try {
+      let txhash = await sendEtherUtil(web3, to, amount);
+      dispatch(setTxHash(txhash));
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    } catch(err) {
+      await dispatch(setError(err));
+    } finally {
+      await dispatch(setTxHash(null));
+    }
+  };
+}
+
+export function setTxHash(txhash) {
+  return (dispatch) => {
+    if (txhash) {
+      dispatch(addProcessing([txhash]));
+      dispatch(setTransactionHash(txhash));
+    } else {
+      dispatch(setTransactionHash(null));
+    }
   };
 }

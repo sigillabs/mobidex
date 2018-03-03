@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import React, { Component } from "react";
 import { View, Text, TouchableHighlight } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
@@ -21,16 +22,23 @@ class PortfolioScreen extends Component {
     };
   }
 
+  close = () => {
+    this.setState({ showSend: false, showReceive: false });
+    this.props.navigation.setParams({ back: null });
+  };
+
   renderAssetDetails() {
     if (!this.state.token) {
       return (
         <EthereumAssetDetails onAction={(action) => {
           switch(action) {
             case "send":
+            this.props.navigation.setParams({ back: this.close });
             this.setState({ showSend: true, showReceive: false });
             break;
 
             case "receive":
+            this.props.navigation.setParams({ back: this.close });
             this.setState({ showSend: false, showReceive: true });
             break;
           }
@@ -56,9 +64,9 @@ class PortfolioScreen extends Component {
   render() {
     if (this.state.showSend) {
       if (this.state.token) {
-        return <SendTokens token={this.state.token} close={() => (this.setState({ showSend: false }))} />;
+        return <SendTokens token={this.state.token} close={() => {}} />;
       } else {
-        return <SendEther token={this.state.token} close={() => (this.setState({ showSend: false }))} />;
+        return <SendEther token={this.state.token} close={() => {}} />;
       }
     }
 

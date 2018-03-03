@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import { sendTokens } from "../../thunks";
+import GlobalStyles from "../../styles";
 
 class SendTokens extends Component {
   constructor(props) {
@@ -39,11 +40,9 @@ class SendTokens extends Component {
   submit = async () => {
     let { token } = this.props;
     let { address, amount } = this.state;
-    let result = await this.props.dispatch(sendTokens(token.address, address, amount));
-    if (result) {
-      this.props.close();
-    }
-  }
+    let result = await this.props.dispatch(sendTokens(token, address, amount));
+    this.props.close();
+  };
 
   render() {
     return (
@@ -66,11 +65,11 @@ class SendTokens extends Component {
               containerStyle={{ width: "100%", marginBottom: 10 }} />
         </View>
         <Button
-          large
-          onPress={this.submit}
-          icon={<Icon name="check" size={24} color="white" />}
-          text={`Send`}
-          style={{ width: "100%" }} />
+            large
+            onPress={this.submit}
+            icon={<Icon name="check" size={24} color="white" />}
+            text={"Send"}
+            style={{ width: "100%" }} />
       </Card>
     );
   }

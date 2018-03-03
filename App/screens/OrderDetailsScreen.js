@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
 import { fillOrder, cancelOrder } from "../../thunks";
 import { formatAmount, formatAmountWithDecimals } from "../../utils/display";
+import { calculateBidPrice, calculateAskPrice } from "../../utils/orders";
+import GlobalStyles from "../../styles";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -39,8 +41,8 @@ class OrderDetailsScreen extends Component {
   };
 
   render() {
-    const { navigation: { state: { params: { order, quoteToken } } } } = this.props;
-    const { tokens, address } = this.props;
+    const { navigation: { state: { params: { order } } } } = this.props;
+    const { tokens, quoteToken, baseToken, address } = this.props;
     const isMine = order.maker === address;
     const orderType = quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
     let amount = null;
@@ -56,7 +58,7 @@ class OrderDetailsScreen extends Component {
       amount = order.takerTokenAmount;
       amountSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
       amountDecimals = _.find(tokens, { address: order.takerTokenAddress }).decimals;
-      price = order.takerTokenAmount.div(order.makerTokenAmount);
+      price = calculateBidPrice(order, quoteToken, baseToken);
       priceSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
       priceDecimals = _.find(tokens, { address: order.makerTokenAddress }).decimals;
       subtotal = order.makerTokenAmount;
@@ -66,42 +68,42 @@ class OrderDetailsScreen extends Component {
       amount = order.makerTokenAmount;
       amountSymbol = _.find(tokens, { address: order.makerTokenAddress }).symbol;
       amountDecimals = _.find(tokens, { address: order.makerTokenAddress }).decimals;
-      price = order.makerTokenAmount.div(order.takerTokenAmount);
+      price = calculateAskPrice(order, quoteToken, baseToken);
       priceSymbol = _.find(tokens, { address: order.takerTokenAddress }).symbol;
       priceDecimals = _.find(tokens, { address: order.takerTokenAddress }).decimals;
       subtotal = order.takerTokenAmount;
       break;
     }
 
-    let title = `${orderType === "ask" ? "Buy" : "Sell"} ${amount.toString()} ${amountSymbol}`;
+    let title = `${orderType === "ask" ? "Buy" : "Sell"} ${formatAmountWithDecimals(amount, amountDecimals)} ${amountSymbol}`;
     let styles = getStyles(5 * 45 + (isMine ? 25 : 0));
 
     return (
       <Card title={title} containerStyle={[ styles.container ]} wrapperStyle={[ styles.wrapper ]}>
-        <View style={[ styles.row ]}>
+        <View style={[ GlobalStyles.row ]}>
           <Text>Price:</Text>
           <Text> </Text>
-          <Text>{formatAmountWithDecimals(price, priceDecimals)} {priceSymbol}</Text>
+          <Text>{formatAmount(price)} {priceSymbol}</Text>
         </View>
-        <View style={[ styles.row ]}>
+        <View style={[ GlobalStyles.row ]}>
           <Text>Amount:</Text>
           <Text> </Text>
           <Text>{formatAmountWithDecimals(amount, amountDecimals)} {amountSymbol}</Text>
         </View>
-        <View style={[ styles.row ]}>
+        <View style={[ GlobalStyles.row ]}>
           <Text>Subtotal:</Text>
           <Text> </Text>
-          <Text>{formatAmount(subtotal)} {priceSymbol}</Text>
+          <Text>{formatAmountWithDecimals(subtotal, priceDecimals)} {priceSymbol}</Text>
         </View>
-        <View style={[ styles.row ]}>
+        <View style={[ GlobalStyles.row ]}>
           <Text>Fees:</Text>
           <Text> </Text>
           <Text>0 ZRX</Text>
         </View>
-        <View style={[ styles.row ]}>
+        <View style={[ GlobalStyles.row ]}>
           <Text>Total:</Text>
           <Text> </Text>
-          <Text>{formatAmount(subtotal)} {priceSymbol}</Text>
+          <Text>{formatAmountWithDecimals(subtotal, priceDecimals)} {priceSymbol}</Text>
         </View>
 
         {!isMine ? (<Button

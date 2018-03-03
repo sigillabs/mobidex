@@ -52,23 +52,36 @@ const initialState = {
   privateKey: null,
   address: null,
   assets: [],
-  transactions: []
+  transactions: [],
+  processing: [],
+  txhash: null
 };
 
 export default handleActions({
+  [Actions.ADD_ASSETS]: (state, action) => {
+    let assets = _.unionBy(action.payload, state.assets, "address");
+    return { ...state, assets };
+  },
+  [Actions.ADD_PROCESSING]: (state, action) => {
+    let processing = _.union(state.processing, action.payload);
+    return { ...state, processing };
+  },
+  [Actions.ADD_TRANSACTIONS]: (state, action) => {
+    let transactions = _.unionBy(action.payload, state.transactions, "transactionId");
+    return { ...state, transactions };
+  },
+  [Actions.REMOVE_PROCESSING]: (state, action) => {
+    let processing = _.difference(state.processing, action.payload);
+    return { ...state, processing };
+  },
+  [Actions.SET_TRANSACTION_HASH]: (state, action) => {
+    return { ...state, txhash: action.payload };
+  },
   [Actions.SET_WALLET]: (state, action) => {
     let { network, wallet } = action.payload;
     let privateKey = `0x${ethUtil.stripHexPrefix(wallet.getPrivateKey().toString("hex"))}`;
     let address = `0x${ethUtil.stripHexPrefix(wallet.getAddress().toString("hex"))}`;
     let web3 = getWeb3(network, privateKey, address);
     return { ...state, privateKey, address, web3 };
-  },
-  [Actions.ADD_TRANSACTIONS]: (state, action) => {
-    let transactions = _.unionBy(state.transactions, action.payload, "transactionId");
-    return { ...state, transactions: transactions };
-  },
-  [Actions.ADD_ASSETS]: (state, action) => {
-    let assets = _.unionBy(state.assets, action.payload, "address");
-    return { ...state, assets: assets };
   }
 }, initialState);

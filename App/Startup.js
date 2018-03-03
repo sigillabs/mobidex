@@ -4,6 +4,11 @@ import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { setError } from "../actions";
 import { loadAssets, loadWallet, loadProductsAndTokens } from "../thunks";
+import Err from "./Error";
+import Main from "./Main";
+import Onboarding from "./Onboarding";
+import Splash from "./Splash";
+import TransactionsProcessing from "./TransactionsProcessing";
 
 class Startup extends Component {
   constructor(props) {
@@ -18,7 +23,7 @@ class Startup extends Component {
     try {
       if (await this.props.dispatch(loadWallet())) {
         await this.props.dispatch(loadProductsAndTokens());
-        await this.props.dispatch(loadAssets(true));
+        await this.props.dispatch(loadAssets());
       }
     } catch(err) {
       setError(err);
@@ -28,13 +33,12 @@ class Startup extends Component {
   }
 
   render() {
-    let Splash = this.props.splashComponent;
-    let Main = this.props.mainComponent;
-    let Onboarding = this.props.onboardingComponent;
-    let Err = this.props.errorComponent;
-
     if (this.props.error) {
       return <Err error={this.props.error} />;
+    }
+
+    if (this.props.txhash) {
+      return <TransactionsProcessing txhash={this.props.txhash} />;
     }
 
     if (!this.state.finished) {
@@ -64,4 +68,4 @@ class Startup extends Component {
   }
 }
 
-export default connect((state) => ({ web3: state.wallet.web3, error: state.error }), dispatch => ({ dispatch }))(Startup);
+export default connect((state) => ({ web3: state.wallet.web3, txhash: state.wallet.txhash, error: state.error }), dispatch => ({ dispatch }))(Startup);

@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import moment from "moment";
 import { NavigationActions } from "react-navigation";
 import { setError } from "../actions";
-import { loadTransactions } from "../thunks";
+import { loadTransactions, setTxHash } from "../thunks";
 import {
   getZeroExClient,
   getZeroExContractAddress,
@@ -81,8 +81,6 @@ export function loadProductsAndTokens() {
 
 export function createSignSubmitOrder(side, price, amount) {
   return async (dispatch, getState) => {
-    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
-
     let { wallet: { web3, address }, settings: { relayerEndpoint, quoteToken, baseToken } } = getState();
     let zeroEx = await getZeroExClient(web3);
     let relayerClient = new HttpClient(relayerEndpoint);
@@ -102,12 +100,17 @@ export function createSignSubmitOrder(side, price, amount) {
     try {
       // Guarantee WETH is available.
       if ((await isWETHAddress(web3, order.makerTokenAddress))) {
-        await guaranteeWETHAmount(web3, order.makerTokenAmount);
+        let txhash = await guaranteeWETHAmount(web3, order.makerTokenAmount);
+        if (txhash) {
+          dispatch(setTxHash(txhash));
+          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        }
       }
 
       // Make sure allowance is available.
       if (order.makerTokenAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
+        dispatch(setTxHash(txhash));
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
 
@@ -115,22 +118,22 @@ export function createSignSubmitOrder(side, price, amount) {
       let signedOrder = await signOrder(web3, order);
 
       // Submit
-      let relayerOrder = await relayerClient.submitOrderAsync(signedOrder);
-      console.warn(relayerOrder)
+      await relayerClient.submitOrderAsync(signedOrder);
 
       dispatch(addOrders([ signedOrder ]));
     } catch(err) {
-      dispatch(NavigationActions.back());
       await dispatch(setError(err));
+    } finally {
+      dispatch(setTxHash(null));
+      dispatch(NavigationActions.push({ routeName: "Trading" }));
     }
   };
 }
 
 export function cancelOrder(order) {
   return async (dispatch, getState) => {
-    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
-
     let { wallet: { web3, address } } = getState();
+    let zeroEx = await getZeroExClient(web3);
 
     try {
       if (order.maker !== address) {
@@ -138,18 +141,19 @@ export function cancelOrder(order) {
       }
 
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
+      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
-      dispatch(NavigationActions.back());
       dispatch(setError(err));
+    } finally {
+      dispatch(setTxHash(null));
+      dispatch(NavigationActions.push({ routeName: "Trading" }));
     }
   };
 }
 
 export function fillOrder(order) {
   return async (dispatch, getState) => {
-    dispatch(NavigationActions.navigate({ routeName: "TransactionsProcessing" }));
-
     let { wallet: { web3 } } = getState();
     let zeroEx = await getZeroExClient(web3);
     let allowance = await getTokenAllowance(web3, order.takerTokenAddress);
@@ -158,16 +162,19 @@ export function fillOrder(order) {
     try {
       if (fillAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.takerTokenAddress);
+        dispatch(setTxHash(txhash));
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
 
       let txhash = await fillOrderUtil(web3, order);
+      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
 
       dispatch(loadTransactions());
     } catch(err) {
-      dispatch(NavigationActions.back());
       dispatch(setError(err));
+    } finally {
+      dispatch(setTxHash(null));
     }
   };
 }

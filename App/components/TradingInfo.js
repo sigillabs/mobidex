@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { connect } from "react-redux";
 import { formatAmount } from "../../utils/display";
 import { findHighestBid, findLowestAsk, calculateBidPrice, calculateAskPrice } from "../../utils/orders";
+import GlobalStyles from "../../styles";
 
 class TradingInfo extends Component {
   render() {
@@ -18,12 +19,12 @@ class TradingInfo extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
+        <View style={GlobalStyles.row}>
           <Text style={styles.datum}>{formatAmount(highestBidPrice)}</Text>
           <Text style={styles.datum}>{formatAmount(lowestAskPrice)}</Text>
           <Text style={styles.datum}>{formatAmount(spread)}</Text>
         </View>
-        <View style={styles.row}>
+        <View style={GlobalStyles.row}>
           <Text style={styles.header}>Highest Bid</Text>
           <Text style={styles.header}>Lowest Ask</Text>
           <Text style={styles.header}>Bid/Ask Spread</Text>
