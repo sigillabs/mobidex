@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
 import { ZeroEx } from "0x.js";
-import { getTokenByAddress } from "../../../utils/ethereum";
 import { formatAmount } from "../../../utils/display";
 
 class OrderItem extends Component {

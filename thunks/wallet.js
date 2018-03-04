@@ -3,33 +3,64 @@ import * as _ from "lodash";
 import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
+import ethUtil from "ethereumjs-util";
 import { addAssets, addTransactions, addProcessing, setError, setWallet, setTransactionHash } from "../actions";
 import { getZeroExClient, sendTokens as sendTokensUtil, sendEther as sendEtherUtil, getTokenBalance } from "../utils/ethereum";
 import { cache } from "../utils/cache";
 
 // Would like to password protect using Ethereum Secret Storage
-// `wallet.toV3("nopass")` is very expensive.
-export function generateWallet() {
+export function generateWallet(password) {
   return async (dispatch, getState) => {
     let { settings: { network } } = getState();
     let wallet = await Wallet.generate();
-    await AsyncStorage.setItem("wallet", wallet.getPrivateKey().toString("hex"));
-    dispatch(setWallet({network, wallet}));
+    dispatch(setWallet({ network, wallet }));
+    await dispatch(lock(password));
   };
 }
 
-export function loadWallet() {
+export function importPrivateKey(privateKey, password) {
   return async (dispatch, getState) => {
     let { settings: { network } } = getState();
-    let privateKey = await AsyncStorage.getItem("wallet");
-    if (privateKey) {
-      let wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
-      dispatch(setWallet({network, wallet}));
-      return wallet;
-    } else {
-      return null;
-    }
+    let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(privateKey), "hex"));
+    dispatch(setWallet({ network, wallet }));
+    await dispatch(lock(password));
   };
+}
+
+// export function loadWallet() {
+//   return async (dispatch, getState) => {
+//     let { settings: { network } } = getState();
+//     let privateKey = await AsyncStorage.getItem("wallet");
+//     if (privateKey) {
+//       let wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
+//       dispatch(setWallet({ network, wallet }));
+//       return wallet;
+//     } else {
+//       return null;
+//     }
+//   };
+// }
+
+export function lock(password) {
+  return async (dispatch, getState) => {
+    let { wallet: { privateKey } } = getState();
+    let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(privateKey), "hex"));
+    await AsyncStorage.setItem("lock", JSON.stringify(wallet.toV3(password)));
+  }
+}
+
+export function unlock(password) {
+  return async (dispatch, getState) => {
+    let { settings: { network } } = getState();
+    let v3json = await AsyncStorage.getItem("lock");
+    if (v3json) {
+      let v3 = JSON.parse(v3json);
+      let wallet = Wallet.fromV3(v3, password);
+      dispatch(setWallet({ network, wallet }));
+    } else {
+      throw new Error("Wallet does not exist.");
+    }
+  }
 }
 
 export function loadAssets(force = false) {
@@ -63,18 +94,20 @@ export function loadTransactions() {
       let [ fills, cancels ] = await Promise.all(promises);
       let fillsJSON = await fills.json();
       let cancelsJSON = await cancels.json();
-      dispatch(addTransactions(fillsJSON.hits.hits.map(log => ({
+      let filltxs = fillsJSON.hits.hits.map(log => ({
         ...log._source,
         id: log._id,
         status: "FILLED"
-      }))));
-      dispatch(addTransactions(cancelsJSON.hits.hits.map(log => ({
+      }));
+      let canceltxs = cancelsJSON.hits.hits.map(log => ({
         ...log._source,
         id: log._id,
         status: "CANCELLED"
-      }))));
+      }));
+
+      dispatch(addTransactions(filltxs.concat(canceltxs)));
     } catch(err) {
-      console.error(err)
+      dispatch(setError(err));
     }
   };
 }

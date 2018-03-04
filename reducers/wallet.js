@@ -67,7 +67,7 @@ export default handleActions({
     return { ...state, processing };
   },
   [Actions.ADD_TRANSACTIONS]: (state, action) => {
-    let transactions = _.unionBy(action.payload, state.transactions, "transactionId");
+    let transactions = _.unionBy(action.payload, state.transactions, "id");
     return { ...state, transactions };
   },
   [Actions.REMOVE_PROCESSING]: (state, action) => {

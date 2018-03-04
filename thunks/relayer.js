@@ -66,13 +66,17 @@ export function loadProductsAndTokens() {
 
     try {
       let pairs = await client.getTokenPairsAsync();
-      let tokensA = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenA.address)));
-      let tokensB = await Promise.all(pairs.map(pair => getTokenByAddress(web3, pair.tokenB.address)));
-      let tokens = _.unionBy(tokensA, tokensB, "address");
+      let tokensA = pairs.map(pair => pair.tokenA);
+      let tokensB = pairs.map(pair => pair.tokenB);
+      let extTokensA = await Promise.all(tokensA.map(token => getTokenByAddress(web3, token.address)));
+      let extTokensB = await Promise.all(tokensB.map(token => getTokenByAddress(web3, token.address)));
+      let fullTokensA = tokensA.map((token, index) => ({ ...token, ...extTokensA[index] }));
+      let fullTokensB = tokensB.map((token, index) => ({ ...token, ...extTokensB[index] }));
+      let tokens = _.unionBy(fullTokensA, fullTokensB, "address");
       dispatch(setTokens(tokens));
       dispatch(setProducts(pairs));
-      dispatch(setQuoteToken(_.find(tokens, { symbol: "WETH" })));
-      dispatch(setBaseToken(_.find(tokens, { symbol: "ZRX" })));
+      dispatch(setQuoteToken(fullTokensB[0]));
+      dispatch(setBaseToken(fullTokensA[0]));
     } catch(err) {
       dispatch(setError(err));
     }

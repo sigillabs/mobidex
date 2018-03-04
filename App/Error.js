@@ -11,7 +11,6 @@ class Err extends Component {
 
   render() {
     let { message, stack } = this.props.error;
-    console.error(this.props.error)
 
     return (
       <Card title={message}>

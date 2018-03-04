@@ -1,24 +1,42 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
-import { List, ListItem } from "react-native-elements";
+import { List, ListItem, Text } from "react-native-elements";
 import { connect } from "react-redux";
-import Item from "./Item";
+import GlobalStyles from "../../../styles";
+import CancelledItem from "./CancelledItem";
+import FilledItem from "./FilledItem";
 
 class TransactionsList extends Component {
   render() {
     return (
       <ScrollView>
+      <Text style={GlobalStyles.tinyheader}>Filled</Text>
         <List containerStyle={{
           flex: 1,
           width: this.props.width
         }}>
           {
             this.props.transactions
-            .filter(({ status }) => status === "FILLED" || status === "CANCELLED")
+            .filter(({ status }) => status === "FILLED")
             .map((tx, index) => (
-              <TouchableOpacity key={`ask-${index}`} onPress={() => (this.props.onPress(tx))}>
-                <ListItem title={<Item transaction={tx} />} />
+              <TouchableOpacity key={`filled-${index}`} onPress={() => (this.props.onPress(tx))}>
+                <ListItem title={<FilledItem transaction={tx} />} />
+              </TouchableOpacity>
+            ))
+          }
+        </List>
+        <Text style={GlobalStyles.tinyheader}>Cancelled</Text>
+        <List containerStyle={{
+          flex: 1,
+          width: this.props.width
+        }}>
+          {
+            this.props.transactions
+            .filter(({ status }) => status === "CANCELLED")
+            .map((tx, index) => (
+              <TouchableOpacity key={`cancelled-${index}`} onPress={() => (this.props.onPress(tx))}>
+                <ListItem title={<CancelledItem transaction={tx} />} />
               </TouchableOpacity>
             ))
           }

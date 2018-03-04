@@ -3,11 +3,10 @@ import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { setError } from "../actions";
-import { loadAssets, loadWallet, loadProductsAndTokens } from "../thunks";
+import { loadAssets, loadWallet, loadProductsAndTokens, unlock } from "../thunks";
 import Err from "./Error";
 import Main from "./Main";
-import Onboarding from "./Onboarding";
-import Splash from "./Splash";
+import Locked from "./Locked";
 import TransactionsProcessing from "./TransactionsProcessing";
 
 class Startup extends Component {
@@ -16,21 +15,18 @@ class Startup extends Component {
 
     this.state = {
       finished: false
-    }
+    };
   }
 
-  async componentDidMount(nextProps) {
+  onFinish = async () => {
     try {
-      if (await this.props.dispatch(loadWallet())) {
-        await this.props.dispatch(loadProductsAndTokens());
-        await this.props.dispatch(loadAssets());
-      }
+      await this.props.dispatch(loadProductsAndTokens());
+      await this.props.dispatch(loadAssets());
+      this.setState({ finished: true })
     } catch(err) {
       setError(err);
-    } finally {
-      this.setState({ finished: true });
     }
-  }
+  };
 
   render() {
     if (this.props.error) {
@@ -41,24 +37,9 @@ class Startup extends Component {
       return <TransactionsProcessing txhash={this.props.txhash} />;
     }
 
-    if (!this.state.finished) {
+    if (!this.props.web3 || !this.state.finished) {
       return (
-        <Splash />
-      );
-    }
-
-    if (!this.props.web3) {
-      return (
-        <Onboarding onFinish={async () => {
-          try {
-            await this.props.dispatch(loadProductsAndTokens());
-            await this.props.dispatch(loadAssets(true));
-          } catch(err) {
-            setError(err);
-          } finally {
-            this.setState({ finished: true });
-          }
-        }} />
+        <Locked onFinish={this.onFinish} />
       );
     }
 

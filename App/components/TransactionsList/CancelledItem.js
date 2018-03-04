@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { formatAmountWithDecimals } from "../../../utils/display";
 import { getTokenByAddress } from "../../../utils/ethereum";
 
-class FinishedTransactionItem extends Component {
+class CancelledItem extends Component {
   constructor(props) {
     super(props);
 
@@ -34,17 +34,17 @@ class FinishedTransactionItem extends Component {
       return null;
     }
 
-    let { filledMakerTokenAmount, filledTakerTokenAmount } = this.props.transaction;
+    let { cancelledMakerTokenAmount, cancelledTakerTokenAmount } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
 
     return (
       <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        <Text>{formatAmountWithDecimals(filledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
+        <Text>{formatAmountWithDecimals(cancelledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
         <Text> for </Text>
-        <Text>{formatAmountWithDecimals(filledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+        <Text>{formatAmountWithDecimals(cancelledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
       </View>
     );
   }
 }
 
-export default connect(state => ({ ...state.wallet, ...state.device.layout }), dispatch => ({ dispatch }))(FinishedTransactionItem);
+export default connect(state => ({ ...state.wallet, ...state.device.layout }), dispatch => ({ dispatch }))(CancelledItem);

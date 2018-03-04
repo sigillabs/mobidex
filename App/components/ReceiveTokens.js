@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableHighlight } from "react-native";
+import { View } from "react-native";
 import { Card, Header, Icon, Text } from "react-native-elements";
 import { connect } from "react-redux";
 import ethUtil from "ethereumjs-util";

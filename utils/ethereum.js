@@ -71,6 +71,8 @@ export async function getTokenBalance(web3, address) {
 }
 
 export async function getTokenByAddress(web3, address) {
+  if (!address) return null;
+
   let key = `token:${address}`;
   let json = await AsyncStorage.getItem(key);
 
@@ -80,6 +82,11 @@ export async function getTokenByAddress(web3, address) {
 
   let zeroEx = await getZeroExClient(web3);
   let token = await zeroEx.tokenRegistry.getTokenIfExistsAsync(address);
+
+  if (!token) {
+    return null;
+  }
+
   await AsyncStorage.setItem(key, JSON.stringify(token));
 
   return token;

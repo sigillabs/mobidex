@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { View, Text, TouchableHighlight } from "react-native";
+import { View, Text } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
@@ -10,6 +10,7 @@ import EthereumAssetDetails from "../components/EthereumAssetDetails";
 import ReceiveTokens from "../components/ReceiveTokens";
 import SendTokens from "../components/SendTokens";
 import SendEther from "../components/SendEther";
+import { lock } from "../../thunks";
 
 class PortfolioScreen extends Component {
   constructor(props) {
@@ -50,10 +51,12 @@ class PortfolioScreen extends Component {
       <AssetDetails address={this.props.address} asset={this.state.token} onAction={(action) => {
         switch(action) {
           case "send":
+          this.props.navigation.setParams({ back: this.close });
           this.setState({ showSend: true, showReceive: false });
           break;
 
           case "receive":
+          this.props.navigation.setParams({ back: this.close });
           this.setState({ showSend: false, showReceive: true });
           break;
         }
