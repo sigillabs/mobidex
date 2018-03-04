@@ -6,7 +6,7 @@
     "prepare": "npm run patch",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "patch": "sed -i.bk 's/self/global/g' ./node_modules/@0xproject/connect/node_modules/isomorphic-fetch/fetch-npm-browserify.js"
+    "patch": "find ./node_modules -name fetch-npm-browserify.js -print -exec sed -i.bk 's/self/global/g' {} \\;"
   },
   "dependencies": {
     "0x.js": "^0.30.0",
