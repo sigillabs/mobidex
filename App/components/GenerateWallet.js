@@ -4,7 +4,8 @@ import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { generateWallet } from "../../thunks";
-import Button from "./Button";
+import LongButton from "./LongButton";
+import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
 class GenerateWallet extends Component {
@@ -22,7 +23,7 @@ class GenerateWallet extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  generate = async () => {
+  async generate() {
     if (!this.state.password) {
       this.setState({ passwordError: true });
       return;
@@ -36,7 +37,7 @@ class GenerateWallet extends Component {
   render() {
     return (
       <BigCenter>
-        <Input
+        <LongInput
           secureTextEntry={true}
           placeholder="Password"
           displayError={this.state.passwordError}
@@ -45,10 +46,10 @@ class GenerateWallet extends Component {
           errorStyle={{ color: "red" }}
           icon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <Button
+        <LongButton
             large
             text="Generate New Wallet"
-            onPress={this.generate} />
+            onPress={() => this.generate()} />
       </BigCenter>
     );
   }

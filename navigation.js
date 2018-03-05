@@ -61,6 +61,8 @@ export default TabNavigator({
   Transactions: { screen: TransactionsStack }
 }, {
   initialRouteName: "Wallet",
+  swipeEnabled: true,
+  lazy: true,
   navigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, tintColor }) => {
       const { routeName } = navigation.state;

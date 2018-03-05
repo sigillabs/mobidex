@@ -3,7 +3,8 @@ import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { importPrivateKey } from "../../thunks";
-import Button from "./Button";
+import LongButton from "./LongButton";
+import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
 class ImportPrivateKey extends Component {
@@ -26,7 +27,7 @@ class ImportPrivateKey extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  importPrivateKey = async () => {
+  async importPrivateKey() {
     if (!this.state.privateKey) {
       this.setState({ privateKeyError: true });
       return;
@@ -50,7 +51,7 @@ class ImportPrivateKey extends Component {
   render() {
     return (
       <BigCenter>
-        <Input
+        <LongInput
           secureTextEntry={true}
           placeholder="Private Key"
           displayError={this.state.privateKeyError}
@@ -59,7 +60,7 @@ class ImportPrivateKey extends Component {
           errorStyle={{ color: "red" }}
           icon={<Icon name="vpn-key" size={24} color="black" />}
           containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <Input
+        <LongInput
           secureTextEntry={true}
           placeholder="Password"
           displayError={this.state.passwordError}
@@ -68,10 +69,10 @@ class ImportPrivateKey extends Component {
           errorStyle={{ color: "red" }}
           icon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <Button
+        <LongButton
             large
             text="Import Private Key"
-            onPress={this.importPrivateKey} />
+            onPress={() => this.importPrivateKey()} />
       </BigCenter>
     );
   }

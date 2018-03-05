@@ -11,7 +11,11 @@ export default class BigCenter extends Component {
       <View {...rest} style={[{
         flex: 1,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        paddingTop: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        paddingLeft: 10
       }, style]}>
         {this.props.children}
       </View>

@@ -3,7 +3,8 @@ import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { generateWallet, lock, unlock } from "../../thunks";
-import Button from "./Button";
+import LongButton from "./LongButton";
+import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
 class Unlock extends Component {
@@ -20,7 +21,7 @@ class Unlock extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  unlock = async () => {
+  async unlock() {
     try {
       await this.props.dispatch(unlock(this.state.password));
     } catch(err) {
@@ -34,7 +35,7 @@ class Unlock extends Component {
   render() {
     return (
       <BigCenter>
-        <Input
+        <LongInput
           secureTextEntry={true}
           placeholder="Password"
           displayError={this.state.passwordError}
@@ -43,10 +44,10 @@ class Unlock extends Component {
           errorStyle={{ color: "red" }}
           icon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <Button
+        <LongButton
             large
             text="Unlock"
-            onPress={this.unlock} />
+            onPress={() => this.unlock()} />
       </BigCenter>
     );
   }
