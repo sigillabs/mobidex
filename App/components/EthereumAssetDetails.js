@@ -57,20 +57,20 @@ class EthereumAssetDetails extends Component {
           <Text style={{ marginTop: 10, marginBottom: 10 }}>{formatAmountWithDecimals(this.state.balance, 18)}</Text>
           <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? this.props.address : summarizeAddress(this.props.address)}</Text>
         </View>
-        
+
         <View style={{ height: 50 }}>
           <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <Button
               large
               text="Receive"
-              icon={<Icon name="home" color="white" />}
+              icon={<Icon name="move-to-inbox" color="white" size={18} />}
               buttonStyle={{ borderRadius: 0 }}
               onPress={this.receive} />
             <View style={{ width: 10 }} />
             <Button
               large
               text="Send"
-              icon={<Icon name="send" color="white" />}
+              icon={<Icon name="send" color="white" size={18} />}
               buttonStyle={{ borderRadius: 0 }}
               onPress={this.send} />
           </View>
