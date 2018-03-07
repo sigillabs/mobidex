@@ -36,8 +36,8 @@ export default connect((state) => ({ ...state.device.layout, ...state.settings }
 
 const styles = {
   highlight: {
-    backgroundColor: "#2089dc",
-    borderColor: "#2089dc",
+    backgroundColor: "#86939e",
+    borderColor: "#86939e",
     borderWidth: 1
   }
 };

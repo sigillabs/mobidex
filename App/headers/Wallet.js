@@ -22,7 +22,9 @@ export default class extends Component {
     return (
       <Header
         leftComponent={leftComponent}
-        centerComponent={{ text: "Mobidex", style: { color: "white" } }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
+        backgroundColor= "#43484d"
+        statusBarProps={{ barStyle: 'light-content' }}
       />
     );
   }
