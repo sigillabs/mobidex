@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Card, Button, Input } from "react-native-elements";
+import { Card, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import { sendTokens } from "../../thunks";
 import GlobalStyles from "../../styles";
+import Button from "./Button";
 
 class SendTokens extends Component {
   constructor(props) {

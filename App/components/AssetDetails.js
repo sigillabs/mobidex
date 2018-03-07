@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { View } from "react-native";
-import { Avatar, Button, Text } from "react-native-elements";
+import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Button from "./Button";
 import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 
 export default class AssetDetails extends Component {

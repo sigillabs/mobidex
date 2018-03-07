@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Card, Text } from "react-native-elements";
+import { Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
@@ -9,6 +9,7 @@ import { fillOrder, cancelOrder } from "../../thunks";
 import { formatAmount, formatAmountWithDecimals } from "../../utils/display";
 import { calculateBidPrice, calculateAskPrice } from "../../utils/orders";
 import GlobalStyles from "../../styles";
+import Button from "../components/Button";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -30,13 +31,13 @@ class OrderDetailsScreen extends Component {
   fillOrder = async () => {
     const { web3, address } = this.props;
     const { navigation: { state: { params: { order } } } } = this.props;
-    
+
     this.props.dispatch(fillOrder(order));
   };
 
   cancelOrder = async () => {
     const { navigation: { state: { params: { order } } } } = this.props;
-    
+
     this.props.dispatch(cancelOrder(order));
   };
 

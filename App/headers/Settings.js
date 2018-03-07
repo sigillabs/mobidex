@@ -7,7 +7,9 @@ export default class extends Component {
   render() {
     return (
       <Header
-        centerComponent={{ text: "Mobidex", style: { color: "white" } }}
+        backgroundColor= "#43484d"
+        statusBarProps={{ barStyle: 'light-content' }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
       />
     );
   }

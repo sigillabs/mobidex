@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { View } from "react-native";
-import { Avatar, Button, Text } from "react-native-elements";
+import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 import { getBalance } from "../../utils/ethereum";
+import Button from "./Button";
 
 class EthereumAssetDetails extends Component {
   constructor(props) {

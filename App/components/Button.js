@@ -14,11 +14,11 @@ export default class Button extends Component {
           {...rest}
           textStyle={[{
             backgroundColor: "transparent",
-            color: colors.primary
+            color: "white"
           }, textStyle]}
           buttonStyle={[{
-            backgroundColor: "white",
-            borderColor: colors.primary,
+            backgroundColor: colors.grey3,
+            borderColor: colors.grey3,
             borderRadius: 0,
             borderWidth: 1,
             marginTop: 5,
