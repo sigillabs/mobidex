@@ -120,7 +120,7 @@ export async function wrapETH(web3, amount) {
 export async function unwrapETH(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
   let account = await getAccount(web3);
-  let { address, decimals } = zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let { address, decimals, ...rest } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
   return await zeroEx.etherToken.withdrawAsync(address, value, account.toLowerCase());
 }
@@ -129,8 +129,9 @@ export async function guaranteeWETHAmount(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
   let { address } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let balance = new BigNumber(await getTokenBalance(web3, address));
-  if (!(balance.gte(amount))) {
-    return wrapETH(web3, balance);
+  let difference = new BigNumber(amount).sub(balance);
+  if (difference.gt(0)) {
+    return wrapETH(web3, difference);
   } else {
     return null;
   }

@@ -26,6 +26,12 @@ export default class AssetDetails extends Component {
     }
   };
 
+  unwrap = () => {
+    if (this.props.onAction) {
+      this.props.onAction("unwrap");
+    }
+  };
+
   toggleShowAddress = () => {
     this.setState({ showAddress: !this.state.showAddress });
   };
@@ -48,22 +54,27 @@ export default class AssetDetails extends Component {
           <Text onPress={this.toggleShowAddress}>{this.state.showAddress ? address : summarizeAddress(address)}</Text>
         </View>
 
-        <View style={{ height: 50 }}>
-          <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-            <Button
-              large
-              text="Receive"
-              icon={<Icon name="move-to-inbox" color="white" size={18} />}
-              buttonStyle={{ borderRadius: 0 }}
-              onPress={this.receive} />
-            <View style={{ width: 10 }} />
-            <Button
-              large
-              text="Send"
-              icon={<Icon name="send" color="white" size={18} />}
-              buttonStyle={{ borderRadius: 0 }}
-              onPress={this.send} />
-          </View>
+        <View style={{ height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+          <Button
+            large
+            text="Receive"
+            icon={<Icon name="move-to-inbox" color="white" size={18} />}
+            buttonStyle={{ borderRadius: 0 }}
+            onPress={this.receive} />
+          <View style={{ width: 10 }} />
+          <Button
+            large
+            text="Send"
+            icon={<Icon name="send" color="white" size={18} />}
+            buttonStyle={{ borderRadius: 0 }}
+            onPress={this.send} />
+          {asset.symbol === "WETH" ? <View style={{ width: 10 }} /> : null}
+          {asset.symbol === "WETH" ? <Button
+            large
+            text="Unwrap"
+            icon={<Icon name="move-to-inbox" color="white" size={18} />}
+            buttonStyle={{ borderRadius: 0 }}
+            onPress={this.unwrap} /> : null}
         </View>
       </View>
     );

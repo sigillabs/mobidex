@@ -10,6 +10,8 @@ import EthereumAssetDetails from "../components/EthereumAssetDetails";
 import ReceiveTokens from "../components/ReceiveTokens";
 import SendTokens from "../components/SendTokens";
 import SendEther from "../components/SendEther";
+import UnwrapEther from "../components/UnwrapEther";
+import WrapEther from "../components/WrapEther";
 import { lock } from "../../thunks";
 
 class PortfolioScreen extends Component {
@@ -19,47 +21,63 @@ class PortfolioScreen extends Component {
     this.state = {
       token: null,
       showSend: false,
-      showReceive: false
+      showReceive: false,
+      showWrap: false,
+      showUnwrap: false
     };
   }
 
   close = () => {
-    this.setState({ showSend: false, showReceive: false });
+    this.setState({ showSend: false, showReceive: false, showWrap: false, showUnwrap: false });
     this.props.navigation.setParams({ back: null });
   };
 
   renderAssetDetails() {
     if (!this.state.token) {
       return (
-        <EthereumAssetDetails onAction={(action) => {
+        <EthereumAssetDetails onAction={async (action) => {
           switch(action) {
             case "send":
-            this.props.navigation.setParams({ back: this.close });
-            this.setState({ showSend: true, showReceive: false });
+            this.setState({ showSend: true, showReceive: false, showWrap: false, showUnwrap: false });
             break;
 
             case "receive":
-            this.props.navigation.setParams({ back: this.close });
-            this.setState({ showSend: false, showReceive: true });
+            this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
             break;
+
+            case "wrap":
+            this.setState({ showSend: false, showReceive: false, showWrap: true, showUnwrap: false });
+            break;
+
+            default:
+            return;
           }
+
+          this.props.navigation.setParams({ back: this.close });
         }} />
       );
     }
 
     return (
-      <AssetDetails address={this.props.address} asset={this.state.token} onAction={(action) => {
+      <AssetDetails address={this.props.address} asset={this.state.token} onAction={async (action) => {
         switch(action) {
           case "send":
-          this.props.navigation.setParams({ back: this.close });
-          this.setState({ showSend: true, showReceive: false });
+          this.setState({ showSend: true, showReceive: false, showWrap: false, showUnwrap: false });
           break;
 
           case "receive":
-          this.props.navigation.setParams({ back: this.close });
-          this.setState({ showSend: false, showReceive: true });
+          this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
           break;
+
+          case "unwrap":
+          this.setState({ showSend: false, showReceive: false, showWrap: false, showUnwrap: true });
+          break;
+
+          default:
+          return;
         }
+
+        this.props.navigation.setParams({ back: this.close });
       }} />
     );
   }
@@ -74,7 +92,15 @@ class PortfolioScreen extends Component {
     }
 
     if (this.state.showReceive) {
-      return <ReceiveTokens token={this.state.token} close={() => (this.setState({ showReceive: false }))} />
+      return <ReceiveTokens token={this.state.token} close={() => this.setState({ showReceive: false })} />
+    }
+
+    if (this.state.showWrap) {
+      return <WrapEther close={() => this.setState({ showWrap: false })} />
+    }
+
+    if (this.state.showUnwrap) {
+      return <UnwrapEther close={() => this.setState({ showUnwrap: false })} />
     }
 
     return (

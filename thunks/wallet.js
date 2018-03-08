@@ -4,8 +4,22 @@ import moment from "moment";
 import { AsyncStorage } from "react-native";
 import Wallet from "ethereumjs-wallet";
 import ethUtil from "ethereumjs-util";
-import { addAssets, addTransactions, addProcessing, setError, setWallet, setTransactionHash } from "../actions";
-import { getZeroExClient, sendTokens as sendTokensUtil, sendEther as sendEtherUtil, getTokenBalance } from "../utils/ethereum";
+import {
+  addAssets,
+  addTransactions,
+  addProcessing,
+  setError,
+  setWallet,
+  setTransactionHash
+} from "../actions";
+import {
+  getZeroExClient,
+  sendTokens as sendTokensUtil,
+  sendEther as sendEtherUtil,
+  getTokenBalance,
+  wrapETH,
+  unwrapETH
+} from "../utils/ethereum";
 import { cache } from "../utils/cache";
 
 // Would like to password protect using Ethereum Secret Storage
@@ -155,6 +169,38 @@ export function setTxHash(txhash) {
       dispatch(setTransactionHash(txhash));
     } else {
       dispatch(setTransactionHash(null));
+    }
+  };
+}
+
+export function wrapEther(amount) {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
+    let zeroEx = await getZeroExClient(web3);
+    try {
+      let txhash = await wrapETH(web3, amount);
+      dispatch(setTxHash(txhash));
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    } catch(err) {
+      await dispatch(setError(err));
+    } finally {
+      await dispatch(setTxHash(null));
+    }
+  };
+}
+
+export function unwrapEther(amount) {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
+    let zeroEx = await getZeroExClient(web3);
+    try {
+      let txhash = await unwrapETH(web3, amount);
+      dispatch(setTxHash(txhash));
+      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    } catch(err) {
+      await dispatch(setError(err));
+    } finally {
+      await dispatch(setTxHash(null));
     }
   };
 }
