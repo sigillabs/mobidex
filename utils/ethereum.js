@@ -109,29 +109,46 @@ export async function isWETHAddress(web3, address) {
   return token && token.symbol == "WETH";
 }
 
-export async function wrapETH(web3, amount) {
-  let zeroEx = await getZeroExClient(web3);
-  let account = await getAccount(web3);
-  let { address, decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+export async function wrapEther(web3, amount) {
+  let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-  return await zeroEx.etherToken.depositAsync(address, value, account.toLowerCase());
+  return await wrapWei(web3, value);
 }
 
-export async function unwrapETH(web3, amount) {
+export async function wrapWei(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
   let account = await getAccount(web3);
-  let { address, decimals, ...rest } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let { address } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let value = new BigNumber(amount);
+  return await zeroEx.etherToken.withdrawAsync(address, value, account.toLowerCase());
+}
+
+export async function unwrapEther(web3, amount) {
+  let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  return await unwrapWei(web3, value);
+}
+
+export async function unwrapWei(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
+  let account = await getAccount(web3);
+  let { address } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let value = new BigNumber(amount);
   return await zeroEx.etherToken.withdrawAsync(address, value, account.toLowerCase());
 }
 
 export async function guaranteeWETHAmount(web3, amount) {
+  let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  return await guaranteeWETHInWeiAmount(web3, ZeroEx.toBaseUnitAmount(amount, decimals));
+}
+
+export async function guaranteeWETHInWeiAmount(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
-  let { address } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
+  let { address, decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let balance = new BigNumber(await getTokenBalance(web3, address));
-  let difference = new BigNumber(amount).sub(balance);
+  let difference = new BigNumber(amount).sub(ZeroEx.toBaseUnitAmount(balance, decimals));
   if (difference.gt(0)) {
-    return wrapETH(web3, difference);
+    return wrapWei(web3, difference);
   } else {
     return null;
   }

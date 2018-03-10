@@ -12,6 +12,7 @@ import {
   getTokenAllowance,
   getTokenByAddress,
   guaranteeWETHAmount,
+  guaranteeWETHInWeiAmount,
   setTokenUnlimitedAllowance,
   isWETHAddress
 } from "../utils/ethereum";
@@ -104,7 +105,7 @@ export function createSignSubmitOrder(side, price, amount) {
     try {
       // Guarantee WETH is available.
       if ((await isWETHAddress(web3, order.makerTokenAddress))) {
-        let txhash = await guaranteeWETHAmount(web3, order.makerTokenAmount);
+        let txhash = await guaranteeWETHInWeiAmount(web3, order.makerTokenAmount);
         if (txhash) {
           dispatch(setTxHash(txhash));
           let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
