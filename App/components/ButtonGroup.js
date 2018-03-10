@@ -25,6 +25,7 @@ export default class ButtonGroup extends Component {
             marginLeft: 0
           }, containerStyle]}
           buttonStyle={[{
+            backgroundColor: colors.grey3,
             paddingLeft: 10,
             paddingRight: 10
           }, buttonStyle]} />

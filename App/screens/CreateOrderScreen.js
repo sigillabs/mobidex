@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Card, ButtonGroup, Input } from "react-native-elements";
+import { Card, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
@@ -8,6 +8,7 @@ import { ZeroEx } from "0x.js";
 import NormalHeader from "../headers/Normal";
 import { createSignSubmitOrder, gotoOrders } from "../../thunks";
 import Button from "../components/Button";
+import ButtonGroup from "../components/ButtonGroup"
 
 const SIDES = ["bid", "ask"];
 const TITLES = ["Create Buy Order", "Create Sell Order"];

@@ -1,8 +1,9 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
 import { View, ScrollView } from "react-native";
-import { ButtonGroup, Text } from "react-native-elements";
+import { Text } from "react-native-elements";
 import { connect } from "react-redux";
+import ButtonGroup from './ButtonGroup.js'
 
 class TokenFilterBar extends Component {
   renderGroup(title, tokens, selectedIndex, onPress) {
