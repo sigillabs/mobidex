@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
 import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Button from "./Button";
 import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 
+@reactMixin.decorate(TimerMixin)
 export default class AssetDetails extends Component {
   constructor(props) {
     super(props);
@@ -15,21 +18,27 @@ export default class AssetDetails extends Component {
   }
 
   receive = () => {
-    if (this.props.onAction) {
-      this.props.onAction("receive");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("receive");
+      }
+    });
   };
 
   send = () => {
-    if (this.props.onAction) {
-      this.props.onAction("send");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("send");
+      }
+    });
   };
 
   unwrap = () => {
-    if (this.props.onAction) {
-      this.props.onAction("unwrap");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("unwrap");
+      }
+    });
   };
 
   toggleShowAddress = () => {

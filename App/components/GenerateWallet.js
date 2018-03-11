@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
 import { View } from "react-native";
 import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -8,6 +10,7 @@ import LongButton from "./LongButton";
 import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
+@reactMixin.decorate(TimerMixin)
 class GenerateWallet extends Component {
   constructor(props) {
     super(props);
@@ -23,15 +26,17 @@ class GenerateWallet extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  async generate() {
+  generate = () => { 
     if (!this.state.password) {
       this.setState({ passwordError: true });
       return;
     }
 
-    await this.props.dispatch(generateWallet(this.state.password));
-    
-    if (this.props.onFinish) await this.props.onFinish();
+    this.requestAnimationFrame(async () => {
+      await this.props.dispatch(generateWallet(this.state.password));
+      
+      if (this.props.onFinish) await this.props.onFinish();
+    });
   };
 
   render() {
@@ -49,7 +54,7 @@ class GenerateWallet extends Component {
         <LongButton
             large
             text="Generate New Wallet"
-            onPress={() => this.generate()} />
+            onPress={this.generate} />
       </BigCenter>
     );
   }

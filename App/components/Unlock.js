@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
 import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
@@ -7,6 +9,7 @@ import LongButton from "./LongButton";
 import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
+@reactMixin.decorate(TimerMixin)
 class Unlock extends Component {
   constructor(props) {
     super(props);
@@ -21,15 +24,17 @@ class Unlock extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  async unlock() {
-    try {
-      await this.props.dispatch(unlock(this.state.password));
-    } catch(err) {
-      this.setState({ passwordError: true });
-      return;
-    }
+  unlock = () => {
+    this.requestAnimationFrame(async () => {
+      try {
+        await this.props.dispatch(unlock(this.state.password));
+      } catch(err) {
+        this.setState({ passwordError: true });
+        return;
+      }
 
-    if (this.props.onFinish) await this.props.onFinish();
+      if (this.props.onFinish) await this.props.onFinish();
+    });
   };
 
   render() {
@@ -47,7 +52,7 @@ class Unlock extends Component {
         <LongButton
             large
             text="Unlock"
-            onPress={() => this.unlock()} />
+            onPress={this.unlock} />
       </BigCenter>
     );
   }

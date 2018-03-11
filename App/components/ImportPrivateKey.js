@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
 import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
@@ -7,6 +9,7 @@ import LongButton from "./LongButton";
 import LongInput from "./LongInput";
 import BigCenter from "./BigCenter";
 
+@reactMixin.decorate(TimerMixin)
 class ImportPrivateKey extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +30,7 @@ class ImportPrivateKey extends Component {
     this.setState({ password: value, passwordError: false });
   };
 
-  async importPrivateKey() {
+  importPrivateKey = () => {
     if (!this.state.privateKey) {
       this.setState({ privateKeyError: true });
       return;
@@ -38,14 +41,16 @@ class ImportPrivateKey extends Component {
       return;
     }
 
-    try {
-      await this.props.dispatch(importPrivateKey(this.state.privateKey, this.state.password));
-    } catch(err) {
-      this.setState({ passwordError: true });
-      return;
-    }
+    this.requestAnimationFrame(async () => {
+      try {
+        await this.props.dispatch(importPrivateKey(this.state.privateKey, this.state.password));
+      } catch(err) {
+        this.setState({ passwordError: true });
+        return;
+      }
 
-    if (this.props.onFinish) await this.props.onFinish();
+      if (this.props.onFinish) await this.props.onFinish();
+    });
   };
 
   render() {
@@ -72,7 +77,7 @@ class ImportPrivateKey extends Component {
         <LongButton
             large
             text="Import Private Key"
-            onPress={() => this.importPrivateKey()} />
+            onPress={this.importPrivateKey} />
       </BigCenter>
     );
   }

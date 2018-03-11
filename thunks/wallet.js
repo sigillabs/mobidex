@@ -17,8 +17,8 @@ import {
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
   getTokenBalance,
-  wrapETH,
-  unwrapETH
+  wrapEther as wrapEtherUtil,
+  unwrapEther as unwrapEtherUtil
 } from "../utils/ethereum";
 import { cache } from "../utils/cache";
 
@@ -59,7 +59,9 @@ export function lock(password) {
   return async (dispatch, getState) => {
     let { wallet: { privateKey } } = getState();
     let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(privateKey), "hex"));
-    await AsyncStorage.setItem("lock", JSON.stringify(wallet.toV3(password)));
+    let v3 = wallet.toV3(password, { c: 32, n: 32 });
+    let json = JSON.stringify(v3);
+    await AsyncStorage.setItem("lock", json);
   }
 }
 
@@ -69,7 +71,7 @@ export function unlock(password) {
     let v3json = await AsyncStorage.getItem("lock");
     if (v3json) {
       let v3 = JSON.parse(v3json);
-      let wallet = Wallet.fromV3(v3, password);
+      let wallet = Wallet.fromV3(v3, password, { c: 32, n: 32 });
       dispatch(setWallet({ network, wallet }));
     } else {
       throw new Error("Wallet does not exist.");
@@ -178,7 +180,7 @@ export function wrapEther(amount) {
     let { wallet: { web3 } } = getState();
     let zeroEx = await getZeroExClient(web3);
     try {
-      let txhash = await wrapETH(web3, amount);
+      let txhash = await wrapEtherUtil(web3, amount);
       dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
@@ -194,7 +196,7 @@ export function unwrapEther(amount) {
     let { wallet: { web3 } } = getState();
     let zeroEx = await getZeroExClient(web3);
     try {
-      let txhash = await unwrapETH(web3, amount);
+      let txhash = await unwrapEtherUtil(web3, amount);
       dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {

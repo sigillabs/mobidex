@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import reactMixin from "react-mixin";
+import TimerMixin from "react-timer-mixin";
 import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -7,6 +9,7 @@ import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display"
 import { getBalance } from "../../utils/ethereum";
 import Button from "./Button";
 
+@reactMixin.decorate(TimerMixin)
 class EthereumAssetDetails extends Component {
   constructor(props) {
     super(props);
@@ -25,21 +28,27 @@ class EthereumAssetDetails extends Component {
   }
 
   receive = () => {
-    if (this.props.onAction) {
-      this.props.onAction("receive");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("receive");
+      }
+    });
   };
 
   send = () => {
-    if (this.props.onAction) {
-      this.props.onAction("send");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("send");
+      }
+    });
   };
 
   wrap = () => {
-    if (this.props.onAction) {
-      this.props.onAction("wrap");
-    }
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("wrap");
+      }
+    });
   };
 
   toggleShowAddress = () => {
