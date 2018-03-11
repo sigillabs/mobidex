@@ -146,7 +146,6 @@ export async function guaranteeWETHInWeiAmount(web3, amount) {
   let zeroEx = await getZeroExClient(web3);
   let { address, decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let balance = new BigNumber(await getTokenBalance(web3, address));
-  console.warn(balance);
   let difference = new BigNumber(amount).sub(ZeroEx.toBaseUnitAmount(balance, decimals));
   if (difference.gt(0)) {
     return wrapWei(web3, difference);
