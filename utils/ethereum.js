@@ -124,6 +124,7 @@ export async function wrapWei(web3, amount) {
 }
 
 export async function unwrapEther(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
   let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
   return await unwrapWei(web3, value);
