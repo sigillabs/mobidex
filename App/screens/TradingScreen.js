@@ -22,10 +22,11 @@ class TradingScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { tokens, orders, products, quoteToken, baseToken } = nextProps;
+    let { tokens, orders, products, quoteToken, baseToken, address } = nextProps;
 
     let filteredOrders = orders
-    .filter(order => order.makerTokenAddress === quoteToken.address || order.takerTokenAddress === quoteToken.address);
+    .filter(order => order.makerTokenAddress === quoteToken.address || order.takerTokenAddress === quoteToken.address)
+    .filter(order => order.maker !== address && order.taker !== address);
     let quoteTokens = productTokenAddresses(products, "tokenB").map(address => _.find(tokens, { address }));
     let baseTokens = productTokenAddresses(products, "tokenA").map(address => _.find(tokens, { address }));
 
@@ -60,4 +61,4 @@ class TradingScreen extends Component {
   }
 }
 
-export default connect((state) => ({ ...state.device, ...state.relayer, ...state.settings }), (dispatch) => ({ dispatch }))(TradingScreen);
+export default connect((state) => ({ ...state.device, ...state.settings, ...state.wallet, ...state.relayer }), (dispatch) => ({ dispatch }))(TradingScreen);
