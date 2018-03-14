@@ -3,8 +3,10 @@ import { TouchableOpacity } from "react-native";
 import { Header } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
+import Row from "../components/Row";
+import { loadOrders } from "../../thunks";
 
-export default class extends Component {
+class TradingHeader extends Component {
   render() {
     let { quoteToken, baseToken } = this.props;
 
@@ -19,11 +21,18 @@ export default class extends Component {
         )}
         centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
         rightComponent={(
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("CreateOrder")}>
-            <Icon name="add" color="white" />
-          </TouchableOpacity>
+          <Row>
+            <TouchableOpacity onPress={() => this.props.dispatch(loadOrders())}>
+              <Icon name="refresh" color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate("CreateOrder")}>
+              <Icon name="add" color="white" />
+            </TouchableOpacity>
+          </Row>
         )}
       />
     );
   }
 }
+
+export default connect((state) => ({ }), dispatch => ({ dispatch }))(TradingHeader);

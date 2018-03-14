@@ -70,11 +70,11 @@ export async function getTokenBalance(web3, address) {
   return await zeroEx.token.getBalanceAsync(address, account.toString().toLowerCase());
 }
 
-export async function getTokenByAddress(web3, address) {
+export async function getTokenByAddress(web3, address, force = false) {
   if (!address) return null;
 
   let key = `token:${address}`;
-  let json = await AsyncStorage.getItem(key);
+  let json = force ? null : await AsyncStorage.getItem(key);
 
   if (json) {
     return JSON.parse(json);

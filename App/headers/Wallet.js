@@ -3,8 +3,9 @@ import { TouchableOpacity } from "react-native";
 import { Header } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
+import { loadAssets } from "../../thunks";
 
-export default class extends Component {
+class WalletHeader extends Component {
   render() {
     let back = null;
     if (this.props.navigation.state.params) {
@@ -24,8 +25,15 @@ export default class extends Component {
         backgroundColor= "#43484d"
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={leftComponent}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 15 } }}
+        rightComponent={(
+          <TouchableOpacity onPress={() => this.props.dispatch(loadAssets(true))}>
+            <Icon name="refresh" color="white" />
+          </TouchableOpacity>
+        )}
       />
     );
   }
 }
+
+export default connect((state) => ({ }), dispatch => ({ dispatch }))(WalletHeader);
