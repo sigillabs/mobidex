@@ -110,6 +110,7 @@ export async function isWETHAddress(web3, address) {
 }
 
 export async function wrapEther(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
   let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
   return await wrapWei(web3, value);
