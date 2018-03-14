@@ -5,19 +5,17 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { sendTokens } from "../../thunks";
+import { wrapEther } from "../../thunks";
 import GlobalStyles from "../../styles";
-import Button from "./Button";
+import Button from "../components/Button";
 
-class SendTokens extends Component {
+class WrapEther extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       amount: new BigNumber(0),
-      amountError: false,
-      address: "",
-      addressError: false
+      amountError: false
     };
   }
 
@@ -34,20 +32,15 @@ class SendTokens extends Component {
     }
   };
 
-  onSetAddress = (value) => {
-    this.setState({ address: value, addressError: false });
-  };
-
   submit = async () => {
-    let { token } = this.props;
-    let { address, amount } = this.state;
-    let result = await this.props.dispatch(sendTokens(token, address, amount));
+    let { amount } = this.state;
+    await this.props.dispatch(wrapEther(amount));
     this.props.close();
   };
 
   render() {
     return (
-      <Card title={`Send ${this.props.token.symbol}`}>
+      <Card title={"Wrap Ether"}>
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -58,22 +51,16 @@ class SendTokens extends Component {
               errorStyle={{ color: "red" }}
               icon={<Icon name="money" size={24} color="black" />}
               containerStyle={{ width: "100%", marginBottom: 10 }} />
-          <Input
-              placeholder="Address"
-              onChangeText={this.onSetAddress}
-              keyboardType="ascii-capable"
-              icon={<Icon name="user" size={24} color="black" />}
-              containerStyle={{ width: "100%", marginBottom: 10 }} />
         </View>
         <Button
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
-            text={"Send"}
+            text={"Wrap"}
             style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendTokens);
+export default connect(state => ({ }), dispatch => ({ dispatch }))(WrapEther);

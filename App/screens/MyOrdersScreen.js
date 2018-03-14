@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { setBaseToken, setQuoteToken } from "../../actions";
 import { loadOrders } from "../../thunks";
 import { productTokenAddresses } from "../../utils/orders";
-import OrderList from "../components/OrderList";
-import TokenFilterBar from "../components/TokenFilterBar";
+import OrderList from "../views/OrderList";
+import TokenFilterBar from "../views/TokenFilterBar";
 import NormalHeader from "../headers/Normal";
 
 class MyOrdersScreen extends Component {

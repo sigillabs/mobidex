@@ -5,11 +5,11 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { wrapEther } from "../../thunks";
+import { unwrapEther } from "../../thunks";
 import GlobalStyles from "../../styles";
-import Button from "./Button";
+import Button from "../components/Button";
 
-class WrapEther extends Component {
+class UnwrapEther extends Component {
   constructor(props) {
     super(props);
 
@@ -34,13 +34,13 @@ class WrapEther extends Component {
 
   submit = async () => {
     let { amount } = this.state;
-    await this.props.dispatch(wrapEther(amount));
+    await this.props.dispatch(unwrapEther(amount));
     this.props.close();
   };
 
   render() {
     return (
-      <Card title={"Wrap Ether"}>
+      <Card title={"Unwrap Ether"}>
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -56,11 +56,11 @@ class WrapEther extends Component {
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
-            text={"Wrap"}
+            text={"Unwrap"}
             style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-export default connect(state => ({ }), dispatch => ({ dispatch }))(WrapEther);
+export default connect(state => ({ }), dispatch => ({ dispatch }))(UnwrapEther);

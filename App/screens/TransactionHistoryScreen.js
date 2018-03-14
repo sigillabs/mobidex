@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { loadTransactions } from "../../thunks";
-import TransactionsList from "../components/TransactionsList";
+import TransactionsList from "../views/TransactionsList";
 
 class TransactionHistoryScreen extends Component {
   componentDidMount() {

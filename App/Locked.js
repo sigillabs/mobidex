@@ -4,9 +4,9 @@ import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { generateWallet, lock, unlock } from "../thunks";
-import Unlock from "./components/Unlock";
-import ImportPrivateKey from "./components/ImportPrivateKey";
-import GenerateWallet from "./components/GenerateWallet";
+import Unlock from "./views/Unlock";
+import ImportPrivateKey from "./views/ImportPrivateKey";
+import GenerateWallet from "./views/GenerateWallet";
 import ButtonGroup from "./components/ButtonGroup";
 
 class Locked extends Component {

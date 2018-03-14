@@ -5,17 +5,19 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { unwrapEther } from "../../thunks";
+import { sendTokens } from "../../thunks";
 import GlobalStyles from "../../styles";
-import Button from "./Button";
+import Button from "../components/Button";
 
-class UnwrapEther extends Component {
+class SendTokens extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       amount: new BigNumber(0),
-      amountError: false
+      amountError: false,
+      address: "",
+      addressError: false
     };
   }
 
@@ -32,15 +34,20 @@ class UnwrapEther extends Component {
     }
   };
 
+  onSetAddress = (value) => {
+    this.setState({ address: value, addressError: false });
+  };
+
   submit = async () => {
-    let { amount } = this.state;
-    await this.props.dispatch(unwrapEther(amount));
+    let { token } = this.props;
+    let { address, amount } = this.state;
+    let result = await this.props.dispatch(sendTokens(token, address, amount));
     this.props.close();
   };
 
   render() {
     return (
-      <Card title={"Unwrap Ether"}>
+      <Card title={`Send ${this.props.token.symbol}`}>
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -51,16 +58,22 @@ class UnwrapEther extends Component {
               errorStyle={{ color: "red" }}
               icon={<Icon name="money" size={24} color="black" />}
               containerStyle={{ width: "100%", marginBottom: 10 }} />
+          <Input
+              placeholder="Address"
+              onChangeText={this.onSetAddress}
+              keyboardType="ascii-capable"
+              icon={<Icon name="user" size={24} color="black" />}
+              containerStyle={{ width: "100%", marginBottom: 10 }} />
         </View>
         <Button
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
-            text={"Unwrap"}
+            text={"Send"}
             style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-export default connect(state => ({ }), dispatch => ({ dispatch }))(UnwrapEther);
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendTokens);

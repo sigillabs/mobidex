@@ -4,10 +4,10 @@ import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { setError } from "../actions";
 import { loadAssets, loadWallet, loadProductsAndTokens, unlock } from "../thunks";
-import Err from "./Error";
 import Main from "./Main";
 import Locked from "./Locked";
-import TransactionsProcessing from "./TransactionsProcessing";
+import Err from "./views/Error";
+import TransactionsProcessing from "./views/TransactionsProcessing";
 
 class Startup extends Component {
   constructor(props) {

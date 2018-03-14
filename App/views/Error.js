@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
-import { setError } from "../actions";
-import Button from "../App/components/Button.js";
+import { setError } from "../../actions";
+import Button from "../components/Button.js";
 
 class Err extends Component {
   leave = () => {

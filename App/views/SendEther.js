@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
 import { sendEther } from "../../thunks";
 import GlobalStyles from "../../styles";
-import Button from "./Button";
+import Button from "../components/Button";
 
 class SendEther extends Component {
   constructor(props) {

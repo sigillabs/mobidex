@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { View, ScrollView } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
-import ButtonGroup from './ButtonGroup.js'
+import ButtonGroup from '../components/ButtonGroup.js'
 
 class TokenFilterBar extends Component {
   renderGroup(title, tokens, selectedIndex, onPress) {

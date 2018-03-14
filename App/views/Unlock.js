@@ -4,46 +4,30 @@ import TimerMixin from "react-timer-mixin";
 import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
-import { importPrivateKey } from "../../thunks";
-import LongButton from "./LongButton";
-import LongInput from "./LongInput";
-import BigCenter from "./BigCenter";
+import { generateWallet, lock, unlock } from "../../thunks";
+import LongButton from "../components/LongButton";
+import LongInput from "../components/LongInput";
+import BigCenter from "../components/BigCenter";
 
 @reactMixin.decorate(TimerMixin)
-class ImportPrivateKey extends Component {
+class Unlock extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      privateKey: "",
-      privateKeyError: false,
       password: "",
       passwordError: false
     };
   }
 
-  onSetPrivateKey = (value) => {
-    this.setState({ privateKey: value, privateKeyError: false });
-  };
-
   onSetPassword = (value) => {
     this.setState({ password: value, passwordError: false });
   };
 
-  importPrivateKey = () => {
-    if (!this.state.privateKey) {
-      this.setState({ privateKeyError: true });
-      return;
-    }
-
-    if (!this.state.password) {
-      this.setState({ passwordError: true });
-      return;
-    }
-
+  unlock = () => {
     this.requestAnimationFrame(async () => {
       try {
-        await this.props.dispatch(importPrivateKey(this.state.privateKey, this.state.password));
+        await this.props.dispatch(unlock(this.state.password));
       } catch(err) {
         this.setState({ passwordError: true });
         return;
@@ -58,15 +42,6 @@ class ImportPrivateKey extends Component {
       <BigCenter>
         <LongInput
           secureTextEntry={true}
-          placeholder="Private Key"
-          displayError={this.state.privateKeyError}
-          onChangeText={this.onSetPrivateKey}
-          errorMessage={"Private key isn't right for some reason. Make sure you've typed it in correctly."}
-          errorStyle={{ color: "red" }}
-          icon={<Icon name="vpn-key" size={24} color="black" />}
-          containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <LongInput
-          secureTextEntry={true}
           placeholder="Password"
           displayError={this.state.passwordError}
           onChangeText={this.onSetPassword}
@@ -76,11 +51,11 @@ class ImportPrivateKey extends Component {
           containerStyle={{ width: "100%", marginBottom: 10 }} />
         <LongButton
             large
-            text="Import Private Key"
-            onPress={this.importPrivateKey} />
+            text="Unlock"
+            onPress={this.unlock} />
       </BigCenter>
     );
   }
 }
 
-export default connect((state) => ({ }), dispatch => ({ dispatch }))(ImportPrivateKey);
+export default connect((state) => ({ }), dispatch => ({ dispatch }))(Unlock);

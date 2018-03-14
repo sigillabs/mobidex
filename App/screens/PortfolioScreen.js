@@ -4,14 +4,14 @@ import { View, Text } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
-import AssetList from "../components/AssetList";
-import AssetDetails from "../components/AssetDetails";
-import EthereumAssetDetails from "../components/EthereumAssetDetails";
-import ReceiveTokens from "../components/ReceiveTokens";
-import SendTokens from "../components/SendTokens";
-import SendEther from "../components/SendEther";
-import UnwrapEther from "../components/UnwrapEther";
-import WrapEther from "../components/WrapEther";
+import AssetList from "../views/AssetList";
+import AssetDetails from "../views/AssetDetails";
+import EthereumAssetDetails from "../views/EthereumAssetDetails";
+import ReceiveTokens from "../views/ReceiveTokens";
+import SendTokens from "../views/SendTokens";
+import SendEther from "../views/SendEther";
+import UnwrapEther from "../views/UnwrapEther";
+import WrapEther from "../views/WrapEther";
 import { lock } from "../../thunks";
 
 class PortfolioScreen extends Component {

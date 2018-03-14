@@ -6,9 +6,9 @@ import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { generateWallet } from "../../thunks";
-import LongButton from "./LongButton";
-import LongInput from "./LongInput";
-import BigCenter from "./BigCenter";
+import LongButton from "../components/LongButton";
+import LongInput from "../components/LongInput";
+import BigCenter from "../components/BigCenter";
 
 @reactMixin.decorate(TimerMixin)
 class GenerateWallet extends Component {

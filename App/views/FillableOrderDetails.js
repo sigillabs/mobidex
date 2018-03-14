@@ -9,9 +9,9 @@ import { fillOrder, cancelOrder } from "../../thunks";
 import { formatAmount, formatAmountWithDecimals } from "../../utils/display";
 import { calculateBidPrice, calculateAskPrice } from "../../utils/orders";
 import Button from "../components/Button";
-import Row from "./Row";
+import Row from "../components/Row";
 
-class CancellableOrderDetails extends Component {
+class FillableOrderDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -22,14 +22,13 @@ class CancellableOrderDetails extends Component {
     };
   }
 
-  cancelOrder = async () => {
-    const { order } = this.props;
-    this.props.dispatch(cancelOrder(order));
+  fillOrder = async () => {
+    const { web3, address, order } = this.props;
+    this.props.dispatch(fillOrder(order));
   };
 
   render() {
     const { tokens, quoteToken, baseToken, address, order } = this.props;
-    const isMine = order.maker === address;
     const orderType = quoteToken.address === order.makerTokenAddress ? "bid" : "ask";
     let amount = null;
     let amountSymbol = null;
@@ -93,13 +92,13 @@ class CancellableOrderDetails extends Component {
 
         <Button
             large
-            icon={<Icon name="cancel" size={20} color="white" />}
-            onPress={this.cancelOrder}
-            text="Cancel Order"
+            icon={<Icon name="send" size={20} color="white" />}
+            onPress={this.fillOrder}
+            text="Fill Order"
             style={{ marginTop: 10 }} />
       </Card>
     );
   }
 }
 
-export default connect(state => ({ ...state.device, ...state.settings, ...state.wallet, ...state.relayer }), dispatch => ({ dispatch }))(CancellableOrderDetails);
+export default connect(state => ({ ...state.device, ...state.settings, ...state.wallet, ...state.relayer }), dispatch => ({ dispatch }))(FillableOrderDetails);

@@ -2,8 +2,8 @@ import * as _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
-import CancellableOrderDetails from "../components/CancellableOrderDetails";
-import FillableOrderDetails from "../components/FillableOrderDetails";
+import CancellableOrderDetails from "../views/CancellableOrderDetails";
+import FillableOrderDetails from "../views/FillableOrderDetails";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {

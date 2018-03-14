@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 import { getBalance } from "../../utils/ethereum";
-import Button from "./Button";
+import Button from "../components/Button";
 
 @reactMixin.decorate(TimerMixin)
 class EthereumAssetDetails extends Component {

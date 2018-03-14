@@ -4,7 +4,7 @@ import TimerMixin from "react-timer-mixin";
 import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Button from "./Button";
+import Button from "../components/Button";
 import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
 
 @reactMixin.decorate(TimerMixin)
