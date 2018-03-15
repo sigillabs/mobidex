@@ -60,6 +60,26 @@ export async function cancelOrder(web3, order, amount) {
   return await zeroEx.exchange.cancelOrderAsync(order, new BigNumber(amount));
 }
 
+export function calculateAmount(order, quoteToken, baseToken) {
+  if (order.makerTokenAddress === quoteToken.address) {
+    return ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+  } else {
+    return ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+  }
+}
+
+export function calculatePrice(order, quoteToken, baseToken) {
+  if (order.makerTokenAddress === quoteToken.address) {
+    let quote = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), quoteToken.decimals);
+    let amount = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+    return quote.div(amount);
+  } else {
+    let quote = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), quoteToken.decimals);
+    let amount = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+    return quote.div(amount);
+  }
+}
+
 export function calculateBidPrice(order, quoteToken, baseToken) {
   let quote = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), quoteToken.decimals);
   let amount = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);

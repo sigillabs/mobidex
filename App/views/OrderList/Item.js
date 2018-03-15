@@ -13,7 +13,7 @@ class OrderItem extends Component {
     if (order.maker.toLowerCase() !== address.toLowerCase()) {
       // This should not happen... get of here!
     }
-
+    
     if (order.makerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()) {
       // BID
       amount = ZeroEx.toUnitAmount(order.takerTokenAmount, baseToken.decimals);
@@ -29,7 +29,7 @@ class OrderItem extends Component {
     return (
       <View>
         <View style={styles.container}>
-          <Text style={styles.datum}>{formatAmount(price)} {quoteToken.symbol}</Text>
+          <Text style={styles.datum}>{formatAmount(price.isFinite() ? price : 0)} {quoteToken.symbol}</Text>
           <Text style={styles.datum}>{formatAmount(amount)} {baseToken.symbol}</Text>
         </View>
         <View style={styles.container}>

@@ -2,8 +2,7 @@ import * as _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
-import CancellableOrderDetails from "../views/CancellableOrderDetails";
-import FillableOrderDetails from "../views/FillableOrderDetails";
+import NewOrderDetails from "../views/NewOrderDetails";
 
 class OrderDetailsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,18 +13,9 @@ class OrderDetailsScreen extends Component {
 
   render() {
     const { navigation: { state: { params: { order } } } } = this.props;
-    const { address } = this.props;
-    const isMine = order.maker === address;
-    
-    if (isMine) {
-      return (
-        <CancellableOrderDetails order={order} />
-      );
-    } else {
-      return (
-        <FillableOrderDetails order={order} />
-      );
-    }
+    return (
+      <NewOrderDetails order={order} />
+    );
   }
 }
 
