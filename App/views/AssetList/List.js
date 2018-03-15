@@ -4,11 +4,12 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
+import { getImage } from "../../../utils/ethereum";
 import AssetItem from "./Item";
 
 class AssetList extends Component {
   render() {
-    let { assets, asset } = this.props;
+    let { assets } = this.props;
 
     return (
       <ScrollView>
@@ -19,9 +20,11 @@ class AssetList extends Component {
             assets.map((asset, index) => (
               <TouchableOpacity key={`asset-${index}`} onPress={() => (this.props.onPress(asset))}>
                 <ListItem
-                  containerStyle={[ this.props.asset && this.props.asset.address === asset.address && styles.highlight ]}
+                  roundAvatar
+                  avatar={getImage(asset.symbol)}
                   title={<AssetItem asset={asset} />}
-                  leftIcon={{ name: "add" }}
+                  avatarOverlayContainerStyle={{ backgroundColor: "transparent" }}
+                  containerStyle={[ this.props.asset && this.props.asset.address === asset.address && styles.highlight ]}
                 />
               </TouchableOpacity>
             ))
