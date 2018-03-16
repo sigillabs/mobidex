@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Card } from "react-native-elements";
+import Splash from "../components/Splash";
+
 
 export default class TransactionsProcessing extends Component {
   render() {
     let { txhash } = this.props;
 
     return (
-      <Card title="Processing Transactions" />
+        <Splash />
     );
   }
 }
