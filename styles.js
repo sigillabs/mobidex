@@ -14,20 +14,4 @@ const colors = {
   error: "#ff190c",
 };
 
-const styles = {
-  tinyheader: {
-    textAlign: "center",
-    color: "gray",
-    flex: 1,
-    fontSize: 10
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center"
-  },
-};
-
-export default styles;
 export { colors };

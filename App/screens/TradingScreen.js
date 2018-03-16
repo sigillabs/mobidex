@@ -1,11 +1,11 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { List, ListItem } from "react-native-elements";
+import { View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import { setBaseToken, setQuoteToken } from "../../actions";
 import { loadOrders } from "../../thunks";
 import { productTokenAddresses } from "../../utils/orders";
+import Divider from "../components/Divider";
 import OrderList from "../views/OrderList";
 import TradingInfo from "../views/TradingInfo";
 import TokenFilterBar from "../views/TokenFilterBar";
@@ -40,6 +40,12 @@ class TradingScreen extends Component {
   render() {
     let { quoteToken, baseToken } = this.props;
     let { filteredOrders, quoteTokens, baseTokens } = this.state;
+    let bids = filteredOrders
+    .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.quoteToken.address)
+    .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.baseToken.address);
+    let asks = filteredOrders
+    .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.quoteToken.address)
+    .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.baseToken.address);
 
     return (
       <View>
@@ -51,11 +57,18 @@ class TradingScreen extends Component {
             onQuoteTokenSelect={quoteToken => this.props.dispatch(setQuoteToken(quoteToken))}
             onBaseTokenSelect={baseToken => this.props.dispatch(setBaseToken(baseToken))} />
         <TradingInfo orders={filteredOrders} />
-        <OrderList
-            quoteToken={quoteToken}
-            baseToken={baseToken}
-            orders={filteredOrders}
-            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))} />
+        <ScrollView>
+          <OrderList
+              orders={bids}
+              onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+              title={"Bids"}
+              icon={"add"} />
+          <OrderList
+              orders={asks}
+              onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+              title={"Asks"}
+              icon={"remove"} />
+        </ScrollView>
       </View>
     );
   }

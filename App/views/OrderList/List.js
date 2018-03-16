@@ -3,44 +3,32 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
+import TinyHeader from "../../components/TinyHeader";
 import OrderItem from "./Item";
 
 class OrderList extends Component {
   render() {
     return (
-      <ScrollView>
+      <View>
+        <TinyHeader>{this.props.title}</TinyHeader>
         <List containerStyle={{
           flex: 1,
-          width: this.props.width
+          width: this.props.width,
+          marginTop: 3,
+          marginBottom: 10
         }}>
-          {
-            this.props.orders
-            .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.quoteToken.address)
-            .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.baseToken.address)
-            .map((order, index) => (
-              <TouchableOpacity key={`bid-${index}`} onPress={() => (this.props.onPress(order))}>
-                <ListItem
-                  title={<OrderItem order={order} />}
-                  leftIcon={{ name: "add" }}
-                />
-              </TouchableOpacity>
-            ))
-          }
-          {
-            this.props.orders
-            .filter(({ takerTokenAddress }) => takerTokenAddress === this.props.quoteToken.address)
-            .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.baseToken.address)
-            .map((order, index) => (
-              <TouchableOpacity key={`ask-${index}`} onPress={() => (this.props.onPress(order))}>
-                <ListItem
-                  title={<OrderItem order={order} />}
-                  leftIcon={{ name: "remove" }}
-                />
-              </TouchableOpacity>
-            ))
-          }
+        {
+          this.props.orders.map((order, index) => (
+            <TouchableOpacity key={`bid-${index}`} onPress={() => (this.props.onPress(order))}>
+              <ListItem
+                title={<OrderItem order={order} />}
+                leftIcon={{ name: this.props.icon }}
+              />
+            </TouchableOpacity>
+          ))
+        }
         </List>
-      </ScrollView>
+      </View>
     );
   }
 }

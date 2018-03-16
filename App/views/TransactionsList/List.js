@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem, Text } from "react-native-elements";
 import { connect } from "react-redux";
-import GlobalStyles from "../../../styles";
+import TinyHeader from "../../components/TinyHeader";
 import CancelledItem from "./CancelledItem";
 import FilledItem from "./FilledItem";
 
@@ -11,10 +11,12 @@ class TransactionsList extends Component {
   render() {
     return (
       <ScrollView>
-      <Text style={GlobalStyles.tinyheader}>Filled</Text>
+        <TinyHeader>Filled</TinyHeader>
         <List containerStyle={{
           flex: 1,
-          width: this.props.width
+          width: this.props.width,
+          marginTop: 3,
+          marginBottom: 10
         }}>
           {
             this.props.transactions
@@ -26,10 +28,12 @@ class TransactionsList extends Component {
             ))
           }
         </List>
-        <Text style={GlobalStyles.tinyheader}>Cancelled</Text>
+        <TinyHeader>Cancelled</TinyHeader>
         <List containerStyle={{
           flex: 1,
-          width: this.props.width
+          width: this.props.width,
+          marginTop: 3,
+          marginBottom: 10
         }}>
           {
             this.props.transactions
