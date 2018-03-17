@@ -12,12 +12,13 @@ class Err extends Component {
 
   render() {
     let { message, stack } = this.props.error;
+    console.warn(message, stack);
 
     return (
       <Card title={message}>
         <Button
             large
-            text="Get Out Of Here"
+            title="Get Out Of Here"
             icon={<Icon name="refresh" color="white" />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.leave} />

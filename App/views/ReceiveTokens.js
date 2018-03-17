@@ -45,7 +45,7 @@ class ReceiveTokens extends Component {
             large
             icon={<Icon name="send" size={20} color="white" />}
             onPress={this.share}
-            text="Share Address"
+            title="Share Address"
             style={{ marginTop: 10 }} />
         </View>
       </Card>

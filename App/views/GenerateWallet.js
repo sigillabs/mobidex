@@ -53,7 +53,7 @@ class GenerateWallet extends Component {
           containerStyle={{ width: "100%", marginBottom: 10 }} />
         <LongButton
             large
-            text="Generate New Wallet"
+            title="Generate New Wallet"
             onPress={this.generate} />
       </BigCenter>
     );

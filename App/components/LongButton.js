@@ -6,12 +6,12 @@ export default class LongButton extends Component {
   render() {
     let {
       buttonStyle,
-      textStyle,
+      titleStyle,
       ...rest
     } = this.props;
     return (
       <Button 
-          textStyle={[{ textAlign: "center", width: "100%" }, textStyle]}
+          titleStyle={[{ width: "100%" }, titleStyle]}
           buttonStyle={[{ width: "100%" }, buttonStyle]} {...rest} />
     );
   }

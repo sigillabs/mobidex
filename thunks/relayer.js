@@ -103,6 +103,13 @@ export function createSignSubmitOrder(side, price, amount) {
     let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
 
     try {
+      // Make sure allowance is available.
+      if (order.makerTokenAmount.gt(allowance)) {
+        let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
+        dispatch(setTxHash(txhash));
+        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      }
+
       // Guarantee WETH is available.
       if ((await isWETHAddress(web3, order.makerTokenAddress))) {
         let txhash = await guaranteeWETHInWeiAmount(web3, order.makerTokenAmount);
@@ -110,13 +117,6 @@ export function createSignSubmitOrder(side, price, amount) {
           dispatch(setTxHash(txhash));
           let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
         }
-      }
-
-      // Make sure allowance is available.
-      if (order.makerTokenAmount.gt(allowance)) {
-        let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
-        dispatch(setTxHash(txhash));
-        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
 
       // Sign
@@ -165,10 +165,20 @@ export function fillOrder(order) {
     let fillAmount = new BigNumber(order.takerTokenAmount);
 
     try {
+      // Make sure allowance is available.
       if (fillAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.takerTokenAddress);
         dispatch(setTxHash(txhash));
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      }
+
+      // Guarantee WETH is available.
+      if ((await isWETHAddress(web3, order.takerTokenAddress))) {
+        let txhash = await guaranteeWETHInWeiAmount(web3, order.takerTokenAmount);
+        if (txhash) {
+          dispatch(setTxHash(txhash));
+          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        }
       }
 
       let txhash = await fillOrderUtil(web3, order);

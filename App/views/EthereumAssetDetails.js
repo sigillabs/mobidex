@@ -77,21 +77,21 @@ class EthereumAssetDetails extends Component {
         <View style={{ height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
           <Button
             large
-            text="Receive"
+            title="Receive"
             icon={<Icon name="move-to-inbox" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.receive} />
           <View style={{ width: 10 }} />
           <Button
             large
-            text="Send"
+            title="Send"
             icon={<Icon name="send" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.send} />
           <View style={{ width: 10 }} />
           <Button
             large
-            text="Wrap"
+            title="Wrap"
             icon={<Icon name="move-to-inbox" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.wrap} />

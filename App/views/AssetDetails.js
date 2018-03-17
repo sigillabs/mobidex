@@ -66,21 +66,21 @@ export default class AssetDetails extends Component {
         <View style={{ height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
           <Button
             large
-            text="Receive"
+            title="Receive"
             icon={<Icon name="move-to-inbox" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.receive} />
           <View style={{ width: 10 }} />
           <Button
             large
-            text="Send"
+            title="Send"
             icon={<Icon name="send" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.send} />
           {asset.symbol === "WETH" ? <View style={{ width: 10 }} /> : null}
           {asset.symbol === "WETH" ? <Button
             large
-            text="Unwrap"
+            title="Unwrap"
             icon={<Icon name="move-to-inbox" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.unwrap} /> : null}

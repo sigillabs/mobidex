@@ -56,7 +56,7 @@ class UnwrapEther extends Component {
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
-            text={"Unwrap"}
+            title={"Unwrap"}
             style={{ width: "100%" }} />
       </Card>
     );

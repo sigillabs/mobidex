@@ -5,17 +5,17 @@ import { colors } from "../../styles";
 export default class Button extends Component {
   render() {
     let {
-      textStyle,
+      titleStyle,
       buttonStyle,
       ...rest
     } = this.props;
     return (
       <RNEButton
           {...rest}
-          textStyle={[{
+          titleStyle={[{
             backgroundColor: "transparent",
             color: "white"
-          }, textStyle]}
+          }, titleStyle]}
           buttonStyle={[{
             backgroundColor: colors.grey3,
             borderColor: colors.grey3,

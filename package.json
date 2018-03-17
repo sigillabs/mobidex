@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "prepare": "npm run patch",
+    "prepare": "npm run patch:isomorphic-fetch && npm run patch:web3",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "patch": "find ./node_modules -name fetch-npm-browserify.js -print -exec sed -i.bk 's/self/global/g' {} \\;"
+    "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
+    "patch:web3": "./patches/web3.sh",
+    "build:android": "pushd android; ./gradlew assembleRelease; popd android;",
+    "build:ios": "echo 'You need to build an archive via XCode!'"
   },
   "dependencies": {
     "0x.js": "^0.30.0",
@@ -30,7 +33,7 @@
     "react-native": "^0.52.0",
     "react-native-communications": "^2.2.1",
     "react-native-crypto": "^2.1.2",
-    "react-native-elements": "^1.0.0-beta2",
+    "react-native-elements": "^1.0.0-beta3",
     "react-native-fast-crypto": "^1.5.3",
     "react-native-modal-dropdown": "^0.6.0",
     "react-native-navigation": "^1.1.371",
@@ -51,7 +54,7 @@
     "redux-thunk": "^2.2.0",
     "underscore": "^1.8.3",
     "url": "~0.10.1",
-    "web3": "^0.20.5",
+    "web3": "^0.20.4",
     "web3-contracts-loader": "github:abec/web3-contracts-loader",
     "web3-provider-engine": "^13.6.5"
   },

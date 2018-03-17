@@ -76,7 +76,7 @@ class ImportPrivateKey extends Component {
           containerStyle={{ width: "100%", marginBottom: 10 }} />
         <LongButton
             large
-            text="Import Private Key"
+            title="Import Private Key"
             onPress={this.importPrivateKey} />
       </BigCenter>
     );

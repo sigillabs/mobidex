@@ -9,6 +9,7 @@
 
 #import "AppDelegate.h"
 
+#import <React/RCTLog.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -18,8 +19,14 @@
 {
   NSURL *jsCodeLocation;
 
+  // Development
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  
+  // Production
+  // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
+  RCTSetLogThreshold(RCTLogLevelInfo - 1);
+  
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"mobidex"
                                                initialProperties:nil

@@ -51,7 +51,7 @@ class Unlock extends Component {
           containerStyle={{ width: "100%", marginBottom: 10 }} />
         <LongButton
             large
-            text="Unlock"
+            title="Unlock"
             onPress={this.unlock} />
       </BigCenter>
     );

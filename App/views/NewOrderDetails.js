@@ -56,12 +56,12 @@ class NewOrderDetails extends Component {
               large
               icon={<MaterialIcon name="send" size={24} color="white" />}
               onPress={this.fillOrder}
-              text="Fill Order"
+              title="Fill Order"
               style={{ marginTop: 10, width: "100%" }} /> : <Button
               large
               icon={<MaterialIcon name="cancel" size={24} color="white" />}
               onPress={this.cancelOrder}
-              text="Cancel Order"
+              title="Cancel Order"
               style={{ marginTop: 10, width: "100%" }} />}
         </View>
       </View>
