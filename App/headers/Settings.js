@@ -9,7 +9,7 @@ export default class extends Component {
       <Header
         backgroundColor= "#43484d"
         statusBarProps={{ barStyle: 'light-content' }}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:18 } }}
       />
     );
   }

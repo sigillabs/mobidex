@@ -16,17 +16,17 @@ class TradingHeader extends Component {
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={(
           <TouchableOpacity onPress={() => this.props.navigation.navigate("MyOrders")}>
-            <Icon name="person" color="white" />
+            <Icon size={15} name="person" color="white" />
           </TouchableOpacity>
         )}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:15 } }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:18 } }}
         rightComponent={(
           <Row>
             <TouchableOpacity onPress={() => this.props.dispatch(loadOrders())}>
-              <Icon name="refresh" color="white" />
+              <Icon name="refresh" color="white" size={15} style={{marginRight: 20}} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => this.props.navigation.navigate("CreateOrder")}>
-              <Icon name="add" color="white" />
+              <Icon name="add" color="white" size={15}/>
             </TouchableOpacity>
           </Row>
         )}

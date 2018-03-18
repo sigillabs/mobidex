@@ -25,10 +25,10 @@ class WalletHeader extends Component {
         backgroundColor= "#43484d"
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={leftComponent}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 15 } }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 18 } }}
         rightComponent={(
           <TouchableOpacity onPress={() => this.props.dispatch(loadAssets(true))}>
-            <Icon name="refresh" color="white" />
+            <Icon name="refresh" color="white" size={15} />
           </TouchableOpacity>
         )}
       />
