@@ -53,7 +53,7 @@ class MyOrdersScreen extends Component {
     .filter(({ makerTokenAddress }) => makerTokenAddress === this.props.baseToken.address);
 
     return (
-      <View>
+      <ScrollView>
         <TokenFilterBar
             quoteTokens={quoteTokens}
             baseTokens={baseTokens}
@@ -61,19 +61,17 @@ class MyOrdersScreen extends Component {
             selectedBaseToken={baseToken}
             onQuoteTokenSelect={quoteToken => this.props.dispatch(setQuoteToken(quoteToken))}
             onBaseTokenSelect={baseToken => this.props.dispatch(setBaseToken(baseToken))} />
-        <ScrollView>
-          <OrderList
-              orders={bids}
-              onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
-              title={"Bids"}
-              icon={"add"} />
-          <OrderList
-              orders={asks}
-              onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
-              title={"Asks"}
-              icon={"remove"} />
-        </ScrollView>
-      </View>
+        <OrderList
+            orders={bids}
+            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+            title={"Bids"}
+            icon={"add"} />
+        <OrderList
+            orders={asks}
+            onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+            title={"Asks"}
+            icon={"remove"} />
+      </ScrollView>
     );
   }
 }

@@ -10,7 +10,7 @@ import FilledItem from "./FilledItem";
 class TransactionsList extends Component {
   render() {
     return (
-      <ScrollView>
+      <View>
         <TinyHeader>Filled</TinyHeader>
         <List containerStyle={{
           flex: 1,
@@ -45,7 +45,7 @@ class TransactionsList extends Component {
             ))
           }
         </List>
-      </ScrollView>
+      </View>
     );
   }
 }

@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import NormalHeader from "../headers/Normal";
@@ -85,42 +85,64 @@ class PortfolioScreen extends Component {
   render() {
     if (this.state.showSend) {
       if (this.state.token) {
-        return <SendTokens token={this.state.token} close={() => {}} />;
+        return (
+          <ScrollView>
+            <SendTokens token={this.state.token} close={() => {}} />
+          </ScrollView>
+        );
       } else {
-        return <SendEther token={this.state.token} close={() => {}} />;
+        return (
+          <ScrollView>
+            <SendEther token={this.state.token} close={() => {}} />
+          </ScrollView>
+        );
       }
     }
 
     if (this.state.showReceive) {
-      return <ReceiveTokens token={this.state.token} close={() => this.setState({ showReceive: false })} />
+      return (
+        <ScrollView>
+          <ReceiveTokens token={this.state.token} close={() => this.setState({ showReceive: false })} />
+        </ScrollView>
+      );
     }
 
     if (this.state.showWrap) {
-      return <WrapEther close={() => this.setState({ showWrap: false })} />
+      return (
+        <ScrollView>
+          <WrapEther close={() => this.setState({ showWrap: false })} />
+        </ScrollView>
+      );
     }
 
     if (this.state.showUnwrap) {
-      return <UnwrapEther close={() => this.setState({ showUnwrap: false })} />
+      return (
+        <ScrollView>
+          <UnwrapEther close={() => this.setState({ showUnwrap: false })} />
+        </ScrollView>
+      );
     }
 
     return (
-      <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
-        <View style={{ height: 200 }}>
-          {this.renderAssetDetails()}
+      <ScrollView>
+        <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
+          <View style={{ height: 200 }}>
+            {this.renderAssetDetails()}
+          </View>
+          <View style={{ flex: 1 }}>
+            <AssetList
+                asset={this.state.token}
+                assets={this.props.assets}
+                onPress={(asset) => {
+                  if (this.state.token && this.state.token.address === asset.address) {
+                    this.setState({ token: null });
+                  } else {
+                    this.setState({ token: asset });
+                  }
+                }} />
+          </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <AssetList
-              asset={this.state.token}
-              assets={this.props.assets}
-              onPress={(asset) => {
-                if (this.state.token && this.state.token.address === asset.address) {
-                  this.setState({ token: null });
-                } else {
-                  this.setState({ token: asset });
-                }
-              }} />
-        </View>
-      </View>
+      </ScrollView>
     );
   }
 }

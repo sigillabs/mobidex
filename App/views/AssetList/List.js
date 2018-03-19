@@ -12,25 +12,23 @@ class AssetList extends Component {
     let { assets } = this.props;
 
     return (
-      <ScrollView>
-        <List containerStyle={[{
-          width: this.props.width
-        }, this.props.style]}>
-          {
-            assets.map((asset, index) => (
-              <TouchableOpacity key={`asset-${index}`} onPress={() => (this.props.onPress(asset))}>
-                <ListItem
-                  roundAvatar
-                  avatar={getImage(asset.symbol)}
-                  title={<AssetItem asset={asset} />}
-                  avatarOverlayContainerStyle={{ backgroundColor: "transparent" }}
-                  containerStyle={[ this.props.asset && this.props.asset.address === asset.address && styles.highlight ]}
-                />
-              </TouchableOpacity>
-            ))
-          }
-        </List>
-      </ScrollView>
+      <List containerStyle={[{
+        width: this.props.width
+      }, this.props.style]}>
+        {
+          assets.map((asset, index) => (
+            <TouchableOpacity key={`asset-${index}`} onPress={() => (this.props.onPress(asset))}>
+              <ListItem
+                roundAvatar
+                avatar={getImage(asset.symbol)}
+                title={<AssetItem asset={asset} />}
+                avatarOverlayContainerStyle={{ backgroundColor: "transparent" }}
+                containerStyle={[ this.props.asset && this.props.asset.address === asset.address && styles.highlight ]}
+              />
+            </TouchableOpacity>
+          ))
+        }
+      </List>
     );
   }
 }

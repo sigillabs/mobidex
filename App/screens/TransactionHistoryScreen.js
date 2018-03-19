@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { loadTransactions } from "../../thunks";
@@ -12,7 +12,9 @@ class TransactionHistoryScreen extends Component {
 
   render() {
     return (
-      <TransactionsList transactions={this.props.transactions} onPress={({ transactionId }) => ( /* link to etherscan */ {} )} />
+      <ScrollView>
+        <TransactionsList transactions={this.props.transactions} onPress={({ transactionId }) => ( /* link to etherscan */ {} )} />
+      </ScrollView>
     );
   }
 }

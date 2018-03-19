@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { Card, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -8,6 +8,7 @@ import { ZeroEx } from "0x.js";
 import NormalHeader from "../headers/Normal";
 import { createSignSubmitOrder, gotoOrders } from "../../thunks";
 import Button from "../components/Button";
+import LongButton from "../components/LongButton";
 import ButtonGroup from "../components/ButtonGroup"
 
 const SIDES = ["bid", "ask"];
@@ -72,57 +73,58 @@ class CreateOrderScreen extends Component {
 
   render() {
     return (
-      <Card title={TITLES[this.state.side]}>
-        <ButtonGroup
-            onPress={(index) => {
-              this.setState({ side: index });
-            }}
-            selectedIndex={this.state.side}
-            buttons={SIDES}
-            containerBorderRadius={0}
-            containerStyle={styles.container}
-            buttonStyle={styles.button}
-        />
-        <View style={{ marginTop: 10, marginBottom: 10 }}>
-          <Input
-            placeholder="Price"
-            displayError={this.state.priceError}
-            onChangeText={this.onSetPrice}
-            keyboardType="numeric"
-            errorMessage={"Price should be numeric and greater than `0`."}
-            errorStyle={{ color: "red" }}
-            icon={<Icon name="money" size={24} color="black" />}
-            containerStyle={{ width: "100%", marginBottom: 10 }}
+      <ScrollView>
+        <Card title={TITLES[this.state.side]}>
+          <ButtonGroup
+              onPress={(index) => {
+                this.setState({ side: index });
+              }}
+              selectedIndex={this.state.side}
+              buttons={SIDES}
+              containerBorderRadius={0}
+              containerStyle={styles.container}
+              buttonStyle={styles.button}
           />
-          <Input
-            placeholder="Amount"
-            displayError={this.state.priceError}
-            onChangeText={this.onSetAmount}
-            keyboardType="numeric"
-            errorMessage={"Amounts should be numeric and greater than `0`."}
-            errorStyle={{ color: "red" }}
-            icon={<Icon name="money" size={24} color="black" />}
-            containerStyle={{ width: "100%", marginBottom: 10 }}
-          />
-        </View>
-        <View style={{ height: 30 }}>
-          <View style={{
-            flex: 1,
-            flexDirection: "row"
-          }}>
-            <Text>Sub Total</Text>
-            <Text>: </Text>
-            <Text>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
+          <View style={{ marginTop: 10, marginBottom: 10 }}>
+            <Input
+              placeholder="Price"
+              displayError={this.state.priceError}
+              onChangeText={this.onSetPrice}
+              keyboardType="numeric"
+              errorMessage={"Price should be numeric and greater than `0`."}
+              errorStyle={{ color: "red" }}
+              icon={<Icon name="money" size={24} color="black" />}
+              containerStyle={{ width: "100%", marginBottom: 10 }}
+            />
+            <Input
+              placeholder="Amount"
+              displayError={this.state.priceError}
+              onChangeText={this.onSetAmount}
+              keyboardType="numeric"
+              errorMessage={"Amounts should be numeric and greater than `0`."}
+              errorStyle={{ color: "red" }}
+              icon={<Icon name="money" size={24} color="black" />}
+              containerStyle={{ width: "100%", marginBottom: 10 }}
+            />
           </View>
-        </View>
-        <View style={{ marginBottom: 10 }} />
-        <Button
-          large
-          onPress={this.submit}
-          icon={<Icon name="check" size={24} color="white" />}
-          title="Submit Order"
-          style={{ width: "100%" }} />
-      </Card>
+          <View style={{ height: 30 }}>
+            <View style={{
+              flex: 1,
+              flexDirection: "row"
+            }}>
+              <Text>Sub Total</Text>
+              <Text>: </Text>
+              <Text>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
+            </View>
+          </View>
+          <View style={{ marginBottom: 10 }} />
+          <LongButton
+            large
+            onPress={this.submit}
+            icon={<Icon name="check" size={24} color="white" />}
+            title="Submit Order" />
+        </Card>
+      </ScrollView>
     );
   }
 }
