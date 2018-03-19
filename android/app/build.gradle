@@ -107,8 +107,6 @@ def getPassword(String currentUser, String keyChain) {
     stdout.toString().trim()
 }
 
-def pass = getPassword("mobidex", "mobidex_keystore")
-
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
@@ -117,9 +115,7 @@ android {
         release {
             if (project.hasProperty('MOBIDEX_RELEASE_STORE_FILE')) {
                 storeFile file(MOBIDEX_RELEASE_STORE_FILE)
-                storePassword pass
                 keyAlias MOBIDEX_RELEASE_KEY_ALIAS
-                keyPassword pass
             }
         }
     }
@@ -143,6 +139,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -177,4 +178,22 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+task askForPasswords << {
+    def pass = getPassword("mobidex", "mobidex_keystore")
+    android.signingConfigs.release.storePassword = pass
+    android.signingConfigs.release.keyPassword = pass
+}
+
+tasks.whenTaskAdded { theTask -> 
+    if (theTask.name.equals("packageRelease")) {
+        theTask.dependsOn "askForPasswords"
+    }
+    if (theTask.name.equals("assembleRelease")) {
+        theTask.dependsOn "askForPasswords"
+    }
+    if (theTask.name.equals("installRelease")) {
+        theTask.dependsOn "askForPasswords"
+    }
 }
