@@ -23,6 +23,7 @@ const styles = {
     flex: 1,
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
+    marginLeft: 5
   }
 };

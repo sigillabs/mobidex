@@ -21,3 +21,31 @@ export function formatAmountWithDecimals(amount, decimals) {
 export function formatAmount(amount) {
   return new BigNumber(amount).toFixed(4);
 }
+
+export function getImage(symbol) {
+  switch(symbol) {
+    case "ETH":
+    return require("../images/logos/ETH.png");
+
+    case "ZRX":
+    return require("../images/logos/ZRX.png");
+
+    case "MLN":
+    return require("../images/logos/MLN.png");
+
+    case "MKR":
+    return require("../images/logos/MKR.png");
+
+    case "DGD":
+    return require("../images/logos/DGD.png");
+
+    case "REP":
+    return require("../images/logos/REP.png");
+
+    case "GNT":
+    return require("../images/logos/GNT.png");
+
+    default:
+    return require("../images/logos/WETH.png");
+  }
+}

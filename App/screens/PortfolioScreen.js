@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
+import { lock } from "../../thunks";
 import NormalHeader from "../headers/Normal";
 import AssetList from "../views/AssetList";
 import AssetDetails from "../views/AssetDetails";
@@ -12,7 +13,6 @@ import SendTokens from "../views/SendTokens";
 import SendEther from "../views/SendEther";
 import UnwrapEther from "../views/UnwrapEther";
 import WrapEther from "../views/WrapEther";
-import { lock } from "../../thunks";
 
 class PortfolioScreen extends Component {
   constructor(props) {

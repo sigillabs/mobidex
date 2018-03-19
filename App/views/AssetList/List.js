@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
-import { getImage } from "../../../utils/ethereum";
+import { getImage } from "../../../utils/display";
 import AssetItem from "./Item";
 
 class AssetList extends Component {

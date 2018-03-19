@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Button from "../components/Button";
-import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
+import { formatAmountWithDecimals, summarizeAddress, getImage } from "../../utils/display";
 
 @reactMixin.decorate(TimerMixin)
 export default class AssetDetails extends Component {
@@ -55,7 +55,9 @@ export default class AssetDetails extends Component {
           <Avatar
             large
             rounded
-            // source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"}}
+            width={34}
+            height={34}
+            source={getImage(asset.symbol)}
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />

@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
-import { formatAmountWithDecimals, summarizeAddress } from "../../utils/display";
+import { formatAmountWithDecimals, summarizeAddress, getImage } from "../../utils/display";
 import { getBalance } from "../../utils/ethereum";
 import Button from "../components/Button";
 
@@ -66,7 +66,9 @@ class EthereumAssetDetails extends Component {
           <Avatar
             large
             rounded
-            // source={{uri: "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"}}
+            width={34}
+            height={34}
+            source={getImage("ETH")}
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />

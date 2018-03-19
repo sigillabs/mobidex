@@ -173,10 +173,3 @@ export async function sendTokens(web3, { address, decimals }, to, amount) {
   let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
   return await zeroEx.token.transferAsync(address, account.toLowerCase(), to.toLowerCase(), value);
 }
-
-export function getImage(symbol) {
-  switch(symbol) {
-    default:
-    return require("../images/erc20-default.png");
-  }
-}

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
-import { getImage } from "../../utils/ethereum";
+import { getImage } from "../../utils/display";
 import MutedText from "./MutedText";
 
 export default class Logo extends Component {
