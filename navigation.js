@@ -76,5 +76,9 @@ export default TabNavigator({
         return <FAIcon name="list" size={25} color={tintColor} />;
       }
     },
-  })
+  }),
+  tabBarOptions: {
+    activeTintColor: '#86939e',
+    inactiveTintColor: '#bdc6cf',
+  },
 });
