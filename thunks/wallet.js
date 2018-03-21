@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 import * as _ from "lodash";
 import moment from "moment";
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Linking } from "react-native";
 import Wallet from "ethereumjs-wallet";
 import ethUtil from "ethereumjs-util";
 import {
@@ -13,6 +13,7 @@ import {
   setTransactionHash
 } from "../actions";
 import {
+  getNetworkId,
   getZeroExClient,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
@@ -203,6 +204,21 @@ export function unwrapEther(amount) {
       await dispatch(setError(err));
     } finally {
       await dispatch(setTxHash(null));
+    }
+  };
+}
+
+export function gotoEtherScan(txaddr) {
+  return async (dispatch, getState) => {
+    let { wallet: { web3 } } = getState();
+
+    let networkId = await getNetworkId(web3);
+    switch(networkId) {
+    case 42:
+      return await Linking.openURL(`https://kovan.etherscan.io/tx/${txaddr}`);
+
+    default:
+      return await Linking.openURL(`https://etherscan.io/txs/${txaddr}`);
     }
   };
 }
