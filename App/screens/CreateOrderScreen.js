@@ -118,7 +118,7 @@ class CreateOrderScreen extends Component {
             </View>
           </View>
           <View style={{ marginBottom: 10 }} />
-          <LongButton
+          <Button
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
