@@ -64,6 +64,8 @@
     "babel-preset-react-native": "4.0.0",
     "babel-preset-react-native-stage-0": "^1.0.1",
     "babylon": "^6.18.0",
+    "eslint": "^4.19.0",
+    "eslint-plugin-react": "^7.7.0",
     "jest": "22.0.6",
     "metro-bundler": "^0.22.1",
     "react-test-renderer": "16.2.0"

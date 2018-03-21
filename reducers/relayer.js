@@ -12,6 +12,9 @@ export default handleActions({
   [Actions.ADD_ORDERS]: (state, action) => {
     return { ...state, orders: _.unionBy(state.orders, action.payload, "orderHash") };
   },
+  [Actions.SET_ORDERS]: (state, action) => {
+    return { ...state, orders: action.payload };
+  },
   [Actions.SET_PRODUCTS]: (state, action) => {
     return { ...state, products: action.payload };
   },

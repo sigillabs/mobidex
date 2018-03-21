@@ -9,6 +9,7 @@ export const removeProcessing = createAction(Actions.REMOVE_PROCESSING);
 export const setBaseToken = createAction(Actions.SET_BASE_TOKEN);
 export const setError = createAction(Actions.SET_ERROR);
 export const setNetwork = createAction(Actions.SET_NETWORK);
+export const setOrders = createAction(Actions.SET_ORDERS);
 export const setProducts = createAction(Actions.SET_PRODUCTS);
 export const setQuoteToken = createAction(Actions.SET_QUOTE_TOKEN);
 export const setWallet = createAction(Actions.SET_WALLET);

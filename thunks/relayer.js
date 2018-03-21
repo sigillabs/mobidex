@@ -26,6 +26,7 @@ import {
   addOrders,
   addProcessingOrders,
   removeProcessingOrders,
+  setOrders,
   setProducts,
   setBaseToken,
   setQuoteToken,
@@ -38,7 +39,7 @@ export function loadOrders() {
     let client = new HttpClient(relayerEndpoint);
 
     try {
-      dispatch(addOrders(await client.getOrdersAsync()));
+      dispatch(setOrders(await client.getOrdersAsync()));
       return true;
     } catch(err) {
       dispatch(setError(err));

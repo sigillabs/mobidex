@@ -6,6 +6,7 @@ export const REMOVE_PROCESSING = "REMOVE_PROCESSING";
 export const SET_BASE_TOKEN = "SET_BASE_TOKEN";
 export const SET_ERROR = "SET_ERROR";
 export const SET_NETWORK = "SET_NETWORK";
+export const SET_ORDERS = "SET_ORDERS";
 export const SET_PRODUCTS = "SET_PRODUCTS";
 export const SET_QUOTE_TOKEN = "SET_QUOTE_TOKEN";
 export const SET_TOKENS = "SET_TOKENS";
