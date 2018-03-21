@@ -1,6 +1,7 @@
+import { ZeroEx } from "0x.js";
 import BigNumber from "bignumber.js";
 import ethUtil from "ethereumjs-util";
-import { ZeroEx } from "0x.js";
+import moment from "moment";
 
 export function summarizeAddress(address) {
   if (!address) return address;
@@ -24,28 +25,32 @@ export function formatAmount(amount) {
 
 export function getImage(symbol) {
   switch(symbol) {
-    case "ETH":
+  case "ETH":
     return require("../images/logos/ETH.png");
 
-    case "ZRX":
+  case "ZRX":
     return require("../images/logos/ZRX.png");
 
-    case "MLN":
+  case "MLN":
     return require("../images/logos/MLN.png");
 
-    case "MKR":
+  case "MKR":
     return require("../images/logos/MKR.png");
 
-    case "DGD":
+  case "DGD":
     return require("../images/logos/DGD.png");
 
-    case "REP":
+  case "REP":
     return require("../images/logos/REP.png");
 
-    case "GNT":
+  case "GNT":
     return require("../images/logos/GNT.png");
 
-    default:
+  default:
     return require("../images/logos/WETH.png");
   }
+}
+
+export function formatTimestamp(timestamp) {
+  return moment(timestamp).format("MMMM Do YYYY, h:mm:ss a");
 }

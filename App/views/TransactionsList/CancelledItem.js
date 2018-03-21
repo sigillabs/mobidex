@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
-import { formatAmountWithDecimals } from "../../../utils/display";
+import { formatAmountWithDecimals, formatTimestamp } from "../../../utils/display";
 import { getTokenByAddress } from "../../../utils/ethereum";
+import Row from "../../components/Row";
+import MutedText from "../../components/MutedText";
 
 class CancelledItem extends Component {
   constructor(props) {
@@ -34,14 +36,17 @@ class CancelledItem extends Component {
       return null;
     }
 
-    let { cancelledMakerTokenAmount, cancelledTakerTokenAmount } = this.props.transaction;
+    let { cancelledMakerTokenAmount, cancelledTakerTokenAmount, timestamp } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
 
     return (
-      <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        <Text>{formatAmountWithDecimals(cancelledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
-        <Text> for </Text>
-        <Text>{formatAmountWithDecimals(cancelledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+      <View>
+        <Row>
+          <Text>{formatAmountWithDecimals(cancelledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
+          <Text> for </Text>
+          <Text>{formatAmountWithDecimals(cancelledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+        </Row>
+        <MutedText>{formatTimestamp(timestamp)}</MutedText>
       </View>
     );
   }

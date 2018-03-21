@@ -7,8 +7,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
     "patch:web3": "./patches/web3.sh",
-    "build:android": "pushd android; ./gradlew assembleRelease; popd android;",
-    "build:ios": "echo 'You need to build an archive via XCode!'"
+    "build:android:release": "pushd android; read -sp 'If you would like to sign the APK, please add your store passphrase now: ' MOBIDEX_RELEASE_STORE_PASSWORD; ./gradlew clean assembleRelease -PMOBIDEX_RELEASE_STORE_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_RELEASE_KEY_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD}; popd android;",
+    "build:ios:release": "echo 'You need to build an archive via XCode!'"
   },
   "dependencies": {
     "0x.js": "^0.30.0",

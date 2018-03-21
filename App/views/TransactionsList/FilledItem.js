@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
-import { formatAmountWithDecimals } from "../../../utils/display";
+import { formatAmountWithDecimals, formatTimestamp } from "../../../utils/display";
 import { getTokenByAddress } from "../../../utils/ethereum";
+import Row from "../../components/Row";
+import MutedText from "../../components/MutedText";
 
 class FilledItem extends Component {
   constructor(props) {
@@ -34,7 +36,7 @@ class FilledItem extends Component {
       return null;
     }
 
-    let { filledMakerTokenAmount, filledTakerTokenAmount } = this.props.transaction;
+    let { filledMakerTokenAmount, filledTakerTokenAmount, timestamp } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
 
     if (!makerToken) makerToken = {
@@ -48,10 +50,13 @@ class FilledItem extends Component {
     };
 
     return (
-      <View style={[{ flex: 1, flexDirection: "row", justifyContent: "flex-start", alignItems: "center", }]}>
-        <Text>{formatAmountWithDecimals(filledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
-        <Text> for </Text>
-        <Text>{formatAmountWithDecimals(filledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+      <View>
+        <Row>
+          <Text>{formatAmountWithDecimals(filledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
+          <Text> for </Text>
+          <Text>{formatAmountWithDecimals(filledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+        </Row>
+        <MutedText>{formatTimestamp(timestamp)}</MutedText>
       </View>
     );
   }

@@ -94,19 +94,6 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
-def getPassword(String currentUser, String keyChain) {
-    def stdout = new ByteArrayOutputStream()
-    def stderr = new ByteArrayOutputStream()
-    exec {
-        commandLine 'security', '-q', 'find-generic-password', '-a', currentUser, '-s', keyChain, '-w'
-        standardOutput = stdout
-        errorOutput = stderr
-        ignoreExitValue true
-    }
-    //noinspection GroovyAssignabilityCheck
-    stdout.toString().trim()
-}
-
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
@@ -116,6 +103,8 @@ android {
             if (project.hasProperty('MOBIDEX_RELEASE_STORE_FILE')) {
                 storeFile file(MOBIDEX_RELEASE_STORE_FILE)
                 keyAlias MOBIDEX_RELEASE_KEY_ALIAS
+                storePassword MOBIDEX_RELEASE_STORE_PASSWORD
+                keyPassword MOBIDEX_RELEASE_KEY_PASSWORD
             }
         }
     }
@@ -178,22 +167,4 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
-}
-
-task askForPasswords << {
-    def pass = getPassword("mobidex", "mobidex_keystore")
-    android.signingConfigs.release.storePassword = pass
-    android.signingConfigs.release.keyPassword = pass
-}
-
-tasks.whenTaskAdded { theTask -> 
-    if (theTask.name.equals("packageRelease")) {
-        theTask.dependsOn "askForPasswords"
-    }
-    if (theTask.name.equals("assembleRelease")) {
-        theTask.dependsOn "askForPasswords"
-    }
-    if (theTask.name.equals("installRelease")) {
-        theTask.dependsOn "askForPasswords"
-    }
 }
