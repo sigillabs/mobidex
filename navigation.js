@@ -6,7 +6,6 @@ import TradingHeader from "./App/headers/Trading";
 import WalletHeader from "./App/headers/Wallet";
 import SettingsHeader from "./App/headers/Settings";
 import TransactionsHeader from "./App/headers/Transactions";
-import MyOrdersScreen from "./App/screens/MyOrdersScreen";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
 import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
@@ -29,8 +28,7 @@ const TransactionsStack = StackNavigator({
 const TradingStack = StackNavigator({
   Trading: { screen: TradingScreen },
   CreateOrder: { screen: CreateOrderScreen },
-  OrderDetails: { screen: OrderDetailsScreen },
-  MyOrders: { screen: MyOrdersScreen }
+  OrderDetails: { screen: OrderDetailsScreen }
 }, {
   initialRouteName: "Trading",
   navigationOptions: ({ navigation }) => {
@@ -68,11 +66,11 @@ export default TabNavigator({
       const { routeName } = navigation.state;
 
       switch(routeName) {
-        case "Wallet":
+      case "Wallet":
         return <IonIcon name="md-briefcase" size={25} color={tintColor} />;
-        case "Trading":
+      case "Trading":
         return <FAIcon name="exchange" size={25} color={tintColor} />;
-        case "Transactions":
+      case "Transactions":
         return <FAIcon name="list" size={25} color={tintColor} />;
       }
     },

@@ -23,14 +23,9 @@ class WalletHeader extends Component {
     return (
       <Header
         backgroundColor= "#43484d"
-        statusBarProps={{ barStyle: 'light-content' }}
+        statusBarProps={{ barStyle: "light-content" }}
         leftComponent={leftComponent}
         centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 18 } }}
-        rightComponent={(
-          <TouchableOpacity onPress={() => this.props.dispatch(loadAssets(true))}>
-            <Icon name="refresh" color="white" size={15} />
-          </TouchableOpacity>
-        )}
       />
     );
   }

@@ -98,7 +98,7 @@ class CreateOrderScreen extends Component {
             />
             <Input
               placeholder="Amount"
-              displayError={this.state.priceError}
+              displayError={this.state.amountError}
               onChangeText={this.onSetAmount}
               keyboardType="numeric"
               errorMessage={"Amounts should be numeric and greater than `0`."}

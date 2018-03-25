@@ -8,13 +8,13 @@ export default class extends Component {
     return (
       <Header
         backgroundColor= "#43484d"
-        statusBarProps={{ barStyle: 'light-content' }}
+        statusBarProps={{ barStyle: "light-content" }}
         leftComponent={(
           <TouchableOpacity onPress={() => this.props.navigation.goBack(null)}>
             <Icon name="arrow-back" color="white" size={15} />
           </TouchableOpacity>
         )}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:18 } }} />
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 18 } }} />
     );
   }
 }

@@ -8,8 +8,8 @@ export default class extends Component {
     return (
       <Header
         backgroundColor= "#43484d"
-        statusBarProps={{ barStyle: 'light-content' }}
-        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize:18 } }}
+        statusBarProps={{ barStyle: "light-content" }}
+        centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 18 } }}
       />
     );
   }

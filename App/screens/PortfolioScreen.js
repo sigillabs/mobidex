@@ -1,9 +1,9 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { lock } from "../../thunks";
+import { lock, loadAssets } from "../../thunks";
 import NormalHeader from "../headers/Normal";
 import AssetList from "../views/AssetList";
 import AssetDetails from "../views/AssetDetails";
@@ -22,7 +22,8 @@ class PortfolioScreen extends Component {
       showSend: false,
       showReceive: false,
       showWrap: false,
-      showUnwrap: false
+      showUnwrap: false,
+      refreshing: false
     };
   }
 
@@ -31,29 +32,14 @@ class PortfolioScreen extends Component {
     this.props.navigation.setParams({ back: null });
   };
 
-  renderAssetDetails() {
-    return (
-      <AssetDetails address={this.props.address} asset={this.state.token} onAction={async (action) => {
-        switch(action) {
-          case "send":
-          this.setState({ showSend: true, showReceive: false, showWrap: false, showUnwrap: false });
-          break;
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.props.dispatch(loadAssets(true));
+    this.setState({ refreshing: false });
+  };
 
-          case "receive":
-          this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
-          break;
-
-          case "unwrap":
-          this.setState({ showSend: false, showReceive: false, showWrap: false, showUnwrap: true });
-          break;
-
-          default:
-          return;
-        }
-
-        this.props.navigation.setParams({ back: this.close });
-      }} />
-    );
+  componentDidMount() {
+    this.props.dispatch(loadAssets());
   }
 
   render() {
@@ -101,7 +87,12 @@ class PortfolioScreen extends Component {
     let filteredAssets = _.without(this.props.assets, ethAsset);
 
     return (
-      <ScrollView>
+      <ScrollView refreshControl={(
+        <RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this.onRefresh.bind(this)}
+        />
+      )}>
         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
           <View style={{ height: 200 }}>
             <AssetDetails address={this.props.address} asset={this.state.token || ethAsset} onAction={async (action) => {
@@ -112,6 +103,10 @@ class PortfolioScreen extends Component {
 
                 case "receive":
                 this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
+                break;
+
+                case "wrap":
+                this.setState({ showSend: false, showReceive: false, showWrap: true, showUnwrap: false });
                 break;
 
                 case "unwrap":

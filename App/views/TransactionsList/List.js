@@ -20,12 +20,12 @@ class TransactionsList extends Component {
         }}>
           {
             this.props.transactions
-            .filter(({ status }) => status === "FILLED")
-            .map((tx, index) => (
-              <TouchableOpacity key={`filled-${index}`} onPress={() => (this.props.onPress(tx))}>
-                <ListItem title={<FilledItem transaction={tx} />} />
-              </TouchableOpacity>
-            ))
+              .filter(({ status }) => status === "FILLED")
+              .map((tx, index) => (
+                <TouchableOpacity key={`filled-${index}`} onPress={() => (this.props.onPress(tx))}>
+                  <ListItem title={<FilledItem transaction={tx} />} />
+                </TouchableOpacity>
+              ))
           }
         </List>
         <TinyHeader>Cancelled</TinyHeader>
@@ -37,12 +37,12 @@ class TransactionsList extends Component {
         }}>
           {
             this.props.transactions
-            .filter(({ status }) => status === "CANCELLED")
-            .map((tx, index) => (
-              <TouchableOpacity key={`cancelled-${index}`} onPress={() => (this.props.onPress(tx))}>
-                <ListItem title={<CancelledItem transaction={tx} />} />
-              </TouchableOpacity>
-            ))
+              .filter(({ status }) => status === "CANCELLED")
+              .map((tx, index) => (
+                <TouchableOpacity key={`cancelled-${index}`} onPress={() => (this.props.onPress(tx))}>
+                  <ListItem title={<CancelledItem transaction={tx} />} />
+                </TouchableOpacity>
+              ))
           }
         </List>
       </View>
