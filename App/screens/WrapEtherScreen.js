@@ -5,19 +5,17 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { sendEther } from "../../thunks";
+import { wrapEther } from "../../thunks";
 import GlobalStyles from "../../styles";
 import Button from "../components/Button";
 
-class SendEther extends Component {
+class WrapEtherScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       amount: new BigNumber(0),
-      amountError: false,
-      address: "",
-      addressError: false
+      amountError: false
     };
   }
 
@@ -34,20 +32,17 @@ class SendEther extends Component {
     }
   };
 
-  onSetAddress = (value) => {
-    this.setState({ address: value, addressError: false });
-  };
-
   submit = async () => {
-    let { address, amount } = this.state;
-    let result = await this.props.dispatch(sendEther(address, amount));
-    this.props.close();
+    let { amount } = this.state;
+    await this.props.dispatch(wrapEther(amount));
+    this.props.navigation.push("Portfolio");
   };
 
   render() {
     return (
-      <Card title="Send Ether">
-        <Input
+      <Card title={"Wrap Ether"}>
+        <View style={{ marginBottom: 10 }}>
+          <Input
             placeholder="Amount"
             displayError={this.state.amountError}
             onChangeText={this.onSetAmount}
@@ -56,21 +51,16 @@ class SendEther extends Component {
             errorStyle={{ color: "red" }}
             icon={<Icon name="money" size={24} color="black" />}
             containerStyle={{ width: "100%", marginBottom: 10 }} />
-        <Input
-            placeholder="Address"
-            onChangeText={this.onSetAddress}
-            keyboardType="ascii-capable"
-            icon={<Icon name="user" size={24} color="black" />}
-            containerStyle={{ width: "100%", marginBottom: 10 }} />
+        </View>
         <Button
-          large
-          onPress={this.submit}
-          icon={<Icon name="check" size={24} color="white" />}
-          title={"Send"}
-          style={{ width: "100%" }} />
+            large
+            onPress={this.submit}
+            icon={<Icon name="check" size={24} color="white" />}
+            title={"Wrap"}
+            style={{ width: "100%" }} />
       </Card>
     );
   }
 }
 
-export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendEther);
+export default connect(state => ({ }), dispatch => ({ dispatch }))(WrapEtherScreen);

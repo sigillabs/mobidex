@@ -5,11 +5,11 @@ import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import BigNumber from "bignumber.js";
 import { ZeroEx } from "0x.js";
-import { sendTokens } from "../../thunks";
+import { sendEther, sendTokens } from "../../thunks";
 import GlobalStyles from "../../styles";
 import Button from "../components/Button";
 
-class SendTokens extends Component {
+class SendScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -39,15 +39,20 @@ class SendTokens extends Component {
   };
 
   submit = async () => {
-    let { token } = this.props;
+    let { navigation: { state: { params: { token }}} } = this.props;
     let { address, amount } = this.state;
-    let result = await this.props.dispatch(sendTokens(token, address, amount));
-    this.props.close();
+    if (token.address === null) {
+      await this.props.dispatch(sendEther(address, amount));
+    } else {
+      await this.props.dispatch(sendTokens(token, address, amount));
+    }
+    this.props.navigation.push("Portfolio");
   };
 
   render() {
+    let { navigation: { state: { params: { token }}} } = this.props;
     return (
-      <Card title={`Send ${this.props.token.symbol}`}>
+      <Card title={`Send ${token.name}`}>
         <View style={{ marginBottom: 10 }}>
           <Input
               placeholder="Amount"
@@ -76,4 +81,4 @@ class SendTokens extends Component {
   }
 }
 
-export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendTokens);
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(SendScreen);

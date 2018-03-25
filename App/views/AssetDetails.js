@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import reactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
 import { View } from "react-native";
 import { Avatar, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { NavigationActions } from "react-navigation";
+import { connect } from "react-redux";
 import Button from "../components/Button";
 import { formatAmountWithDecimals, summarizeAddress, getImage } from "../../utils/display";
 
-@reactMixin.decorate(TimerMixin)
-export default class AssetDetails extends Component {
+class AssetDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -18,35 +17,24 @@ export default class AssetDetails extends Component {
   }
 
   receive = () => {
-    this.requestAnimationFrame(() => {
-      if (this.props.onAction) {
-        this.props.onAction("receive");
-      }
-    });
+    this.props.dispatch(NavigationActions.push({ routeName: "Receive" }));
   };
 
   send = () => {
-    this.requestAnimationFrame(() => {
-      if (this.props.onAction) {
-        this.props.onAction("send");
+    this.props.dispatch(NavigationActions.push({
+      routeName: "Send",
+      params: {
+        token: this.props.asset
       }
-    });
+    }));
   };
 
   wrap = () => {
-    this.requestAnimationFrame(() => {
-      if (this.props.onAction) {
-        this.props.onAction("wrap");
-      }
-    });
+    this.props.dispatch(NavigationActions.push({ routeName: "Wrap" }));
   };
 
   unwrap = () => {
-    this.requestAnimationFrame(() => {
-      if (this.props.onAction) {
-        this.props.onAction("unwrap");
-      }
-    });
+    this.props.dispatch(NavigationActions.push({ routeName: "Unwrap" }));
   };
 
   toggleShowAddress = () => {
@@ -105,3 +93,5 @@ export default class AssetDetails extends Component {
     );
   }
 }
+
+export default connect((state) => ({ }), (dispatch) => ({ dispatch }))(AssetDetails);

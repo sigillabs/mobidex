@@ -2,25 +2,26 @@ import React from "react";
 import { StackNavigator, TabNavigator } from "react-navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FAIcon from "react-native-vector-icons/FontAwesome";
+import BlankHeader from "./App/headers/Blank";
+import NormalHeader from "./App/headers/Normal";
 import TradingHeader from "./App/headers/Trading";
-import WalletHeader from "./App/headers/Wallet";
-import SettingsHeader from "./App/headers/Settings";
-import TransactionsHeader from "./App/headers/Transactions";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
 import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
 import OrderDetailsScreen from "./App/screens/OrderDetailsScreen";
+import ReceiveScreen from "./App/screens/ReceiveScreen";
+import SendScreen from "./App/screens/SendScreen";
 import TransactionHistoryScreen from "./App/screens/TransactionHistoryScreen";
+import UnwrapEtherScreen from "./App/screens/UnwrapEtherScreen";
+import WrapEtherScreen from "./App/screens/WrapEtherScreen";
 
 const TransactionsStack = StackNavigator({
   History: { screen: TransactionHistoryScreen }
 }, {
   initialRouteName: "History",
   navigationOptions: ({ navigation }) => {
-    const params = navigation.state.params || {};
-
     return {
-      header: <TransactionsHeader navigation={navigation} />
+      header: <BlankHeader navigation={navigation} />
     };
   }
 });
@@ -32,24 +33,30 @@ const TradingStack = StackNavigator({
 }, {
   initialRouteName: "Trading",
   navigationOptions: ({ navigation }) => {
-    const params = navigation.state.params || {};
-
-    return {
-      header: <TradingHeader navigation={navigation} />
-    };
+    switch(navigation.state.routeName) {
+    case "Trading":
+      return { header: <TradingHeader navigation={navigation} /> };
+    default:
+      return { header: <NormalHeader navigation={navigation} /> };
+    }
   }
 });
 
 const WalletStack = StackNavigator({
   Portfolio: { screen: PortfolioScreen },
+  Receive: { screen: ReceiveScreen },
+  Send: { screen: SendScreen },
+  Wrap: { screen: WrapEtherScreen },
+  Unwrap: { screen: UnwrapEtherScreen },
 }, {
   initialRouteName: "Portfolio",
   navigationOptions: ({ navigation }) => {
-    const params = navigation.state.params || {};
-
-    return {
-      header: <WalletHeader navigation={navigation} />
-    };
+    switch(navigation.state.routeName) {
+    case "Portfolio":
+      return { header: <BlankHeader navigation={navigation} /> };
+    default:
+      return { header: <NormalHeader navigation={navigation} /> };
+    }
   }
 });
 

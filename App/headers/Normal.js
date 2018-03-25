@@ -10,7 +10,7 @@ export default class extends Component {
         backgroundColor= "#43484d"
         statusBarProps={{ barStyle: "light-content" }}
         leftComponent={(
-          <TouchableOpacity onPress={() => this.props.navigation.goBack(null)}>
+          <TouchableOpacity style={{ padding: 10 }} onPress={() => this.props.navigation.goBack(null)}>
             <Icon name="arrow-back" color="white" size={15} />
           </TouchableOpacity>
         )}

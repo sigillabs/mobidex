@@ -12,7 +12,7 @@ class TradingHeader extends Component {
         statusBarProps={{ barStyle: "light-content" }}
         centerComponent={{ text: "Mobidex", style: { color: "white", fontSize: 18 } }}
         rightComponent={(
-          <TouchableOpacity style={{ padding: 10 }} onPress={() => this.props.navigation.navigate("CreateOrder")}>
+          <TouchableOpacity style={{ padding: 10 }} onPress={() => this.props.navigation.push("CreateOrder")}>
             <Icon name="add" color="white" size={15}/>
           </TouchableOpacity>
         )}

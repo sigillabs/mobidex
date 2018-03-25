@@ -67,7 +67,7 @@ class CreateOrderScreen extends Component {
     let result = await this.props.dispatch(createSignSubmitOrder(SIDES[side], price, amount));
 
     if (result) {
-      this.props.navigation.navigate("Trading");
+      this.props.navigation.push("Trading");
     }
   }
 

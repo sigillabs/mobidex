@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import ethUtil from "ethereumjs-util";
 import Button from "../components/Button";
 
-class ReceiveTokens extends Component {
+class ReceiveScreen extends Component {
   share = () => {
     Share.share({
       message: `Here's My Address: ${this.props.address}`,
@@ -53,4 +53,4 @@ class ReceiveTokens extends Component {
   }
 }
 
-export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(ReceiveTokens);
+export default connect(state => ({ ...state.device.layout, ...state.wallet }), dispatch => ({ dispatch }))(ReceiveScreen);

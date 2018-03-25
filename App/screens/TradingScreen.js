@@ -105,13 +105,13 @@ class TradingScreen extends Component {
 
         {bids.length !== 0 ? <OrderList
           orders={bids}
-          onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+          onPress={order => (this.props.navigation.push("OrderDetails", { order, quoteToken, baseToken }))}
           title={"Bids"}
           icon={"add"} /> : null}
 
         {asks.length !== 0 ? <OrderList
           orders={asks}
-          onPress={order => (this.props.navigation.navigate("OrderDetails", { order, quoteToken, baseToken }))}
+          onPress={order => (this.props.navigation.push("OrderDetails", { order, quoteToken, baseToken }))}
           title={"Asks"}
           icon={"remove"} /> : null}
       </ScrollView>
