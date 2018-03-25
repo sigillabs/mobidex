@@ -18,7 +18,7 @@ export default class TransactionsProcessing extends Component {
         }}> 
         <Text 
           style={{
-            fontSize: 20,
+            fontSize: 18,
             color: "white",
             paddingBottom: 10
           }}>Processing Transactions On Ethereum...</Text>
