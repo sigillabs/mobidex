@@ -3,35 +3,10 @@ import React, { Component } from "react";
 import { View, ScrollView } from "react-native";
 import { Text } from "react-native-elements";
 import { connect } from "react-redux";
-import ButtonGroup from '../components/ButtonGroup.js'
+import { colors } from "../../styles";
+import ButtonGroup from "../components/ButtonGroup.js";
 
 class TokenFilterBar extends Component {
-  renderGroup(title, tokens, selectedIndex, onPress) {
-    return (
-      <View style={styles.group}>
-        <ButtonGroup
-            onPress={(index) => {
-              if (onPress) {
-                onPress(tokens[index]);
-              }
-            }}
-            selectedIndex={selectedIndex > -1 ? selectedIndex : 0}
-            buttons={tokens.map(t => t.symbol)}
-            containerBorderRadius={0}
-            containerStyle={[styles.container, this.props.containerStyle]}
-            buttonStyle={[styles.button, this.props.buttonStyles]}
-        />
-        <Text style={styles.groupText}>{title}</Text>
-      </View>
-    );
-  }
-
-  renderDivider() {
-    return (
-      <View style={styles.divider} />
-    );
-  }
-
   render() {
     let {
       quoteTokens,
@@ -45,54 +20,71 @@ class TokenFilterBar extends Component {
     let selectedBaseTokenIndex = _.indexOf(baseTokens, selectedBaseToken);
     return (
       <ScrollView horizontal={true}>
-        {this.renderGroup("Quote", quoteTokens, selectedQuoteTokenIndex, onQuoteTokenSelect)}
-        {this.renderDivider()}
-        {this.renderGroup("Base", baseTokens, selectedBaseTokenIndex, onBaseTokenSelect)}
+        <TokenFilterBarButtonGroup
+          title="Quote"
+          tokens={quoteTokens}
+          selectedIndex={selectedQuoteTokenIndex}
+          onPress={onQuoteTokenSelect} />
+        <View style={{
+          backgroundColor: colors.grey3,
+          height: 30,
+          width: 1,
+          marginLeft: 5,
+          marginRight: 5,
+          marginTop: 5,
+          marginBottom: 5
+        }} />
+        <TokenFilterBarButtonGroup
+          title="Base"
+          tokens={baseTokens}
+          selectedIndex={selectedBaseTokenIndex}
+          onPress={onBaseTokenSelect} />
       </ScrollView>
     );
   }
 }
 
-const styles = {
-  divider: {
-    backgroundColor: "gray",
-    height: 30,
-    width: 1,
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 5,
-    marginBottom: 5
-  },
-  group: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start"
-  },
-  groupText: {
-    color: "gray",
-    fontSize: 10
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center"
-  },
-  container: {
-    borderRadius: 0,
-    borderWidth: 0,
-    height: 40,
-    padding: 0,
-    marginTop: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    marginLeft: 0,
-  },
-  button: {
-    paddingLeft: 10,
-    paddingRight: 10
+class TokenFilterBarButtonGroup extends Component {
+  render() {
+    let { title, tokens, selectedIndex, onPress } = this.props;
+
+    return (
+      <View style={{
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start"
+      }}>
+        <ButtonGroup
+          onPress={(index) => {
+            if (onPress) {
+              onPress(tokens[index]);
+            }
+          }}
+          selectedIndex={selectedIndex > -1 ? selectedIndex : 0}
+          buttons={tokens.map(t => t.symbol)}
+          containerBorderRadius={0}
+          containerStyle={[{
+            borderRadius: 0,
+            borderWidth: 0,
+            height: 40,
+            padding: 0,
+            marginTop: 0,
+            marginRight: 0,
+            marginBottom: 0,
+            marginLeft: 0,
+          }, this.props.containerStyle]}
+          buttonStyle={[{
+            paddingLeft: 10,
+            paddingRight: 10
+          }, this.props.buttonStyles]} />
+        <Text style={{
+          color: "gray",
+          fontSize: 10
+        }}>{title}</Text>
+      </View>
+    );
   }
-};
+}
 
 export default connect((state) => ({ ...state.device }), (dispatch) => ({ dispatch }))(TokenFilterBar);
