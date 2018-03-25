@@ -1,6 +1,4 @@
 import BigNumber from "bignumber.js";
-import * as _ from "lodash";
-import moment from "moment";
 import { AsyncStorage, Linking } from "react-native";
 import Wallet from "ethereumjs-wallet";
 import ethUtil from "ethereumjs-util";
@@ -13,6 +11,7 @@ import {
   setTransactionHash
 } from "../actions";
 import {
+  getBalance,
   getNetworkId,
   getZeroExClient,
   sendTokens as sendTokensUtil,
@@ -42,20 +41,6 @@ export function importPrivateKey(privateKey, password) {
   };
 }
 
-// export function loadWallet() {
-//   return async (dispatch, getState) => {
-//     let { settings: { network } } = getState();
-//     let privateKey = await AsyncStorage.getItem("wallet");
-//     if (privateKey) {
-//       let wallet = Wallet.fromPrivateKey(Buffer.from(privateKey, "hex"));
-//       dispatch(setWallet({ network, wallet }));
-//       return wallet;
-//     } else {
-//       return null;
-//     }
-//   };
-// }
-
 export function lock(password) {
   return async (dispatch, getState) => {
     let { wallet: { privateKey } } = getState();
@@ -63,7 +48,7 @@ export function lock(password) {
     let v3 = wallet.toV3(password, { c: 32, n: 32 });
     let json = JSON.stringify(v3);
     await AsyncStorage.setItem("lock", json);
-  }
+  };
 }
 
 export function unlock(password) {
@@ -77,18 +62,26 @@ export function unlock(password) {
     } else {
       throw new Error("Wallet does not exist.");
     }
-  }
+  };
 }
 
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
+    let { wallet: { web3, address }, relayer: { tokens } } = getState();
     let assets = await cache("assets", async () => {
-      let { wallet: { web3 }, relayer: { tokens } } = getState();
       let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(web3, address))));
-      return tokens.map((token, index) => ({ ...token, balance: balances[index] }));
+      let extendedTokens = tokens.map((token, index) => ({ ...token, balance: balances[index] }));
+      extendedTokens.push({
+        address: null,
+        symbol: "ETH",
+        name: "Ether",
+        decimals: 18,
+        balance: await getBalance(web3, address)
+      });
+      return extendedTokens;
     }, force ? 0 : 60);
 
-    assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }))
+    assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }));
 
     dispatch(addAssets(assets));
   };

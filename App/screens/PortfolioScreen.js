@@ -7,7 +7,6 @@ import { lock } from "../../thunks";
 import NormalHeader from "../headers/Normal";
 import AssetList from "../views/AssetList";
 import AssetDetails from "../views/AssetDetails";
-import EthereumAssetDetails from "../views/EthereumAssetDetails";
 import ReceiveTokens from "../views/ReceiveTokens";
 import SendTokens from "../views/SendTokens";
 import SendEther from "../views/SendEther";
@@ -33,31 +32,6 @@ class PortfolioScreen extends Component {
   };
 
   renderAssetDetails() {
-    if (!this.state.token) {
-      return (
-        <EthereumAssetDetails onAction={async (action) => {
-          switch(action) {
-            case "send":
-            this.setState({ showSend: true, showReceive: false, showWrap: false, showUnwrap: false });
-            break;
-
-            case "receive":
-            this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
-            break;
-
-            case "wrap":
-            this.setState({ showSend: false, showReceive: false, showWrap: true, showUnwrap: false });
-            break;
-
-            default:
-            return;
-          }
-
-          this.props.navigation.setParams({ back: this.close });
-        }} />
-      );
-    }
-
     return (
       <AssetDetails address={this.props.address} asset={this.state.token} onAction={async (action) => {
         switch(action) {
@@ -123,16 +97,38 @@ class PortfolioScreen extends Component {
       );
     }
 
+    let ethAsset = _.find(this.props.assets, { symbol: "ETH" });
+    let filteredAssets = _.without(this.props.assets, ethAsset);
+
     return (
       <ScrollView>
         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
           <View style={{ height: 200 }}>
-            {this.renderAssetDetails()}
+            <AssetDetails address={this.props.address} asset={this.state.token || ethAsset} onAction={async (action) => {
+              switch(action) {
+                case "send":
+                this.setState({ showSend: true, showReceive: false, showWrap: false, showUnwrap: false });
+                break;
+
+                case "receive":
+                this.setState({ showSend: false, showReceive: true, showWrap: false, showUnwrap: false });
+                break;
+
+                case "unwrap":
+                this.setState({ showSend: false, showReceive: false, showWrap: false, showUnwrap: true });
+                break;
+
+                default:
+                return;
+              }
+
+              this.props.navigation.setParams({ back: this.close });
+            }} />
           </View>
           <View style={{ flex: 1 }}>
             <AssetList
                 asset={this.state.token}
-                assets={this.props.assets}
+                assets={filteredAssets}
                 onPress={(asset) => {
                   if (this.state.token && this.state.token.address === asset.address) {
                     this.setState({ token: null });

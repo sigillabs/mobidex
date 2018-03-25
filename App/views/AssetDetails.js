@@ -33,6 +33,14 @@ export default class AssetDetails extends Component {
     });
   };
 
+  wrap = () => {
+    this.requestAnimationFrame(() => {
+      if (this.props.onAction) {
+        this.props.onAction("wrap");
+      }
+    });
+  };
+
   unwrap = () => {
     this.requestAnimationFrame(() => {
       if (this.props.onAction) {
@@ -79,8 +87,14 @@ export default class AssetDetails extends Component {
             icon={<Icon name="send" color="white" size={18} />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.send} />
-          {asset.symbol === "WETH" ? <View style={{ width: 10 }} /> : null}
-          {asset.symbol === "WETH" ? <Button
+          {asset === null ? <Button
+            large
+            title="Wrap"
+            icon={<Icon name="move-to-inbox" color="white" size={18} />}
+            buttonStyle={{ borderRadius: 0 }}
+            onPress={this.wrap} /> : null}
+          {asset !== null && asset.symbol === "WETH" ? <View style={{ width: 10 }} /> : null}
+          {asset !== null && asset.symbol === "WETH" ? <Button
             large
             title="Unwrap"
             icon={<Icon name="move-to-inbox" color="white" size={18} />}
