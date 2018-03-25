@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { ScrollView, RefreshControl } from "react-native";
 import { connect } from "react-redux";
 import { loadTransactions } from "../../thunks";
+import EmptyList from "../components/EmptyList";
+import MutedText from "../components/MutedText";
 import TransactionsList from "../views/TransactionsList";
 
 class TransactionHistoryScreen extends Component {
@@ -31,7 +33,13 @@ class TransactionHistoryScreen extends Component {
           onRefresh={this.onRefresh.bind(this)}
         />
       )}>
-        <TransactionsList transactions={this.props.transactions} />
+        {this.props.transactions.length > 0 ? (
+          <TransactionsList transactions={this.props.transactions} />
+        ) : (
+          <EmptyList style={{ height: "100%", width: "100%" }}>
+            <MutedText style={{ marginTop: 25 }}>No transaction history to show.</MutedText>
+          </EmptyList>
+        )}
       </ScrollView>
     );
   }

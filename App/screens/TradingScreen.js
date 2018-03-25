@@ -1,7 +1,6 @@
 import * as _ from "lodash";
 import React, { Component } from "react";
 import { ScrollView, RefreshControl } from "react-native";
-import { Avatar } from "react-native-elements";
 import FAIcon from "react-native-vector-icons/FontAwesome";
 import { connect } from "react-redux";
 import { setBaseToken, setQuoteToken } from "../../actions";
@@ -92,14 +91,8 @@ class TradingScreen extends Component {
           containerStyle={{ marginBottom: 10 }} />
 
         {bids.length === 0 && asks.length === 0 ? (
-          <EmptyList style={{ height: "100%", width: "100%" }} onPress={() => this.props.navigation.navigate("CreateOrder")}>
-            <MutedText style={{ marginBottom: 25, fontSize: 24 }}>Get started trading!</MutedText>
-            <Avatar
-              xlarge
-              rounded
-              icon={{name: "plus", type: "font-awesome"}}
-              activeOpacity={0.7}
-            />
+          <EmptyList style={{ height: "100%", width: "100%" }}>
+            <MutedText style={{ marginTop: 25 }}>There are no orders in the system :(.</MutedText>
           </EmptyList>
         ) : null}
 

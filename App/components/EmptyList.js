@@ -7,8 +7,7 @@ export default class EmptyList extends Component {
   render() {
     let {
       containerStyle,
-      wrapperStyle,
-      textStyle
+      wrapperStyle
     } = this.props;
     return (
       <BigCenter style={[{ height: "100%" }, containerStyle]}>
