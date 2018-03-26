@@ -127,6 +127,8 @@ export function sendTokens(token, to, amount) {
     try {
       dispatch(processing());
 
+      let { wallet: { web3 } } = getState();
+      let zeroEx = await getZeroExClient(web3);
       let txhash = await sendTokensUtil(web3, token, to, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       await Promise.all([
@@ -195,7 +197,6 @@ export function unwrapEther(amount) {
 export function gotoEtherScan(txaddr) {
   return async (dispatch, getState) => {
     let { wallet: { web3 } } = getState();
-
     let networkId = await getNetworkId(web3);
     switch(networkId) {
     case 42:

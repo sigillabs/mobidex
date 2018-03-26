@@ -19,13 +19,11 @@
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2B63BBD4A5D942C49CCF81E5 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCE26D44318C48D8B656471A /* SimpleLineIcons.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */; };
@@ -36,6 +34,20 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* mobidexTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* mobidexTests.m */; };
+		3007D7362068C49000D2AA0E /* mobidex-167.png in Resources */ = {isa = PBXBuildFile; fileRef = 3007D70E2068C49000D2AA0E /* mobidex-167.png */; };
+		3007D7382068C4E400D2AA0E /* mobidex-180.png in Resources */ = {isa = PBXBuildFile; fileRef = 3007D7372068C4E400D2AA0E /* mobidex-180.png */; };
+		3007D73A2068C51000D2AA0E /* mobidex-80.png in Resources */ = {isa = PBXBuildFile; fileRef = 3007D7392068C51000D2AA0E /* mobidex-80.png */; };
+		3007D73C2068C55700D2AA0E /* mobidex-58.png in Resources */ = {isa = PBXBuildFile; fileRef = 3007D73B2068C55700D2AA0E /* mobidex-58.png */; };
+		306B975D2068B0E600F153DC /* mobidex-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B975B2068B0E600F153DC /* mobidex-120.png */; };
+		306B97622068B18200F153DC /* mobidex-152.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B975E2068B18200F153DC /* mobidex-152.png */; };
+		306B97632068B18200F153DC /* mobidex-60.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B975F2068B18200F153DC /* mobidex-60.png */; };
+		306B97652068B18200F153DC /* mobidex-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B97612068B18200F153DC /* mobidex-76.png */; };
+		306B97672068BB0A00F153DC /* mobidex-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B97662068BB0A00F153DC /* mobidex-1024.png */; };
+		306B976C2068BD1200F153DC /* mobidex-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B97682068BD1200F153DC /* mobidex-20.png */; };
+		306B976D2068BD1200F153DC /* mobidex-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B97692068BD1200F153DC /* mobidex-40.png */; };
+		306B976E2068BD1200F153DC /* mobidex-83.5.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B976A2068BD1200F153DC /* mobidex-83.5.png */; };
+		306B976F2068BD1200F153DC /* mobidex-29.png in Resources */ = {isa = PBXBuildFile; fileRef = 306B976B2068BD1200F153DC /* mobidex-29.png */; };
+		306B97722068C33A00F153DC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		432AFFD2A69D4AF9BD915B52 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0D173FC85C64713A5BDDC6C /* Ionicons.ttf */; };
 		48BC9329A7B542418F68399E /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0119262611704B1C93BBCFB7 /* EvilIcons.ttf */; };
 		53D9C5DFCF034CC4ABB76BFA /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3BBC762CFD034434BA36CFB6 /* Zocial.ttf */; };
@@ -368,6 +380,19 @@
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3007D70E2068C49000D2AA0E /* mobidex-167.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-167.png"; path = "../images/icons/mobidex-167.png"; sourceTree = "<group>"; };
+		3007D7372068C4E400D2AA0E /* mobidex-180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-180.png"; path = "../images/icons/mobidex-180.png"; sourceTree = "<group>"; };
+		3007D7392068C51000D2AA0E /* mobidex-80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-80.png"; path = "../images/icons/mobidex-80.png"; sourceTree = "<group>"; };
+		3007D73B2068C55700D2AA0E /* mobidex-58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-58.png"; path = "../images/icons/mobidex-58.png"; sourceTree = "<group>"; };
+		306B975B2068B0E600F153DC /* mobidex-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-120.png"; path = "../images/icons/mobidex-120.png"; sourceTree = "<group>"; };
+		306B975E2068B18200F153DC /* mobidex-152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-152.png"; path = "../images/icons/mobidex-152.png"; sourceTree = "<group>"; };
+		306B975F2068B18200F153DC /* mobidex-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-60.png"; path = "../images/icons/mobidex-60.png"; sourceTree = "<group>"; };
+		306B97612068B18200F153DC /* mobidex-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-76.png"; path = "../images/icons/mobidex-76.png"; sourceTree = "<group>"; };
+		306B97662068BB0A00F153DC /* mobidex-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-1024.png"; path = "../images/icons/mobidex-1024.png"; sourceTree = "<group>"; };
+		306B97682068BD1200F153DC /* mobidex-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-20.png"; path = "../images/icons/mobidex-20.png"; sourceTree = "<group>"; };
+		306B97692068BD1200F153DC /* mobidex-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-40.png"; path = "../images/icons/mobidex-40.png"; sourceTree = "<group>"; };
+		306B976A2068BD1200F153DC /* mobidex-83.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-83.5.png"; path = "../images/icons/mobidex-83.5.png"; sourceTree = "<group>"; };
+		306B976B2068BD1200F153DC /* mobidex-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobidex-29.png"; path = "../images/icons/mobidex-29.png"; sourceTree = "<group>"; };
 		3BBC762CFD034434BA36CFB6 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		495AA53552A246ADAFC2A36B /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -678,6 +703,19 @@
 		DF26D67CAFB6414E8E8ECC03 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				306B97682068BD1200F153DC /* mobidex-20.png */,
+				306B976B2068BD1200F153DC /* mobidex-29.png */,
+				306B97692068BD1200F153DC /* mobidex-40.png */,
+				3007D73B2068C55700D2AA0E /* mobidex-58.png */,
+				306B975F2068B18200F153DC /* mobidex-60.png */,
+				306B97612068B18200F153DC /* mobidex-76.png */,
+				3007D7392068C51000D2AA0E /* mobidex-80.png */,
+				306B976A2068BD1200F153DC /* mobidex-83.5.png */,
+				306B975B2068B0E600F153DC /* mobidex-120.png */,
+				306B975E2068B18200F153DC /* mobidex-152.png */,
+				3007D70E2068C49000D2AA0E /* mobidex-167.png */,
+				3007D7372068C4E400D2AA0E /* mobidex-180.png */,
+				306B97662068BB0A00F153DC /* mobidex-1024.png */,
 				997065B87D8945598EBEE164 /* Entypo.ttf */,
 				0119262611704B1C93BBCFB7 /* EvilIcons.ttf */,
 				D4ADA2D59D374544B612AAAA /* Feather.ttf */,
@@ -779,10 +817,13 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 7ST75QNP4P;
+						ProvisioningStyle = Manual;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 7ST75QNP4P;
+						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1162,19 +1203,32 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				306B975D2068B0E600F153DC /* mobidex-120.png in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				6CB40FD81A394FEC8C0302FA /* Entypo.ttf in Resources */,
 				48BC9329A7B542418F68399E /* EvilIcons.ttf in Resources */,
+				3007D73A2068C51000D2AA0E /* mobidex-80.png in Resources */,
+				306B97632068B18200F153DC /* mobidex-60.png in Resources */,
 				5A33B665C53F4EE689C76916 /* Feather.ttf in Resources */,
+				3007D7362068C49000D2AA0E /* mobidex-167.png in Resources */,
+				306B976F2068BD1200F153DC /* mobidex-29.png in Resources */,
 				FCC4270E6B12469EA72B39E6 /* FontAwesome.ttf in Resources */,
 				01B68790FDEA43569EC223ED /* Foundation.ttf in Resources */,
 				432AFFD2A69D4AF9BD915B52 /* Ionicons.ttf in Resources */,
 				5D39EE6F326E47CC9C145729 /* MaterialCommunityIcons.ttf in Resources */,
+				3007D73C2068C55700D2AA0E /* mobidex-58.png in Resources */,
+				306B97652068B18200F153DC /* mobidex-76.png in Resources */,
 				E62494714A194D21B3699F74 /* MaterialIcons.ttf in Resources */,
+				306B976E2068BD1200F153DC /* mobidex-83.5.png in Resources */,
 				A108003E259843358ABF385C /* Octicons.ttf in Resources */,
+				3007D7382068C4E400D2AA0E /* mobidex-180.png in Resources */,
+				306B97722068C33A00F153DC /* Images.xcassets in Resources */,
+				306B976D2068BD1200F153DC /* mobidex-40.png in Resources */,
 				2B63BBD4A5D942C49CCF81E5 /* SimpleLineIcons.ttf in Resources */,
+				306B97672068BB0A00F153DC /* mobidex-1024.png in Resources */,
+				306B976C2068BD1200F153DC /* mobidex-20.png in Resources */,
 				53D9C5DFCF034CC4ABB76BFA /* Zocial.ttf in Resources */,
+				306B97622068B18200F153DC /* mobidex-152.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1182,7 +1236,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1293,6 +1346,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 7ST75QNP4P;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1315,6 +1371,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex.app/mobidex";
 			};
 			name = Debug;
@@ -1323,7 +1380,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 7ST75QNP4P;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
@@ -1342,6 +1403,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex.app/mobidex";
 			};
 			name = Release;
@@ -1350,6 +1412,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
@@ -1365,8 +1430,11 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.mobidex.app;
 				PRODUCT_NAME = mobidex;
-				TARGETED_DEVICE_FAMILY = 1;
+				PROVISIONING_PROFILE = "e8afbd79-ca80-43d5-8a8a-a0a38abe459b";
+				PROVISIONING_PROFILE_SPECIFIER = "mobidex-development";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1375,6 +1443,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
 				HEADER_SEARCH_PATHS = (
@@ -1389,8 +1460,11 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.mobidex.app;
 				PRODUCT_NAME = mobidex;
-				TARGETED_DEVICE_FAMILY = 1;
+				PROVISIONING_PROFILE = "320d5e36-5bb1-46b6-a5d6-b40ecf339b3e";
+				PROVISIONING_PROFILE_SPECIFIER = "mobidex-appstore";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
