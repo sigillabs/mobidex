@@ -5,13 +5,12 @@ import BigNumber from "bignumber.js";
 import moment from "moment";
 import { NavigationActions } from "react-navigation";
 import { setError } from "../actions";
-import { loadTransactions, setTxHash } from "../thunks";
+import { loadTransactions } from "../thunks";
 import {
   getZeroExClient,
   getZeroExContractAddress,
   getTokenAllowance,
   getTokenByAddress,
-  guaranteeWETHAmount,
   guaranteeWETHInWeiAmount,
   setTokenUnlimitedAllowance,
   isWETHAddress
@@ -24,8 +23,8 @@ import {
 } from "../utils/orders";
 import {
   addOrders,
-  addProcessingOrders,
-  removeProcessingOrders,
+  notProcessing,
+  processing,
   setOrders,
   setProducts,
   setBaseToken,
@@ -87,27 +86,28 @@ export function loadProductsAndTokens(force = false) {
 
 export function createSignSubmitOrder(side, price, amount) {
   return async (dispatch, getState) => {
-    let { wallet: { web3, address }, settings: { relayerEndpoint, quoteToken, baseToken } } = getState();
-    let zeroEx = await getZeroExClient(web3);
-    let relayerClient = new HttpClient(relayerEndpoint);
-    let order = {
-      ...convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount),
-      "maker": address.toLowerCase(quoteToken, baseToken, side, price, amount),
-      "makerFee": new BigNumber(0),
-      "taker": ZeroEx.NULL_ADDRESS,
-      "takerFee": new BigNumber(0),
-      "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
-      "feeRecipient": ZeroEx.NULL_ADDRESS,
-      "salt": ZeroEx.generatePseudoRandomSalt(),
-      "exchangeContractAddress": await getZeroExContractAddress(web3)
-    };
-    let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
-
     try {
+      dispatch(processing());
+
+      let { wallet: { web3, address }, settings: { relayerEndpoint, quoteToken, baseToken } } = getState();
+      let zeroEx = await getZeroExClient(web3);
+      let relayerClient = new HttpClient(relayerEndpoint);
+      let order = {
+        ...convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount),
+        "maker": address.toLowerCase(quoteToken, baseToken, side, price, amount),
+        "makerFee": new BigNumber(0),
+        "taker": ZeroEx.NULL_ADDRESS,
+        "takerFee": new BigNumber(0),
+        "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
+        "feeRecipient": ZeroEx.NULL_ADDRESS,
+        "salt": ZeroEx.generatePseudoRandomSalt(),
+        "exchangeContractAddress": await getZeroExContractAddress(web3)
+      };
+      let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
+
       // Make sure allowance is available.
       if (order.makerTokenAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.makerTokenAddress);
-        dispatch(setTxHash(txhash));
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
 
@@ -115,7 +115,6 @@ export function createSignSubmitOrder(side, price, amount) {
       if ((await isWETHAddress(web3, order.makerTokenAddress))) {
         let txhash = await guaranteeWETHInWeiAmount(web3, order.makerTokenAmount);
         if (txhash) {
-          dispatch(setTxHash(txhash));
           let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
         }
       }
@@ -130,7 +129,7 @@ export function createSignSubmitOrder(side, price, amount) {
     } catch(err) {
       await dispatch(setError(err));
     } finally {
-      dispatch(setTxHash(null));
+      dispatch(notProcessing());
       dispatch(NavigationActions.push({ routeName: "Trading" }));
     }
   };
@@ -138,21 +137,22 @@ export function createSignSubmitOrder(side, price, amount) {
 
 export function cancelOrder(order) {
   return async (dispatch, getState) => {
-    let { wallet: { web3, address } } = getState();
-    let zeroEx = await getZeroExClient(web3);
-
     try {
+      dispatch(processing());
+
+      let { wallet: { web3, address } } = getState();
+      let zeroEx = await getZeroExClient(web3);
+
       if (order.maker !== address) {
         throw new Error("Cannot cancel order that is not yours");
       }
 
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
       dispatch(setError(err));
     } finally {
-      dispatch(setTxHash(null));
+      dispatch(notProcessing());
       dispatch(NavigationActions.push({ routeName: "Trading" }));
     }
   };
@@ -160,16 +160,17 @@ export function cancelOrder(order) {
 
 export function fillOrder(order) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
-    let allowance = await getTokenAllowance(web3, order.takerTokenAddress);
-    let fillAmount = new BigNumber(order.takerTokenAmount);
+    dispatch(processing());
 
     try {
+      let { wallet: { web3 } } = getState();
+      let zeroEx = await getZeroExClient(web3);
+      let allowance = await getTokenAllowance(web3, order.takerTokenAddress);
+      let fillAmount = new BigNumber(order.takerTokenAmount);
+
       // Make sure allowance is available.
       if (fillAmount.gt(allowance)) {
         let txhash = await setTokenUnlimitedAllowance(web3, order.takerTokenAddress);
-        dispatch(setTxHash(txhash));
         let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       }
 
@@ -177,20 +178,18 @@ export function fillOrder(order) {
       if ((await isWETHAddress(web3, order.takerTokenAddress))) {
         let txhash = await guaranteeWETHInWeiAmount(web3, order.takerTokenAmount);
         if (txhash) {
-          dispatch(setTxHash(txhash));
           let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
         }
       }
 
       let txhash = await fillOrderUtil(web3, order);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
 
       dispatch(loadTransactions());
     } catch(err) {
       dispatch(setError(err));
     } finally {
-      dispatch(setTxHash(null));
+      dispatch(notProcessing());
     }
   };
 }

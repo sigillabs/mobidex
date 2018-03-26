@@ -5,10 +5,10 @@ import ethUtil from "ethereumjs-util";
 import {
   addAssets,
   addTransactions,
-  addProcessing,
+  notProcessing,
+  processing,
   setError,
-  setWallet,
-  setTransactionHash
+  setWallet
 } from "../actions";
 import {
   getBalance,
@@ -98,8 +98,8 @@ export function loadTransactions() {
         }
       };
       let promises = [
-        fetch(`http://inf0x.com:9200/0x-kovan-fills/logs/_search?q=maker:${address}%20OR%20taker:${address}`, options),
-        fetch(`http://inf0x.com:9200/0x-kovan-cancels/logs/_search?q=maker:${address}%20OR%20taker:${address}`, options)
+        fetch(`http://inf0x.com:9200/0x-kovan-fills/logs/_search?q=maker:${address}%20OR%20taker:${address}&sort=timestamp:desc`, options),
+        fetch(`http://inf0x.com:9200/0x-kovan-cancels/logs/_search?q=maker:${address}%20OR%20taker:${address}&sort=timestamp:desc`, options)
       ];
       let [ fills, cancels ] = await Promise.all(promises);
       let fillsJSON = await fills.json();
@@ -124,11 +124,10 @@ export function loadTransactions() {
 
 export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
     try {
+      dispatch(processing());
+
       let txhash = await sendTokensUtil(web3, token, to, amount);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       await Promise.all([
         dispatch(loadAssets(true)),
@@ -137,66 +136,58 @@ export function sendTokens(token, to, amount) {
     } catch(err) {
       await dispatch(setError(err));
     } finally {
-      await dispatch(setTxHash(null));
+      dispatch(notProcessing());
     }
   };
 }
 
 export function sendEther(to, amount) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
     try {
+      dispatch(processing());
+
+      let { wallet: { web3 } } = getState();
+      let zeroEx = await getZeroExClient(web3);
       let txhash = await sendEtherUtil(web3, to, amount);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
       await dispatch(setError(err));
     } finally {
-      await dispatch(setTxHash(null));
-    }
-  };
-}
-
-export function setTxHash(txhash) {
-  return (dispatch) => {
-    if (txhash) {
-      dispatch(addProcessing([txhash]));
-      dispatch(setTransactionHash(txhash));
-    } else {
-      dispatch(setTransactionHash(null));
+      dispatch(notProcessing());
     }
   };
 }
 
 export function wrapEther(amount) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
     try {
+      dispatch(processing());
+
+      let { wallet: { web3 } } = getState();
+      let zeroEx = await getZeroExClient(web3);
       let txhash = await wrapEtherUtil(web3, amount);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
       await dispatch(setError(err));
     } finally {
-      await dispatch(setTxHash(null));
+      dispatch(notProcessing());
     }
   };
 }
 
 export function unwrapEther(amount) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
-    let zeroEx = await getZeroExClient(web3);
     try {
+      dispatch(processing());
+
+      let { wallet: { web3 } } = getState();
+      let zeroEx = await getZeroExClient(web3);
       let txhash = await unwrapEtherUtil(web3, amount);
-      dispatch(setTxHash(txhash));
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch(err) {
       await dispatch(setError(err));
     } finally {
-      await dispatch(setTxHash(null));
+      dispatch(notProcessing());
     }
   };
 }

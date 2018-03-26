@@ -1,8 +1,8 @@
 export const ADD_ASSETS = "ADD_ASSETS";
 export const ADD_ORDERS = "ADD_ORDERS";
 export const ADD_TRANSACTIONS = "ADD_TRANSACTIONS";
-export const ADD_PROCESSING = "ADD_PROCESSING";
-export const REMOVE_PROCESSING = "REMOVE_PROCESSING";
+export const NOT_PROCESSING = "NOT_PROCESSING";
+export const PROCESSING = "PROCESSING";
 export const SET_BASE_TOKEN = "SET_BASE_TOKEN";
 export const SET_ERROR = "SET_ERROR";
 export const SET_NETWORK = "SET_NETWORK";

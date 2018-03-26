@@ -53,8 +53,7 @@ const initialState = {
   address: null,
   assets: [],
   transactions: [],
-  processing: [],
-  txhash: null
+  processing: false
 };
 
 export default handleActions({
@@ -62,20 +61,15 @@ export default handleActions({
     let assets = _.unionBy(action.payload, state.assets, "address");
     return { ...state, assets };
   },
-  [Actions.ADD_PROCESSING]: (state, action) => {
-    let processing = _.union(state.processing, action.payload);
-    return { ...state, processing };
+  [Actions.PROCESSING]: (state) => {
+    return { ...state, processing: true };
+  },
+  [Actions.NOT_PROCESSING]: (state) => {
+    return { ...state, processing: false };
   },
   [Actions.ADD_TRANSACTIONS]: (state, action) => {
     let transactions = _.unionBy(action.payload, state.transactions, "id");
     return { ...state, transactions };
-  },
-  [Actions.REMOVE_PROCESSING]: (state, action) => {
-    let processing = _.difference(state.processing, action.payload);
-    return { ...state, processing };
-  },
-  [Actions.SET_TRANSACTION_HASH]: (state, action) => {
-    return { ...state, txhash: action.payload };
   },
   [Actions.SET_WALLET]: (state, action) => {
     let { network, wallet } = action.payload;

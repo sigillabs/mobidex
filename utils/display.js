@@ -52,5 +52,5 @@ export function getImage(symbol) {
 }
 
 export function formatTimestamp(timestamp) {
-  return moment(timestamp).format("MMMM Do YYYY, h:mm:ss a");
+  return moment.unix(timestamp).format("MMMM Do YYYY, h:mm:ss a");
 }

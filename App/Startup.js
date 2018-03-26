@@ -33,8 +33,8 @@ class Startup extends Component {
       return <Err error={this.props.error} />;
     }
 
-    if (this.props.txhash) {
-      return <TransactionsProcessing txhash={this.props.txhash} />;
+    if (this.props.processing) {
+      return <TransactionsProcessing />;
     }
 
     if (!this.props.web3 || !this.state.finished) {
@@ -49,4 +49,4 @@ class Startup extends Component {
   }
 }
 
-export default connect((state) => ({ web3: state.wallet.web3, txhash: state.wallet.txhash, error: state.error }), dispatch => ({ dispatch }))(Startup);
+export default connect((state) => ({ web3: state.wallet.web3, processing: state.wallet.processing, error: state.error }), dispatch => ({ dispatch }))(Startup);
