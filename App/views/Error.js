@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { View } from "react-native";
 import { Card, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
@@ -15,14 +16,30 @@ class Err extends Component {
     console.warn(message, stack);
 
     return (
-      <Card title={message}>
+      <View
+        backgroundColor = "#43484d"
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          paddingTop: 10,
+          paddingRight: 10,
+          paddingBottom: 10,
+          paddingLeft: 10
+        }}> 
+        <Text 
+          style={{
+            fontSize: 18,
+            color: "white",
+            paddingBottom: 10
+          }}>{message}</Text>
         <Button
             large
             title="Get Out Of Here"
             icon={<Icon name="refresh" color="white" />}
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.leave} />
-      </Card>
+      </View>
     );
   }
 }
