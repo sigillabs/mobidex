@@ -1,6 +1,6 @@
 import React from "react";
 import { StackNavigator, TabNavigator } from "react-navigation";
-import IonIcon from "react-native-vector-icons/Ionicons";
+import EntypoIcon from "react-native-vector-icons/Entypo";
 import FAIcon from "react-native-vector-icons/FontAwesome";
 import BlankHeader from "./App/headers/Blank";
 import NormalHeader from "./App/headers/Normal";
@@ -74,7 +74,7 @@ export default TabNavigator({
 
       switch(routeName) {
       case "Wallet":
-        return <IonIcon name="md-briefcase" size={25} color={tintColor} />;
+        return <EntypoIcon name="wallet" size={25} color={tintColor} />;
       case "Trading":
         return <FAIcon name="exchange" size={25} color={tintColor} />;
       case "Transactions":
