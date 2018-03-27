@@ -4,7 +4,7 @@ import { Text } from "react-native-elements";
 import { connect } from "react-redux";
 import { gotoEtherScan } from "../../../thunks";
 import { formatAmountWithDecimals, formatTimestamp } from "../../../utils/display";
-import { getTokenByAddress } from "../../../utils/ethereum";
+import { getTokenByAddress } from "../../../utils/tokens";
 import Row from "../../components/Row";
 import MutedText from "../../components/MutedText";
 

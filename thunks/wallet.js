@@ -10,16 +10,15 @@ import {
   setError,
   setWallet
 } from "../actions";
+import { getNetworkId, getZeroExClient } from "../utils/ethereum";
 import {
   getBalance,
-  getNetworkId,
-  getZeroExClient,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
   getTokenBalance,
   wrapEther as wrapEtherUtil,
   unwrapEther as unwrapEtherUtil
-} from "../utils/ethereum";
+} from "../utils/tokens";
 import { cache } from "../utils/cache";
 
 // Would like to password protect using Ethereum Secret Storage

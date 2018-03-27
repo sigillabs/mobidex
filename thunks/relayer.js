@@ -6,15 +6,14 @@ import moment from "moment";
 import { NavigationActions } from "react-navigation";
 import { setError } from "../actions";
 import { loadTransactions } from "../thunks";
+import { getZeroExClient, getZeroExContractAddress } from "../utils/ethereum";
 import {
-  getZeroExClient,
-  getZeroExContractAddress,
   getTokenAllowance,
   getTokenByAddress,
   guaranteeWETHInWeiAmount,
   setTokenUnlimitedAllowance,
   isWETHAddress
-} from "../utils/ethereum";
+} from "../utils/tokens";
 import {
   cancelOrder as cancelOrderUtil,
   fillOrder as fillOrderUtil,
