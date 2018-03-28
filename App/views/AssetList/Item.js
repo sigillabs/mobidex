@@ -1,36 +1,24 @@
+import { ZeroEx } from "0x.js";
 import React, { Component } from "react";
 import { View } from "react-native";
 import { Text } from "react-native-elements";
-import { formatAmount, formatAmountWithDecimals } from "../../../utils/display";
-import { price } from "../../../fx";
+import { connect } from "react-redux";
+import { formatAmount } from "../../../utils/display";
 
-export default class AssetItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      forexPrice: null
-    };
-  }
-
-  async componentDidMount() {
-    let forexPrice = await price({ quoteCurrency: "USD", baseCurrency: this.props.asset.symbol });
-    this.setState({ forexPrice });
-  }
-
+class AssetItem extends Component {
   render() {
     let { asset } = this.props;
     let { symbol, balance, decimals } = asset;
 
-    let forexPrice = balance.mul(this.state.forexPrice || 0);
+    balance = ZeroEx.toUnitAmount(balance, decimals);
 
     return (
       <View style={[ styles.container]}>
         <Text>{symbol.toString()}</Text>
         <Text> </Text>
-        <Text>{formatAmountWithDecimals(balance, decimals)}</Text>
+        <Text>{formatAmount(balance)}</Text>
         <Text> </Text>
-        <Text>(${formatAmount(forexPrice)})</Text>
+        <Text>(${formatAmount(balance.mul(this.props.forexPrices[symbol] || 0))})</Text>
       </View>
     );
   }
@@ -45,3 +33,5 @@ const styles = {
     marginLeft: 5
   }
 };
+
+export default connect(state => ({ forexPrices: state.forex.prices }), dispatch => ({ dispatch }))(AssetItem);

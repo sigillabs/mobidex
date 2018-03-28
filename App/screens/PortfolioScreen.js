@@ -3,7 +3,8 @@ import React, { Component } from "react";
 import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { Card, Header, Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { lock, loadAssets } from "../../thunks";
+import { lock, loadAssets, loadForexPrices } from "../../thunks";
+import TimedUpdater from "../components/TimedUpdater";
 import NormalHeader from "../headers/Normal";
 import AssetList from "../views/AssetList";
 import AssetDetails from "../views/AssetDetails";
@@ -40,6 +41,7 @@ class PortfolioScreen extends Component {
         />
       )}>
         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around", alignItems: "stretch" }}>
+          <TimedUpdater update={() => this.props.dispatch(loadForexPrices())} timeout={1000} />
           <View style={{ height: 200 }}>
             <AssetDetails
               address={this.props.address}
