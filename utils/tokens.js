@@ -91,6 +91,7 @@ export async function unwrapWei(web3, amount) {
 }
 
 export async function guaranteeWETHAmount(web3, amount) {
+  let zeroEx = await getZeroExClient(web3);
   let { decimals } = await zeroEx.tokenRegistry.getTokenBySymbolIfExistsAsync("WETH");
   return await guaranteeWETHInWeiAmount(web3, ZeroEx.toBaseUnitAmount(amount, decimals));
 }

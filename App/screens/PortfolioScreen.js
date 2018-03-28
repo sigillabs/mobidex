@@ -24,7 +24,7 @@ class PortfolioScreen extends Component {
     this.setState({ refreshing: false });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.dispatch(loadAssets());
   }
 
