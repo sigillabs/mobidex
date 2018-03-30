@@ -3,6 +3,7 @@ import reactMixin from "react-mixin";
 import { Text } from "react-native-elements";
 import TimerMixin from "react-timer-mixin";
 
+@reactMixin.decorate(TimerMixin)
 export default class TimedUpdater extends Component {
   constructor(props, context) {
     super(props, context);
@@ -38,7 +39,7 @@ export default class TimedUpdater extends Component {
 
   execute = async () => {
     await this.props.update();
-    this.timer = setTimeout(this.execute, this.props.timeout);
+    this.timer = this.setTimeout(this.execute, this.props.timeout);
   };
 
   stop = () => {
@@ -48,7 +49,7 @@ export default class TimedUpdater extends Component {
 
   start = () => {
     if (this.timer === null) {
-      this.timer = setTimeout(this.execute, this.props.timeout);
+      this.timer = this.setTimeout(this.execute, this.props.timeout);
     }
   }
 }
