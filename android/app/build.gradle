@@ -156,6 +156,11 @@ android {
 
 dependencies {
     compile project(':react-native-vector-icons')
+    compile project(':react-native-secure-randombytes')
+    compile project(':react-native-randombytes')
+    compile project(':react-native-navigation')
+    compile project(':react-native-fast-crypto')
+    compile project(':react-native-vector-icons')
     compile project(':react-native-randombytes')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import reactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
 import { Input, Text } from "react-native-elements";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
+import TimerMixin from "react-timer-mixin";
 import { generateWallet, lock, unlock } from "../../thunks";
 import LongButton from "../components/LongButton";
 import LongInput from "../components/LongInput";
