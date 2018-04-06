@@ -7,6 +7,10 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.reactnativenavigation.NavigationReactPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
+import com.reactnativenavigation.NavigationReactPackage;
 import co.airbitz.fastcrypto.RNFastCryptoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
@@ -34,9 +38,14 @@ public class MainApplication extends Application implements ReactApplication {
             new RandomBytesPackage(),
             new RandomBytesPackage(),
             new NavigationReactPackage(),
-            new RNFastCryptoPackage(),
-            new VectorIconsPackage(),
-            new RandomBytesPackage()
+          new VectorIconsPackage(),
+          new RandomBytesPackage(),
+          new RandomBytesPackage(),
+          new NavigationReactPackage(),
+          new RNFastCryptoPackage(),
+          new VectorIconsPackage(),
+          new RandomBytesPackage(),
+          new EncryptionManagerPackage()
       );
     }
 

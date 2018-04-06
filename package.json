@@ -7,7 +7,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
     "patch:web3": "./patches/web3.sh",
-    "build:android:release": "pushd android; read -sp 'If you would like to sign the APK, please add your store passphrase now: ' MOBIDEX_RELEASE_STORE_PASSWORD; ./gradlew clean assembleRelease -PMOBIDEX_RELEASE_STORE_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_RELEASE_KEY_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD}; popd android;",
+    "build:android:release": "pushd android; read -sp 'If you would like to sign the APK, please add your store passphrase now: ' MOBIDEX_RELEASE_STORE_PASSWORD; ./gradlew clean assembleRelease -PMOBIDEX_RELEASE_STORE_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_RELEASE_KEY_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_SIGN=1; popd android;",
     "build:ios:release": "echo 'You need to build an archive via XCode!'"
   },
   "dependencies": {
@@ -35,7 +35,6 @@
     "react-native-communications": "^2.2.1",
     "react-native-crypto": "^2.1.2",
     "react-native-elements": "^1.0.0-beta3",
-    "react-native-fast-crypto": "^1.5.3",
     "react-native-modal-dropdown": "^0.6.0",
     "react-native-navigation": "^1.1.371",
     "react-native-randombytes": "^3.0.0",

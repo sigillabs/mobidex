@@ -100,7 +100,7 @@ android {
 
     signingConfigs {
         release {
-            if (project.hasProperty('MOBIDEX_RELEASE_STORE_FILE')) {
+            if (project.hasProperty('MOBIDEX_RELEASE_STORE_FILE') && project.hasProperty('MOBIDEX_SIGN')) {
                 storeFile file(MOBIDEX_RELEASE_STORE_FILE)
                 keyAlias MOBIDEX_RELEASE_KEY_ALIAS
                 storePassword MOBIDEX_RELEASE_STORE_PASSWORD
@@ -159,12 +159,17 @@ dependencies {
     compile project(':react-native-secure-randombytes')
     compile project(':react-native-randombytes')
     compile project(':react-native-navigation')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-secure-randombytes')
+    compile project(':react-native-randombytes')
+    compile project(':react-native-navigation')
     compile project(':react-native-fast-crypto')
     compile project(':react-native-vector-icons')
     compile project(':react-native-randombytes')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
+    compile "org.bouncycastle:bcprov-jdk15on:1.59"
 }
 
 // Run this once to be able to run the application with BUCK
