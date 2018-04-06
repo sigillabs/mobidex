@@ -20,28 +20,35 @@
 // To export a module named WalletManager
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(encrypt:(NSString *)text password:(NSString *)password iv:(NSString *)iv salt:(NSString *)salt callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(deriveKey:(NSString *)password salt:(NSString *)salt callback:(RCTResponseSenderBlock)callback)
 {
   NSData * _salt = [NSData dataWithHexString:salt];
-  NSData * _iv = [NSData dataWithHexString:iv];
   NSData * key = [password AES128CTRDeriveKey:_salt];
+  
+  NSString * result = [key hexString];
+  callback(@[[NSNull null], result]);
+}
+
+RCT_EXPORT_METHOD(encrypt:(NSString *)text key:(NSString *)key iv:(NSString *)iv callback:(RCTResponseSenderBlock)callback)
+{
+  NSData * _iv = [NSData dataWithHexString:iv];
+  NSData * _key = [NSData dataWithHexString:key];
   NSData * data = [NSData dataWithHexString:text];
   
-  NSData * ciphertext = [data AES128CTREncryptWithKey:key iv:_iv];
+  NSData * ciphertext = [data AES128CTREncryptWithKey:_key iv:_iv];
   RCTLogTrace(@"Encrypted text %@", ciphertext);
   
   NSString * result = [ciphertext hexString];
   callback(@[[NSNull null], result]);
 }
 
-RCT_EXPORT_METHOD(decrypt:(NSString *)ciphertext password:(NSString *)password iv:(NSString *)iv salt:(NSString *)salt callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(decrypt:(NSString *)ciphertext key:(NSString *)key iv:(NSString *)iv callback:(RCTResponseSenderBlock)callback)
 {
-  NSData * _salt = [NSData dataWithHexString:salt];
   NSData * _iv = [NSData dataWithHexString:iv];
+  NSData * _key = [NSData dataWithHexString:key];
   NSData * _ciphertext = [NSData dataWithHexString:ciphertext];
-  NSData * key = [password AES128CTRDeriveKey:_salt];
   
-  NSData * text = [_ciphertext AES128CTRDecryptWithKey:key iv:_iv];
+  NSData * text = [_ciphertext AES128CTRDecryptWithKey:_key iv:_iv];
   RCTLogTrace(@"Decrypted text %@", text);
   
   NSString * result = [text hexString];

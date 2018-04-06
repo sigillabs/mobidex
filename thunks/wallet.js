@@ -20,6 +20,7 @@ import {
   unwrapEther as unwrapEtherUtil
 } from "../utils/tokens";
 import { cache } from "../utils/cache";
+import { fromV3, toV3 } from "../utils/crypto";
 
 // Would like to password protect using Ethereum Secret Storage
 export function generateWallet(password) {
@@ -42,9 +43,8 @@ export function importPrivateKey(privateKey, password) {
 
 export function lock(password) {
   return async (dispatch, getState) => {
-    let { wallet: { privateKey } } = getState();
-    let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(privateKey), "hex"));
-    let v3 = wallet.toV3(password, { c: 32, n: 32 });
+    let { wallet: { privateKey, address } } = getState();
+    let v3 = await toV3(ethUtil.stripHexPrefix(privateKey), ethUtil.stripHexPrefix(address), password);
     let json = JSON.stringify(v3);
     await AsyncStorage.setItem("lock", json);
   };
@@ -56,7 +56,8 @@ export function unlock(password) {
     let v3json = await AsyncStorage.getItem("lock");
     if (v3json) {
       let v3 = JSON.parse(v3json);
-      let wallet = Wallet.fromV3(v3, password, { c: 32, n: 32 });
+      let walletobj = await fromV3(v3, password);
+      let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), "hex"));
       dispatch(setWallet({ network, wallet }));
     } else {
       throw new Error("Wallet does not exist.");
