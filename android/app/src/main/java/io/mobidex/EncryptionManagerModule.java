@@ -1,19 +1,35 @@
-package com.facebook.react.modules.toast;
+package io.mobidex;
 
-import android.widget.Toast;
-
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
+import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class EncryptionManagerModule extends ReactContextBaseJavaModule {
@@ -27,6 +43,11 @@ public class EncryptionManagerModule extends ReactContextBaseJavaModule {
 
   public EncryptionManagerModule(ReactApplicationContext reactContext) {
     super(reactContext);
+  }
+
+  @Override
+  public String getName() {
+    return "EncryptionManager";
   }
 
   public static String bytesToHex(byte[] b) {
@@ -49,59 +70,49 @@ public class EncryptionManagerModule extends ReactContextBaseJavaModule {
     return data;
   }
 
-  @Override
-  public String getName() {
-    return "EncryptionManager";
-  }
-
   @ReactMethod
-  public void generateSalt(Callback errorCallback, Callback successCallback) {
+  public void generateSalt(Callback successCallback) {
     SecureRandom random = new SecureRandom();
     byte bytes[] = new byte[32];
     random.nextBytes(bytes);
-    String result = bytesToHex(bytes);
-    successCallback.invoke(result);
+    successCallback.invoke(null, bytesToHex(bytes));
   }
 
   @ReactMethod
-  public void generateIV(Callback errorCallback, Callback successCallback) {
+  public void generateIV(Callback successCallback) {
     SecureRandom random = new SecureRandom();
     byte bytes[] = new byte[16];
     random.nextBytes(bytes);
-    String result = bytesToHex(bytes);
-    successCallback.invoke(result);
+    successCallback.invoke(null, bytesToHex(bytes));
   }
 
   @ReactMethod
-  public void deriveKey(String password, String salt, Callback errorCallback, Callback successCallback) {
+  public void deriveKey(String password, String salt, Callback successCallback) throws UnsupportedEncodingException, InvalidKeyException {
     byte[] _salt = this.hexToBytes(salt);
     byte[] _password = password.getBytes("UTF-8");
     PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA256Digest());
     gen.init(_password, _salt, DEFAULT_ROUNDS);
     byte[] derivedKey = ((KeyParameter) gen.generateDerivedParameters(256)).getKey();
-    String result = bytesToHex(derivedKey);
-    successCallback.invoke(result);
+    successCallback.invoke(null, bytesToHex(derivedKey));
   }
 
   @ReactMethod
-  public void encrypt(String text, String key, String iv, Callback errorCallback, Callback successCallback) {
+  public void encrypt(String text, String key, String iv, Callback successCallback) throws NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException {
     Key _key = new SecretKeySpec(this.hexToBytes(key), "AES");
     IvParameterSpec _iv = new IvParameterSpec(this.hexToBytes(iv));
     Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
     cipher.init(Cipher.ENCRYPT_MODE, _key, _iv);
     byte[] encrypted = cipher.doFinal(this.hexToBytes(text));
-    String result = bytesToHex(encrypted);
-    successCallback.invoke(result);
+    successCallback.invoke(null, bytesToHex(encrypted));
   }
 
   @ReactMethod
-  public void decrypt(String ciphertext, String key, String iv, Callback errorCallback, Callback successCallback) {
+  public void decrypt(String ciphertext, String key, String iv, Callback successCallback) throws NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException {
     Key _key = new SecretKeySpec(this.hexToBytes(key), "AES");
     IvParameterSpec _iv = new IvParameterSpec(this.hexToBytes(iv));
     Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
     cipher.init(Cipher.DECRYPT_MODE, _key, _iv);
     byte[] decrypted = cipher.doFinal(this.hexToBytes(ciphertext));
-    String result = bytesToHex(decrypted);
-    successCallback.invoke(result);
+    successCallback.invoke(null, bytesToHex(decrypted));
   }
 }

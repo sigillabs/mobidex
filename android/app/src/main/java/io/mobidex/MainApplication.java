@@ -1,17 +1,8 @@
-package com.mobidex;
+package io.mobidex;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.reactnativenavigation.NavigationReactPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.reactnativenavigation.NavigationReactPackage;
-import co.airbitz.fastcrypto.RNFastCryptoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
@@ -34,18 +25,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new VectorIconsPackage(),
-            new RandomBytesPackage(),
-            new RandomBytesPackage(),
-            new NavigationReactPackage(),
+          new EncryptionManagerPackage(),
           new VectorIconsPackage(),
-          new RandomBytesPackage(),
-          new RandomBytesPackage(),
-          new NavigationReactPackage(),
-          new RNFastCryptoPackage(),
-          new VectorIconsPackage(),
-          new RandomBytesPackage(),
-          new EncryptionManagerPackage()
+          new RandomBytesPackage()
       );
     }
 

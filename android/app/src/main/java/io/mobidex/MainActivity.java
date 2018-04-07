@@ -1,4 +1,4 @@
-package com.mobidex;
+package io.mobidex;
 
 import com.facebook.react.ReactActivity;
 

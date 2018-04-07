@@ -81,8 +81,8 @@ apply from: "../../node_modules/react-native/react.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
- *   - An APK that only works on ARM devices
- *   - An APK that only works on x86 devices
+ *   An APK that only works on ARM devices
+ *   An APK that only works on x86 devices
  * The advantage is the size of the APK is reduced by about 4MB.
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
@@ -95,8 +95,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     signingConfigs {
         release {
@@ -110,7 +110,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.mobidex"
+        applicationId "io.mobidex"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -132,7 +132,6 @@ android {
             applicationIdSuffix ".debug"
             debuggable true
         }
-
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -155,15 +154,6 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-secure-randombytes')
-    compile project(':react-native-randombytes')
-    compile project(':react-native-navigation')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-secure-randombytes')
-    compile project(':react-native-randombytes')
-    compile project(':react-native-navigation')
-    compile project(':react-native-fast-crypto')
     compile project(':react-native-vector-icons')
     compile project(':react-native-randombytes')
     compile fileTree(dir: "libs", include: ["*.jar"])

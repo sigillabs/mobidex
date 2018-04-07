@@ -1,4 +1,4 @@
-package com.facebook.react.modules.toast;
+package io.mobidex;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
