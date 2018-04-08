@@ -19,7 +19,7 @@ export default class TimedUpdater extends Component {
     this.stop();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.action) {
       switch(nextProps.action) {
       case "START":

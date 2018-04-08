@@ -39,7 +39,7 @@ class TradingScreen extends Component {
     this.props.dispatch(loadOrders());
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let { tokens, orders, products, quoteToken } = nextProps;
 
     let filteredOrders = orders
