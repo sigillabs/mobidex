@@ -12,6 +12,7 @@ const colors = {
   greyOutline: "#bbb",
   searchBg: "#303337",
   error: "#ff190c",
+  orange: "#ff9200"
 };
 
 export { colors };
