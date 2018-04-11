@@ -40,7 +40,7 @@ class ReceiveScreen extends Component {
       >
         <View style={[{ justifyContent: "center", alignItems: "center" }]}>
           <Text h4>Address</Text>
-          <Text>{this.props.address}</Text>
+          <Text style={{fontSize:13}}>{this.props.address}</Text>
           <Button
             large
             icon={<Icon name="send" size={20} color="white" />}
