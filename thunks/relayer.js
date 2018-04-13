@@ -78,6 +78,7 @@ export function loadProductsAndTokens(force = false) {
       dispatch(setQuoteToken(fullTokensB[0]));
       dispatch(setBaseToken(fullTokensA[0]));
     } catch(err) {
+      console.error("here2")
       dispatch(setError(err));
     }
   };

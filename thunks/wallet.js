@@ -98,20 +98,20 @@ export function loadTransactions() {
         }
       };
       let promises = [
-        fetch(`http://inf0x.com:9200/0x-kovan-fills/logs/_search?q=maker:${address}%20OR%20taker:${address}&sort=timestamp:desc`, options),
-        fetch(`http://inf0x.com:9200/0x-kovan-cancels/logs/_search?q=maker:${address}%20OR%20taker:${address}&sort=timestamp:desc`, options)
+        fetch(`http://mobidex.io/inf0x/kovan/fills?maker=${address}&taker=${address}`, options),
+        fetch(`http://mobidex.io/inf0x/kovan/cancels?maker=${address}&taker=${address}`, options)
       ];
       let [ fills, cancels ] = await Promise.all(promises);
       let fillsJSON = await fills.json();
       let cancelsJSON = await cancels.json();
-      let filltxs = fillsJSON.hits.hits.map(log => ({
-        ...log._source,
-        id: log._id,
+      let filltxs = fillsJSON.map(log => ({
+        ...log,
+        id: log.transactionHash,
         status: "FILLED"
       }));
-      let canceltxs = cancelsJSON.hits.hits.map(log => ({
-        ...log._source,
-        id: log._id,
+      let canceltxs = cancelsJSON.map(log => ({
+        ...log,
+        id: log.transactionHash,
         status: "CANCELLED"
       }));
 
