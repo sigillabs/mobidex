@@ -11,8 +11,8 @@ export default class LongButton extends Component {
     } = this.props;
     return (
       <Button 
-          titleStyle={[{ width: "100%" }, titleStyle]}
-          buttonStyle={[{ width: "100%" }, buttonStyle]} {...rest} />
+        titleStyle={[{ width: "100%" }, titleStyle]}
+        buttonStyle={[{ width: "100%" }, buttonStyle]} {...rest} />
     );
   }
 }
