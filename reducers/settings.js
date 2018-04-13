@@ -3,7 +3,7 @@ import { handleActions } from "redux-actions";
 import * as Actions from "../constants/actions";
 
 // const BASE_URL = "https://api.radarrelay.com/0x/v0";
-const BASE_URL = "http://mobidex.io:8000/relayer/v0";
+const BASE_URL = "https://mobidex.io/relayer/v0";
 
 const initialState = {
   network: "kovan",

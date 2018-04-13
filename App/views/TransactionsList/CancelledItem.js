@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Text } from "react-native-elements";
-import { connect } from "react-redux";
-import { gotoEtherScan } from "../../../thunks";
-import { formatAmountWithDecimals, formatTimestamp } from "../../../utils/display";
-import { getTokenByAddress } from "../../../utils/tokens";
-import Row from "../../components/Row";
-import MutedText from "../../components/MutedText";
+import React, { Component } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { gotoEtherScan } from '../../../thunks';
+import { formatAmountWithDecimals, formatTimestamp } from '../../../utils/display';
+import { getTokenByAddress } from '../../../utils/tokens';
+import Row from '../../components/Row';
+import MutedText from '../../components/MutedText';
 
 class CancelledItem extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -19,12 +19,12 @@ class CancelledItem extends Component {
     };
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     let [ makerToken, takerToken ] = await Promise.all([
       getTokenByAddress(this.props.web3, this.props.transaction.makerToken),
       getTokenByAddress(this.props.web3, this.props.transaction.takerToken)
     ]);
-    
+
     this.setState({
       makerToken,
       takerToken,
@@ -32,7 +32,7 @@ class CancelledItem extends Component {
     });
   }
 
-  render() {
+  render () {
     if (!this.state.ready) {
       return null;
     }

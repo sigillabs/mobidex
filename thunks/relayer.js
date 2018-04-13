@@ -1,25 +1,25 @@
-import * as _ from "lodash";
-import { HttpClient } from "@0xproject/connect";
-import { ZeroEx } from "0x.js";
-import BigNumber from "bignumber.js";
-import moment from "moment";
-import { NavigationActions } from "react-navigation";
-import { setError } from "../actions";
-import { loadTransactions } from "../thunks";
-import { getZeroExClient, getZeroExContractAddress } from "../utils/ethereum";
+import * as _ from 'lodash';
+import { HttpClient } from '@0xproject/connect';
+import { ZeroEx } from '0x.js';
+import BigNumber from 'bignumber.js';
+import moment from 'moment';
+import { NavigationActions } from 'react-navigation';
+import { setError } from '../actions';
+import { loadTransactions } from '../thunks';
+import { getZeroExClient, getZeroExContractAddress } from '../utils/ethereum';
 import {
   getTokenAllowance,
   getTokenByAddress,
   guaranteeWETHInWeiAmount,
   setTokenUnlimitedAllowance,
   isWETHAddress
-} from "../utils/tokens";
+} from '../utils/tokens';
 import {
   cancelOrder as cancelOrderUtil,
   fillOrder as fillOrderUtil,
   convertLimitOrderToZeroExOrder,
   signOrder
-} from "../utils/orders";
+} from '../utils/orders';
 import {
   addOrders,
   notProcessing,
@@ -29,9 +29,9 @@ import {
   setBaseToken,
   setQuoteToken,
   setTokens
-} from "../actions";
+} from '../actions';
 
-export function loadOrders() {
+export function loadOrders () {
   return async (dispatch, getState) => {
     let { settings: { relayerEndpoint } } = getState();
     let client = new HttpClient(relayerEndpoint);
@@ -39,27 +39,27 @@ export function loadOrders() {
     try {
       dispatch(setOrders(await client.getOrdersAsync()));
       return true;
-    } catch(err) {
+    } catch (err) {
       dispatch(setError(err));
       return false;
     }
   };
 }
 
-export function loadOrder(orderHash) {
+export function loadOrder (orderHash) {
   return async (dispatch, getState) => {
     let { settings: { relayerEndpoint } } = getState();
     let client = new HttpClient(relayerEndpoint);
 
     try {
       dispatch(addOrders([ await client.getOrderAsync(signedOrder.orderHash) ]));
-    } catch(err) {
+    } catch (err) {
       dispatch(setError(err));
     }
   };
 }
 
-export function loadProductsAndTokens(force = false) {
+export function loadProductsAndTokens (force = false) {
   return async (dispatch, getState) => {
     let { settings: { relayerEndpoint }, wallet: { web3 } } = getState();
     let client = new HttpClient(relayerEndpoint);
@@ -72,18 +72,18 @@ export function loadProductsAndTokens(force = false) {
       let extTokensB = await Promise.all(tokensB.map(token => getTokenByAddress(web3, token.address, force)));
       let fullTokensA = tokensA.map((token, index) => ({ ...token, ...extTokensA[index] }));
       let fullTokensB = tokensB.map((token, index) => ({ ...token, ...extTokensB[index] }));
-      let tokens = _.unionBy(fullTokensA, fullTokensB, "address");
+      let tokens = _.unionBy(fullTokensA, fullTokensB, 'address');
       dispatch(setTokens(tokens));
       dispatch(setProducts(pairs));
       dispatch(setQuoteToken(fullTokensB[0]));
       dispatch(setBaseToken(fullTokensA[0]));
-    } catch(err) {
+    } catch (err) {
       dispatch(setError(err));
     }
   };
 }
 
-export function createSignSubmitOrder(side, price, amount) {
+export function createSignSubmitOrder (side, price, amount) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
@@ -93,14 +93,14 @@ export function createSignSubmitOrder(side, price, amount) {
       let relayerClient = new HttpClient(relayerEndpoint);
       let order = {
         ...convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount),
-        "maker": address.toLowerCase(quoteToken, baseToken, side, price, amount),
-        "makerFee": new BigNumber(0),
-        "taker": ZeroEx.NULL_ADDRESS,
-        "takerFee": new BigNumber(0),
-        "expirationUnixTimestampSec": new BigNumber(moment().unix() + 60*60*24),
-        "feeRecipient": ZeroEx.NULL_ADDRESS,
-        "salt": ZeroEx.generatePseudoRandomSalt(),
-        "exchangeContractAddress": await getZeroExContractAddress(web3)
+        'maker': address.toLowerCase(quoteToken, baseToken, side, price, amount),
+        'makerFee': new BigNumber(0),
+        'taker': ZeroEx.NULL_ADDRESS,
+        'takerFee': new BigNumber(0),
+        'expirationUnixTimestampSec': new BigNumber(moment().unix() + 60 * 60 * 24),
+        'feeRecipient': ZeroEx.NULL_ADDRESS,
+        'salt': ZeroEx.generatePseudoRandomSalt(),
+        'exchangeContractAddress': await getZeroExContractAddress(web3)
       };
       let allowance = await getTokenAllowance(web3, order.makerTokenAddress);
 
@@ -125,16 +125,16 @@ export function createSignSubmitOrder(side, price, amount) {
       await relayerClient.submitOrderAsync(signedOrder);
 
       dispatch(addOrders([ signedOrder ]));
-    } catch(err) {
+    } catch (err) {
       await dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
-      dispatch(NavigationActions.push({ routeName: "Trading" }));
+      dispatch(NavigationActions.push({ routeName: 'Trading' }));
     }
   };
 }
 
-export function cancelOrder(order) {
+export function cancelOrder (order) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
@@ -143,21 +143,21 @@ export function cancelOrder(order) {
       let zeroEx = await getZeroExClient(web3);
 
       if (order.maker !== address) {
-        throw new Error("Cannot cancel order that is not yours");
+        throw new Error('Cannot cancel order that is not yours');
       }
 
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-    } catch(err) {
+    } catch (err) {
       dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
-      dispatch(NavigationActions.push({ routeName: "Trading" }));
+      dispatch(NavigationActions.push({ routeName: 'Trading' }));
     }
   };
 }
 
-export function fillOrder(order) {
+export function fillOrder (order) {
   return async (dispatch, getState) => {
     dispatch(processing());
 
@@ -185,7 +185,7 @@ export function fillOrder(order) {
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
 
       dispatch(loadTransactions());
-    } catch(err) {
+    } catch (err) {
       dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
