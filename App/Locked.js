@@ -23,15 +23,15 @@ class Locked extends Component {
     let renderedTab = null;
 
     switch(this.state.tab) {
-      case 0:
+    case 0:
       renderedTab = <Unlock {...this.props} />;
       break;
 
-      case 1:
+    case 1:
       renderedTab = <ImportPrivateKey {...this.props} />;
       break;
 
-      case 2:
+    case 2:
       renderedTab = <GenerateWallet {...this.props} />;
       break;
     }
@@ -39,11 +39,11 @@ class Locked extends Component {
     return (
       <View style={{ height: this.props.height - 20, paddingTop: 20 }}>
         <ButtonGroup
-            onPress={(index) => {
-              this.setState({ tab: index });
-            }}
-            selectedIndex={this.state.tab}
-            buttons={[ "Unlock", "Import", "New" ]} />
+          onPress={(index) => {
+            this.setState({ tab: index });
+          }}
+          selectedIndex={this.state.tab}
+          buttons={[ "Unlock", "Import", "New" ]} />
         {renderedTab}
       </View>
     );

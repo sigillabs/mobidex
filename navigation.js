@@ -5,6 +5,7 @@ import FAIcon from "react-native-vector-icons/FontAwesome";
 import BlankHeader from "./App/headers/Blank";
 import NormalHeader from "./App/headers/Normal";
 import TradingHeader from "./App/headers/Trading";
+import TokenDetailsScreen from "./App/screens/TokenDetailsScreen";
 import PortfolioScreen from "./App/screens/PortfolioScreen";
 import TradingScreen from "./App/screens/TradingScreen";
 import CreateOrderScreen from "./App/screens/CreateOrderScreen";
@@ -44,6 +45,7 @@ const TradingStack = StackNavigator({
 
 const WalletStack = StackNavigator({
   Portfolio: { screen: PortfolioScreen },
+  TokenDetails: { screen: TokenDetailsScreen },
   Receive: { screen: ReceiveScreen },
   Send: { screen: SendScreen },
   Wrap: { screen: WrapEtherScreen },

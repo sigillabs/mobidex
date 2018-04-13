@@ -52,11 +52,7 @@ class PortfolioScreen extends Component {
                 asset={this.state.token}
                 assets={filteredAssets}
                 onPress={(asset) => {
-                  if (this.state.token && this.state.token.address === asset.address) {
-                    this.setState({ token: null });
-                  } else {
-                    this.setState({ token: asset });
-                  }
+                  this.props.navigation.push("TokenDetails", { token: asset });
                 }} />
           </View>
         </View>
