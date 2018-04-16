@@ -8,7 +8,7 @@ export default class Intro extends Component {
   render(){
     return(
       <View
-        backgroundColor = "#43484d"
+        backgroundColor = {colors.grey1}
         style={{
           flex: 1,
           alignItems: "center",

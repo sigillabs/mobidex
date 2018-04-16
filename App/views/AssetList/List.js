@@ -6,6 +6,7 @@ import { List, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { getImage } from "../../../utils/display";
 import AssetItem from "./Item";
+import { colors } from "../../../styles";
 
 class AssetList extends Component {
   render() {
@@ -37,8 +38,8 @@ export default connect((state) => ({ ...state.device.layout, ...state.settings }
 
 const styles = {
   highlight: {
-    backgroundColor: "#86939e",
-    borderColor: "#86939e",
+    backgroundColor: colors.grey3,
+    borderColor: colors.grey3,
     borderWidth: 1
   }
 };

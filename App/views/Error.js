@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { connect } from "react-redux";
 import { setError } from "../../actions";
 import Button from "../components/Button.js";
+import { colors } from "../../styles";
 
 class Err extends Component {
   leave = () => {
@@ -17,7 +18,7 @@ class Err extends Component {
 
     return (
       <View
-        backgroundColor = "#43484d"
+        backgroundColor = {colors.grey1}
         style={{
           flex: 1,
           alignItems: "center",
@@ -26,8 +27,8 @@ class Err extends Component {
           paddingRight: 10,
           paddingBottom: 10,
           paddingLeft: 10
-        }}> 
-        <Text 
+        }}>
+        <Text
           style={{
             fontSize: 18,
             color: "white",
