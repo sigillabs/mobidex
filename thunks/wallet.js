@@ -21,43 +21,63 @@ import {
 } from '../utils/tokens';
 import { cache } from '../utils/cache';
 import { fromV3, toV3 } from '../utils/crypto';
+import {
+  getWalletFromFileSystem,
+  storeWalletOnFileSystem
+} from '../utils/wallet';
 
 // Would like to password protect using Ethereum Secret Storage
-export function generateWallet (password) {
+export function generateWallet(password) {
   return async (dispatch, getState) => {
-    let { settings: { network } } = getState();
+    let {
+      settings: { network }
+    } = getState();
     let wallet = await Wallet.generate();
     dispatch(setWallet({ network, wallet }));
     await dispatch(lock(password));
   };
 }
 
-export function importPrivateKey (privateKey, password) {
+export function importPrivateKey(privateKey, password) {
   return async (dispatch, getState) => {
-    let { settings: { network } } = getState();
-    let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(privateKey), 'hex'));
+    let {
+      settings: { network }
+    } = getState();
+    let wallet = Wallet.fromPrivateKey(
+      Buffer.from(ethUtil.stripHexPrefix(privateKey), 'hex')
+    );
     dispatch(setWallet({ network, wallet }));
     await dispatch(lock(password));
   };
 }
 
-export function lock (password) {
+export function lock(password) {
   return async (dispatch, getState) => {
-    let { wallet: { privateKey, address } } = getState();
-    let v3 = await toV3(ethUtil.stripHexPrefix(privateKey), ethUtil.stripHexPrefix(address), password);
+    let {
+      wallet: { privateKey, address }
+    } = getState();
+    let v3 = await toV3(
+      ethUtil.stripHexPrefix(privateKey),
+      ethUtil.stripHexPrefix(address),
+      password
+    );
     let json = JSON.stringify(v3);
-    await AsyncStorage.setItem('lock', json);
+    await storeWalletOnFileSystem(json);
   };
 }
 
-export function unlock (password) {
+export function unlock(password) {
   return async (dispatch, getState) => {
-    let { settings: { network } } = getState();
-    let v3json = await AsyncStorage.getItem('lock');
+    let {
+      settings: { network }
+    } = getState();
+    let v3json = await getWalletFromFileSystem();
     if (v3json) {
       let v3 = JSON.parse(v3json);
       let walletobj = await fromV3(v3, password);
-      let wallet = Wallet.fromPrivateKey(Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), 'hex'));
+      let wallet = Wallet.fromPrivateKey(
+        Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), 'hex')
+      );
       dispatch(setWallet({ network, wallet }));
     } else {
       throw new Error('Wallet does not exist.');
@@ -65,31 +85,48 @@ export function unlock (password) {
   };
 }
 
-export function loadAssets (force = false) {
+export function loadAssets(force = false) {
   return async (dispatch, getState) => {
-    let { wallet: { web3, address }, relayer: { tokens } } = getState();
-    let assets = await cache('assets', async () => {
-      let balances = await Promise.all(tokens.map(({ address }) => (getTokenBalance(web3, address))));
-      let extendedTokens = tokens.map((token, index) => ({ ...token, balance: balances[index] }));
-      extendedTokens.push({
-        address: null,
-        symbol: 'ETH',
-        name: 'Ether',
-        decimals: 18,
-        balance: await getBalance(web3, address)
-      });
-      return extendedTokens;
-    }, force ? 0 : 60);
+    let {
+      wallet: { web3, address },
+      relayer: { tokens }
+    } = getState();
+    let assets = await cache(
+      'assets',
+      async () => {
+        let balances = await Promise.all(
+          tokens.map(({ address }) => getTokenBalance(web3, address))
+        );
+        let extendedTokens = tokens.map((token, index) => ({
+          ...token,
+          balance: balances[index]
+        }));
+        extendedTokens.push({
+          address: null,
+          symbol: 'ETH',
+          name: 'Ether',
+          decimals: 18,
+          balance: await getBalance(web3, address)
+        });
+        return extendedTokens;
+      },
+      force ? 0 : 60
+    );
 
-    assets = assets.map(({ balance, ...token }) => ({ ...token, balance: new BigNumber(balance) }));
+    assets = assets.map(({ balance, ...token }) => ({
+      ...token,
+      balance: new BigNumber(balance)
+    }));
 
     dispatch(addAssets(assets));
   };
 }
 
-export function loadTransactions () {
+export function loadTransactions() {
   return async (dispatch, getState) => {
-    let { wallet: { address } } = getState();
+    let {
+      wallet: { address }
+    } = getState();
     try {
       let options = {
         headers: {
@@ -100,22 +137,29 @@ export function loadTransactions () {
       let promises = [
         fetch(`http://mobidex.io/inf0x/kovan/fills?maker=${address}`, options),
         fetch(`http://mobidex.io/inf0x/kovan/fills?taker=${address}`, options),
-        fetch(`http://mobidex.io/inf0x/kovan/cancels?maker=${address}`, options),
+        fetch(
+          `http://mobidex.io/inf0x/kovan/cancels?maker=${address}`,
+          options
+        ),
         fetch(`http://mobidex.io/inf0x/kovan/cancels?taker=${address}`, options)
       ];
-      let [ makerFills, takerFills, makerCancels ] = await Promise.all(promises);
+      let [makerFills, takerFills, makerCancels] = await Promise.all(promises);
       let makerFillsJSON = await makerFills.json();
       let takerFillsJSON = await takerFills.json();
       let makerCancelsJSON = await makerCancels.json();
-      let filltxs = makerFillsJSON.map(log => ({
-        ...log,
-        id: log.transactionHash,
-        status: 'FILLED'
-      })).concat(takerFillsJSON.map(log => ({
-        ...log,
-        id: log.transactionHash,
-        status: 'FILLED'
-      })));
+      let filltxs = makerFillsJSON
+        .map(log => ({
+          ...log,
+          id: log.transactionHash,
+          status: 'FILLED'
+        }))
+        .concat(
+          takerFillsJSON.map(log => ({
+            ...log,
+            id: log.transactionHash,
+            status: 'FILLED'
+          }))
+        );
       let canceltxs = makerCancelsJSON.map(log => ({
         ...log,
         id: log.transactionHash,
@@ -129,12 +173,14 @@ export function loadTransactions () {
   };
 }
 
-export function sendTokens (token, to, amount) {
+export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
 
-      let { wallet: { web3 } } = getState();
+      let {
+        wallet: { web3 }
+      } = getState();
       let zeroEx = await getZeroExClient(web3);
       let txhash = await sendTokensUtil(web3, token, to, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
@@ -150,12 +196,14 @@ export function sendTokens (token, to, amount) {
   };
 }
 
-export function sendEther (to, amount) {
+export function sendEther(to, amount) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
 
-      let { wallet: { web3 } } = getState();
+      let {
+        wallet: { web3 }
+      } = getState();
       let zeroEx = await getZeroExClient(web3);
       let txhash = await sendEtherUtil(web3, to, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
@@ -167,12 +215,14 @@ export function sendEther (to, amount) {
   };
 }
 
-export function wrapEther (amount) {
+export function wrapEther(amount) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
 
-      let { wallet: { web3 } } = getState();
+      let {
+        wallet: { web3 }
+      } = getState();
       let zeroEx = await getZeroExClient(web3);
       let txhash = await wrapEtherUtil(web3, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
@@ -184,12 +234,14 @@ export function wrapEther (amount) {
   };
 }
 
-export function unwrapEther (amount) {
+export function unwrapEther(amount) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
 
-      let { wallet: { web3 } } = getState();
+      let {
+        wallet: { web3 }
+      } = getState();
       let zeroEx = await getZeroExClient(web3);
       let txhash = await unwrapEtherUtil(web3, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
@@ -201,9 +253,11 @@ export function unwrapEther (amount) {
   };
 }
 
-export function gotoEtherScan (txaddr) {
+export function gotoEtherScan(txaddr) {
   return async (dispatch, getState) => {
-    let { wallet: { web3 } } = getState();
+    let {
+      wallet: { web3 }
+    } = getState();
     let networkId = await getNetworkId(web3);
     switch (networkId) {
       case 42:

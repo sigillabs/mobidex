@@ -1,9 +1,15 @@
-import BigNumber from "bignumber.js";
-import * as _ from "lodash";
-import { ZeroEx, Order as UnsignedOrder, SignedOrder } from "0x.js";
-import { getZeroExClient, getAccount } from "./ethereum";
+import BigNumber from 'bignumber.js';
+import * as _ from 'lodash';
+import { ZeroEx, Order as UnsignedOrder, SignedOrder } from '0x.js';
+import { getZeroExClient, getAccount } from './ethereum';
 
-export function convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, price, amount) {
+export function convertLimitOrderToZeroExOrder(
+  quoteToken,
+  baseToken,
+  side,
+  price,
+  amount
+) {
   let order = {
     makerTokenAddress: null,
     makerTokenAmount: null,
@@ -11,20 +17,32 @@ export function convertLimitOrderToZeroExOrder(quoteToken, baseToken, side, pric
     takerTokenAmount: null
   };
 
-  switch(side) {
-    case "bid":
-    order.makerTokenAddress = quoteToken.address;
-    order.makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).mul(amount), quoteToken.decimals);
-    order.takerTokenAddress = baseToken.address;
-    order.takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), baseToken.decimals);
-    break;
+  switch (side) {
+    case 'bid':
+      order.makerTokenAddress = quoteToken.address;
+      order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
+        new BigNumber(price).mul(amount),
+        quoteToken.decimals
+      );
+      order.takerTokenAddress = baseToken.address;
+      order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
+        new BigNumber(amount),
+        baseToken.decimals
+      );
+      break;
 
-    case "ask":
-    order.makerTokenAddress = baseToken.address;
-    order.makerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(amount), baseToken.decimals);
-    order.takerTokenAddress = quoteToken.address;
-    order.takerTokenAmount = ZeroEx.toBaseUnitAmount(new BigNumber(price).mul(amount), quoteToken.decimals);
-    break;
+    case 'ask':
+      order.makerTokenAddress = baseToken.address;
+      order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
+        new BigNumber(amount),
+        baseToken.decimals
+      );
+      order.takerTokenAddress = quoteToken.address;
+      order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
+        new BigNumber(price).mul(amount),
+        quoteToken.decimals
+      );
+      break;
   }
 
   return order;
@@ -39,7 +57,10 @@ export async function signOrder(web3, order) {
   const hash = ZeroEx.getOrderHashHex(order);
   // Halting at signature -- seems like a performance issue.
   // Actually a network request issue.
-  const ecSignature = await zeroEx.signOrderHashAsync(hash, account.toLowerCase());
+  const ecSignature = await zeroEx.signOrderHashAsync(
+    hash,
+    account.toLowerCase()
+  );
   const { v, r, s } = ecSignature;
 
   return {
@@ -52,7 +73,12 @@ export async function signOrder(web3, order) {
 export async function fillOrder(web3, order) {
   const zeroEx = await getZeroExClient(web3);
   const account = await getAccount(web3);
-  return await zeroEx.exchange.fillOrderAsync(order, order.takerTokenAmount, true, account.toLowerCase());
+  return await zeroEx.exchange.fillOrderAsync(
+    order,
+    order.takerTokenAmount,
+    true,
+    account.toLowerCase()
+  );
 }
 
 export async function cancelOrder(web3, order, amount) {
@@ -62,33 +88,63 @@ export async function cancelOrder(web3, order, amount) {
 
 export function calculateAmount(order, quoteToken, baseToken) {
   if (order.makerTokenAddress === quoteToken.address) {
-    return ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+    return ZeroEx.toUnitAmount(
+      new BigNumber(order.takerTokenAmount),
+      baseToken.decimals
+    );
   } else {
-    return ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+    return ZeroEx.toUnitAmount(
+      new BigNumber(order.makerTokenAmount),
+      baseToken.decimals
+    );
   }
 }
 
 export function calculatePrice(order, quoteToken, baseToken) {
   if (order.makerTokenAddress === quoteToken.address) {
-    let quote = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), quoteToken.decimals);
-    let amount = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+    let quote = ZeroEx.toUnitAmount(
+      new BigNumber(order.makerTokenAmount),
+      quoteToken.decimals
+    );
+    let amount = ZeroEx.toUnitAmount(
+      new BigNumber(order.takerTokenAmount),
+      baseToken.decimals
+    );
     return quote.div(amount);
   } else {
-    let quote = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), quoteToken.decimals);
-    let amount = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+    let quote = ZeroEx.toUnitAmount(
+      new BigNumber(order.takerTokenAmount),
+      quoteToken.decimals
+    );
+    let amount = ZeroEx.toUnitAmount(
+      new BigNumber(order.makerTokenAmount),
+      baseToken.decimals
+    );
     return quote.div(amount);
   }
 }
 
 export function calculateBidPrice(order, quoteToken, baseToken) {
-  let quote = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), quoteToken.decimals);
-  let amount = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), baseToken.decimals);
+  let quote = ZeroEx.toUnitAmount(
+    new BigNumber(order.makerTokenAmount),
+    quoteToken.decimals
+  );
+  let amount = ZeroEx.toUnitAmount(
+    new BigNumber(order.takerTokenAmount),
+    baseToken.decimals
+  );
   return quote.div(amount);
 }
 
 export function calculateAskPrice(order, quoteToken, baseToken) {
-  let quote = ZeroEx.toUnitAmount(new BigNumber(order.takerTokenAmount), quoteToken.decimals);
-  let amount = ZeroEx.toUnitAmount(new BigNumber(order.makerTokenAmount), baseToken.decimals);
+  let quote = ZeroEx.toUnitAmount(
+    new BigNumber(order.takerTokenAmount),
+    quoteToken.decimals
+  );
+  let amount = ZeroEx.toUnitAmount(
+    new BigNumber(order.makerTokenAmount),
+    baseToken.decimals
+  );
   return quote.div(amount);
 }
 
@@ -99,7 +155,11 @@ export function findHighestBid(orders, quoteToken, baseToken) {
     if (quoteToken.address === order.makerTokenAddress) {
       if (highestBid === null) {
         highestBid = order;
-      } else if (calculateBidPrice(order, quoteToken, baseToken).gt(calculateBidPrice(highestBid, quoteToken, baseToken))) {
+      } else if (
+        calculateBidPrice(order, quoteToken, baseToken).gt(
+          calculateBidPrice(highestBid, quoteToken, baseToken)
+        )
+      ) {
         highestBid = order;
       }
     }
@@ -115,7 +175,11 @@ export function findLowestAsk(orders, quoteToken, baseToken) {
     if (quoteToken.address === order.takerTokenAddress) {
       if (lowestAsk === null) {
         lowestAsk = order;
-      } else if (calculateAskPrice(order, quoteToken, baseToken).lt(calculateAskPrice(lowestAsk, quoteToken, baseToken))) {
+      } else if (
+        calculateAskPrice(order, quoteToken, baseToken).lt(
+          calculateAskPrice(lowestAsk, quoteToken, baseToken)
+        )
+      ) {
         lowestAsk = order;
       }
     }
@@ -125,21 +189,22 @@ export function findLowestAsk(orders, quoteToken, baseToken) {
 }
 
 export function productTokenAddresses(products, attr) {
-  let tokenA = [], tokenB = [];
+  let tokenA = [],
+    tokenB = [];
 
-  switch(attr) {
-    case "tokenA":
-    tokenA = products.map(p => p.tokenA.address);
-    break;
+  switch (attr) {
+    case 'tokenA':
+      tokenA = products.map(p => p.tokenA.address);
+      break;
 
-    case "tokenB":
-    tokenB = products.map(p => p.tokenB.address);
-    break;
+    case 'tokenB':
+      tokenB = products.map(p => p.tokenB.address);
+      break;
 
     default:
-    tokenA = products.map(p => p.tokenA.address);
-    tokenB = products.map(p => p.tokenB.address);
-    break;
+      tokenA = products.map(p => p.tokenA.address);
+      tokenB = products.map(p => p.tokenB.address);
+      break;
   }
 
   return _.uniq(tokenA.concat(tokenB));

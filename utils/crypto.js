@@ -1,6 +1,6 @@
-import ethUtil from "ethereumjs-util";
-import { NativeModules } from "react-native";
-import uuid from "uuid";
+import ethUtil from 'ethereumjs-util';
+import { NativeModules } from 'react-native';
+import uuid from 'uuid';
 
 var EncryptionManager = NativeModules.EncryptionManager;
 
@@ -75,7 +75,16 @@ export async function toV3(privateKey, address, password) {
   let text = ethUtil.stripHexPrefix(privateKey);
   let derivedKey = await deriveKey(password, salt);
   let ciphertext = await encrypt(text, derivedKey, { iv });
-  var mac = ethUtil.stripHexPrefix(ethUtil.sha3(Buffer.concat([ new Buffer(derivedKey, "hex").slice(16, 32), new Buffer(ciphertext, "hex") ])).toString("hex"));
+  var mac = ethUtil.stripHexPrefix(
+    ethUtil
+      .sha3(
+        Buffer.concat([
+          new Buffer(derivedKey, 'hex').slice(16, 32),
+          new Buffer(ciphertext, 'hex')
+        ])
+      )
+      .toString('hex')
+  );
   let id = await generateIV();
 
   return {
@@ -87,11 +96,11 @@ export async function toV3(privateKey, address, password) {
       cipherparams: {
         iv: iv
       },
-      cipher: "aes-128-ctr",
-      kdf: "pbkdf2",
+      cipher: 'aes-128-ctr',
+      kdf: 'pbkdf2',
       kdfparams: {
         c: 262144,
-        prf: "hmac-sha256",
+        prf: 'hmac-sha256',
         dklen: 32,
         salt: salt
       },
