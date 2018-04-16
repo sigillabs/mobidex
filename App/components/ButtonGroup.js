@@ -8,6 +8,7 @@ export default class ButtonGroup extends Component {
       containerStyle,
       buttonStyle,
       containerBorderRadius,
+      textStyle,
       ...rest
     } = this.props;
     return (
@@ -25,10 +26,13 @@ export default class ButtonGroup extends Component {
             marginLeft: 0
           }, containerStyle]}
           buttonStyle={[{
-            backgroundColor: colors.grey3,
+            backgroundColor: colors.orange1,
             paddingLeft: 10,
             paddingRight: 10
-          }, buttonStyle]} />
+          }, buttonStyle]}
+          textStyle={[{
+            color: "white"
+          }]}/>
     );
   }
 }

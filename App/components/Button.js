@@ -17,8 +17,8 @@ export default class Button extends Component {
             color: "white"
           }, titleStyle]}
           buttonStyle={[{
-            backgroundColor: colors.grey3,
-            borderColor: colors.grey3,
+            backgroundColor: colors.orange1,
+            borderColor: colors.orange1,
             borderRadius: 0,
             borderWidth: 1,
             marginTop: 5,
