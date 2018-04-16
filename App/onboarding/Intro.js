@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import { colors } from '../../styles';
 
 export default class Intro extends Component {
   render() {
     return (
       <View
-        backgroundColor={colors.grey1}
+        backgroundColor="#43484d"
         style={{
           flex: 1,
           alignItems: 'center',
@@ -32,10 +31,9 @@ export default class Intro extends Component {
         <Text
           style={{
             fontSize: 20,
-            color: colors.orange1,
+            color: '#ff9200',
             fontWeight: 'bold',
-            paddingTop: 10,
-            paddingBottom: 5
+            paddingTop: 10
           }}
         >
           Welcome to Mobidex, a mobile-first decentralized trading platform.

@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import reactMixin from "react-mixin";
-import TimerMixin from "react-timer-mixin";
-import { Input, Text } from "react-native-elements";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import { connect } from "react-redux";
-import { importPrivateKey } from "../../thunks";
-import LongButton from "../components/LongButton";
-import LongInput from "../components/LongInput";
-import BigCenter from "../components/BigCenter";
+import React, { Component } from 'react';
+import reactMixin from 'react-mixin';
+import TimerMixin from 'react-timer-mixin';
+import { Input, Text } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { connect } from 'react-redux';
+import { importPrivateKey } from '../../thunks';
+import LongButton from '../components/LongButton';
+import LongInput from '../components/LongInput';
+import BigCenter from '../components/BigCenter';
 
 @reactMixin.decorate(TimerMixin)
 class ImportPrivateKey extends Component {
@@ -15,18 +15,18 @@ class ImportPrivateKey extends Component {
     super(props);
 
     this.state = {
-      privateKey: "",
+      privateKey: '',
       privateKeyError: false,
-      password: "",
+      password: '',
       passwordError: false
     };
   }
 
-  onSetPrivateKey = (value) => {
+  onSetPrivateKey = value => {
     this.setState({ privateKey: value, privateKeyError: false });
   };
 
-  onSetPassword = (value) => {
+  onSetPassword = value => {
     this.setState({ password: value, passwordError: false });
   };
 
@@ -43,8 +43,10 @@ class ImportPrivateKey extends Component {
 
     this.requestAnimationFrame(async () => {
       try {
-        await this.props.dispatch(importPrivateKey(this.state.privateKey, this.state.password));
-      } catch(err) {
+        await this.props.dispatch(
+          importPrivateKey(this.state.privateKey, this.state.password)
+        );
+      } catch (err) {
         this.setState({ passwordError: true });
         return;
       }
@@ -61,26 +63,35 @@ class ImportPrivateKey extends Component {
           placeholder="Private Key"
           displayError={this.state.privateKeyError}
           onChangeText={this.onSetPrivateKey}
-          errorMessage={"Private key isn't right for some reason. Make sure you've typed it in correctly."}
-          errorStyle={{ color: "red" }}
+          errorMessage={
+            "Private key isn't right for some reason. Make sure you've typed it in correctly."
+          }
+          errorStyle={{ color: 'red' }}
           icon={<Icon name="vpn-key" size={24} color="black" />}
-          containerStyle={{ width: "100%", marginBottom: 10 }} />
+          containerStyle={{ width: '100%', marginBottom: 10 }}
+        />
         <LongInput
           secureTextEntry={true}
           placeholder="Password"
           displayError={this.state.passwordError}
           onChangeText={this.onSetPassword}
-          errorMessage={"Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters."}
-          errorStyle={{ color: "red" }}
+          errorMessage={
+            'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
+          }
+          errorStyle={{ color: 'red' }}
           icon={<Icon name="person" size={24} color="black" />}
-          containerStyle={{ width: "100%", marginBottom: 10 }} />
+          containerStyle={{ width: '100%', marginBottom: 10 }}
+        />
         <LongButton
-            large
-            title="Import Private Key"
-            onPress={this.importPrivateKey} />
+          large
+          title="Import Private Key"
+          onPress={this.importPrivateKey}
+        />
       </BigCenter>
     );
   }
 }
 
-export default connect((state) => ({ }), dispatch => ({ dispatch }))(ImportPrivateKey);
+export default connect(state => ({}), dispatch => ({ dispatch }))(
+  ImportPrivateKey
+);

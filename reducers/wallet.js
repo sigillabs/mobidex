@@ -7,13 +7,13 @@ import EthTx from 'ethereumjs-tx';
 import ethUtil from 'ethereumjs-util';
 import sigUtil from 'eth-sig-util';
 import * as Actions from '../constants/actions';
-import { getURLFromNetwork } from '../utils/ethereum';
+import { getURLFromNetwork } from '../utils';
 
-function getWeb3 (network, privateKey, address) {
+function getWeb3(network, privateKey, address) {
   const engine = ZeroClientProvider({
     rpcUrl: getURLFromNetwork(network),
-    getAccounts: (cb) => {
-      cb(null, [ address.toString('hex').toLowerCase() ]);
+    getAccounts: cb => {
+      cb(null, [address.toString('hex').toLowerCase()]);
     },
     // tx signing
     // processTransaction: (params, cb) => {
@@ -30,8 +30,13 @@ function getWeb3 (network, privateKey, address) {
     // old style msg signing
     processMessage: (params, cb) => {
       const message = ethUtil.stripHexPrefix(params.data);
-      const msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), new Buffer(ethUtil.stripHexPrefix(privateKey), 'hex'));
-      const rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s));
+      const msgSig = ethUtil.ecsign(
+        new Buffer(message, 'hex'),
+        new Buffer(ethUtil.stripHexPrefix(privateKey), 'hex')
+      );
+      const rawMsgSig = ethUtil.bufferToHex(
+        sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s)
+      );
       cb(null, rawMsgSig);
     },
     // personal_sign msg signing
@@ -56,26 +61,33 @@ const initialState = {
   processing: false
 };
 
-export default handleActions({
-  [Actions.ADD_ASSETS]: (state, action) => {
-    let assets = _.unionBy(action.payload, state.assets, 'address');
-    return { ...state, assets };
+export default handleActions(
+  {
+    [Actions.ADD_ASSETS]: (state, action) => {
+      let assets = _.unionBy(action.payload, state.assets, 'address');
+      return { ...state, assets };
+    },
+    [Actions.PROCESSING]: state => {
+      return { ...state, processing: true };
+    },
+    [Actions.NOT_PROCESSING]: state => {
+      return { ...state, processing: false };
+    },
+    [Actions.ADD_TRANSACTIONS]: (state, action) => {
+      let transactions = _.unionBy(action.payload, state.transactions, 'id');
+      return { ...state, transactions };
+    },
+    [Actions.SET_WALLET]: (state, action) => {
+      let { network, wallet } = action.payload;
+      let privateKey = `0x${ethUtil.stripHexPrefix(
+        wallet.getPrivateKey().toString('hex')
+      )}`;
+      let address = `0x${ethUtil.stripHexPrefix(
+        wallet.getAddress().toString('hex')
+      )}`;
+      let web3 = getWeb3(network, privateKey, address);
+      return { ...state, privateKey, address, web3 };
+    }
   },
-  [Actions.PROCESSING]: (state) => {
-    return { ...state, processing: true };
-  },
-  [Actions.NOT_PROCESSING]: (state) => {
-    return { ...state, processing: false };
-  },
-  [Actions.ADD_TRANSACTIONS]: (state, action) => {
-    let transactions = _.unionBy(action.payload, state.transactions, 'id');
-    return { ...state, transactions };
-  },
-  [Actions.SET_WALLET]: (state, action) => {
-    let { network, wallet } = action.payload;
-    let privateKey = `0x${ethUtil.stripHexPrefix(wallet.getPrivateKey().toString('hex'))}`;
-    let address = `0x${ethUtil.stripHexPrefix(wallet.getAddress().toString('hex'))}`;
-    let web3 = getWeb3(network, privateKey, address);
-    return { ...state, privateKey, address, web3 };
-  }
-}, initialState);
+  initialState
+);

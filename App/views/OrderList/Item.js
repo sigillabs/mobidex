@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import { Text } from "react-native-elements";
-import { connect } from "react-redux";
-import { ZeroEx } from "0x.js";
-import { formatAmount } from "../../../utils/display";
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import { Text } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { ZeroEx } from '0x.js';
+import { formatAmount } from '../../../utils';
 
 class OrderItem extends Component {
   render() {
@@ -13,15 +13,25 @@ class OrderItem extends Component {
     if (order.maker.toLowerCase() !== address.toLowerCase()) {
       // This should not happen... get of here!
     }
-    
-    if (order.makerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()) {
+
+    if (
+      order.makerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()
+    ) {
       // BID
       amount = ZeroEx.toUnitAmount(order.takerTokenAmount, baseToken.decimals);
-      price = ZeroEx.toUnitAmount(order.makerTokenAmount, quoteToken.decimals).div(amount);
-    } else if (order.takerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()) {
+      price = ZeroEx.toUnitAmount(
+        order.makerTokenAmount,
+        quoteToken.decimals
+      ).div(amount);
+    } else if (
+      order.takerTokenAddress.toLowerCase() === quoteToken.address.toLowerCase()
+    ) {
       // ASK
       amount = ZeroEx.toUnitAmount(order.makerTokenAmount, baseToken.decimals);
-      price = ZeroEx.toUnitAmount(order.takerTokenAmount, quoteToken.decimals).div(amount);
+      price = ZeroEx.toUnitAmount(
+        order.takerTokenAmount,
+        quoteToken.decimals
+      ).div(amount);
     } else {
       // This should not happen... get of here!
     }
@@ -29,8 +39,12 @@ class OrderItem extends Component {
     return (
       <View>
         <View style={styles.container}>
-          <Text style={styles.datum}>{formatAmount(price.isFinite() ? price : 0)} {quoteToken.symbol}</Text>
-          <Text style={styles.datum}>{formatAmount(amount)} {baseToken.symbol}</Text>
+          <Text style={styles.datum}>
+            {formatAmount(price.isFinite() ? price : 0)} {quoteToken.symbol}
+          </Text>
+          <Text style={styles.datum}>
+            {formatAmount(amount)} {baseToken.symbol}
+          </Text>
         </View>
         <View style={styles.container}>
           <Text style={styles.header}>Price</Text>
@@ -44,20 +58,23 @@ class OrderItem extends Component {
 const styles = {
   container: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   datum: {
-    textAlign: "center",
+    textAlign: 'center',
     flex: 1
   },
   header: {
-    textAlign: "center",
-    color: "gray",
+    textAlign: 'center',
+    color: 'gray',
     flex: 1,
     fontSize: 10
   }
 };
 
-export default connect((state) => ({ ...state.wallet, ...state.settings }), (dispatch) => ({ dispatch }))(OrderItem);
+export default connect(
+  state => ({ ...state.wallet, ...state.settings }),
+  dispatch => ({ dispatch })
+)(OrderItem);

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { AsyncStorage, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import Wallet from 'ethereumjs-wallet';
 import ethUtil from 'ethereumjs-util';
 import {
@@ -10,21 +10,21 @@ import {
   setError,
   setWallet
 } from '../actions';
-import { getNetworkId, getZeroExClient } from '../utils/ethereum';
 import {
+  cache,
+  fromV3,
   getBalance,
+  getNetworkId,
+  getTokenBalance,
+  getWalletFromFileSystem,
+  getZeroExClient,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
-  getTokenBalance,
+  storeWalletOnFileSystem,
+  toV3,
   wrapEther as wrapEtherUtil,
   unwrapEther as unwrapEtherUtil
-} from '../utils/tokens';
-import { cache } from '../utils/cache';
-import { fromV3, toV3 } from '../utils/crypto';
-import {
-  getWalletFromFileSystem,
-  storeWalletOnFileSystem
-} from '../utils/wallet';
+} from '../utils';
 
 // Would like to password protect using Ethereum Secret Storage
 export function generateWallet(password) {

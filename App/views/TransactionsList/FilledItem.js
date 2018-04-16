@@ -1,12 +1,15 @@
-import React, { Component } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Text } from "react-native-elements";
-import { connect } from "react-redux";
-import { gotoEtherScan } from "../../../thunks";
-import { formatAmountWithDecimals, formatTimestamp } from "../../../utils/display";
-import { getTokenByAddress } from "../../../utils/tokens";
-import Row from "../../components/Row";
-import MutedText from "../../components/MutedText";
+import React, { Component } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { gotoEtherScan } from '../../../thunks';
+import {
+  formatAmountWithDecimals,
+  getTokenByAddress,
+  formatTimestamp
+} from '../../../utils';
+import Row from '../../components/Row';
+import MutedText from '../../components/MutedText';
 
 class FilledItem extends Component {
   constructor(props) {
@@ -20,11 +23,11 @@ class FilledItem extends Component {
   }
 
   async componentDidMount() {
-    let [ makerToken, takerToken ] = await Promise.all([
+    let [makerToken, takerToken] = await Promise.all([
       getTokenByAddress(this.props.web3, this.props.transaction.makerToken),
       getTokenByAddress(this.props.web3, this.props.transaction.takerToken)
     ]);
-    
+
     this.setState({
       makerToken,
       takerToken,
@@ -37,26 +40,45 @@ class FilledItem extends Component {
       return null;
     }
 
-    let { id, filledMakerTokenAmount, filledTakerTokenAmount, timestamp } = this.props.transaction;
+    let {
+      id,
+      filledMakerTokenAmount,
+      filledTakerTokenAmount,
+      timestamp
+    } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
 
-    if (!makerToken) makerToken = {
-      decimals: 18,
-      symbol: "?"
-    };
+    if (!makerToken)
+      makerToken = {
+        decimals: 18,
+        symbol: '?'
+      };
 
-    if (!takerToken) takerToken = {
-      decimals: 18,
-      symbol: "?"
-    };
+    if (!takerToken)
+      takerToken = {
+        decimals: 18,
+        symbol: '?'
+      };
 
     return (
       <TouchableOpacity onPress={() => this.props.dispatch(gotoEtherScan(id))}>
         <View>
           <Row>
-            <Text>{formatAmountWithDecimals(filledMakerTokenAmount, makerToken.decimals)} {makerToken.symbol}</Text>
+            <Text>
+              {formatAmountWithDecimals(
+                filledMakerTokenAmount,
+                makerToken.decimals
+              )}{' '}
+              {makerToken.symbol}
+            </Text>
             <Text> for </Text>
-            <Text>{formatAmountWithDecimals(filledTakerTokenAmount, takerToken.decimals)} {takerToken.symbol}</Text>
+            <Text>
+              {formatAmountWithDecimals(
+                filledTakerTokenAmount,
+                takerToken.decimals
+              )}{' '}
+              {takerToken.symbol}
+            </Text>
           </Row>
           <MutedText>{formatTimestamp(timestamp)}</MutedText>
         </View>
@@ -65,4 +87,7 @@ class FilledItem extends Component {
   }
 }
 
-export default connect(state => ({ ...state.wallet, ...state.device.layout }), dispatch => ({ dispatch }))(FilledItem);
+export default connect(
+  state => ({ ...state.wallet, ...state.device.layout }),
+  dispatch => ({ dispatch })
+)(FilledItem);

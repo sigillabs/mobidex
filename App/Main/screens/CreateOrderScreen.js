@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
-import { Card, Input } from "react-native-elements";
-import { connect } from "react-redux";
-import Icon from "react-native-vector-icons/FontAwesome";
-import BigNumber from "bignumber.js";
-import { ZeroEx } from "0x.js";
-import NormalHeader from "../headers/Normal";
-import { createSignSubmitOrder, gotoOrders } from "../../thunks";
-import Button from "../components/Button";
-import LongButton from "../components/LongButton";
-import ButtonGroup from "../components/ButtonGroup"
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { Card, Input } from 'react-native-elements';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import BigNumber from 'bignumber.js';
+import { ZeroEx } from '0x.js';
+import { createSignSubmitOrder, gotoOrders } from '../../../thunks';
+import Button from '../../components/Button';
+import LongButton from '../../components/LongButton';
+import ButtonGroup from '../../components/ButtonGroup';
+import NormalHeader from '../headers/Normal';
 
-const SIDES = ["bid", "ask"];
-const TITLES = ["Create Buy Order", "Create Sell Order"];
+const SIDES = ['bid', 'ask'];
+const TITLES = ['Create Buy Order', 'Create Sell Order'];
 
 class CreateOrderScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -33,7 +33,7 @@ class CreateOrderScreen extends Component {
     };
   }
 
-  onSetAmount = (value) => {
+  onSetAmount = value => {
     try {
       let amount = new BigNumber(value);
       if (amount.gt(0)) {
@@ -41,12 +41,12 @@ class CreateOrderScreen extends Component {
       } else {
         this.setState({ amount: new BigNumber(0), amountError: true });
       }
-    } catch(err) {
+    } catch (err) {
       this.setState({ amount: new BigNumber(0), amountError: true });
     }
   };
 
-  onSetPrice = (value) => {
+  onSetPrice = value => {
     try {
       let price = new BigNumber(value);
       if (price.gt(0)) {
@@ -54,7 +54,7 @@ class CreateOrderScreen extends Component {
       } else {
         this.setState({ price: new BigNumber(0), priceError: true });
       }
-    } catch(err) {
+    } catch (err) {
       this.setState({ price: new BigNumber(0), priceError: true });
     }
   };
@@ -64,26 +64,28 @@ class CreateOrderScreen extends Component {
     let { side, price, amount } = this.state;
     let makerAmount, makerToken, takerAmount, takerToken;
 
-    let result = await this.props.dispatch(createSignSubmitOrder(SIDES[side], price, amount));
+    let result = await this.props.dispatch(
+      createSignSubmitOrder(SIDES[side], price, amount)
+    );
 
     if (result) {
-      this.props.navigation.push("Trading");
+      this.props.navigation.push('Trading');
     }
-  }
+  };
 
   render() {
     return (
       <ScrollView>
         <Card title={TITLES[this.state.side]}>
           <ButtonGroup
-              onPress={(index) => {
-                this.setState({ side: index });
-              }}
-              selectedIndex={this.state.side}
-              buttons={SIDES}
-              containerBorderRadius={0}
-              containerStyle={styles.container}
-              buttonStyle={styles.button}
+            onPress={index => {
+              this.setState({ side: index });
+            }}
+            selectedIndex={this.state.side}
+            buttons={SIDES}
+            containerBorderRadius={0}
+            containerStyle={styles.container}
+            buttonStyle={styles.button}
           />
           <View style={{ marginTop: 10, marginBottom: 10 }}>
             <Input
@@ -91,30 +93,34 @@ class CreateOrderScreen extends Component {
               displayError={this.state.priceError}
               onChangeText={this.onSetPrice}
               keyboardType="numeric"
-              errorMessage={"Price should be numeric and greater than `0`."}
-              errorStyle={{ color: "red" }}
+              errorMessage={'Price should be numeric and greater than `0`.'}
+              errorStyle={{ color: 'red' }}
               icon={<Icon name="money" size={24} color="black" />}
-              containerStyle={{ width: "100%", marginBottom: 10 }}
+              containerStyle={{ width: '100%', marginBottom: 10 }}
             />
             <Input
               placeholder="Amount"
               displayError={this.state.amountError}
               onChangeText={this.onSetAmount}
               keyboardType="numeric"
-              errorMessage={"Amounts should be numeric and greater than `0`."}
-              errorStyle={{ color: "red" }}
+              errorMessage={'Amounts should be numeric and greater than `0`.'}
+              errorStyle={{ color: 'red' }}
               icon={<Icon name="money" size={24} color="black" />}
-              containerStyle={{ width: "100%", marginBottom: 10 }}
+              containerStyle={{ width: '100%', marginBottom: 10 }}
             />
           </View>
           <View style={{ height: 30 }}>
-            <View style={{
-              flex: 1,
-              flexDirection: "row"
-            }}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row'
+              }}
+            >
               <Text>Sub Total</Text>
               <Text>: </Text>
-              <Text>{this.state.price.mul(this.state.amount).toFixed(6, 1)}</Text>
+              <Text>
+                {this.state.price.mul(this.state.amount).toFixed(6, 1)}
+              </Text>
             </View>
           </View>
           <View style={{ marginBottom: 10 }} />
@@ -122,7 +128,8 @@ class CreateOrderScreen extends Component {
             large
             onPress={this.submit}
             icon={<Icon name="check" size={24} color="white" />}
-            title="Submit Order" />
+            title="Submit Order"
+          />
         </Card>
       </ScrollView>
     );
@@ -138,7 +145,7 @@ const styles = {
     marginTop: 0,
     marginRight: 0,
     marginBottom: 0,
-    marginLeft: 0,
+    marginLeft: 0
   },
   button: {
     paddingLeft: 10,
@@ -146,4 +153,12 @@ const styles = {
   }
 };
 
-export default connect((state, ownProps) => ({ ...state.device, ...state.settings, ...state.wallet, ...ownProps }), (dispatch) => ({ dispatch }))(CreateOrderScreen);
+export default connect(
+  (state, ownProps) => ({
+    ...state.device,
+    ...state.settings,
+    ...state.wallet,
+    ...ownProps
+  }),
+  dispatch => ({ dispatch })
+)(CreateOrderScreen);

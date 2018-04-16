@@ -3,21 +3,23 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { formatAmount } from '../../../utils/display';
+import { formatAmount } from '../../../utils';
 
 class AssetItem extends Component {
-  render () {
+  render() {
     let { asset } = this.props;
     let { symbol, balance, decimals } = asset;
     balance = ZeroEx.toUnitAmount(balance, decimals);
 
     return (
-      <View style={[ styles.container]}>
+      <View style={[styles.container]}>
         <Text>{symbol.toString()}</Text>
         <Text />
         <Text>{formatAmount(balance)}</Text>
         <Text />
-        <Text>(${formatAmount(balance.mul(this.props.forexPrices[symbol] || 0))})</Text>
+        <Text>
+          (${formatAmount(balance.mul(this.props.forexPrices[symbol] || 0))})
+        </Text>
       </View>
     );
   }
@@ -33,4 +35,7 @@ const styles = {
   }
 };
 
-export default connect(state => ({ forexPrices: state.forex.prices }), dispatch => ({ dispatch }))(AssetItem);
+export default connect(
+  state => ({ forexPrices: state.forex.prices }),
+  dispatch => ({ dispatch })
+)(AssetItem);
