@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import Button from '../components/Button';
+import LongButton from '../components/LongButton';
+import { colors } from '../../styles.js'
 
 export default class Intro extends Component {
   render() {
     return (
       <View
-        backgroundColor="#43484d"
+        backgroundColor={colors.grey1}
         style={{
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          paddingTop: 10,
+          paddingTop: 0,
           paddingRight: 10,
           paddingBottom: 10,
           paddingLeft: 10
@@ -32,9 +33,10 @@ export default class Intro extends Component {
         <Text
           style={{
             fontSize: 20,
-            color: '#ff9200',
+            color: colors.orange1,
             fontWeight: 'bold',
-            paddingTop: 10
+            paddingTop: 10,
+            paddingBottom: 10
           }}
         >
           Welcome to Mobidex, a mobile-first decentralized trading platform.
@@ -42,17 +44,22 @@ export default class Intro extends Component {
         <Text
           style={{
             fontSize: 15,
-            color: 'white'
+            color: 'white',
+            paddingBottom: 100
           }}
         >
-          To unlock your wallet, click Unlock. To import a wallet, press Import.
-          To generate a new Wallet, please click New.
+          To generate a new Wallet, please click New Wallet.
+          To import a wallet, press Import.
         </Text>
-
-        <Button
+        <LongButton
           large
           onPress={() => this.props.navigation.push('NewWallet')}
           title="New Wallet"
+        />
+        <LongButton
+          large
+          onPress={() => this.props.navigation.push('Import')}
+          title="Import"
         />
       </View>
     );
