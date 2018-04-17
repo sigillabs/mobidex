@@ -2,19 +2,19 @@ import React from 'react';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import BlankHeader from './headers/Blank';
-import NormalHeader from './headers/Normal';
-import TradingHeader from './headers/Trading';
-import TokenDetailsScreen from './screens/TokenDetailsScreen';
-import PortfolioScreen from './screens/PortfolioScreen';
-import TradingScreen from './screens/TradingScreen';
-import CreateOrderScreen from './screens/CreateOrderScreen';
-import OrderDetailsScreen from './screens/OrderDetailsScreen';
-import ReceiveScreen from './screens/ReceiveScreen';
-import SendScreen from './screens/SendScreen';
-import TransactionHistoryScreen from './screens/TransactionHistoryScreen';
-import UnwrapEtherScreen from './screens/UnwrapEtherScreen';
-import WrapEtherScreen from './screens/WrapEtherScreen';
+import BlankHeader from '../Main/headers/Blank';
+import NormalHeader from '../Main/headers/Normal';
+import TradingHeader from '../Main/headers/Trading';
+import TokenDetailsScreen from '../Main/screens/TokenDetailsScreen';
+import PortfolioScreen from '../Main/screens/PortfolioScreen';
+import TradingScreen from '../Main/screens/TradingScreen';
+import CreateOrderScreen from '../Main/screens/CreateOrderScreen';
+import OrderDetailsScreen from '../Main/screens/OrderDetailsScreen';
+import ReceiveScreen from '../Main/screens/ReceiveScreen';
+import SendScreen from '../Main/screens/SendScreen';
+import TransactionHistoryScreen from '../Main/screens/TransactionHistoryScreen';
+import UnwrapEtherScreen from '../Main/screens/UnwrapEtherScreen';
+import WrapEtherScreen from '../Main/screens/WrapEtherScreen';
 
 const TransactionsStack = StackNavigator(
   {

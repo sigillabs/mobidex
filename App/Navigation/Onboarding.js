@@ -1,9 +1,8 @@
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import Intro from './Intro';
+import Intro from '../Onboarding/Intro';
 import GenerateWallet from '../views/GenerateWallet';
 import ImportPrivateKey from '../views/ImportPrivateKey';
-
 
 export default StackNavigator(
   {
@@ -12,6 +11,6 @@ export default StackNavigator(
     Import: { screen: ImportPrivateKey }
   },
   {
-    initialRouteName: 'Intro',
+    initialRouteName: 'Intro'
   }
 );

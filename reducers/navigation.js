@@ -1,23 +1,11 @@
-import OnboardingNavigator from '../App/Onboarding/Navigation';
-import MainNavigator from '../App/Main/Navigation';
+import Navigator from '../App/Navigation';
 
-const initialState = {
-  onboarding: OnboardingNavigator.router.getStateForAction(
-    OnboardingNavigator.router.getActionForPathAndParams('Intro')
-  ),
-  main: MainNavigator.router.getStateForAction(
-    MainNavigator.router.getActionForPathAndParams('Wallet')
-  )
-};
+const initialState = Navigator.router.getStateForAction(
+  Navigator.router.getActionForPathAndParams('Loading')
+);
 
 const navigation = (state = initialState, action) => {
-  return {
-    onboarding:
-      OnboardingNavigator.router.getStateForAction(action, state.onboarding) ||
-      state.onboarding,
-    main:
-      MainNavigator.router.getStateForAction(action, state.main) || state.main
-  };
+  return Navigator.router.getStateForAction(action, state) || state;
 };
 
 export default navigation;
