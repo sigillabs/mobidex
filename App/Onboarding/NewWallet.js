@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import Button from '../components/Button';
 
 export default class Intro extends Component {
   render() {
@@ -48,12 +47,6 @@ export default class Intro extends Component {
           To unlock your wallet, click Unlock. To import a wallet, press Import.
           To generate a new Wallet, please click New.
         </Text>
-
-        <Button
-          large
-          onPress={() => this.props.navigation.push('NewWallet')}
-          title="New Wallet"
-        />
       </View>
     );
   }
