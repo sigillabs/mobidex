@@ -11,7 +11,7 @@ import {
   getImage
 } from '../../utils';
 
-class AssetDetails extends Component {
+class TokenDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -29,18 +29,10 @@ class AssetDetails extends Component {
       NavigationActions.push({
         routeName: 'Send',
         params: {
-          token: this.props.asset
+          token: this.props.token
         }
       })
     );
-  };
-
-  wrap = () => {
-    this.props.dispatch(NavigationActions.push({ routeName: 'Wrap' }));
-  };
-
-  unwrap = () => {
-    this.props.dispatch(NavigationActions.push({ routeName: 'Unwrap' }));
   };
 
   toggleShowAddress = () => {
@@ -48,8 +40,8 @@ class AssetDetails extends Component {
   };
 
   render() {
-    let { asset, address } = this.props;
-    let { balance, decimals } = asset;
+    let { token, address } = this.props;
+    let { balance, decimals } = token;
 
     return (
       <View
@@ -68,7 +60,7 @@ class AssetDetails extends Component {
             rounded
             width={34}
             height={34}
-            source={getImage(asset.symbol)}
+            source={getImage(token.symbol)}
             activeOpacity={0.7}
             onPress={this.toggleShowAddress}
           />
@@ -103,32 +95,15 @@ class AssetDetails extends Component {
             buttonStyle={{ borderRadius: 0 }}
             onPress={this.send}
           />
-          {asset !== null &&
-          (asset.symbol === 'ETH' || asset.symbol === 'WETH') ? (
-            <View style={{ width: 10 }} />
-          ) : null}
-          {asset.symbol === 'ETH' ? (
-            <Button
-              large
-              title="Wrap"
-              icon={<Icon name="move-to-inbox" color="white" size={18} />}
-              buttonStyle={{ borderRadius: 0 }}
-              onPress={this.wrap}
-            />
-          ) : null}
-          {asset !== null && asset.symbol === 'WETH' ? (
-            <Button
-              large
-              title="Unwrap"
-              icon={<Icon name="move-to-inbox" color="white" size={18} />}
-              buttonStyle={{ borderRadius: 0 }}
-              onPress={this.unwrap}
-            />
-          ) : null}
         </View>
       </View>
     );
   }
 }
 
-export default connect(state => ({}), dispatch => ({ dispatch }))(AssetDetails);
+export default connect(
+  state => ({
+    ...state.wallet
+  }),
+  dispatch => ({ dispatch })
+)(TokenDetails);

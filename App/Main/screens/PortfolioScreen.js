@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import { lock, loadAssets, loadForexPrices } from '../../../thunks';
 import TimedUpdater from '../../components/TimedUpdater';
 import NormalHeader from '../headers/Normal';
-import AssetList from '../../views/AssetList';
-import AssetDetails from '../../views/AssetDetails';
+import TokenList from '../../views/TokenList';
+import TokenDetails from '../../views/TokenDetails';
 
 class PortfolioScreen extends Component {
   constructor(props) {
@@ -30,8 +30,8 @@ class PortfolioScreen extends Component {
   }
 
   render() {
-    let ethAsset = _.find(this.props.assets, { symbol: 'ETH' });
-    let filteredAssets = _.without(this.props.assets, ethAsset);
+    let ethToken = _.find(this.props.assets, { symbol: 'ETH' });
+    let filteredTokens = _.without(this.props.assets, ethToken);
 
     return (
       <ScrollView
@@ -55,15 +55,15 @@ class PortfolioScreen extends Component {
             timeout={1000}
           />
           <View style={{ height: 200 }}>
-            <AssetDetails
+            <TokenDetails
               address={this.props.address}
-              asset={this.state.token || ethAsset}
+              token={this.state.token || ethToken}
             />
           </View>
           <View style={{ flex: 1 }}>
-            <AssetList
-              asset={this.state.token}
-              assets={filteredAssets}
+            <TokenList
+              token={this.state.token}
+              tokens={filteredTokens}
               onPress={asset => {
                 this.props.navigation.push('TokenDetails', { token: asset });
               }}
