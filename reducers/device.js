@@ -1,7 +1,5 @@
-import * as _ from "lodash";
-import { Dimensions } from "react-native";
-import { handleActions } from "redux-actions";
-import * as Actions from "../constants/actions";
+import { Dimensions } from 'react-native';
+import { handleActions } from 'redux-actions';
 
 const initialState = {
   layout: {

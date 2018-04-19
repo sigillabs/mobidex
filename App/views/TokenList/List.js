@@ -6,11 +6,11 @@ import { List, ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { getImage } from '../../../utils';
 import { colors } from '../../../styles';
-import AssetItem from './Item';
+import TokenItem from './Item';
 
-class AssetList extends Component {
+class TokenList extends Component {
   render() {
-    let { assets } = this.props;
+    let { tokens } = this.props;
 
     return (
       <List
@@ -21,19 +21,19 @@ class AssetList extends Component {
           this.props.style
         ]}
       >
-        {assets.map((asset, index) => (
+        {tokens.map((token, index) => (
           <TouchableOpacity
-            key={`asset-${index}`}
-            onPress={() => this.props.onPress(asset)}
+            key={`token-${index}`}
+            onPress={() => this.props.onPress(token)}
           >
             <ListItem
               roundAvatar
-              avatar={getImage(asset.symbol)}
-              title={<AssetItem asset={asset} />}
+              avatar={getImage(token.symbol)}
+              title={<TokenItem token={token} />}
               avatarOverlayContainerStyle={{ backgroundColor: 'transparent' }}
               containerStyle={[
-                this.props.asset &&
-                  this.props.asset.address === asset.address &&
+                this.props.token &&
+                  this.props.token.address === token.address &&
                   styles.highlight
               ]}
             />
@@ -47,7 +47,7 @@ class AssetList extends Component {
 export default connect(
   state => ({ ...state.device.layout, ...state.settings }),
   dispatch => ({ dispatch })
-)(AssetList);
+)(TokenList);
 
 const styles = {
   highlight: {

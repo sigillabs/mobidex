@@ -5,10 +5,10 @@ import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { formatAmount } from '../../../utils';
 
-class AssetItem extends Component {
+class TokenItem extends Component {
   render() {
-    let { asset } = this.props;
-    let { symbol, balance, decimals } = asset;
+    let { token } = this.props;
+    let { symbol, balance, decimals } = token;
     balance = ZeroEx.toUnitAmount(balance, decimals);
 
     return (
@@ -38,4 +38,4 @@ const styles = {
 export default connect(
   state => ({ forexPrices: state.forex.prices }),
   dispatch => ({ dispatch })
-)(AssetItem);
+)(TokenItem);
