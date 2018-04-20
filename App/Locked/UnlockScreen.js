@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { loadAssets, loadProductsAndTokens } from '../../../thunks';
-import Unlock from '../../views/Unlock';
-import ButtonGroup from '../../components/ButtonGroup';
-import BigCenter from '../../components/BigCenter';
+import { loadAssets, loadProductsAndTokens } from '../../thunks';
+import Unlock from '../views/Unlock';
+import ButtonGroup from '../components/ButtonGroup';
+import BigCenter from '../components/BigCenter';
 
 class UnlockScreen extends Component {
   render() {

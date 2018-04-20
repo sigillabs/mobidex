@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '../../../styles';
+import { colors } from '../../styles';
 
 export default class extends Component {
   render() {

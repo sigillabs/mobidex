@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { colors } from '../../../styles';
+import { colors } from '../../styles';
 
 export default class extends Component {
   render() {

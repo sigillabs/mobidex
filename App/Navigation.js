@@ -3,25 +3,25 @@ import { StackNavigator, SwitchNavigator } from 'react-navigation';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
-import ImportPrivateKeyScreen from './Locked/screens/ImportPrivateKeyScreen';
-import GenerateWalletScreen from './Locked/screens/GenerateWalletScreen';
-import UnlockScreen from './Locked/screens/UnlockScreen';
+import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
+import GenerateWalletScreen from './Locked/GenerateWalletScreen';
+import UnlockScreen from './Locked/UnlockScreen';
 
-import BlankHeader from './Main/headers/Blank';
-import NormalHeader from './Main/headers/Normal';
-import TradingHeader from './Main/headers/Trading';
-import TokenDetailsScreen from './Main/screens/TokenDetailsScreen';
-// import PortfolioScreen from './Main/screens/PortfolioScreen';
-import TradingScreen from './Main/screens/TradingScreen';
-import CreateOrderScreen from './Main/screens/CreateOrderScreen';
-import OrderDetailsScreen from './Main/screens/OrderDetailsScreen';
-import ReceiveScreen from './Main/screens/ReceiveScreen';
-import SendScreen from './Main/screens/SendScreen';
-import TransactionHistoryScreen from './Main/screens/TransactionHistoryScreen';
-import UnwrapEtherScreen from './Main/screens/UnwrapEtherScreen';
-import WrapEtherScreen from './Main/screens/WrapEtherScreen';
+import BlankHeader from './headers/Blank';
+import NormalHeader from './headers/Normal';
+import TradingHeader from './headers/Trading';
+import TokenDetailsScreen from './Main/TokenDetailsScreen';
+// import PortfolioScreen from './Main/PortfolioScreen';
+import TradingScreen from './Main/TradingScreen';
+import CreateOrderScreen from './Main/CreateOrderScreen';
+import OrderDetailsScreen from './Main/OrderDetailsScreen';
+import ReceiveScreen from './Main/ReceiveScreen';
+import SendScreen from './Main/SendScreen';
+import TransactionHistoryScreen from './Main/TransactionHistoryScreen';
+import UnwrapEtherScreen from './Main/UnwrapEtherScreen';
+import WrapEtherScreen from './Main/WrapEtherScreen';
 
-import Intro from './Onboarding/Intro';
+import IntroScreen from './Onboarding/IntroScreen';
 
 import GenerateWallet from './views/GenerateWallet';
 import ImportPrivateKey from './views/ImportPrivateKey';
@@ -41,7 +41,7 @@ const LockedNavigation = SwitchNavigator(
 
 const OnboardingNavigation = StackNavigator(
   {
-    Intro: { screen: Intro },
+    Intro: { screen: IntroScreen },
     NewWallet: { screen: GenerateWallet },
     Import: { screen: ImportPrivateKey }
   },

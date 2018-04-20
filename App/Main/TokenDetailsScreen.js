@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
 import { Card, Header, Icon, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { lock, loadAssets, loadForexPrices } from '../../../thunks';
-import Button from '../../components/Button';
-import ButtonGroup from '../../components/ButtonGroup';
-import LongButton from '../../components/LongButton';
-import Row from '../../components/Row';
-import TimedUpdater from '../../components/TimedUpdater';
-import PriceGraph from '../../views/PriceGraph';
-import TokenDetailsCard from '../../views/TokenDetailsCard';
+import { lock, loadAssets, loadForexPrices } from '../../thunks';
+import Button from '../components/Button';
+import ButtonGroup from '../components/ButtonGroup';
+import LongButton from '../components/LongButton';
+import Row from '../components/Row';
+import TimedUpdater from '../components/TimedUpdater';
+import PriceGraph from '../views/PriceGraph';
+import TokenDetailsCard from '../views/TokenDetailsCard';
 
 class TokenDetailsScreen extends Component {
   constructor(props) {

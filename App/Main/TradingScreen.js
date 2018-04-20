@@ -3,18 +3,18 @@ import React, { Component } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { setBaseToken, setQuoteToken } from '../../../actions';
-import { loadOrders } from '../../../thunks';
-import { productTokenAddresses } from '../../../utils';
-import BigCenter from '../../components/BigCenter';
-import ButtonGroup from '../../components/ButtonGroup.js';
-import Divider from '../../components/Divider';
-import EmptyList from '../../components/EmptyList';
-import MutedText from '../../components/MutedText';
-import OrderFilterBar from '../../views/OrderFilterBar';
-import OrderList from '../../views/OrderList';
-import TradingInfo from '../../views/TradingInfo';
-import TokenFilterBar from '../../views/TokenFilterBar';
+import { setBaseToken, setQuoteToken } from '../../actions';
+import { loadOrders } from '../../thunks';
+import { productTokenAddresses } from '../../utils';
+import BigCenter from '../components/BigCenter';
+import ButtonGroup from '../components/ButtonGroup.js';
+import Divider from '../components/Divider';
+import EmptyList from '../components/EmptyList';
+import MutedText from '../components/MutedText';
+import OrderFilterBar from '../views/OrderFilterBar';
+import OrderList from '../views/OrderList';
+import TradingInfo from '../views/TradingInfo';
+import TokenFilterBar from '../views/TokenFilterBar';
 
 class TradingScreen extends Component {
   constructor(props) {

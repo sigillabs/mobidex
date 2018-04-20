@@ -4,7 +4,7 @@ import { Card, Header, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import ethUtil from 'ethereumjs-util';
-import Button from '../../components/Button';
+import Button from '../components/Button';
 
 class ReceiveScreen extends Component {
   share = () => {

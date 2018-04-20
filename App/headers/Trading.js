@@ -3,8 +3,8 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { toggleDrawer } from '../../../actions';
-import { colors } from '../../../styles';
+import { toggleDrawer } from '../../actions';
+import { colors } from '../../styles';
 
 class TradingHeader extends Component {
   render() {

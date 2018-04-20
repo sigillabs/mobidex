@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
-import { loadTransactions } from '../../../thunks';
-import EmptyList from '../../components/EmptyList';
-import MutedText from '../../components/MutedText';
-import TransactionsList from '../../views/TransactionsList';
+import { loadTransactions } from '../../thunks';
+import EmptyList from '../components/EmptyList';
+import MutedText from '../components/MutedText';
+import TransactionsList from '../views/TransactionsList';
 
 class TransactionHistoryScreen extends Component {
   constructor(props) {

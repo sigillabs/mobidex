@@ -5,22 +5,15 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { ZeroEx } from '0x.js';
-import { createSignSubmitOrder, gotoOrders } from '../../../thunks';
-import Button from '../../components/Button';
-import LongButton from '../../components/LongButton';
-import ButtonGroup from '../../components/ButtonGroup';
-import NormalHeader from '../headers/Normal';
+import { createSignSubmitOrder, gotoOrders } from '../../thunks';
+import Button from '../components/Button';
+import LongButton from '../components/LongButton';
+import ButtonGroup from '../components/ButtonGroup';
 
 const SIDES = ['bid', 'ask'];
 const TITLES = ['Create Buy Order', 'Create Sell Order'];
 
 class CreateOrderScreen extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: <NormalHeader navigation={navigation} />
-    };
-  };
-
   constructor(props) {
     super(props);
 

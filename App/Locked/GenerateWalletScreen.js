@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { loadAssets, loadProductsAndTokens } from '../../../thunks';
-import ImportPrivateKey from '../../views/ImportPrivateKey';
-import ButtonGroup from '../../components/ButtonGroup';
-import BigCenter from '../../components/BigCenter';
+import { loadAssets, loadProductsAndTokens } from '../../thunks';
+import GenerateWallet from '../views/GenerateWallet';
+import ButtonGroup from '../components/ButtonGroup';
+import BigCenter from '../components/BigCenter';
 
-class ImportPrivateKeyScreen extends Component {
+class GenerateWalletScreen extends Component {
   render() {
     return (
       <BigCenter>
-        <ImportPrivateKey
+        <GenerateWallet
           onFinish={async () => {
             try {
               await this.props.dispatch(loadProductsAndTokens());
@@ -38,7 +38,7 @@ class ImportPrivateKeyScreen extends Component {
                 break;
             }
           }}
-          selectedIndex={1}
+          selectedIndex={2}
           buttons={['Unlock', 'Import', 'New']}
         />
       </BigCenter>
@@ -47,5 +47,5 @@ class ImportPrivateKeyScreen extends Component {
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
-  ImportPrivateKeyScreen
+  GenerateWalletScreen
 );

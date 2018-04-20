@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { ZeroEx } from '0x.js';
-import { wrapEther } from '../../../thunks';
-import GlobalStyles from '../../../styles';
-import Button from '../../components/Button';
+import { wrapEther } from '../../thunks';
+import GlobalStyles from '../../styles';
+import Button from '../components/Button';
 
 class WrapEtherScreen extends Component {
   constructor(props) {
