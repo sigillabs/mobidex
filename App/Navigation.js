@@ -12,9 +12,9 @@ import NormalHeader from './headers/Normal';
 import TradingHeader from './headers/Trading';
 import TokenDetailsScreen from './Main/TokenDetailsScreen';
 // import PortfolioScreen from './Main/PortfolioScreen';
-import TradingScreen from './Main/TradingScreen';
+import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
-import OrderDetailsScreen from './Main/OrderDetailsScreen';
+import ProductDetailsScreen from './Main/ProductDetailsScreen';
 import ReceiveScreen from './Main/ReceiveScreen';
 import SendScreen from './Main/SendScreen';
 import TransactionHistoryScreen from './Main/TransactionHistoryScreen';
@@ -52,9 +52,9 @@ const OnboardingNavigation = StackNavigator(
 
 const MainNavigation = StackNavigator(
   {
-    List: { screen: TradingScreen },
+    List: { screen: ProductScreen },
+    Details: { screen: ProductDetailsScreen },
     CreateOrder: { screen: CreateOrderScreen },
-    OrderDetails: { screen: OrderDetailsScreen },
     History: { screen: TransactionHistoryScreen },
     // Portfolio: { screen: PortfolioScreen },
     Receive: { screen: ReceiveScreen },
