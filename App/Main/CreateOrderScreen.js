@@ -62,7 +62,7 @@ class CreateOrderScreen extends Component {
     );
 
     if (result) {
-      this.props.navigation.push('Trading');
+      this.props.navigation.push('List');
     }
   };
 

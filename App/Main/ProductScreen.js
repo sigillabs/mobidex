@@ -1,11 +1,26 @@
+import * as _ from 'lodash';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import {
+  RefreshControl,
+  TouchableOpacity,
+  ScrollView,
+  View
+} from 'react-native';
 import { List, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import { formatAmount, getImage, getTokenByAddress, prices } from '../../utils';
+import { updateForexTickers, updateTokenTickers } from '../../thunks';
+import {
+  detailsFromTicker,
+  formatAmount,
+  formatMoney,
+  formatPercent,
+  getImage,
+  getTokenByAddress,
+  prices
+} from '../../utils';
 
 function avg(arr) {
   return (
@@ -15,120 +30,154 @@ function avg(arr) {
   );
 }
 
-function formatPercent(n) {
-  return (Math.round(n * 10000) / 100).toString() + '%';
-}
-
-function formatMoney(n) {
-  return '$' + (Math.round(n * 100) / 100).toString();
-}
-
 class ProductItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      symbolA: null,
-      symbolB: null,
-      decimalsA: 0,
-      decimalsB: 0,
-      pricesA: [],
-      pricesB: []
-    };
-  }
-
-  async componentDidMount() {
-    let [tokenA, tokenB] = await Promise.all([
-      getTokenByAddress(this.props.web3, this.props.tokenA.address),
-      getTokenByAddress(this.props.web3, this.props.tokenB.address)
-    ]);
-    let [pricesA, pricesB] = await Promise.all([
-      prices(tokenA.symbol),
-      prices(tokenB.symbol)
-    ]);
-    this.setState({
-      symbolA: tokenA.symbol,
-      decimalsA: tokenA.decimals,
-      symbolB: tokenB.symbol,
-      decimalsB: tokenB.decimals,
-      pricesA,
-      pricesB
-    });
-  }
-
   render() {
-    const { pricesA, symbolA, symbolB } = this.state;
-
-    if (pricesA.length === 0) {
-      return null;
-    }
-
-    const pricesAF = pricesA.map(({ price }) => parseFloat(price));
-    const pastAF = avg(pricesAF.slice(pricesAF.length - 3, pricesAF.length));
-    const currentAF = avg(pricesAF.slice(0, 3));
-    const changeAF = currentAF - pastAF;
-    const changeAP = changeAF / currentAF;
+    const { quoteToken, baseToken, forexTicker, tokenTicker } = this.props;
+    const forexDetails = detailsFromTicker(forexTicker);
+    const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
       <ListItem
         roundAvatar
-        avatar={getImage(symbolA)}
-        avatarOverlayContainerStyle={{ backgroundColor: 'transparent' }}
-        title={symbolA ? symbolA.toString() : null}
-        subtitle={
+        bottomDivider
+        leftAvatar={{ source: getImage(baseToken.symbol) }}
+        title={
           <View style={styles.itemContainer}>
-            <Text style={[styles.quoteToken, styles.itemText]}>
-              {symbolB ? symbolB.toString() : null}
-            </Text>
+            <Text style={[styles.large, styles.pad]}>{baseToken.symbol}</Text>
             <Text
               style={[
-                styles.quoteToken,
-                styles.itemText,
-                changeAF >= 0 ? styles.profit : styles.loss
+                styles.large,
+                styles.pad,
+                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
               ]}
             >
-              {formatMoney(currentAF)}
+              {formatAmount(Math.abs(tokenDetails.price))} {quoteToken.symbol}
             </Text>
             <Text
               style={[
-                styles.quoteToken,
-                styles.itemText,
-                changeAF >= 0 ? styles.profit : styles.loss,
+                styles.small,
+                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
                 styles.right
               ]}
             >
-              {changeAF >= 0 ? '+' : '-'}
-              {formatMoney(changeAF)} ({formatPercent(changeAP)})
+              {formatAmount(Math.abs(tokenDetails.changePrice))} ({formatPercent(
+                Math.abs(tokenDetails.changePercent)
+              )})
             </Text>
           </View>
         }
-        chevron={false}
+        subtitle={
+          <View style={styles.itemContainer}>
+            <Text
+              style={[
+                styles.small,
+                styles.pad,
+                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+              ]}
+            >
+              {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
+            </Text>
+            <Text
+              style={[
+                styles.small,
+                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
+                styles.right
+              ]}
+            >
+              {formatMoney(
+                Math.abs(tokenDetails.changePrice * forexDetails.price)
+              )}
+            </Text>
+          </View>
+        }
+        hideChevron={true}
       />
     );
   }
 }
 
 class ProductScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      refreshing: true
+    };
+  }
+
+  async componentDidMount() {
+    await this.onRefresh();
+  }
+
   render() {
-    let { products } = this.props;
+    const { products, forexCurrency, quoteToken } = this.props;
+    const forexTickers = this.props.ticker.forex;
+    const tokenTickers = this.props.ticker.token;
+    const quoteSymbol = quoteToken.symbol;
 
     return (
-      <List containerStyle={{ width: '100%' }}>
-        {products.map(({ tokenA, tokenB }, index) => (
-          <TouchableOpacity
-            key={`token-${index}`}
-            onPress={() =>
-              this.props.navigation.push('Details', {
-                product: { tokenA, tokenB }
-              })
-            }
-          >
-            <ProductItem tokenA={tokenA} tokenB={tokenB} />
-          </TouchableOpacity>
-        ))}
-      </List>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh.bind(this)}
+          />
+        }
+      >
+        <View style={{ width: '100%', backgroundColor: 'white' }}>
+          {products.map(({ tokenA, tokenB }, index) => {
+            const fullTokenA = _.find(this.props.assets, {
+              address: tokenA.address
+            });
+            const fullTokenB = _.find(this.props.assets, {
+              address: tokenB.address
+            });
+
+            if (!fullTokenA) return null;
+            if (!fullTokenB) return null;
+            if (!forexTickers[fullTokenA.symbol]) return null;
+            if (!forexTickers[fullTokenA.symbol][forexCurrency]) return null;
+            if (!forexTickers[fullTokenB.symbol]) return null;
+            if (!forexTickers[fullTokenB.symbol][forexCurrency]) return null;
+            if (!tokenTickers[fullTokenA.symbol]) return null;
+            if (!tokenTickers[fullTokenA.symbol][quoteSymbol]) return null;
+            if (!tokenTickers[fullTokenB.symbol]) return null;
+            if (!tokenTickers[fullTokenB.symbol][quoteSymbol]) return null;
+
+            const forexTickerA = forexTickers[fullTokenA.symbol][forexCurrency];
+            const forexTickerB = forexTickers[fullTokenB.symbol][forexCurrency];
+            const tokenTickerA = tokenTickers[fullTokenA.symbol][quoteSymbol];
+            const tokenTickerB = tokenTickers[fullTokenB.symbol][quoteSymbol];
+
+            return (
+              <TouchableOpacity
+                key={`token-${index}`}
+                onPress={() =>
+                  this.props.navigation.push('Details', {
+                    product: { tokenA, tokenB }
+                  })
+                }
+              >
+                <ProductItem
+                  quoteToken={fullTokenA}
+                  baseToken={fullTokenB}
+                  forexTicker={forexTickerA}
+                  tokenTicker={tokenTickerB}
+                />
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
     );
   }
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.props.dispatch(updateForexTickers());
+    await this.props.dispatch(updateTokenTickers());
+    this.setState({ refreshing: false });
+  };
 }
 
 const styles = {
@@ -137,16 +186,17 @@ const styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
     height: 25,
+    marginHorizontal: 10,
     width: '100%'
   },
-  itemText: {
+  pad: {
     marginLeft: 10
   },
-  baseToken: {
-    fontSize: 14
+  small: {
+    fontSize: 10
   },
-  quoteToken: {
-    fontSize: 8
+  large: {
+    fontSize: 14
   },
   profit: {
     color: 'green'
@@ -155,14 +205,18 @@ const styles = {
     color: 'red'
   },
   right: {
-    textAlign: 'right'
+    flex: 1,
+    textAlign: 'right',
+    marginHorizontal: 10
   }
 };
 
 export default connect(
   state => ({
+    ...state.relayer,
     ...state.settings,
-    ...state.relayer
+    ...state.wallet,
+    ticker: state.ticker
   }),
   dispatch => ({ dispatch })
 )(ProductScreen);

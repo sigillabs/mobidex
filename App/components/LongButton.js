@@ -1,18 +1,21 @@
-import React, { Component } from "react";
-import Button from "./Button";
-import { colors } from "../../styles";
+import React, { Component } from 'react';
+import Button from './Button';
+import { colors } from '../../styles';
 
 export default class LongButton extends Component {
   render() {
-    let {
-      buttonStyle,
-      titleStyle,
-      ...rest
-    } = this.props;
+    let { containerStyle, style, wrapperStyle, ...rest } = this.props;
     return (
-      <Button 
-        titleStyle={[{ width: "100%" }, titleStyle]}
-        buttonStyle={[{ width: "100%" }, buttonStyle]} {...rest} />
+      <Button
+        containerStyle={[
+          { width: '100%', flexDirection: 'row' },
+          containerStyle
+        ]}
+        style={[{ flex: 1 }, style]}
+        wrapperStyle={[{ flex: 1 }, wrapperStyle]}
+        titleStyle={{ flex: 1 }}
+        {...rest}
+      />
     );
   }
 }

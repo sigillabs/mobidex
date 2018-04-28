@@ -125,7 +125,8 @@ export function loadAssets(force = false) {
 export function loadTransactions() {
   return async (dispatch, getState) => {
     let {
-      wallet: { address }
+      wallet: { address },
+      settings: { network }
     } = getState();
     try {
       let options = {
@@ -135,13 +136,22 @@ export function loadTransactions() {
         }
       };
       let promises = [
-        fetch(`http://mobidex.io/inf0x/kovan/fills?maker=${address}`, options),
-        fetch(`http://mobidex.io/inf0x/kovan/fills?taker=${address}`, options),
         fetch(
-          `http://mobidex.io/inf0x/kovan/cancels?maker=${address}`,
+          `http://mobidex.io/inf0x/${network}/fills?maker=${address}`,
           options
         ),
-        fetch(`http://mobidex.io/inf0x/kovan/cancels?taker=${address}`, options)
+        fetch(
+          `http://mobidex.io/inf0x/${network}/fills?taker=${address}`,
+          options
+        ),
+        fetch(
+          `http://mobidex.io/inf0x/${network}/cancels?maker=${address}`,
+          options
+        ),
+        fetch(
+          `http://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
+          options
+        )
       ];
       let [makerFills, takerFills, makerCancels] = await Promise.all(promises);
       let makerFillsJSON = await makerFills.json();

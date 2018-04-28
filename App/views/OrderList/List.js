@@ -25,6 +25,7 @@ class OrderList extends Component {
               onPress={() => this.props.onPress(order)}
             >
               <ListItem
+                bottomDivider
                 title={<OrderItem order={order} />}
                 leftIcon={{ name: this.props.icon }}
               />

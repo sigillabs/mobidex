@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
-import { loadTokens, loadForexPrices } from '../../thunks';
+import { loadTokens } from '../../thunks';
 import Row from '../components/Row';
 import TimedUpdater from '../components/TimedUpdater';
 import TokenList from './TokenList';

@@ -27,7 +27,10 @@ class TransactionsList extends Component {
                 key={`filled-${index}`}
                 onPress={() => this.props.onPress(tx)}
               >
-                <ListItem title={<FilledItem transaction={tx} />} />
+                <ListItem
+                  bottomDivider
+                  title={<FilledItem transaction={tx} />}
+                />
               </TouchableOpacity>
             ))}
         </List>
@@ -47,7 +50,10 @@ class TransactionsList extends Component {
                 key={`cancelled-${index}`}
                 onPress={() => this.props.onPress(tx)}
               >
-                <ListItem title={<CancelledItem transaction={tx} />} />
+                <ListItem
+                  bottomDivider
+                  title={<CancelledItem transaction={tx} />}
+                />
               </TouchableOpacity>
             ))}
         </List>

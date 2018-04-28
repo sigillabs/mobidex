@@ -4,7 +4,7 @@ import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { NavigationActions } from 'react-navigation';
-import { setError } from '../actions';
+import { addTickerWatching, setError } from '../actions';
 import { loadTransactions } from '../thunks';
 import {
   cancelOrder as cancelOrderUtil,
@@ -91,8 +91,10 @@ export function loadProductsAndTokens(force = false) {
       let tokens = _.unionBy(fullTokensA, fullTokensB, 'address');
       dispatch(setTokens(tokens));
       dispatch(setProducts(pairs));
-      dispatch(setQuoteToken(fullTokensB[0]));
-      dispatch(setBaseToken(fullTokensA[0]));
+      dispatch(setQuoteToken(fullTokensA[0]));
+      dispatch(setBaseToken(fullTokensB[0]));
+      dispatch(addTickerWatching(fullTokensA.map(t => t.symbol)));
+      dispatch(addTickerWatching(fullTokensB.map(t => t.symbol)));
     } catch (err) {
       dispatch(setError(err));
     }

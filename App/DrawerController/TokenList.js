@@ -1,14 +1,14 @@
 import { ZeroEx } from '0x.js';
 import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { List, ListItem, Text } from 'react-native-elements';
+import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
 import { formatAmount, getImage } from '../../utils';
 
 class TokenItem extends Component {
   render() {
-    let { token } = this.props;
+    let { token, ticker } = this.props;
     let { symbol, balance, decimals } = token;
     balance = ZeroEx.toUnitAmount(balance, decimals);
 
@@ -17,7 +17,7 @@ class TokenItem extends Component {
         <Text style={styles.itemText}>{symbol.toString()}</Text>
         <Text style={styles.itemText}>{formatAmount(balance)}</Text>
         <Text style={styles.itemText}>
-          (${formatAmount(balance.mul(this.props.forexPrices[symbol] || 0))})
+          (${formatAmount(balance.mul(this.props.ticker || 0))})
         </Text>
       </View>
     );
@@ -29,7 +29,7 @@ class TokenList extends Component {
     let { tokens } = this.props;
 
     return (
-      <List containerStyle={{ width: '100%' }}>
+      <View style={{ width: '100%' }}>
         {tokens.map((token, index) => (
           <TouchableOpacity
             key={`token-${index}`}
@@ -37,9 +37,13 @@ class TokenList extends Component {
           >
             <ListItem
               roundAvatar
-              avatar={getImage(token.symbol)}
+              bottomDivider
+              avatar={{ source: getImage(token.symbol) }}
               title={
-                <TokenItem token={token} forexPrices={this.props.forexPrices} />
+                <TokenItem
+                  token={token}
+                  ticker={this.props.ticker[token.symbol]}
+                />
               }
               avatarOverlayContainerStyle={{ backgroundColor: 'transparent' }}
               containerStyle={[
@@ -50,7 +54,7 @@ class TokenList extends Component {
             />
           </TouchableOpacity>
         ))}
-      </List>
+      </View>
     );
   }
 }
@@ -77,7 +81,7 @@ const styles = {
 export default connect(
   state => ({
     ...state.settings,
-    forexPrices: state.forex.prices
+    ticker: state.ticker
   }),
   dispatch => ({ dispatch })
 )(TokenList);

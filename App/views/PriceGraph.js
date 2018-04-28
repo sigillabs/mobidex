@@ -1,32 +1,26 @@
-import moment from "moment";
-import PropTypes from "prop-types";
-import React from "react";
-import { View } from "react-native";
-import { LineChart, XAxis, YAxis } from "react-native-svg-charts";
-import * as shape from "d3-shape";
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { View } from 'react-native';
+import { LineChart, XAxis, YAxis } from 'react-native-svg-charts';
+import * as shape from 'd3-shape';
 
 const X_LABELS = {
-  "5MIN": (timestamp) => moment.unix(timestamp).format("mm"),
-  "15MIN": (timestamp) => moment.unix(timestamp).format("mm"),
-  "30MIN": (timestamp) => moment.unix(timestamp).format("mm"),
-  "1HOUR": (timestamp) => moment.unix(timestamp).format("mm"),
-  "6HOUR": (timestamp) => moment.unix(timestamp).format("h"),
-  "1DAY": (timestamp) => moment.unix(timestamp).format("h"),
-  "7DAY": (timestamp) => moment.unix(timestamp).format("Do"),
-  "30DAY": (timestamp) => moment.unix(timestamp).format("Do")
+  MINUTE: timestamp => moment(timestamp).format('mm'),
+  HOUR: timestamp => moment(timestamp).format('h'),
+  DAY: timestamp => moment(timestamp).format('Do'),
+  MONTH: timestamp => moment(timestamp).format('Do'),
+  YEAR: timestamp => moment(timestamp).format('Y')
 };
 
 const X_ACCESSORS = {
-  "5MIN": ({ index, item }) => index,
-  "15MIN": ({ index, item }) => index,
-  "30MIN": ({ index, item }) => index,
-  "1HOUR": ({ index, item }) => index,
-  "6HOUR": ({ index, item }) => index,
-  "1DAY": ({ index, item }) => index,
-  "7DAY": ({ index, item }) => index,
-  "30DAY": ({ index, item }) => index
+  MINUTE: ({ index, item }) => index,
+  HOUR: ({ index, item }) => index,
+  DAY: ({ index, item }) => index,
+  MONTH: ({ index, item }) => index,
+  YEAR: ({ index, item }) => index
 };
- 
+
 export default class PriceGraph extends React.PureComponent {
   static propTypes = {
     height: PropTypes.number.isRequired,
@@ -39,42 +33,56 @@ export default class PriceGraph extends React.PureComponent {
 
   static defaultProps = {
     height: 0,
-    interval: "1DAY",
-    data: [{timestamp: 1523410025-3600*2, price: 500}, {timestamp: 1523410025-3600, price: 100}, {timestamp: 1523410025, price: 200}]
+    interval: 'DAY',
+    data: []
   };
 
   render() {
-    let { containerStyle, chartStyle, YAxisStyle, XAxisStyle, ...rest } = this.props;
+    let {
+      containerStyle,
+      chartStyle,
+      YAxisStyle,
+      XAxisStyle,
+      ...rest
+    } = this.props;
     let { interval, data } = rest;
 
     interval = interval.toUpperCase();
 
     return (
-      <View style={containerStyle}>
-        <YAxis
-          style={[{ marginVertical: -10 }, YAxisStyle]}
+      <View
+        style={[
+          { flex: 1, height: this.props.height, padding: 10 },
+          containerStyle
+        ]}
+      >
+        {/*<YAxis
+          style={[{ marginVertical: 0 }, YAxisStyle]}
           data={data}
           formatLabel={({ price }) => item.price}
           contentInset={{ left: 10, right: 10 }}
           svg={{ fontSize: 10 }}
-        />
+        />*/}
         <LineChart
-          style={[chartStyle, { height: this.props.height }]}
+          style={[{ flex: 1, marginHorizontal: -10 }, chartStyle]}
           data={data}
-          svg={{ stroke: "rgb(134, 65, 244)" }}
+          svg={{ stroke: 'rgb(134, 65, 244)' }}
           contentInset={{ top: 20, bottom: 20 }}
-          xAccessor={X_ACCESSORS[interval]}
-          yAccessor={({ index, item }) => item.price}
+          xAccessor={({ index, item }) => index}
+          yAccessor={({ index, item }) => parseFloat(item.price)}
           showGrid={false}
         />
-        <XAxis
+        {/*<XAxis
           style={[{ marginHorizontal: -10 }, XAxisStyle]}
           data={data}
-          xAccessor={({ item }) => item.timestamp}
-          formatLabel={X_LABELS[interval]}
-          contentInset={{ left: 10, right: 10 }}
+          // xAccessor={({ item }) => item.timestamp}
+          // formatLabel={X_LABELS[interval]}
+          formatLabel={(value, index) =>
+            X_LABELS[interval](data[index].timestamp)
+          }
+          contentInset={{ top: 20, bottom: 20 }}
           svg={{ fontSize: 10 }}
-        />
+        />*/}
       </View>
     );
   }

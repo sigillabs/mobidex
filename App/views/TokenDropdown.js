@@ -30,6 +30,7 @@ class TokenDropdown extends Component {
           <List containerStyle={{ marginBottom: 20 }}>
             {this.props.tokens.map((token, index) => (
               <ListItem
+                bottomDivider
                 component={TouchableOpacity}
                 key={index}
                 onPress={() => this.props.onSelect(token)}

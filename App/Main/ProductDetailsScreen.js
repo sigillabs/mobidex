@@ -1,43 +1,133 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
-import { Card, Header, Icon, Text } from 'react-native-elements';
+import {
+  Button,
+  Card,
+  Header,
+  Icon,
+  ListItem,
+  Text
+} from 'react-native-elements';
 import { connect } from 'react-redux';
-import { lock, loadAssets, loadForexPrices } from '../../thunks';
-import { prices as fetchPrices } from '../../utils';
-import Button from '../components/Button';
+import { updateForexTickers, updateTokenTickers } from '../../thunks';
+import {
+  detailsFromTicker,
+  history as fetchHistory,
+  formatMoney,
+  formatPercent,
+  getPriceChangeFromTicker
+} from '../../utils';
 import ButtonGroup from '../components/ButtonGroup';
+import SmallLogo from '../components/SmallLogo';
 import LongButton from '../components/LongButton';
 import Row from '../components/Row';
-import TimedUpdater from '../components/TimedUpdater';
 import PriceGraph from '../views/PriceGraph';
-import TokenDetailsCard from '../views/TokenDetailsCard';
+
+class ProductDetailsView extends Component {
+  render() {
+    const {
+      token,
+      forexTicker,
+      tokenTicker,
+      periodIndex,
+      periods,
+      onChoosePeriod
+    } = this.props;
+    const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
+    const history = forexTicker.history[period];
+    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
+      forexTicker
+    );
+    const infolist = [
+      {
+        title: 'Price',
+        subtitle: formatMoney(forexTicker.price)
+      },
+      {
+        title: '24 Hour Price Average',
+        subtitle: formatMoney(dayAverage)
+      },
+      {
+        title: '24 Hour Price Change',
+        subtitle: `${changePrice < 0 ? '-' : ''}${formatMoney(
+          Math.abs(changePrice)
+        )} (${formatPercent(changePercent)})`
+      },
+      {
+        title: '24 Hour Max',
+        subtitle: formatMoney(forexTicker.daymax)
+      },
+      {
+        title: '24 Hour Min',
+        subtitle: formatMoney(forexTicker.daymin)
+      }
+    ];
+
+    return (
+      <View style={[styles.container]}>
+        <SmallLogo
+          avatarProps={{ medium: true }}
+          symbol={token.symbol}
+          title={formatMoney(forexTicker.price)}
+          subtitle={formatPercent(changePercent)}
+          titleStyle={{ fontSize: 24 }}
+          subtitleStyle={{ fontSize: 14 }}
+        />
+        <PriceGraph
+          interval={period}
+          height={200}
+          containerStyle={{ margin: 15 }}
+          data={history}
+        />
+        <ButtonGroup
+          onPress={onChoosePeriod}
+          selectedIndex={periodIndex}
+          buttons={periods}
+          innerBorderStyle={{ width: -1 }}
+        />
+        <LongButton
+          large
+          icon={<Icon name="send" size={20} color="white" />}
+          onPress={() => this.props.navigation.push('CreateOrder')}
+          title="Buy/Sell"
+        />
+        {infolist.map(({ title, subtitle }) => (
+          <ListItem title={title} subtitle={subtitle} chevron={false} />
+        ))}
+      </View>
+    );
+  }
+}
 
 class ProductDetailsScreen extends Component {
+  static periods = ['Day', 'Month'];
+
   constructor(props) {
     super(props);
 
     this.state = {
-      prices: [],
+      period: 0,
       refreshing: false
     };
   }
 
   async componentDidMount() {
-    await this.props.dispatch(loadAssets());
-
-    const token = this.getToken();
-    const prices = await fetchPrices(token.symbol);
-    this.setState({
-      prices: prices.map(({ price, timestamp }) => ({
-        price: parseFloat(price),
-        timestamp
-      }))
-    });
+    await this.onRefresh();
   }
 
   render() {
-    let token = this.getToken();
+    const { quoteToken, forexCurrency } = this.props;
+    const forexTickers = this.props.ticker.forex;
+    const tokenTickers = this.props.ticker.token;
+    const token = this.getToken();
+
+    const proceed =
+      token &&
+      forexTickers[token.symbol] &&
+      forexTickers[token.symbol][forexCurrency] &&
+      tokenTickers[token.symbol] &&
+      tokenTickers[token.symbol][quoteToken.symbol];
 
     return (
       <ScrollView
@@ -48,44 +138,29 @@ class ProductDetailsScreen extends Component {
           />
         }
       >
-        <View>
-          <TimedUpdater
-            update={() => this.props.dispatch(loadForexPrices())}
-            timeout={1000}
+        {proceed ? (
+          <ProductDetailsView
+            navigation={this.props.navigation}
+            token={token}
+            forexTicker={forexTickers[token.symbol][forexCurrency]}
+            tokenTicker={tokenTickers[token.symbol][quoteToken.symbol]}
+            periodIndex={this.state.period}
+            periods={ProductDetailsScreen.periods}
+            onChoosePeriod={index => {
+              this.setState({
+                period: index
+              });
+            }}
           />
-          <Text h1 style={{ textAlign: 'center' }}>
-            $21.27
-          </Text>
-          <PriceGraph
-            height={200}
-            containerStyle={{ margin: 15 }}
-            data={this.state.prices || []}
-          />
-          <Row style={{ margin: 15 }}>
-            <Button
-              large
-              icon={<Icon name="send" size={20} color="white" />}
-              onPress={() => this.props.navigation.push('CreateOrder')}
-              title="Buy"
-              containerStyle={{ width: '48%' }}
-            />
-            <Button
-              large
-              icon={<Icon name="send" size={20} color="white" />}
-              onPress={this.sell}
-              title="Sell"
-              containerStyle={{ width: '48%' }}
-            />
-          </Row>
-          <TokenDetailsCard volume={20} volatility={20} change={0.05} />
-        </View>
+        ) : null}
       </ScrollView>
     );
   }
 
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAsset(true));
+    await this.props.dispatch(updateForexTickers());
+    await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
   };
 
@@ -99,11 +174,43 @@ class ProductDetailsScreen extends Component {
         }
       }
     } = this.props;
-    return _.find(this.props.assets, { address: tokenA.address });
+    return _.find(this.props.assets, { address: tokenB.address });
   };
 }
 
+const styles = {
+  container: {
+    flex: 1,
+    margin: 10
+  },
+  pad: {
+    marginLeft: 10
+  },
+  small: {
+    fontSize: 10
+  },
+  large: {
+    fontSize: 14
+  },
+  profit: {
+    color: 'green'
+  },
+  loss: {
+    color: 'red'
+  },
+  right: {
+    flex: 1,
+    textAlign: 'right',
+    marginHorizontal: 10
+  }
+};
+
 export default connect(
-  state => ({ ...state.wallet, ...state.device.layout }),
+  state => ({
+    ...state.wallet,
+    ...state.device.layout,
+    ...state.settings,
+    ticker: state.ticker
+  }),
   dispatch => ({ dispatch })
 )(ProductDetailsScreen);

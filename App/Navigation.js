@@ -10,8 +10,6 @@ import UnlockScreen from './Locked/UnlockScreen';
 import BlankHeader from './headers/Blank';
 import NormalHeader from './headers/Normal';
 import TradingHeader from './headers/Trading';
-import TokenDetailsScreen from './Main/TokenDetailsScreen';
-// import PortfolioScreen from './Main/PortfolioScreen';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
@@ -27,6 +25,8 @@ import GenerateWallet from './views/GenerateWallet';
 import ImportPrivateKey from './views/ImportPrivateKey';
 import TransactionsProcessing from './views/TransactionsProcessing';
 import Err from './views/Error';
+
+import { colors } from '../styles';
 
 const LockedNavigation = SwitchNavigator(
   {
@@ -56,13 +56,15 @@ const MainNavigation = StackNavigator(
     Details: { screen: ProductDetailsScreen },
     CreateOrder: { screen: CreateOrderScreen },
     History: { screen: TransactionHistoryScreen },
-    // Portfolio: { screen: PortfolioScreen },
     Receive: { screen: ReceiveScreen },
     Send: { screen: SendScreen },
     Wrap: { screen: WrapEtherScreen },
     Unwrap: { screen: UnwrapEtherScreen }
   },
   {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
     initialRouteName: 'List',
     headerMode: 'float',
     navigationOptions: ({ navigation }) => {
