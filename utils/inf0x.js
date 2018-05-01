@@ -17,10 +17,18 @@ export async function getForexPrices(
   return await response.json();
 }
 
-export async function getForexTicker(network, symbols = [], quote = 'USD') {
+export async function getForexTicker(
+  network,
+  options = {
+    products: [],
+    symbols: [],
+    quote: 'USD'
+  }
+) {
   const qs = stringify({
-    symbol: symbols,
-    quote
+    product: options.products,
+    symbol: options.symbols,
+    quote: options.quote
   });
   const response = await fetch(
     `https://mobidex.io/inf0x/${network}/forex/ticker?${qs}`
@@ -47,10 +55,18 @@ export async function getTokenPrices(
   return await response.json();
 }
 
-export async function getTokenTicker(network, symbols = [], quote = 'WETH') {
+export async function getTokenTicker(
+  network,
+  options = {
+    products: [],
+    symbols: [],
+    quote: 'WETH'
+  }
+) {
   const qs = stringify({
-    symbol: symbols,
-    quote
+    product: options.products,
+    symbol: options.symbols,
+    quote: options.quote
   });
   const response = await fetch(
     `https://mobidex.io/inf0x/${network}/tokens/ticker?${qs}`

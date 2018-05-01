@@ -53,7 +53,13 @@ class CreateOrderScreen extends Component {
   };
 
   submit = async () => {
-    let { quoteToken, baseToken } = this.props;
+    let {
+      navigation: {
+        state: {
+          params: { quoteToken, baseToken }
+        }
+      }
+    } = this.props;
     let { side, price, amount } = this.state;
     let makerAmount, makerToken, takerAmount, takerToken;
 

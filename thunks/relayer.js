@@ -25,8 +25,6 @@ import {
   processing,
   setOrders,
   setProducts,
-  setBaseToken,
-  setQuoteToken,
   setTokens
 } from '../actions';
 
@@ -88,13 +86,19 @@ export function loadProductsAndTokens(force = false) {
         ...token,
         ...extTokensB[index]
       }));
+      let lookupA = _.keyBy(fullTokensA, 'address');
+      let lookupB = _.keyBy(fullTokensB, 'address');
       let tokens = _.unionBy(fullTokensA, fullTokensB, 'address');
       dispatch(setTokens(tokens));
       dispatch(setProducts(pairs));
-      dispatch(setQuoteToken(fullTokensA[0]));
-      dispatch(setBaseToken(fullTokensB[0]));
-      dispatch(addTickerWatching(fullTokensA.map(t => t.symbol)));
-      dispatch(addTickerWatching(fullTokensB.map(t => t.symbol)));
+      dispatch(
+        addTickerWatching(
+          pairs.map(({ tokenA, tokenB }) => ({
+            tokenA: lookupA[tokenA.address],
+            tokenB: lookupB[tokenB.address]
+          }))
+        )
+      );
     } catch (err) {
       dispatch(setError(err));
     }

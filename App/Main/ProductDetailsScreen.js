@@ -117,10 +117,11 @@ class ProductDetailsScreen extends Component {
   }
 
   render() {
-    const { quoteToken, forexCurrency } = this.props;
+    const { forexCurrency } = this.props;
     const forexTickers = this.props.ticker.forex;
     const tokenTickers = this.props.ticker.token;
-    const token = this.getToken();
+    const token = this.getToken('base');
+    const quoteToken = this.getToken('quote');
 
     const proceed =
       token &&
@@ -164,7 +165,7 @@ class ProductDetailsScreen extends Component {
     this.setState({ refreshing: false });
   };
 
-  getToken = () => {
+  getToken = (quoteOrBase = 'base') => {
     let {
       navigation: {
         state: {
@@ -174,7 +175,12 @@ class ProductDetailsScreen extends Component {
         }
       }
     } = this.props;
-    return _.find(this.props.assets, { address: tokenB.address });
+
+    if (quoteOrBase === 'base') {
+      return _.find(this.props.assets, { address: tokenB.address });
+    } else {
+      return _.find(this.props.assets, { address: tokenA.address });
+    }
   };
 }
 

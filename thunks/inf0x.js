@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { Linking } from 'react-native';
 import Wallet from 'ethereumjs-wallet';
@@ -6,31 +7,40 @@ import * as qs from 'qs';
 import { updateForexTicker, updateTokenTicker } from '../actions';
 import { getForexTicker, getTokenTicker } from '../utils';
 
-export function updateForexTickers(force = false) {
+export function updateForexTickers() {
   return async (dispatch, getState) => {
     let {
       ticker: { watching },
       settings: { network, forexCurrency }
     } = getState();
 
-    const jsonResponse = await getForexTicker(network, watching, forexCurrency);
+    const products = _.chain(watching)
+      .map(({ tokenA, tokenB }) => [
+        `${tokenA.symbol}-${forexCurrency}`,
+        `${tokenB.symbol}-${forexCurrency}`
+      ])
+      .flatten()
+      .uniq()
+      .value();
+
+    const jsonResponse = await getForexTicker(network, { products });
 
     dispatch(updateForexTicker(jsonResponse));
   };
 }
 
-export function updateTokenTickers(force = false) {
+export function updateTokenTickers() {
   return async (dispatch, getState) => {
-    let {
+    const {
       ticker: { watching },
-      settings: { network, quoteToken }
+      settings: { network }
     } = getState();
 
-    const jsonResponse = await getTokenTicker(
-      network,
-      watching,
-      quoteToken.symbol
+    const products = watching.map(
+      ({ tokenA, tokenB }) => `${tokenB.symbol}-${tokenA.symbol}`
     );
+
+    const jsonResponse = await getTokenTicker(network, { products });
 
     dispatch(updateTokenTicker(jsonResponse));
   };

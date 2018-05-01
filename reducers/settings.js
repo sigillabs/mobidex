@@ -8,19 +8,11 @@ const BASE_URL = 'https://mobidex.io/relayer/v0';
 const initialState = {
   network: 'kovan',
   relayerEndpoint: BASE_URL,
-  forexCurrency: 'USD',
-  quoteToken: null,
-  baseToken: null
+  forexCurrency: 'USD'
 };
 
 export default handleActions(
   {
-    [Actions.SET_BASE_TOKEN]: (state, action) => {
-      return { ...state, baseToken: action.payload };
-    },
-    [Actions.SET_QUOTE_TOKEN]: (state, action) => {
-      return { ...state, quoteToken: action.payload };
-    },
     [Actions.SET_FOREX_CURRENCY]: (state, action) => {
       return { ...state, forexCurrency: action.payload };
     },

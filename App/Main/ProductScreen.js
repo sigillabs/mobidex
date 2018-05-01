@@ -110,10 +110,9 @@ class ProductScreen extends Component {
   }
 
   render() {
-    const { products, forexCurrency, quoteToken } = this.props;
+    const { products, forexCurrency } = this.props;
     const forexTickers = this.props.ticker.forex;
     const tokenTickers = this.props.ticker.token;
-    const quoteSymbol = quoteToken.symbol;
 
     return (
       <ScrollView
@@ -135,18 +134,15 @@ class ProductScreen extends Component {
 
             if (!fullTokenA) return null;
             if (!fullTokenB) return null;
+
+            const quoteSymbol = fullTokenA.symbol;
+
             if (!forexTickers[fullTokenA.symbol]) return null;
             if (!forexTickers[fullTokenA.symbol][forexCurrency]) return null;
-            if (!forexTickers[fullTokenB.symbol]) return null;
-            if (!forexTickers[fullTokenB.symbol][forexCurrency]) return null;
-            if (!tokenTickers[fullTokenA.symbol]) return null;
-            if (!tokenTickers[fullTokenA.symbol][quoteSymbol]) return null;
             if (!tokenTickers[fullTokenB.symbol]) return null;
             if (!tokenTickers[fullTokenB.symbol][quoteSymbol]) return null;
 
             const forexTickerA = forexTickers[fullTokenA.symbol][forexCurrency];
-            const forexTickerB = forexTickers[fullTokenB.symbol][forexCurrency];
-            const tokenTickerA = tokenTickers[fullTokenA.symbol][quoteSymbol];
             const tokenTickerB = tokenTickers[fullTokenB.symbol][quoteSymbol];
 
             return (
