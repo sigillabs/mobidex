@@ -27,7 +27,8 @@ import PriceGraph from '../views/PriceGraph';
 class ProductDetailsView extends Component {
   render() {
     const {
-      token,
+      base,
+      quote,
       forexTicker,
       tokenTicker,
       periodIndex,
@@ -68,7 +69,7 @@ class ProductDetailsView extends Component {
       <View style={[styles.container]}>
         <SmallLogo
           avatarProps={{ medium: true }}
-          symbol={token.symbol}
+          symbol={base.symbol}
           title={formatMoney(forexTicker.price)}
           subtitle={formatPercent(changePercent)}
           titleStyle={{ fontSize: 24 }}
@@ -89,7 +90,11 @@ class ProductDetailsView extends Component {
         <LongButton
           large
           icon={<Icon name="send" size={20} color="white" />}
-          onPress={() => this.props.navigation.push('CreateOrder')}
+          onPress={() =>
+            this.props.navigation.push('CreateOrder', {
+              product: { base, quote }
+            })
+          }
           title="Buy/Sell"
         />
         {infolist.map(({ title, subtitle }) => (
@@ -120,15 +125,15 @@ class ProductDetailsScreen extends Component {
     const { forexCurrency } = this.props;
     const forexTickers = this.props.ticker.forex;
     const tokenTickers = this.props.ticker.token;
-    const token = this.getToken('base');
+    const baseToken = this.getToken('base');
     const quoteToken = this.getToken('quote');
 
     const proceed =
-      token &&
-      forexTickers[token.symbol] &&
-      forexTickers[token.symbol][forexCurrency] &&
-      tokenTickers[token.symbol] &&
-      tokenTickers[token.symbol][quoteToken.symbol];
+      baseToken &&
+      forexTickers[baseToken.symbol] &&
+      forexTickers[baseToken.symbol][forexCurrency] &&
+      tokenTickers[baseToken.symbol] &&
+      tokenTickers[baseToken.symbol][quoteToken.symbol];
 
     return (
       <ScrollView
@@ -142,9 +147,10 @@ class ProductDetailsScreen extends Component {
         {proceed ? (
           <ProductDetailsView
             navigation={this.props.navigation}
-            token={token}
-            forexTicker={forexTickers[token.symbol][forexCurrency]}
-            tokenTicker={tokenTickers[token.symbol][quoteToken.symbol]}
+            base={baseToken}
+            quote={quoteToken}
+            forexTicker={forexTickers[baseToken.symbol][forexCurrency]}
+            tokenTicker={tokenTickers[baseToken.symbol][quoteToken.symbol]}
             periodIndex={this.state.period}
             periods={ProductDetailsScreen.periods}
             onChoosePeriod={index => {

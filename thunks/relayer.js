@@ -105,14 +105,20 @@ export function loadProductsAndTokens(force = false) {
   };
 }
 
-export function createSignSubmitOrder(side, price, amount) {
+export function createSignSubmitOrder(
+  side,
+  price,
+  amount,
+  baseToken,
+  quoteToken
+) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
 
       let {
         wallet: { web3, address },
-        settings: { relayerEndpoint, quoteToken, baseToken }
+        settings: { relayerEndpoint }
       } = getState();
       let zeroEx = await getZeroExClient(web3);
       let relayerClient = new HttpClient(relayerEndpoint);
@@ -124,7 +130,7 @@ export function createSignSubmitOrder(side, price, amount) {
           price,
           amount
         ),
-        maker: address.toLowerCase(quoteToken, baseToken, side, price, amount),
+        maker: address.toLowerCase(),
         makerFee: new BigNumber(0),
         taker: ZeroEx.NULL_ADDRESS,
         takerFee: new BigNumber(0),
@@ -168,7 +174,7 @@ export function createSignSubmitOrder(side, price, amount) {
       await dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
-      dispatch(NavigationActions.push({ routeName: 'Trading' }));
+      dispatch(NavigationActions.push({ routeName: 'List' }));
     }
   };
 }

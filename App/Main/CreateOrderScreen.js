@@ -56,7 +56,9 @@ class CreateOrderScreen extends Component {
     let {
       navigation: {
         state: {
-          params: { quoteToken, baseToken }
+          params: {
+            product: { quote, base }
+          }
         }
       }
     } = this.props;
@@ -64,7 +66,7 @@ class CreateOrderScreen extends Component {
     let makerAmount, makerToken, takerAmount, takerToken;
 
     let result = await this.props.dispatch(
-      createSignSubmitOrder(SIDES[side], price, amount)
+      createSignSubmitOrder(SIDES[side], price, amount, base, quote)
     );
 
     if (result) {
