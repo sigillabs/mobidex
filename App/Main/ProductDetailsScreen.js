@@ -1,14 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
-import {
-  Button,
-  Card,
-  Header,
-  Icon,
-  ListItem,
-  Text
-} from 'react-native-elements';
+import { Card, Header, Icon, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
@@ -18,11 +11,34 @@ import {
   formatPercent,
   getPriceChangeFromTicker
 } from '../../utils';
+import Button from '../components/Button';
 import ButtonGroup from '../components/ButtonGroup';
 import SmallLogo from '../components/SmallLogo';
-import LongButton from '../components/LongButton';
 import Row from '../components/Row';
 import PriceGraph from '../views/PriceGraph';
+
+class ProductDetailListItem extends Component {
+  render() {
+    const { left, right, leftStyle, rightStyle, ...rest } = this.props;
+
+    return (
+      <ListItem
+        title={
+          <Row style={{ flex: 1 }}>
+            <Text style={[{ flex: 1, textAlign: 'left' }, leftStyle]}>
+              {left}
+            </Text>
+            <Text style={[{ flex: 1, textAlign: 'right' }, rightStyle]}>
+              {right}
+            </Text>
+          </Row>
+        }
+        bottomDivider
+        {...rest}
+      />
+    );
+  }
+}
 
 class ProductDetailsView extends Component {
   render() {
@@ -42,26 +58,27 @@ class ProductDetailsView extends Component {
     );
     const infolist = [
       {
-        title: 'Price',
-        subtitle: formatMoney(forexTicker.price)
+        left: 'Price',
+        right: formatMoney(forexTicker.price)
       },
       {
-        title: '24 Hour Price Average',
-        subtitle: formatMoney(dayAverage)
+        left: '24 Hour Price Average',
+        right: formatMoney(dayAverage)
       },
       {
-        title: '24 Hour Price Change',
-        subtitle: `${changePrice < 0 ? '-' : ''}${formatMoney(
+        left: '24 Hour Price Change',
+        right: `${changePrice < 0 ? '-' : ''}${formatMoney(
           Math.abs(changePrice)
-        )} (${formatPercent(changePercent)})`
+        )} (${formatPercent(changePercent)})`,
+        rightStyle: changePercent >= 0 ? styles.profit : styles.loss
       },
       {
-        title: '24 Hour Max',
-        subtitle: formatMoney(forexTicker.daymax)
+        left: '24 Hour Max',
+        right: formatMoney(forexTicker.daymax)
       },
       {
-        title: '24 Hour Min',
-        subtitle: formatMoney(forexTicker.daymin)
+        left: '24 Hour Min',
+        right: formatMoney(forexTicker.daymin)
       }
     ];
 
@@ -73,7 +90,10 @@ class ProductDetailsView extends Component {
           title={formatMoney(forexTicker.price)}
           subtitle={formatPercent(changePercent)}
           titleStyle={{ fontSize: 24 }}
-          subtitleStyle={{ fontSize: 14 }}
+          subtitleStyle={[
+            { fontSize: 14 },
+            changePercent >= 0 ? styles.profit : styles.loss
+          ]}
         />
         <PriceGraph
           interval={period}
@@ -86,8 +106,9 @@ class ProductDetailsView extends Component {
           selectedIndex={periodIndex}
           buttons={periods}
           innerBorderStyle={{ width: -1 }}
+          containerStyle={{ width: 140, alignSelf: 'center' }}
         />
-        <LongButton
+        <Button
           large
           icon={<Icon name="send" size={20} color="white" />}
           onPress={() =>
@@ -96,9 +117,15 @@ class ProductDetailsView extends Component {
             })
           }
           title="Buy/Sell"
+          containerStyle={{ width: 150, alignSelf: 'center' }}
         />
-        {infolist.map(({ title, subtitle }) => (
-          <ListItem title={title} subtitle={subtitle} chevron={false} />
+        {infolist.map(({ left, right, leftStyle, rightStyle }) => (
+          <ProductDetailListItem
+            left={left}
+            right={right}
+            leftStyle={leftStyle}
+            rightStyle={rightStyle}
+          />
         ))}
       </View>
     );
