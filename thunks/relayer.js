@@ -7,9 +7,12 @@ import { NavigationActions } from 'react-navigation';
 import { addTickerWatching, setError } from '../actions';
 import { loadTransactions } from '../thunks';
 import {
+  batchFillOrKill,
   cancelOrder as cancelOrderUtil,
   convertLimitOrderToZeroExOrder,
   fillOrder as fillOrderUtil,
+  filterAndSortOrdersByTokens,
+  filterOrdersToBaseAmount,
   getTokenAllowance,
   getTokenByAddress,
   getZeroExClient,
@@ -100,18 +103,13 @@ export function loadProductsAndTokens(force = false) {
         )
       );
     } catch (err) {
+      console.warn(err);
       dispatch(setError(err));
     }
   };
 }
 
-export function createSignSubmitOrder(
-  side,
-  price,
-  amount,
-  baseToken,
-  quoteToken
-) {
+export function createSignSubmitOrder(price, amount, base, quote, side) {
   return async (dispatch, getState) => {
     try {
       dispatch(processing());
@@ -123,13 +121,7 @@ export function createSignSubmitOrder(
       let zeroEx = await getZeroExClient(web3);
       let relayerClient = new HttpClient(relayerEndpoint);
       let order = {
-        ...convertLimitOrderToZeroExOrder(
-          quoteToken,
-          baseToken,
-          side,
-          price,
-          amount
-        ),
+        ...convertLimitOrderToZeroExOrder(price, amount, base, quote, side),
         maker: address.toLowerCase(),
         makerFee: new BigNumber(0),
         taker: ZeroEx.NULL_ADDRESS,
@@ -171,6 +163,7 @@ export function createSignSubmitOrder(
 
       dispatch(addOrders([signedOrder]));
     } catch (err) {
+      console.warn(err);
       await dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
@@ -196,6 +189,7 @@ export function cancelOrder(order) {
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch (err) {
+      console.warn(err);
       dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
@@ -241,6 +235,67 @@ export function fillOrder(order) {
 
       dispatch(loadTransactions());
     } catch (err) {
+      console.warn(err);
+      dispatch(setError(err));
+    } finally {
+      dispatch(notProcessing());
+    }
+  };
+}
+
+export function fillUpToBaseAmount(amount, base, quote, side) {
+  return async (dispatch, getState) => {
+    dispatch(processing());
+
+    try {
+      const {
+        wallet: { web3, address },
+        relayer: { orders }
+      } = getState();
+      const zeroEx = await getZeroExClient(web3);
+      const tokenAddress = side == 'buy' ? quote.address : base.address;
+      let allowance = await getTokenAllowance(web3, tokenAddress);
+
+      // Make sure allowance is available.
+      if (allowance.lt(ZeroEx.NULL_ADDRESS)) {
+        let txhash = await setTokenUnlimitedAllowance(web3, tokenAddress);
+        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      }
+
+      // Filter orders until amount is met.
+      const fillableOrders = filterAndSortOrdersByTokens(
+        orders,
+        base,
+        quote,
+        side
+      );
+      const ordersToFill = filterOrdersToBaseAmount(
+        amount,
+        fillableOrders,
+        side
+      );
+
+      if (!ordersToFill) {
+        throw new Error(`Cannot fill orders for unknown side ${side}`);
+      }
+
+      // Guarantee WETH is available.
+      if (await isWETHAddress(web3, tokenAddress)) {
+        let txhash = await guaranteeWETHInWeiAmount(web3, amount);
+        if (txhash) {
+          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          console.log(receipt);
+        }
+      }
+
+      // Fill orders
+      let txhash = await batchFillOrKill(web3, ordersToFill, amount);
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log(receipt);
+
+      dispatch(loadTransactions());
+    } catch (err) {
+      console.warn(err);
       dispatch(setError(err));
     } finally {
       dispatch(notProcessing());

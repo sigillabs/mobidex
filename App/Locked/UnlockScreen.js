@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import Unlock from '../views/Unlock';
 import ButtonGroup from '../components/ButtonGroup';
@@ -16,7 +17,7 @@ class UnlockScreen extends Component {
               await this.props.dispatch(loadAssets());
               this.props.navigation.navigate({ routeName: 'Main' });
             } catch (err) {
-              setError(err);
+              this.props.dispatch(setError(err));
             }
           }}
         />

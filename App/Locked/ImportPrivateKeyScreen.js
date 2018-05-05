@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import ImportPrivateKey from '../views/ImportPrivateKey';
 import ButtonGroup from '../components/ButtonGroup';
@@ -16,7 +17,7 @@ class ImportPrivateKeyScreen extends Component {
               await this.props.dispatch(loadAssets());
               this.props.navigation.navigate({ routeName: 'Main' });
             } catch (err) {
-              setError(err);
+              this.props.dispatch(setError(err));
             }
           }}
         />

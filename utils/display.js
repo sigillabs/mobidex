@@ -25,7 +25,7 @@ export function formatAmountWithDecimals(amount, decimals) {
 }
 
 export function formatAmount(amount) {
-  return new BigNumber(amount).toFixed(4);
+  return new BigNumber(amount).toFixed(6);
 }
 
 export function getImage(symbol) {

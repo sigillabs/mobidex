@@ -13,8 +13,8 @@ import {
 } from '../../utils';
 import Button from '../components/Button';
 import ButtonGroup from '../components/ButtonGroup';
-import SmallLogo from '../components/SmallLogo';
 import Row from '../components/Row';
+import LogoTicker from '../views/LogoTicker';
 import PriceGraph from '../views/PriceGraph';
 
 class ProductDetailListItem extends Component {
@@ -58,14 +58,17 @@ class ProductDetailsView extends Component {
     );
     const infolist = [
       {
+        key: 'price',
         left: 'Price',
         right: formatMoney(forexTicker.price)
       },
       {
+        key: '24hrprice',
         left: '24 Hour Price Average',
         right: formatMoney(dayAverage)
       },
       {
+        key: '24hrpricechange',
         left: '24 Hour Price Change',
         right: `${changePrice < 0 ? '-' : ''}${formatMoney(
           Math.abs(changePrice)
@@ -73,10 +76,12 @@ class ProductDetailsView extends Component {
         rightStyle: changePercent >= 0 ? styles.profit : styles.loss
       },
       {
+        key: '24hrmax',
         left: '24 Hour Max',
         right: formatMoney(forexTicker.daymax)
       },
       {
+        key: '24hrmin',
         left: '24 Hour Min',
         right: formatMoney(forexTicker.daymin)
       }
@@ -84,17 +89,7 @@ class ProductDetailsView extends Component {
 
     return (
       <View style={[styles.container]}>
-        <SmallLogo
-          avatarProps={{ medium: true }}
-          symbol={base.symbol}
-          title={formatMoney(forexTicker.price)}
-          subtitle={formatPercent(changePercent)}
-          titleStyle={{ fontSize: 24 }}
-          subtitleStyle={[
-            { fontSize: 14 },
-            changePercent >= 0 ? styles.profit : styles.loss
-          ]}
-        />
+        <LogoTicker token={base} />
         <PriceGraph
           interval={period}
           height={200}
@@ -108,19 +103,37 @@ class ProductDetailsView extends Component {
           innerBorderStyle={{ width: -1 }}
           containerStyle={{ width: 140, alignSelf: 'center' }}
         />
-        <Button
-          large
-          icon={<Icon name="send" size={20} color="white" />}
-          onPress={() =>
-            this.props.navigation.push('CreateOrder', {
-              product: { base, quote }
-            })
-          }
-          title="Buy/Sell"
-          containerStyle={{ width: 150, alignSelf: 'center' }}
-        />
-        {infolist.map(({ left, right, leftStyle, rightStyle }) => (
+        <Row style={{ justifyContent: 'center' }}>
+          <Button
+            large
+            icon={<Icon name="send" size={20} color="white" />}
+            onPress={() =>
+              this.props.navigation.push('CreateOrder', {
+                product: { base, quote },
+                type: 'fill',
+                side: 'buy'
+              })
+            }
+            title="Buy"
+            containerStyle={{ width: 150, alignSelf: 'center' }}
+          />
+          <Button
+            large
+            icon={<Icon name="send" size={20} color="white" />}
+            onPress={() =>
+              this.props.navigation.push('CreateOrder', {
+                product: { base, quote },
+                type: 'fill',
+                side: 'sell'
+              })
+            }
+            title="Sell"
+            containerStyle={{ width: 150, alignSelf: 'center' }}
+          />
+        </Row>
+        {infolist.map(({ key, left, right, leftStyle, rightStyle }) => (
           <ProductDetailListItem
+            key={key}
             left={left}
             right={right}
             leftStyle={leftStyle}
