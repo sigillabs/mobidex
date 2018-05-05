@@ -91,20 +91,26 @@ class CreateOrderScreen extends Component {
           <View style={{ marginTop: 10, marginBottom: 10 }}>
             <Input
               placeholder="Price"
-              displayError={this.state.priceError}
               onChangeText={this.onSetPrice}
               keyboardType="numeric"
-              errorMessage={'Price should be numeric and greater than `0`.'}
+              errorMessage={
+                this.state.priceError
+                  ? 'Price should be numeric and greater than `0`.'
+                  : null
+              }
               errorStyle={{ color: 'red' }}
               icon={<Icon name="money" size={24} color="black" />}
               containerStyle={{ width: '100%', marginBottom: 10 }}
             />
             <Input
               placeholder="Amount"
-              displayError={this.state.amountError}
               onChangeText={this.onSetAmount}
               keyboardType="numeric"
-              errorMessage={'Amounts should be numeric and greater than `0`.'}
+              errorMessage={
+                this.state.amountError
+                  ? 'Amounts should be numeric and greater than `0`.'
+                  : null
+              }
               errorStyle={{ color: 'red' }}
               icon={<Icon name="money" size={24} color="black" />}
               containerStyle={{ width: '100%', marginBottom: 10 }}

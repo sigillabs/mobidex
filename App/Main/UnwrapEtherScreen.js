@@ -44,10 +44,13 @@ class UnwrapEtherScreen extends Component {
         <View style={{ marginBottom: 10 }}>
           <Input
             placeholder="Amount"
-            displayError={this.state.amountError}
             onChangeText={this.onSetAmount}
             keyboardType="numeric"
-            errorMessage={'Amount should be numeric and greater than `0`.'}
+            errorMessage={
+              this.state.amountError
+                ? 'Amount should be numeric and greater than `0`.'
+                : null
+            }
             errorStyle={{ color: 'red' }}
             icon={<Icon name="money" size={24} color="black" />}
             containerStyle={{ width: '100%', marginBottom: 10 }}

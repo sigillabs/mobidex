@@ -45,10 +45,11 @@ class GenerateWallet extends Component {
         <LongInput
           secureTextEntry={true}
           placeholder="Password"
-          displayError={this.state.passwordError}
           onChangeText={this.onSetPassword}
           errorMessage={
-            'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
+            this.state.passwordError
+              ? 'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
+              : null
           }
           errorStyle={{ color: 'red' }}
           icon={<Icon name="person" size={24} color="black" />}

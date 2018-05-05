@@ -20,7 +20,7 @@ export default class extends Component {
         }
         centerComponent={{
           text: 'Mobidex',
-          style: { color: 'white', fontSize: 18 }
+          style: { color: 'white', fontSize: 18, height: 100 }
         }}
       />
     );
