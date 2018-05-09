@@ -70,9 +70,13 @@ const MainNavigation = StackNavigator(
     navigationOptions: ({ navigation }) => {
       switch (navigation.state.routeName) {
         case 'List':
-          return { header: <TradingHeader navigation={navigation} /> };
+          return {
+            header: <TradingHeader navigation={navigation} />
+          };
         default:
-          return { header: <NormalHeader navigation={navigation} /> };
+          return {
+            header: <NormalHeader navigation={navigation} />
+          };
       }
     }
   }

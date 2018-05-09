@@ -20,8 +20,9 @@ export default class extends Component {
         }
         centerComponent={{
           text: 'Mobidex',
-          style: { color: 'white', fontSize: 18, height: 100 }
+          style: { color: 'white', fontSize: 18 }
         }}
+        outerContainerStyles={{ height: 80 }}
       />
     );
   }

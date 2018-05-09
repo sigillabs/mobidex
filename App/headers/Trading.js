@@ -32,6 +32,7 @@ class TradingHeader extends Component {
             <Icon name="add" color="white" size={15} />
           </TouchableOpacity>
         }
+        outerContainerStyles={{ height: 80 }}
       />
     );
   }

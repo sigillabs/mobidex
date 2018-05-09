@@ -14,6 +14,7 @@ export default class extends Component {
           text: 'Mobidex',
           style: { color: 'white', fontSize: 18 }
         }}
+        outerContainerStyles={{ height: 80 }}
       />
     );
   }
