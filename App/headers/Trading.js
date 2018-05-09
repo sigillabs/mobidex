@@ -24,14 +24,6 @@ class TradingHeader extends Component {
           text: 'Mobidex',
           style: { color: 'white', fontSize: 18 }
         }}
-        rightComponent={
-          <TouchableOpacity
-            style={{ padding: 10 }}
-            onPress={() => this.props.navigation.push('CreateOrder')}
-          >
-            <Icon name="add" color="white" size={15} />
-          </TouchableOpacity>
-        }
         outerContainerStyles={{ height: 80 }}
       />
     );

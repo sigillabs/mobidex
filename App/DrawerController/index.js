@@ -4,7 +4,7 @@ import { View, ScrollView, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import { loadTokens } from '../../thunks';
 import Row from '../components/Row';
-import TimedUpdater from '../components/TimedUpdater';
+import Actions from './Actions';
 import TokenList from './TokenList';
 import TokenDetails from './TokenDetails';
 
@@ -41,6 +41,9 @@ class DrawerController extends Component {
             tokens={filteredTokens}
             onPress={token => this.setState({ token })}
           />
+        </Row>
+        <Row>
+          <Actions />
         </Row>
       </View>
     );
