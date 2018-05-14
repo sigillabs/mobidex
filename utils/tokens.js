@@ -53,7 +53,7 @@ export async function getTokenByAddress(web3, address, force = false) {
         ...TokenABI,
         networks: {
           [networkId]: {
-            address: address
+            address
           }
         }
       }
@@ -61,24 +61,45 @@ export async function getTokenByAddress(web3, address, force = false) {
     options: null
   }).Token;
 
-  let name = await new Promise((resolve, reject) => {
-    contract.name.call((err, data) => {
-      if (err) return reject(err);
-      else return resolve(data);
+  let name = null;
+  let symbol = null;
+  let decimals = null;
+
+  try {
+    name = await new Promise((resolve, reject) => {
+      contract.name.call((err, data) => {
+        if (err) return reject(err);
+        else return resolve(data);
+      });
     });
-  });
-  let symbol = await new Promise((resolve, reject) => {
-    contract.symbol.call((err, data) => {
-      if (err) return reject(err);
-      else return resolve(data);
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+
+  try {
+    symbol = await new Promise((resolve, reject) => {
+      contract.symbol.call((err, data) => {
+        if (err) return reject(err);
+        else return resolve(data);
+      });
     });
-  });
-  let decimals = await new Promise((resolve, reject) => {
-    contract.decimals.call((err, data) => {
-      if (err) return reject(err);
-      else return resolve(parseInt(data));
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
+
+  try {
+    decimals = await new Promise((resolve, reject) => {
+      contract.decimals.call((err, data) => {
+        if (err) return reject(err);
+        else return resolve(parseInt(data));
+      });
     });
-  });
+  } catch (err) {
+    console.warn(err);
+    return null;
+  }
 
   let token = { address, name, symbol, decimals };
 

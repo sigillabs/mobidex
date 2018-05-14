@@ -56,7 +56,7 @@ export function loadOrder(orderHash) {
     let client = new HttpClient(relayerEndpoint);
 
     try {
-      dispatch(addOrders([await client.getOrderAsync(signedOrder.orderHash)]));
+      dispatch(addOrders([await client.getOrderAsync(orderHash)]));
     } catch (err) {
       dispatch(setError(err));
     }
@@ -76,10 +76,14 @@ export function loadProductsAndTokens(force = false) {
       let tokensA = pairs.map(pair => pair.tokenA);
       let tokensB = pairs.map(pair => pair.tokenB);
       let extTokensA = await Promise.all(
-        tokensA.map(token => getTokenByAddress(web3, token.address, force))
+        tokensA
+          .map(token => getTokenByAddress(web3, token.address, force))
+          .filter(t => t)
       );
       let extTokensB = await Promise.all(
-        tokensB.map(token => getTokenByAddress(web3, token.address, force))
+        tokensB
+          .map(token => getTokenByAddress(web3, token.address, force))
+          .filter(t => t)
       );
       let fullTokensA = tokensA.map((token, index) => ({
         ...token,

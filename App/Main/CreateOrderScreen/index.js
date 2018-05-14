@@ -4,8 +4,8 @@ import ButtonGroup from '../../components/ButtonGroup';
 import FillOrders from './FillOrders';
 import LimitOrder from './LimitOrder';
 
-const BUTTONS = ['Fill Orders', 'Market Order', 'Limit Order'];
-const TYPES = ['fill', 'limit', 'limit'];
+const BUTTONS = ['Fill Orders', 'Limit Order'];
+const TYPES = ['fill', 'limit'];
 
 export default class CreateOrderScreen extends Component {
   render() {

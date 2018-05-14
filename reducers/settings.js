@@ -7,6 +7,7 @@ const BASE_URL = 'https://mobidex.io/relayer/v0';
 
 const initialState = {
   network: 'kovan',
+  // network: 'mainnet',
   relayerEndpoint: BASE_URL,
   forexCurrency: 'USD'
 };
@@ -22,3 +23,4 @@ export default handleActions(
   },
   initialState
 );
+``;

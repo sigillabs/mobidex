@@ -13,7 +13,7 @@ class UnlockScreen extends Component {
         <Unlock
           onFinish={async () => {
             try {
-              await this.props.dispatch(loadProductsAndTokens());
+              await this.props.dispatch(loadProductsAndTokens(true));
               await this.props.dispatch(loadAssets());
               this.props.navigation.navigate({ routeName: 'Main' });
             } catch (err) {
