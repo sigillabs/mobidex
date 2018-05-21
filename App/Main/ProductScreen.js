@@ -8,7 +8,7 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { List, ListItem, Text } from 'react-native-elements';
+import { Avatar, List, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
@@ -21,6 +21,7 @@ import {
   getTokenByAddress,
   prices
 } from '../../utils';
+import Row from '../components/Row';
 
 function avg(arr) {
   return (
@@ -28,6 +29,21 @@ function avg(arr) {
       return a + b;
     }, 0) / arr.length
   );
+}
+
+class TokenIcon extends Component {
+  render() {
+    return (
+      <View>
+        <Avatar
+          rounded
+          source={getImage(this.props.symbol)}
+          containerStyle={[styles.padBottom]}
+        />
+        <Text style={[styles.small, styles.center]}>{this.props.title}</Text>
+      </View>
+    );
+  }
 }
 
 class ProductItem extends Component {
@@ -40,54 +56,57 @@ class ProductItem extends Component {
       <ListItem
         roundAvatar
         bottomDivider
-        leftAvatar={{ source: getImage(baseToken.symbol) }}
+        leftElement={
+          <TokenIcon symbol={baseToken.symbol} title={baseToken.symbol} />
+        }
         title={
           <View style={styles.itemContainer}>
-            <Text style={[styles.large, styles.pad]}>{baseToken.symbol}</Text>
-            <Text
-              style={[
-                styles.large,
-                styles.pad,
-                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
-              ]}
-            >
-              {formatAmount(Math.abs(tokenDetails.price))} {quoteToken.symbol}
-            </Text>
-            <Text
-              style={[
-                styles.small,
-                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
-                styles.right
-              ]}
-            >
-              {formatAmount(Math.abs(tokenDetails.changePrice))} ({formatPercent(
-                Math.abs(tokenDetails.changePercent)
-              )})
-            </Text>
-          </View>
-        }
-        subtitle={
-          <View style={styles.itemContainer}>
-            <Text
-              style={[
-                styles.small,
-                styles.pad,
-                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
-              ]}
-            >
-              {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
-            </Text>
-            <Text
-              style={[
-                styles.small,
-                tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
-                styles.right
-              ]}
-            >
-              {formatMoney(
-                Math.abs(tokenDetails.changePrice * forexDetails.price)
-              )}
-            </Text>
+            <Row>
+              <Text
+                style={[
+                  styles.left,
+                  styles.large,
+                  styles.padLeft,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+                ]}
+              >
+                {formatAmount(Math.abs(tokenDetails.price))} {quoteToken.symbol}
+              </Text>
+              <Text
+                style={[
+                  styles.right,
+                  styles.small,
+                  styles.padLeft,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+                ]}
+              >
+                {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
+              </Text>
+            </Row>
+            <Row>
+              <Text
+                style={[
+                  styles.small,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
+                  styles.left
+                ]}
+              >
+                {formatAmount(Math.abs(tokenDetails.changePrice))} ({formatPercent(
+                  Math.abs(tokenDetails.changePercent)
+                )})
+              </Text>
+              <Text
+                style={[
+                  styles.small,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
+                  styles.right
+                ]}
+              >
+                {formatMoney(
+                  Math.abs(tokenDetails.changePrice * forexDetails.price)
+                )}
+              </Text>
+            </Row>
           </View>
         }
         hideChevron={true}
@@ -178,14 +197,17 @@ class ProductScreen extends Component {
 
 const styles = {
   itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 25,
     marginHorizontal: 10,
     width: '100%'
   },
-  pad: {
+  center: {
+    textAlign: 'center'
+  },
+  padBottom: {
+    marginBottom: 5
+  },
+  padLeft: {
     marginLeft: 10
   },
   small: {
