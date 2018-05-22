@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { toggleDrawer } from '../../actions';
 import { colors } from '../../styles';
 
-class TradingHeader extends Component {
+class ProductsHeader extends Component {
   render() {
     return (
       <Header
@@ -24,6 +24,20 @@ class TradingHeader extends Component {
           text: 'Mobidex',
           style: { color: 'white', fontSize: 18 }
         }}
+        rightComponent={
+          <TouchableOpacity
+            style={{ padding: 10 }}
+            onPress={() =>
+              this.props.navigation.setParams({
+                showForexPrices: !this.props.navigation.getParam(
+                  'showForexPrices'
+                )
+              })
+            }
+          >
+            <Icon name="list" color="white" size={15} />
+          </TouchableOpacity>
+        }
         outerContainerStyles={{ height: 80 }}
       />
     );
@@ -31,5 +45,5 @@ class TradingHeader extends Component {
 }
 
 export default connect(state => ({}), dispatch => ({ dispatch }))(
-  TradingHeader
+  ProductsHeader
 );

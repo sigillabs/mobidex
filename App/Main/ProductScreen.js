@@ -46,7 +46,7 @@ class TokenIcon extends Component {
   }
 }
 
-class ProductItem extends Component {
+class QuoteTokenItem extends Component {
   render() {
     const { quoteToken, baseToken, forexTicker, tokenTicker } = this.props;
     const forexDetails = detailsFromTicker(forexTicker);
@@ -66,7 +66,6 @@ class ProductItem extends Component {
                 style={[
                   styles.left,
                   styles.large,
-                  styles.padLeft,
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
@@ -75,31 +74,55 @@ class ProductItem extends Component {
               <Text
                 style={[
                   styles.right,
-                  styles.small,
+                  styles.large,
                   styles.padLeft,
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
-                ]}
-              >
-                {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
-              </Text>
-            </Row>
-            <Row>
-              <Text
-                style={[
-                  styles.small,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
-                  styles.left
                 ]}
               >
                 {formatAmount(Math.abs(tokenDetails.changePrice))} ({formatPercent(
                   Math.abs(tokenDetails.changePercent)
                 )})
               </Text>
+            </Row>
+          </View>
+        }
+        hideChevron={true}
+      />
+    );
+  }
+}
+
+class ForexTokenItem extends Component {
+  render() {
+    const { quoteToken, baseToken, forexTicker, tokenTicker } = this.props;
+    const forexDetails = detailsFromTicker(forexTicker);
+    const tokenDetails = detailsFromTicker(tokenTicker);
+
+    return (
+      <ListItem
+        roundAvatar
+        bottomDivider
+        leftElement={
+          <TokenIcon symbol={baseToken.symbol} title={baseToken.symbol} />
+        }
+        title={
+          <View style={styles.itemContainer}>
+            <Row>
               <Text
                 style={[
-                  styles.small,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss,
-                  styles.right
+                  styles.left,
+                  styles.large,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+                ]}
+              >
+                {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
+              </Text>
+              <Text
+                style={[
+                  styles.right,
+                  styles.large,
+                  styles.padLeft,
+                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
                 {formatMoney(
@@ -120,7 +143,8 @@ class ProductScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: true
+      refreshing: true,
+      showForexPrices: false
     };
   }
 
@@ -129,9 +153,13 @@ class ProductScreen extends Component {
   }
 
   render() {
+    console.warn(this.props.navigation.getParam('showForexPrices'));
     const { products, forexCurrency } = this.props;
     const forexTickers = this.props.ticker.forex;
     const tokenTickers = this.props.ticker.token;
+    const ProductItem = this.props.navigation.getParam('showForexPrices')
+      ? ForexTokenItem
+      : QuoteTokenItem;
 
     return (
       <ScrollView

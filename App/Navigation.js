@@ -7,9 +7,8 @@ import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
 import GenerateWalletScreen from './Locked/GenerateWalletScreen';
 import UnlockScreen from './Locked/UnlockScreen';
 
-import BlankHeader from './headers/Blank';
 import NormalHeader from './headers/Normal';
-import TradingHeader from './headers/Trading';
+import ProductsHeader from './headers/Products';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
@@ -71,8 +70,9 @@ const MainNavigation = StackNavigator(
       switch (navigation.state.routeName) {
         case 'List':
           return {
-            header: <TradingHeader navigation={navigation} />
+            header: <ProductsHeader navigation={navigation} />
           };
+
         default:
           return {
             header: <NormalHeader navigation={navigation} />
