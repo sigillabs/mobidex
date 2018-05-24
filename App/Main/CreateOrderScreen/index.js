@@ -24,13 +24,8 @@ export default class CreateOrderScreen extends Component {
         subview = <FillOrders {...this.props} />;
         break;
 
-      case 'market':
-        index = 1;
-        subview = <LimitOrder {...this.props} />;
-        break;
-
       case 'limit':
-        index = 2;
+        index = 1;
         subview = <LimitOrder {...this.props} />;
         break;
     }
@@ -39,7 +34,7 @@ export default class CreateOrderScreen extends Component {
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         <ButtonGroup
           onPress={index =>
-            this.props.navigation.push('CreateOrder', {
+            this.props.navigation.replace('CreateOrder', {
               product: { base, quote },
               type: TYPES[index],
               side: side

@@ -35,7 +35,7 @@ class ProductsHeader extends Component {
               })
             }
           >
-            <Icon name="list" color="white" size={15} />
+            <Icon name="attach-money" color="white" size={15} />
           </TouchableOpacity>
         }
         outerContainerStyles={{ height: 80 }}
