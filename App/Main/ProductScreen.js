@@ -22,6 +22,7 @@ import {
   prices
 } from '../../utils';
 import Row from '../components/Row';
+import MutedText from '../components/MutedText';
 
 function avg(arr) {
   return (
@@ -46,10 +47,9 @@ class TokenIcon extends Component {
   }
 }
 
-class QuoteTokenItem extends Component {
+class TokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, forexTicker, tokenTicker } = this.props;
-    const forexDetails = detailsFromTicker(forexTicker);
+    const { quoteToken, baseToken, tokenTicker } = this.props;
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
@@ -69,7 +69,7 @@ class QuoteTokenItem extends Component {
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {formatAmount(Math.abs(tokenDetails.price))} {quoteToken.symbol}
+                {this.props.price}
               </Text>
               <Text
                 style={[
@@ -79,14 +79,41 @@ class QuoteTokenItem extends Component {
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {formatAmount(Math.abs(tokenDetails.changePrice))} ({formatPercent(
-                  Math.abs(tokenDetails.changePercent)
-                )})
+                {this.props.change}
               </Text>
             </Row>
           </View>
         }
+        subtitle={
+          <View style={styles.itemContainer}>
+            <Row>
+              <MutedText style={[styles.left]}>Price</MutedText>
+              <MutedText style={[styles.right, styles.padLeft]}>
+                24 Hour Change
+              </MutedText>
+            </Row>
+          </View>
+        }
         hideChevron={true}
+      />
+    );
+  }
+}
+
+class QuoteTokenItem extends Component {
+  render() {
+    const { quoteToken, baseToken, tokenTicker } = this.props;
+    const tokenDetails = detailsFromTicker(tokenTicker);
+
+    return (
+      <TokenItem
+        price={`${formatAmount(Math.abs(tokenDetails.price))} ${
+          quoteToken.symbol
+        }`}
+        change={`${formatAmount(
+          Math.abs(tokenDetails.changePrice)
+        )} (${formatPercent(Math.abs(tokenDetails.changePercent))})`}
+        {...this.props}
       />
     );
   }
@@ -99,40 +126,12 @@ class ForexTokenItem extends Component {
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
-      <ListItem
-        roundAvatar
-        bottomDivider
-        leftElement={
-          <TokenIcon symbol={baseToken.symbol} title={baseToken.symbol} />
-        }
-        title={
-          <View style={styles.itemContainer}>
-            <Row>
-              <Text
-                style={[
-                  styles.left,
-                  styles.large,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
-                ]}
-              >
-                {formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
-              </Text>
-              <Text
-                style={[
-                  styles.right,
-                  styles.large,
-                  styles.padLeft,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
-                ]}
-              >
-                {formatMoney(
-                  Math.abs(tokenDetails.changePrice * forexDetails.price)
-                )}
-              </Text>
-            </Row>
-          </View>
-        }
-        hideChevron={true}
+      <TokenItem
+        price={formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
+        change={formatMoney(
+          Math.abs(tokenDetails.changePrice * forexDetails.price)
+        )}
+        {...this.props}
       />
     );
   }
