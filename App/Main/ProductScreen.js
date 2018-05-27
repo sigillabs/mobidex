@@ -152,7 +152,6 @@ class ProductScreen extends Component {
   }
 
   render() {
-    console.warn(this.props.navigation.getParam('showForexPrices'));
     const { products, forexCurrency } = this.props;
     const forexTickers = this.props.ticker.forex;
     const tokenTickers = this.props.ticker.token;

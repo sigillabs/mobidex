@@ -74,7 +74,19 @@ export async function getTokenTicker(
   return await response.json();
 }
 
+export function findTicker(tickers, base, quote) {
+  if (base === 'ETH') base = 'WETH';
+  if (quote === 'ETH') quote = 'WETH';
+
+  if (!tickers) return null;
+  if (!tickers[base]) return null;
+  if (!tickers[base][quote]) return null;
+  return tickers[base][quote];
+}
+
 export function detailsFromTicker(ticker) {
+  if (!ticker || !ticker.price) return {};
+
   const details = {
     price: parseFloat(ticker.price),
     latest: ticker.history.day[0],
@@ -94,4 +106,8 @@ export function detailsFromTicker(ticker) {
     details.changePercent = details.changePrice / details.price;
   }
   return details;
+}
+
+export function findTickerDetails(tickers, base, quote) {
+  return detailsFromTicker(findTicker(tickers, base, quote));
 }

@@ -1,35 +1,78 @@
 import { ZeroEx } from '0x.js';
 import React, { Component } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import { formatAmount, getImage } from '../../utils';
+import { updateForexTickers, updateTokenTickers } from '../../thunks';
+import {
+  findTickerDetails,
+  formatAmount,
+  formatMoney,
+  getImage
+} from '../../utils';
 
-class TokenItem extends Component {
-  render() {
-    let { token, ticker } = this.props;
-    let { symbol, balance, decimals } = token;
-    balance = ZeroEx.toUnitAmount(balance, decimals);
+const TokenItem = connect(
+  state => ({
+    settings: state.settings,
+    ticker: state.ticker
+  }),
+  dispatch => ({ dispatch })
+)(
+  class extends Component {
+    render() {
+      const { token, ticker, settings } = this.props;
+      const { decimals, symbol } = token;
+      const { forexCurrency } = settings;
+      const balance = ZeroEx.toUnitAmount(token.balance, decimals);
+      const forex = findTickerDetails(ticker.forex, symbol, forexCurrency);
 
-    return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.itemText}>{symbol.toString()}</Text>
-        <Text style={styles.itemText}>{formatAmount(balance)}</Text>
-        <Text style={styles.itemText}>
-          (${formatAmount(balance.mul(this.props.ticker || 0))})
-        </Text>
-      </View>
-    );
+      return (
+        <View style={styles.itemContainer}>
+          <Text style={styles.itemText}>{symbol.toString()}</Text>
+          <Text style={styles.itemText}>{formatAmount(balance)}</Text>
+          {forex && forex.price ? (
+            <Text style={styles.itemText}>
+              ({formatMoney(balance.mul(forex.price).toNumber())})
+            </Text>
+          ) : null}
+        </View>
+      );
+    }
   }
-}
+);
 
 class TokenList extends Component {
+  constructor(props, context) {
+    super(props);
+
+    this.state = {
+      refreshing: false
+    };
+  }
+
+  async componentDidMount() {
+    await this.onRefresh();
+  }
+
   render() {
-    let { tokens } = this.props;
+    const { tokens } = this.props;
 
     return (
-      <View style={{ width: '100%' }}>
+      <ScrollView
+        style={{ width: '100%' }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
+          />
+        }
+      >
         {tokens.map((token, index) => (
           <TouchableOpacity
             key={`token-${index}`}
@@ -39,12 +82,7 @@ class TokenList extends Component {
               roundAvatar
               bottomDivider
               avatar={{ source: getImage(token.symbol) }}
-              title={
-                <TokenItem
-                  token={token}
-                  ticker={this.props.ticker[token.symbol]}
-                />
-              }
+              title={<TokenItem token={token} />}
               avatarOverlayContainerStyle={{ backgroundColor: 'transparent' }}
               containerStyle={[
                 this.props.token &&
@@ -54,9 +92,16 @@ class TokenList extends Component {
             />
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
     );
   }
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.props.dispatch(updateForexTickers());
+    await this.props.dispatch(updateTokenTickers());
+    this.setState({ refreshing: false });
+  };
 }
 
 const styles = {
@@ -80,8 +125,7 @@ const styles = {
 
 export default connect(
   state => ({
-    ...state.settings,
-    ticker: state.ticker
+    ...state.settings
   }),
   dispatch => ({ dispatch })
 )(TokenList);

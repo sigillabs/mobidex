@@ -475,9 +475,36 @@ export function formatTimestamp(timestamp) {
 }
 
 export function formatMoney(n) {
-  return '$' + (Math.round(n * 100) / 100).toString();
+  return '$' + zeroDecimalPad(Math.floor(n * 100) / 100, 2).toString();
 }
 
 export function formatPercent(n) {
   return (Math.round(n * 10000) / 100).toString() + '%';
+}
+
+export function zeroDecimalPad(n, d) {
+  let str = n.toString();
+
+  if (d <= 0) {
+    return str;
+  }
+
+  let index = str.indexOf('.');
+
+  if (index === -1) {
+    str = `${str}.`;
+    index = str.length - 1;
+  }
+
+  let existing = str.length - index - 1;
+
+  if (d < existing) {
+    return str;
+  }
+
+  while (d-- > existing) {
+    str += '0';
+  }
+
+  return str;
 }
