@@ -18,19 +18,10 @@ import {
   formatMoney,
   formatPercent,
   getImage,
-  getTokenByAddress,
   prices
 } from '../../utils';
 import Row from '../components/Row';
 import MutedText from '../components/MutedText';
-
-function avg(arr) {
-  return (
-    arr.reduce((a, b) => {
-      return a + b;
-    }, 0) / arr.length
-  );
-}
 
 class TokenIcon extends Component {
   render() {

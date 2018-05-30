@@ -16,11 +16,11 @@ class Actions extends Component {
     );
   };
 
-  processing = () => {
+  orders = () => {
     this.props.dispatch(closeDrawer());
     this.props.dispatch(
       NavigationActions.push({
-        routeName: 'Processing'
+        routeName: 'Orders'
       })
     );
   };
@@ -32,7 +32,8 @@ class Actions extends Component {
           height: 50,
           flexDirection: 'row',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          width: '100%'
         }}
       >
         <Button
@@ -45,10 +46,10 @@ class Actions extends Component {
         <View style={{ width: 10 }} />
         <Button
           large
-          title="Transactions"
-          icon={<Icon name="send" color="white" size={18} />}
+          title="Orders"
+          icon={<Icon name="move-to-inbox" color="white" size={18} />}
           buttonStyle={{ borderRadius: 0 }}
-          onPress={this.processing}
+          onPress={this.orders}
         />
       </View>
     );

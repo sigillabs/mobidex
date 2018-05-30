@@ -9,6 +9,7 @@ import UnlockScreen from './Locked/UnlockScreen';
 
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
+import OrdersScreen from './Main/OrdersScreen';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
@@ -54,6 +55,7 @@ const MainNavigation = StackNavigator(
     List: { screen: ProductScreen },
     Details: { screen: ProductDetailsScreen },
     CreateOrder: { screen: CreateOrderScreen },
+    Orders: { screen: OrdersScreen },
     History: { screen: TransactionHistoryScreen },
     Receive: { screen: ReceiveScreen },
     Send: { screen: SendScreen },

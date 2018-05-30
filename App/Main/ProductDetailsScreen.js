@@ -53,6 +53,7 @@ class ProductDetailsView extends Component {
     } = this.props;
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = forexTicker.history[period];
+    console.log(forexTicker.history);
     const { changePrice, changePercent, dayAverage } = detailsFromTicker(
       forexTicker
     );
