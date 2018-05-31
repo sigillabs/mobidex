@@ -12,13 +12,8 @@ import { Avatar, List, ListItem, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
+import { loadOrders } from '../../thunks';
 import {
-  loadOrders,
-  updateForexTickers,
-  updateTokenTickers
-} from '../../thunks';
-import {
-  detailsFromTicker,
   formatAmountWithDecimals,
   getImage,
   getTokenByAddress,
@@ -30,9 +25,7 @@ import MutedText from '../components/MutedText';
 const TokenOrder = connect(
   state => ({
     ...state.relayer,
-    ...state.settings,
-    ...state.wallet,
-    ticker: state.ticker
+    ...state.wallet
   }),
   dispatch => ({ dispatch })
 )(
@@ -167,8 +160,6 @@ class OrdersScreen extends Component {
 
   onRefresh = async () => {
     this.setState({ refreshing: true });
-    await this.props.dispatch(updateForexTickers());
-    await this.props.dispatch(updateTokenTickers());
     await this.props.dispatch(loadOrders());
     this.setState({ refreshing: false });
   };
@@ -215,9 +206,7 @@ const styles = {
 export default connect(
   state => ({
     ...state.relayer,
-    ...state.settings,
-    ...state.wallet,
-    ticker: state.ticker
+    ...state.wallet
   }),
   dispatch => ({ dispatch })
 )(OrdersScreen);

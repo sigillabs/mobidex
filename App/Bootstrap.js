@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { AppState, View } from 'react-native';
 import Drawer from 'react-native-drawer';
 import { addNavigationHelpers, NavigationActions } from 'react-navigation';
 import { createReduxBoundAddListener } from 'react-navigation-redux-helpers';
 import { connect } from 'react-redux';
 import { closeDrawer } from '../actions';
+import { forget } from '../thunks';
 import { hasWalletOnFileSystem } from '../utils';
 import Navigator from './Navigation';
 import DrawerController from './DrawerController';
@@ -12,15 +13,9 @@ import DrawerController from './DrawerController';
 const addListener = createReduxBoundAddListener('root');
 
 class Bootstrap extends Component {
-  async componentDidMount() {
-    let hasWallet = await hasWalletOnFileSystem();
-    if (hasWallet) {
-      this.props.dispatch(NavigationActions.navigate({ routeName: 'Locked' }));
-    } else {
-      this.props.dispatch(
-        NavigationActions.navigate({ routeName: 'Onboarding' })
-      );
-    }
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+    this.gotoOnboardingOrLocked();
   }
 
   render() {
@@ -47,6 +42,24 @@ class Bootstrap extends Component {
       </Drawer>
     );
   }
+
+  handleAppStateChange = nextAppState => {
+    if (nextAppState === 'background') {
+      this.props.dispatch(forget());
+      this.gotoOnboardingOrLocked();
+    }
+  };
+
+  gotoOnboardingOrLocked = async () => {
+    let hasWallet = await hasWalletOnFileSystem();
+    if (hasWallet) {
+      this.props.dispatch(NavigationActions.navigate({ routeName: 'Locked' }));
+    } else {
+      this.props.dispatch(
+        NavigationActions.navigate({ routeName: 'Onboarding' })
+      );
+    }
+  };
 }
 
 export default connect(

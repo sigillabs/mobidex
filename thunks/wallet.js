@@ -51,6 +51,12 @@ export function importPrivateKey(privateKey, password) {
   };
 }
 
+export function forget() {
+  return async dispatch => {
+    dispatch(setWallet({ wallet: null }));
+  };
+}
+
 export function lock(password) {
   return async (dispatch, getState) => {
     let {
