@@ -32,7 +32,7 @@ export default class Intro extends Component {
         <Text
           style={{
             fontSize: 20,
-            color: colors.orange1,
+            color: colors.yellow0,
             fontWeight: 'bold',
             paddingTop: 10,
             paddingBottom: 5

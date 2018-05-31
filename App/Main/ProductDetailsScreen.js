@@ -53,7 +53,6 @@ class ProductDetailsView extends Component {
     } = this.props;
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = forexTicker.history[period];
-    console.log(forexTicker.history);
     const { changePrice, changePercent, dayAverage } = detailsFromTicker(
       forexTicker
     );
@@ -97,13 +96,13 @@ class ProductDetailsView extends Component {
           containerStyle={{ margin: 15 }}
           data={history}
         />
-        <ButtonGroup
+        {/*<ButtonGroup
           onPress={onChoosePeriod}
           selectedIndex={periodIndex}
           buttons={periods}
           innerBorderStyle={{ width: -1 }}
           containerStyle={{ width: 140, alignSelf: 'center' }}
-        />
+        />*/}
         <Row style={{ justifyContent: 'center' }}>
           <Button
             large
@@ -153,7 +152,7 @@ class ProductDetailsScreen extends Component {
     super(props);
 
     this.state = {
-      period: 0,
+      period: 1,
       refreshing: false
     };
   }

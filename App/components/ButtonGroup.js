@@ -30,7 +30,7 @@ export default class ButtonGroup extends Component {
         ]}
         selectedButtonStyle={[
           {
-            backgroundColor: colors.orange1,
+            backgroundColor: colors.yellow0,
             paddingLeft: 10,
             paddingRight: 10
           }

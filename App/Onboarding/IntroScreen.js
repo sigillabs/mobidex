@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import LongButton from '../components/LongButton';
-import { colors } from '../../styles.js'
+import { colors } from '../../styles.js';
 
 export default class Intro extends Component {
   render() {
@@ -33,7 +33,7 @@ export default class Intro extends Component {
         <Text
           style={{
             fontSize: 20,
-            color: colors.orange1,
+            color: colors.yellow0,
             fontWeight: 'bold',
             paddingTop: 10,
             paddingBottom: 10
@@ -48,8 +48,8 @@ export default class Intro extends Component {
             paddingBottom: 100
           }}
         >
-          To generate a new Wallet, please click New Wallet.
-          To import a wallet, press Import.
+          To generate a new Wallet, please click New Wallet. To import a wallet,
+          press Import.
         </Text>
         <LongButton
           large

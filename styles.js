@@ -14,7 +14,8 @@ const colors = {
   searchBg: '#303337',
   error: '#ff190c',
   orange0: '#ff9200',
-  orange1: '#F37438'
+  orange1: '#F37438',
+  yellow0: '#ffb22c'
 };
 
 export { colors };
