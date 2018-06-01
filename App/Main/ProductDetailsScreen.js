@@ -93,9 +93,9 @@ class ProductDetailsView extends Component {
     return (
       <View style={[styles.container]}>
         <LogoTicker token={base} />
-        <Divider />
-        <PriceGraph interval={period} height={200} data={history} />
-        <Divider />
+        <Divider style={{ marginBottom: 0 }} />
+        <PriceGraph interval={period} height={200} data={history} label={"Last 30 Days"} />
+        <Divider style={{ marginTop: 5 }} />
         {/*<ButtonGroup
           onPress={onChoosePeriod}
           selectedIndex={periodIndex}
