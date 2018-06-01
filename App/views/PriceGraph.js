@@ -52,7 +52,7 @@ export default class PriceGraph extends React.PureComponent {
     return (
       <View
         style={[
-          { flex: 1, height: this.props.height, padding: 10 },
+          { flex: 1, height: this.props.height, padding: 0 },
           containerStyle
         ]}
       >
@@ -64,7 +64,7 @@ export default class PriceGraph extends React.PureComponent {
           svg={{ fontSize: 10 }}
         />*/}
         <LineChart
-          style={[{ flex: 1, marginHorizontal: -10 }, chartStyle]}
+          style={[{ flex: 1, marginHorizontal: 0 }, chartStyle]}
           data={data}
           svg={{ stroke: 'rgb(134, 65, 244)' }}
           contentInset={{ top: 20, bottom: 20 }}

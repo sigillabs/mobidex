@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { Card, Header, Icon, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
@@ -13,6 +14,8 @@ import {
 } from '../../utils';
 import Button from '../components/Button';
 import ButtonGroup from '../components/ButtonGroup';
+import Divider from '../components/Divider';
+import Padding from '../components/Padding';
 import Row from '../components/Row';
 import LogoTicker from '../views/LogoTicker';
 import PriceGraph from '../views/PriceGraph';
@@ -90,12 +93,9 @@ class ProductDetailsView extends Component {
     return (
       <View style={[styles.container]}>
         <LogoTicker token={base} />
-        <PriceGraph
-          interval={period}
-          height={200}
-          containerStyle={{ margin: 15 }}
-          data={history}
-        />
+        <Divider />
+        <PriceGraph interval={period} height={200} data={history} />
+        <Divider />
         {/*<ButtonGroup
           onPress={onChoosePeriod}
           selectedIndex={periodIndex}
@@ -131,13 +131,15 @@ class ProductDetailsView extends Component {
             containerStyle={{ width: 150, alignSelf: 'center' }}
           />
         </Row>
-        {infolist.map(({ key, left, right, leftStyle, rightStyle }) => (
+        <Padding size={10} />
+        {infolist.map(({ key, left, right, leftStyle, rightStyle }, index) => (
           <ProductDetailListItem
             key={key}
             left={left}
             right={right}
             leftStyle={leftStyle}
             rightStyle={rightStyle}
+            topDivider={index === 0}
           />
         ))}
       </View>
@@ -233,7 +235,7 @@ class ProductDetailsScreen extends Component {
 const styles = {
   container: {
     flex: 1,
-    margin: 10
+    marginTop: 10
   },
   pad: {
     marginLeft: 10

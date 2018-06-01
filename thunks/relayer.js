@@ -190,6 +190,7 @@ export function cancelOrder(order) {
         throw new Error('Cannot cancel order that is not yours');
       }
 
+
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
     } catch (err) {

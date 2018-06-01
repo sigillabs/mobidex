@@ -9,18 +9,19 @@ import {
   View
 } from 'react-native';
 import { Avatar, List, ListItem, Text } from 'react-native-elements';
+import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import { loadOrders } from '../../thunks';
+import { loadOrders, cancelOrder } from '../../thunks';
 import {
   formatAmountWithDecimals,
   getImage,
   getTokenByAddress,
   prices
 } from '../../utils';
-import Row from '../components/Row';
 import MutedText from '../components/MutedText';
+import Row from '../components/Row';
 
 const TokenOrder = connect(
   state => ({
@@ -137,9 +138,26 @@ class OrdersScreen extends Component {
         <View style={{ width: '100%', backgroundColor: 'white' }}>
           {orders.map((order, index) => {
             return (
-              <TouchableOpacity key={`order-${index}`}>
+              <Swipeout autoClose={true} style={{
+                backgroundColor: "transparent"
+              }} right={[{
+                // component: (
+                //   <Button
+                //     large
+                //     icon={<Icon name="trash" size={20} color="white" />}
+                //     onPress={this.delete}
+                //     title="Delete"
+                //     style={{ marginTop: 10 }}
+                //   />
+                // )
+                backgroundColor: colors.yellow0,
+                text: 'Delete',
+                type: 'delete',
+                underlayColor: colors.yellow0,
+                onPress: () => this.cancelOrder(order)
+              }]}>
                 <TokenOrder order={order} />
-              </TouchableOpacity>
+              </Swipeout>
             );
           })}
         </View>
@@ -149,13 +167,20 @@ class OrdersScreen extends Component {
 
   filterOrders() {
     const { params } = this.props.navigation.state;
-    let orders = this.props.orders.filter(o => o.maker === this.props.address);
+    let orders = this.props.orders
+    .filter(o => o.maker === this.props.address)
+    .filter(o => o.status === 0);
     if (params && params.token) {
       orders = orders.filter(
         o => o.maker_token_address === this.props.navigation.state.params.token
       );
     }
     return orders;
+  }
+
+  async cancelOrder(order) {
+    await this.props.dispatch(cancelOrder(order));
+    await this.onRefresh();
   }
 
   onRefresh = async () => {
@@ -192,14 +217,10 @@ const styles = {
   loss: {
     color: 'red'
   },
-  left: {
-    whiteSpace: 'nowrap'
-  },
   right: {
     flex: 1,
     textAlign: 'right',
-    marginHorizontal: 10,
-    whiteSpace: 'nowrap'
+    marginHorizontal: 10
   }
 };
 
