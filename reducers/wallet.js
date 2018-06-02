@@ -79,14 +79,18 @@ export default handleActions(
     },
     [Actions.SET_WALLET]: (state, action) => {
       let { network, wallet } = action.payload;
-      let privateKey = `0x${ethUtil.stripHexPrefix(
-        wallet.getPrivateKey().toString('hex')
-      )}`;
-      let address = `0x${ethUtil.stripHexPrefix(
-        wallet.getAddress().toString('hex')
-      )}`;
-      let web3 = getWeb3(network, privateKey, address);
-      return { ...state, privateKey, address, web3 };
+      if (wallet) {
+        let privateKey = `0x${ethUtil.stripHexPrefix(
+          wallet.getPrivateKey().toString('hex')
+        )}`;
+        let address = `0x${ethUtil.stripHexPrefix(
+          wallet.getAddress().toString('hex')
+        )}`;
+        let web3 = getWeb3(network, privateKey, address);
+        return { ...state, privateKey, address, web3 };
+      } else {
+        return { ...state, privateKey: null, address: null, web3: null };
+      }
     }
   },
   initialState

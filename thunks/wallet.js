@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Linking } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import Wallet from 'ethereumjs-wallet';
 import ethUtil from 'ethereumjs-util';
 import {
@@ -18,6 +19,7 @@ import {
   getTokenBalance,
   getWalletFromFileSystem,
   getZeroExClient,
+  hasWalletOnFileSystem,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
   storeWalletOnFileSystem,
@@ -281,6 +283,19 @@ export function gotoEtherScan(txaddr) {
 
       default:
         return await Linking.openURL(`https://etherscan.io/txs/${txaddr}`);
+    }
+  };
+}
+
+export function gotoOnboardingOrLocked() {
+  return async (dispatch) => {
+    let hasWallet = await hasWalletOnFileSystem();
+    if (hasWallet) {
+      dispatch(NavigationActions.navigate({ routeName: 'Locked' }));
+    } else {
+      dispatch(
+        NavigationActions.navigate({ routeName: 'Onboarding' })
+      );
     }
   };
 }
