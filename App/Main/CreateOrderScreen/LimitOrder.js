@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { setError } from '../../../actions';
+import { getProfitLossStyle } from '../../../styles';
 import { createSignSubmitOrder } from '../../../thunks';
 import { formatAmount, formatPercent } from '../../../utils';
 import Button from '../../components/Button';
@@ -38,11 +39,17 @@ class CreateLimitOrder extends Component {
       orders
     } = this.props;
 
-    const subTotal = new BigNumber(this.state.amount).mul(this.state.price);
-    const fee = new BigNumber(0);
-    const total = subTotal.add(fee);
-
     let buttonLabel = null;
+    let subTotal = new BigNumber(this.state.amount).mul(this.state.price);
+    let fee = new BigNumber(0).negated();
+    let total = subTotal.add(fee);
+
+    if (side === 'buy') {
+      subTotal = subTotal.negated();
+      total = total.negated();
+    }
+
+    console.warn(subTotal.toNumber(), getProfitLossStyle(subTotal.toNumber()));
 
     switch (side) {
       case 'buy':
@@ -81,22 +88,18 @@ class CreateLimitOrder extends Component {
         />
         <ListItemDetail
           left="Sub-Total"
-          right={`${side === 'buy' ? '-' : ''}${formatAmount(
-            subTotal.toNumber()
-          )}`}
-          rightStyle={side === 'buy' ? styles.loss : styles.profit}
+          right={formatAmount(subTotal.toNumber())}
+          rightStyle={getProfitLossStyle(subTotal.toNumber())}
         />
         <ListItemDetail
           left="Fee"
-          right={`-${formatAmount(fee.toNumber())}`}
-          rightStyle={styles.loss}
+          right={formatAmount(fee.toNumber())}
+          rightStyle={getProfitLossStyle(fee.toNumber())}
         />
         <ListItemDetail
           left="Total"
-          right={`${side === 'buy' ? '-' : ''}${formatAmount(
-            total.toNumber()
-          )}`}
-          rightStyle={side === 'buy' ? styles.loss : styles.profit}
+          right={formatAmount(total.toNumber())}
+          rightStyle={getProfitLossStyle(total.toNumber())}
         />
         <Button
           large
@@ -151,15 +154,6 @@ class CreateLimitOrder extends Component {
     }
   };
 }
-
-const styles = {
-  profit: {
-    color: 'green'
-  },
-  loss: {
-    color: 'red'
-  }
-};
 
 export default connect(
   (state, ownProps) => ({

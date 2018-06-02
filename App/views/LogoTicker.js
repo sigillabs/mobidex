@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { getProfitLossStyle } from '../../styles';
 import {
   detailsFromTicker,
   formatMoney,
@@ -84,7 +85,7 @@ class LogoTicker extends Component {
             <MutedText
               style={[
                 { fontSize: 14 },
-                changePercent >= 0 ? styles.profit : styles.loss,
+                getProfitLossStyle(changePercent),
                 priceChangeStyle
               ]}
             >
@@ -96,15 +97,6 @@ class LogoTicker extends Component {
     );
   }
 }
-
-const styles = {
-  profit: {
-    color: 'green'
-  },
-  loss: {
-    color: 'red'
-  }
-};
 
 export default connect(
   state => ({

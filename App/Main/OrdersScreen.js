@@ -138,24 +138,30 @@ class OrdersScreen extends Component {
         <View style={{ width: '100%', backgroundColor: 'white' }}>
           {orders.map((order, index) => {
             return (
-              <Swipeout autoClose={true} style={{
-                backgroundColor: "transparent"
-              }} right={[{
-                // component: (
-                //   <Button
-                //     large
-                //     icon={<Icon name="trash" size={20} color="white" />}
-                //     onPress={this.delete}
-                //     title="Delete"
-                //     style={{ marginTop: 10 }}
-                //   />
-                // )
-                backgroundColor: colors.yellow0,
-                text: 'Delete',
-                type: 'delete',
-                underlayColor: colors.yellow0,
-                onPress: () => this.cancelOrder(order)
-              }]}>
+              <Swipeout
+                autoClose={true}
+                style={{
+                  backgroundColor: 'transparent'
+                }}
+                right={[
+                  {
+                    // component: (
+                    //   <Button
+                    //     large
+                    //     icon={<Icon name="trash" size={20} color="white" />}
+                    //     onPress={this.delete}
+                    //     title="Delete"
+                    //     style={{ marginTop: 10 }}
+                    //   />
+                    // )
+                    backgroundColor: colors.yellow0,
+                    text: 'Delete',
+                    type: 'delete',
+                    underlayColor: colors.yellow0,
+                    onPress: () => this.cancelOrder(order)
+                  }
+                ]}
+              >
                 <TokenOrder order={order} />
               </Swipeout>
             );
@@ -168,8 +174,8 @@ class OrdersScreen extends Component {
   filterOrders() {
     const { params } = this.props.navigation.state;
     let orders = this.props.orders
-    .filter(o => o.maker === this.props.address)
-    .filter(o => o.status === 0);
+      .filter(o => o.maker === this.props.address)
+      .filter(o => o.status === 0);
     if (params && params.token) {
       orders = orders.filter(
         o => o.maker_token_address === this.props.navigation.state.params.token
@@ -210,12 +216,6 @@ const styles = {
   },
   large: {
     fontSize: 14
-  },
-  profit: {
-    color: 'green'
-  },
-  loss: {
-    color: 'red'
   },
   right: {
     flex: 1,

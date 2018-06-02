@@ -7,6 +7,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { setError } from '../../../actions';
+import { getProfitLossStyle } from '../../../styles';
 import { fillUpToBaseAmount, loadOrders } from '../../../thunks';
 import {
   calculateAmount,
@@ -84,10 +85,6 @@ class FillOrders extends Component {
       base.decimals
     );
     const priceAverage = this.getPriceAverage();
-    const subTotal = new BigNumber(this.state.amount).mul(priceAverage);
-    const fee = new BigNumber(0);
-    const total = subTotal.add(fee);
-
     const fillableOrders = filterAndSortOrdersByTokensAndTakerAddress(
       orders,
       base,
@@ -100,6 +97,14 @@ class FillOrders extends Component {
 
     let label = null;
     let buttonLabel = null;
+    let subTotal = new BigNumber(this.state.amount).mul(priceAverage);
+    let fee = new BigNumber(0).negated();
+    let total = subTotal.add(fee);
+
+    if (side === 'buy') {
+      subTotal = subTotal.negated();
+      total = total.negated();
+    }
 
     switch (side) {
       case 'buy':
@@ -125,7 +130,7 @@ class FillOrders extends Component {
       <View>
         <LogoTicker token={base} />
         <TokenInput
-          label={side === 'buy' ? 'Buying' : 'Selling'}
+          label={label}
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
           onChange={this.onSetAmount}
@@ -137,22 +142,18 @@ class FillOrders extends Component {
         />
         <ListItemDetail
           left="Sub-Total"
-          right={`${side === 'buy' ? '-' : ''}${formatAmount(
-            subTotal.toNumber()
-          )}`}
-          rightStyle={side === 'buy' ? styles.loss : styles.profit}
+          right={formatAmount(subTotal.toNumber())}
+          rightStyle={getProfitLossStyle(subTotal.toNumber())}
         />
         <ListItemDetail
           left="Fee"
-          right={`-${formatAmount(fee.toNumber())}`}
-          rightStyle={styles.loss}
+          right={formatAmount(fee.toNumber())}
+          rightStyle={getProfitLossStyle(fee.toNumber())}
         />
         <ListItemDetail
           left="Total"
-          right={`${side === 'buy' ? '-' : ''}${formatAmount(
-            total.toNumber()
-          )}`}
-          rightStyle={side === 'buy' ? styles.loss : styles.profit}
+          right={formatAmount(total.toNumber())}
+          rightStyle={getProfitLossStyle(total.toNumber())}
         />
         <Button
           large
@@ -273,15 +274,6 @@ class FillOrders extends Component {
     }
   };
 }
-
-const styles = {
-  profit: {
-    color: 'green'
-  },
-  loss: {
-    color: 'red'
-  }
-};
 
 export default connect(
   (state, ownProps) => ({

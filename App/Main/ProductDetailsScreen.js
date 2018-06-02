@@ -4,6 +4,7 @@ import { View, ScrollView, RefreshControl } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card, Header, Icon, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { getProfitLossStyle } from '../../styles';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
   detailsFromTicker,
@@ -76,7 +77,7 @@ class ProductDetailsView extends Component {
         right: `${changePrice < 0 ? '-' : ''}${formatMoney(
           Math.abs(changePrice)
         )} (${formatPercent(changePercent)})`,
-        rightStyle: changePercent >= 0 ? styles.profit : styles.loss
+        rightStyle: getProfitLossStyle(changePercent)
       },
       {
         key: '24hrmax',
@@ -94,7 +95,12 @@ class ProductDetailsView extends Component {
       <View style={[styles.container]}>
         <LogoTicker token={base} />
         <Divider style={{ marginBottom: 0 }} />
-        <PriceGraph interval={period} height={200} data={history} label={"Last 30 Days"} />
+        <PriceGraph
+          interval={period}
+          height={200}
+          data={history}
+          label={'Last 30 Days'}
+        />
         <Divider style={{ marginTop: 5 }} />
         {/*<ButtonGroup
           onPress={onChoosePeriod}
@@ -245,12 +251,6 @@ const styles = {
   },
   large: {
     fontSize: 14
-  },
-  profit: {
-    color: 'green'
-  },
-  loss: {
-    color: 'red'
   },
   right: {
     flex: 1,
