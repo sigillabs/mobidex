@@ -1,8 +1,12 @@
 import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { RefreshControl, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
-import { loadTokens } from '../../thunks';
+import {
+  loadTokens,
+  updateForexTickers,
+  updateTokenTickers
+} from '../../thunks';
 import Row from '../components/Row';
 import Actions from './Actions';
 import TokenList from './TokenList';
@@ -13,8 +17,13 @@ class DrawerController extends Component {
     super(props);
 
     this.state = {
+      refreshing: false,
       token: null
     };
+  }
+
+  async componentDidMount() {
+    await this.onRefresh();
   }
 
   render() {
@@ -31,23 +40,40 @@ class DrawerController extends Component {
     filteredTokens = _.without(this.props.assets, { symbol: 'WETH' });
 
     return (
-      <View style={{ height: '100%', paddingTop: 25, borderRightWidth: 1 }}>
-        <Row style={{ height: 200 }}>
-          <TokenDetails token={this.state.token || ethToken} />
-        </Row>
-        <Row>
-          <TokenList
-            token={this.state.token}
-            tokens={filteredTokens}
-            onPress={token => this.setState({ token })}
+      <ScrollView
+        style={{ width: '100%', borderRightWidth: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
           />
-        </Row>
-        <Row>
-          <Actions />
-        </Row>
-      </View>
+        }
+      >
+        <View style={{ height: '100%', paddingTop: 25 }}>
+          <Row style={{ height: 200 }}>
+            <TokenDetails token={this.state.token || ethToken} />
+          </Row>
+          <Row>
+            <TokenList
+              token={this.state.token}
+              tokens={filteredTokens}
+              onPress={token => this.setState({ token })}
+            />
+          </Row>
+          <Row>
+            <Actions />
+          </Row>
+        </View>
+      </ScrollView>
     );
   }
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this.props.dispatch(updateForexTickers());
+    await this.props.dispatch(updateTokenTickers());
+    this.setState({ refreshing: false });
+  };
 }
 
 export default connect(

@@ -1,15 +1,9 @@
 import { ZeroEx } from '0x.js';
 import React, { Component } from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
   findTickerDetails,
   formatAmount,
@@ -48,31 +42,11 @@ const TokenItem = connect(
 );
 
 class TokenList extends Component {
-  constructor(props, context) {
-    super(props);
-
-    this.state = {
-      refreshing: false
-    };
-  }
-
-  async componentDidMount() {
-    await this.onRefresh();
-  }
-
   render() {
     const { tokens } = this.props;
 
     return (
-      <ScrollView
-        style={{ width: '100%' }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-          />
-        }
-      >
+      <View style={{ width: '100%' }}>
         {tokens.map((token, index) => (
           <TouchableOpacity
             key={`token-${index}`}
@@ -92,16 +66,9 @@ class TokenList extends Component {
             />
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
     );
   }
-
-  onRefresh = async () => {
-    this.setState({ refreshing: true });
-    await this.props.dispatch(updateForexTickers());
-    await this.props.dispatch(updateTokenTickers());
-    this.setState({ refreshing: false });
-  };
 }
 
 const styles = {
