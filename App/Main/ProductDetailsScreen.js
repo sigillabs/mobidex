@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Card, Header, Icon, ListItem, Text } from 'react-native-elements';
+import { Card, Header, ListItem, Text } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
@@ -112,7 +113,9 @@ class ProductDetailsView extends Component {
         <Row style={{ justifyContent: 'center' }}>
           <Button
             large
-            icon={<Icon name="send" size={20} color="white" />}
+            icon={
+              <Icon name="arrow-with-circle-left" size={20} color="white" />
+            }
             onPress={() =>
               this.props.navigation.push('CreateOrder', {
                 product: { base, quote },
@@ -125,7 +128,9 @@ class ProductDetailsView extends Component {
           />
           <Button
             large
-            icon={<Icon name="send" size={20} color="white" />}
+            icon={
+              <Icon name="arrow-with-circle-right" size={20} color="white" />
+            }
             onPress={() =>
               this.props.navigation.push('CreateOrder', {
                 product: { base, quote },
