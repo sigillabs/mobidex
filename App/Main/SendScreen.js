@@ -1,13 +1,16 @@
+import BigNumber from 'bignumber.js';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Card, Input } from 'react-native-elements';
+import { View } from 'react-native';
+import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import BigNumber from 'bignumber.js';
-import { ZeroEx } from '0x.js';
 import { sendEther, sendTokens } from '../../thunks';
-import GlobalStyles from '../../styles';
+import { findTickerDetails, formatMoney } from '../../utils';
+import AddressInput from '../components/AddressInput';
 import Button from '../components/Button';
+import ListItemDetail from '../components/ListItemDetail';
+import TokenInput from '../components/TokenInput';
 
 class SendScreen extends Component {
   constructor(props) {
@@ -20,40 +23,6 @@ class SendScreen extends Component {
       addressError: false
     };
   }
-
-  onSetAmount = value => {
-    try {
-      let amount = new BigNumber(value);
-      if (amount.gt(0)) {
-        this.setState({ amount: amount, amountError: false });
-      } else {
-        this.setState({ amount: new BigNumber(0), amountError: true });
-      }
-    } catch (err) {
-      this.setState({ amount: new BigNumber(0), amountError: true });
-    }
-  };
-
-  onSetAddress = value => {
-    this.setState({ address: value, addressError: false });
-  };
-
-  submit = async () => {
-    let {
-      navigation: {
-        state: {
-          params: { token }
-        }
-      }
-    } = this.props;
-    let { address, amount } = this.state;
-    if (token.address === null) {
-      await this.props.dispatch(sendEther(address, amount));
-    } else {
-      await this.props.dispatch(sendTokens(token, address, amount));
-    }
-    this.props.navigation.push('Portfolio');
-  };
 
   render() {
     const {
@@ -70,48 +39,99 @@ class SendScreen extends Component {
       token.symbol,
       settings.forexCurrency
     );
+    const forexAmount = this.state.amount.mul(forex.price).toNumber();
 
     return (
-      <Card title={`Send ${token.name}`}>
-        <View style={{ marginBottom: 10 }}>
-          <Input
-            placeholder="Amount"
-            onChangeText={this.onSetAmount}
-            keyboardType="numeric"
-            errorMessage={
-              this.state.amountError
-                ? 'Amount should be numeric and greater than `0`.'
-                : null
-            }
-            errorStyle={{ color: 'red' }}
-            icon={<Icon name="money" size={24} color="black" />}
-            containerStyle={{ width: '100%', marginBottom: 10 }}
-          />
-          <Input
-            placeholder="Address"
-            onChangeText={this.onSetAddress}
-            keyboardType="ascii-capable"
-            icon={<Icon name="user" size={24} color="black" />}
-            containerStyle={{ width: '100%', marginBottom: 10 }}
-          />
-        </View>
+      <View style={{ padding: 20 }}>
+        <Text h4 style={{ textAlign: 'center' }}>
+          Send {token.symbol}
+        </Text>
+        <AddressInput
+          placeholder="Address"
+          onChangeText={v => this.onSetAddress(v)}
+          keyboardType="ascii-capable"
+          containerStyle={{ width: '100%', marginBottom: 10 }}
+        />
+        <TokenInput
+          token={token}
+          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
+          onChange={v => this.onSetAmount(v)}
+          amount={this.state.amount}
+        />
+        <ListItemDetail
+          left="Amount"
+          right={formatMoney(forexAmount)}
+          style={{ marginBottom: 10, marginTop: 10 }}
+          leftStyle={{ flex: 1, color: 'black' }}
+          rightStyle={{ flex: 1, color: 'black' }}
+          rowStyle={{ flex: 0, width: '100%' }}
+        />
         <Button
           large
-          onPress={this.submit}
+          onPress={() => this.submit()}
           icon={<Icon name="check" size={24} color="white" />}
           title={'Send'}
           style={{ width: '100%' }}
         />
-      </Card>
+      </View>
     );
+  }
+
+  async submit() {
+    let {
+      navigation: {
+        state: {
+          params: { token }
+        }
+      }
+    } = this.props;
+    let { address, amount } = this.state;
+    if (token.address === null) {
+      await this.props.dispatch(sendEther(address, amount));
+    } else {
+      await this.props.dispatch(sendTokens(token, address, amount));
+    }
+    this.props.navigation.push('Portfolio');
+  }
+
+  onSetAmount(value) {
+    try {
+      let amount = new BigNumber(value);
+      if (amount.gt(0)) {
+        this.setState({ amount: amount, amountError: false });
+      } else {
+        this.setState({ amount: new BigNumber(0), amountError: true });
+      }
+    } catch (err) {
+      this.setState({ amount: new BigNumber(0), amountError: true });
+    }
+  }
+
+  onSetAddress(value) {
+    this.setState({ address: value, addressError: false });
   }
 }
 
+SendScreen.propTypes = {
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        side: PropTypes.string.isRequired,
+        product: PropTypes.shape({
+          base: PropTypes.object.isRequired,
+          quote: PropTypes.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
+  settings: PropTypes.object,
+  ticker: PropTypes.object
+};
+
 export default connect(
   state => ({
-    ...state.device.layout,
-    ...state.settings,
-    ...state.wallet,
+    settings: state.settings,
     ticker: state.ticker
   }),
   dispatch => ({ dispatch })

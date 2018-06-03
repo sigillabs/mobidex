@@ -6,7 +6,7 @@ import { TextInputMask } from 'react-native-masked-text';
 import { getImage } from '../../utils';
 import MutedText from './MutedText';
 
-export default class TokenAmount extends Component {
+export default class TokenInput extends Component {
   render() {
     const {
       avatarProps,
@@ -62,7 +62,7 @@ export default class TokenAmount extends Component {
   }
 }
 
-TokenAmount.propTypes = {
+TokenInput.propTypes = {
   avatarProps: PropTypes.shape({
     small: PropTypes.bool,
     medium: PropTypes.bool,
@@ -80,7 +80,7 @@ TokenAmount.propTypes = {
   wrapperStyle: PropTypes.object
 };
 
-TokenAmount.defaultProps = {
+TokenInput.defaultProps = {
   avatarProps: {
     medium: true,
     rounded: true,
