@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
 import ButtonGroup from '../../components/ButtonGroup';
@@ -49,3 +50,18 @@ export default class CreateOrderScreen extends Component {
     );
   }
 }
+
+CreateOrderScreen.propTypes = {
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        side: PropTypes.string.isRequired,
+        product: PropTypes.shape({
+          base: PropTypes.object.isRequired,
+          quote: PropTypes.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired
+};

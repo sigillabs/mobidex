@@ -14,24 +14,6 @@ import MutedText from '../components/MutedText';
 import Row from '../components/Row';
 
 class LogoTicker extends Component {
-  static propTypes = {
-    avatarProps: PropTypes.shape({
-      small: PropTypes.bool,
-      medium: PropTypes.bool,
-      large: PropTypes.bool,
-      xlarge: PropTypes.bool
-    })
-  };
-
-  static defaultProps = {
-    avatarProps: {
-      medium: true,
-      rounded: true,
-      activeOpacity: 0.7,
-      overlayContainerStyle: { backgroundColor: 'transparent' }
-    }
-  };
-
   render() {
     const {
       avatarProps,
@@ -47,7 +29,6 @@ class LogoTicker extends Component {
 
     const forexTicker = this.props.ticker.forex[symbol][forexCurrency];
     const { changePercent } = detailsFromTicker(forexTicker);
-
     const { rowStyle, priceStyle, priceChangeStyle } = more;
 
     return (
@@ -97,6 +78,24 @@ class LogoTicker extends Component {
     );
   }
 }
+
+LogoTicker.propTypes = {
+  avatarProps: PropTypes.shape({
+    small: PropTypes.bool,
+    medium: PropTypes.bool,
+    large: PropTypes.bool,
+    xlarge: PropTypes.bool
+  })
+};
+
+LogoTicker.defaultProps = {
+  avatarProps: {
+    medium: true,
+    rounded: true,
+    activeOpacity: 0.7,
+    overlayContainerStyle: { backgroundColor: 'transparent' }
+  }
+};
 
 export default connect(
   state => ({

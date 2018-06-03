@@ -56,13 +56,21 @@ class SendScreen extends Component {
   };
 
   render() {
-    let {
+    const {
       navigation: {
         state: {
           params: { token }
         }
-      }
+      },
+      settings,
+      ticker
     } = this.props;
+    const forex = findTickerDetails(
+      ticker.forex,
+      token.symbol,
+      settings.forexCurrency
+    );
+
     return (
       <Card title={`Send ${token.name}`}>
         <View style={{ marginBottom: 10 }}>
@@ -100,6 +108,11 @@ class SendScreen extends Component {
 }
 
 export default connect(
-  state => ({ ...state.device.layout, ...state.wallet }),
+  state => ({
+    ...state.device.layout,
+    ...state.settings,
+    ...state.wallet,
+    ticker: state.ticker
+  }),
   dispatch => ({ dispatch })
 )(SendScreen);

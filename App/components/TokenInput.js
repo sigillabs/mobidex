@@ -1,25 +1,26 @@
-import BigNumber from 'bignumber.js';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Avatar, Divider, Input, Text } from 'react-native-elements';
-import { MKTextField, TextInputMask } from 'react-native-masked-text';
-import { formatAmount, getImage } from '../../utils';
-import Logo from './Logo';
+import { Avatar, Divider, Text } from 'react-native-elements';
+import { TextInputMask } from 'react-native-masked-text';
+import { getImage } from '../../utils';
 import MutedText from './MutedText';
 
 export default class TokenAmount extends Component {
   render() {
-    const { avatarProps, label, token, onChange, amount, ...more } = this.props;
     const {
-      amountStyle,
+      avatarProps,
+      label,
+      token,
+      onChange,
+      amount,
       containerStyle,
       inputStyle,
-      labelStyle,
       nameStyle,
       symbolStyle,
       wrapperStyle
-    } = more;
-    const { decimals, name, symbol } = token;
+    } = this.props;
+    const { name, symbol } = token;
 
     return (
       <View style={[{ padding: 20 }, containerStyle]}>
@@ -38,9 +39,8 @@ export default class TokenAmount extends Component {
         >
           <Avatar source={getImage(symbol)} {...avatarProps} />
           <TextInputMask
-            ref={'myDateText'}
-            type={'money'}
             style={[{ width: 100, marginLeft: 10 }, inputStyle]}
+            type={'money'}
             value={amount}
             onChangeText={onChange}
             options={{
@@ -61,3 +61,30 @@ export default class TokenAmount extends Component {
     );
   }
 }
+
+TokenAmount.propTypes = {
+  avatarProps: PropTypes.shape({
+    small: PropTypes.bool,
+    medium: PropTypes.bool,
+    large: PropTypes.bool,
+    xlarge: PropTypes.bool
+  }),
+  label: PropTypes.string,
+  token: PropTypes.object,
+  onChange: PropTypes.func,
+  amount: PropTypes.object,
+  containerStyle: PropTypes.object,
+  inputStyle: PropTypes.object,
+  nameStyle: PropTypes.object,
+  symbolStyle: PropTypes.object,
+  wrapperStyle: PropTypes.object
+};
+
+TokenAmount.defaultProps = {
+  avatarProps: {
+    medium: true,
+    rounded: true,
+    activeOpacity: 0.7,
+    overlayContainerStyle: { backgroundColor: 'transparent' }
+  }
+};

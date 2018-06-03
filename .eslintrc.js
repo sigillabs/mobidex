@@ -5,7 +5,7 @@ module.exports = {
     commonjs: true,
     amd: true
   },
-  extends: 'eslint:recommended',
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
   parserOptions: {
     ecmaVersion: 8,
     ecmaFeatures: {

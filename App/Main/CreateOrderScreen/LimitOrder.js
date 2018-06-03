@@ -1,16 +1,15 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { setError } from '../../../actions';
 import { getProfitLossStyle } from '../../../styles';
 import { createSignSubmitOrder } from '../../../thunks';
-import { formatAmount, formatPercent } from '../../../utils';
+import { formatAmount } from '../../../utils';
 import Button from '../../components/Button';
 import ListItemDetail from '../../components/ListItemDetail';
-import ButtonGroup from '../../components/ButtonGroup';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
 
@@ -35,8 +34,7 @@ class CreateLimitOrder extends Component {
             side
           }
         }
-      },
-      orders
+      }
     } = this.props;
 
     let buttonLabel = null;
@@ -103,7 +101,7 @@ class CreateLimitOrder extends Component {
         />
         <Button
           large
-          onPress={this.submit}
+          onPress={() => this.submit()}
           icon={<Icon name="check" size={24} color="white" />}
           title={buttonLabel}
         />
@@ -126,8 +124,8 @@ class CreateLimitOrder extends Component {
     };
   }
 
-  submit = async () => {
-    let {
+  async submit() {
+    const {
       navigation: {
         state: {
           params: {
@@ -137,9 +135,8 @@ class CreateLimitOrder extends Component {
         }
       }
     } = this.props;
-    let { amount, price } = this.state;
-
-    let result = await this.props.dispatch(
+    const { amount, price } = this.state;
+    const result = await this.props.dispatch(
       createSignSubmitOrder(
         new BigNumber(price),
         new BigNumber(amount),
@@ -152,8 +149,23 @@ class CreateLimitOrder extends Component {
     if (result) {
       this.props.navigation.push('List');
     }
-  };
+  }
 }
+
+CreateLimitOrder.propTypes = {
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        side: PropTypes.string.isRequired,
+        product: PropTypes.shape({
+          base: PropTypes.object.isRequired,
+          quote: PropTypes.object.isRequired
+        }).isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired
+};
 
 export default connect(
   (state, ownProps) => ({
