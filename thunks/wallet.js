@@ -225,7 +225,10 @@ export function sendEther(to, amount) {
       let zeroEx = await getZeroExClient(web3);
       let txhash = await sendEtherUtil(web3, to, amount);
       let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+
+      console.log('Receipt: ', receipt);
     } catch (err) {
+      console.warn(err);
       await dispatch(setError(err));
     } finally {
       dispatch(notProcessing());
@@ -288,14 +291,12 @@ export function gotoEtherScan(txaddr) {
 }
 
 export function gotoOnboardingOrLocked() {
-  return async (dispatch) => {
+  return async dispatch => {
     let hasWallet = await hasWalletOnFileSystem();
     if (hasWallet) {
       dispatch(NavigationActions.navigate({ routeName: 'Locked' }));
     } else {
-      dispatch(
-        NavigationActions.navigate({ routeName: 'Onboarding' })
-      );
+      dispatch(NavigationActions.navigate({ routeName: 'Onboarding' }));
     }
   };
 }

@@ -91,7 +91,7 @@ class SendScreen extends Component {
     } else {
       await this.props.dispatch(sendTokens(token, address, amount));
     }
-    this.props.navigation.push('Portfolio');
+    this.props.navigation.goBack(null);
   }
 
   onSetAmount(value) {
