@@ -20,6 +20,7 @@ import {
   getTokenByAddress,
   prices
 } from '../../utils';
+import EmptyList from '../components/EmptyList';
 import MutedText from '../components/MutedText';
 import Row from '../components/Row';
 
@@ -135,38 +136,37 @@ class OrdersScreen extends Component {
           />
         }
       >
-        <View style={{ width: '100%', backgroundColor: 'white' }}>
-          {orders.map((order, index) => {
-            return (
-              <Swipeout
-                autoClose={true}
-                style={{
-                  backgroundColor: 'transparent'
-                }}
-                right={[
-                  {
-                    // component: (
-                    //   <Button
-                    //     large
-                    //     icon={<Icon name="trash" size={20} color="white" />}
-                    //     onPress={this.delete}
-                    //     title="Delete"
-                    //     style={{ marginTop: 10 }}
-                    //   />
-                    // )
-                    backgroundColor: colors.yellow0,
-                    text: 'Delete',
-                    type: 'delete',
-                    underlayColor: colors.yellow0,
-                    onPress: () => this.cancelOrder(order)
-                  }
-                ]}
-              >
-                <TokenOrder order={order} />
-              </Swipeout>
-            );
-          })}
-        </View>
+        {orders.length > 0 ? (
+          <View style={{ width: '100%', backgroundColor: 'white' }}>
+            {orders.map((order, index) => {
+              return (
+                <Swipeout
+                  autoClose={true}
+                  style={{
+                    backgroundColor: 'transparent'
+                  }}
+                  right={[
+                    {
+                      backgroundColor: colors.yellow0,
+                      text: 'Delete',
+                      type: 'delete',
+                      underlayColor: colors.yellow0,
+                      onPress: () => this.cancelOrder(order)
+                    }
+                  ]}
+                >
+                  <TokenOrder order={order} />
+                </Swipeout>
+              );
+            })}
+          </View>
+        ) : (
+          <EmptyList style={{ height: '100%', width: '100%' }}>
+            <MutedText style={{ marginTop: 25 }}>
+              No active orders to show.
+            </MutedText>
+          </EmptyList>
+        )}
       </ScrollView>
     );
   }
