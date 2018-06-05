@@ -15,28 +15,28 @@ class TransactionHistoryScreen extends Component {
     };
   }
 
-  onRefresh = async () => {
-    this.setState({ refreshing: true });
-    await this.props.dispatch(loadTransactions());
-    this.setState({ refreshing: false });
-  };
-
   componentDidMount() {
-    this.props.dispatch(loadTransactions());
+    this.onRefresh();
   }
 
   render() {
+    const allTransactions = []
+      .concat(this.props.activeTransactions)
+      .concat(this.props.transactions);
     return (
       <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh.bind(this)}
+            onRefresh={() => this.onRefresh()}
           />
         }
       >
-        {this.props.transactions.length > 0 ? (
-          <TransactionsList transactions={this.props.transactions} />
+        {allTransactions.length > 0 ? (
+          <TransactionsList
+            active={this.props.activeTransactions}
+            transactions={this.props.transactions}
+          />
         ) : (
           <EmptyList style={{ height: '100%', width: '100%' }}>
             <MutedText style={{ marginTop: 25 }}>
@@ -47,9 +47,19 @@ class TransactionHistoryScreen extends Component {
       </ScrollView>
     );
   }
+
+  async onRefresh() {
+    this.setState({ refreshing: true });
+    await this.props.dispatch(loadTransactions());
+    this.setState({ refreshing: false });
+  }
 }
 
 export default connect(
-  state => ({ ...state.device, transactions: state.wallet.transactions }),
+  state => ({
+    ...state.device,
+    activeTransactions: state.wallet.activeTransactions,
+    transactions: state.wallet.transactions
+  }),
   dispatch => ({ dispatch })
 )(TransactionHistoryScreen);

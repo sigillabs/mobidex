@@ -57,6 +57,7 @@ const initialState = {
   privateKey: null,
   address: null,
   assets: [],
+  activeTransactions: [],
   transactions: [],
   processing: false
 };
@@ -74,8 +75,29 @@ export default handleActions(
       return { ...state, processing: false };
     },
     [Actions.ADD_TRANSACTIONS]: (state, action) => {
-      let transactions = _.unionBy(action.payload, state.transactions, 'id');
-      return { ...state, transactions };
+      const transactions = _.unionBy(action.payload, state.transactions, 'id');
+      const activeTransactions = state.activeTransactions.slice();
+      for (const tx of transactions) {
+        _.remove(activeTransactions, atx => {
+          atx.id === tx.id;
+        });
+      }
+      return { ...state, activeTransactions, transactions };
+    },
+    [Actions.ADD_ACTIVE_TRANSACTIONS]: (state, action) => {
+      const activeTransactions = _.unionBy(
+        action.payload,
+        state.activeTransactions,
+        'id'
+      );
+      console.warn(activeTransactions);
+      console.warn(action.payload);
+      for (const tx of state.transactions) {
+        _.remove(activeTransactions, atx => {
+          atx.id === tx.id;
+        });
+      }
+      return { ...state, activeTransactions };
     },
     [Actions.SET_WALLET]: (state, action) => {
       let { network, wallet } = action.payload;

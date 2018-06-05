@@ -1,6 +1,9 @@
 import { createAction } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
+export const addActiveTransactions = createAction(
+  Actions.ADD_ACTIVE_TRANSACTIONS
+);
 export const addAssets = createAction(Actions.ADD_ASSETS);
 export const addOrders = createAction(Actions.ADD_ORDERS);
 export const addTickerWatching = createAction(Actions.ADD_TICKER_WATCHING);

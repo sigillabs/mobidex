@@ -1,6 +1,4 @@
 import * as _ from 'lodash';
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
   RefreshControl,
@@ -8,17 +6,15 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { Avatar, List, ListItem, Text } from 'react-native-elements';
+import { Avatar, ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { colors } from '../../styles';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
   detailsFromTicker,
   formatAmount,
   formatMoney,
   formatPercent,
-  getImage,
-  prices
+  getImage
 } from '../../utils';
 import Row from '../components/Row';
 import MutedText from '../components/MutedText';
@@ -155,7 +151,7 @@ class ProductScreen extends Component {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh.bind(this)}
+            onRefresh={() => this.onRefresh()}
           />
         }
       >
@@ -204,12 +200,12 @@ class ProductScreen extends Component {
     );
   }
 
-  onRefresh = async () => {
+  async onRefresh() {
     this.setState({ refreshing: true });
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
-  };
+  }
 }
 
 const styles = {

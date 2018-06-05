@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { gotoEtherScan } from '../../../thunks';
-import {
-  formatAmountWithDecimals,
-  getTokenByAddress,
-  formatTimestamp
-} from '../../../utils';
-import Row from '../../components/Row';
-import MutedText from '../../components/MutedText';
+import TransactionItem from './TransactionItem';
+import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 
 class FilledItem extends Component {
   constructor(props) {
@@ -61,28 +53,25 @@ class FilledItem extends Component {
       };
 
     return (
-      <TouchableOpacity onPress={() => this.props.dispatch(gotoEtherScan(id))}>
-        <View>
-          <Row>
-            <Text>
-              {formatAmountWithDecimals(
-                filledMakerTokenAmount,
-                makerToken.decimals
-              )}{' '}
-              {makerToken.symbol}
-            </Text>
-            <Text> for </Text>
-            <Text>
-              {formatAmountWithDecimals(
-                filledTakerTokenAmount,
-                takerToken.decimals
-              )}{' '}
-              {takerToken.symbol}
-            </Text>
-          </Row>
-          <MutedText>{formatTimestamp(timestamp)}</MutedText>
-        </View>
-      </TouchableOpacity>
+      <TransactionItem
+        action="FILL"
+        label={'Filled'}
+        source={{
+          amount: formatAmountWithDecimals(
+            filledMakerTokenAmount,
+            makerToken.decimals
+          ),
+          symbol: makerToken.symbol
+        }}
+        destination={{
+          amount: formatAmountWithDecimals(
+            filledTakerTokenAmount,
+            takerToken.decimals
+          ),
+          symbol: takerToken.symbol
+        }}
+        timestamp={timestamp}
+      />
     );
   }
 }

@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { gotoEtherScan } from '../../../thunks';
-import {
-  formatAmountWithDecimals,
-  formatTimestamp,
-  getTokenByAddress
-} from '../../../utils';
-import Row from '../../components/Row';
-import MutedText from '../../components/MutedText';
+import TransactionItem from './TransactionItem';
+import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 
 class CancelledItem extends Component {
   constructor(props) {
@@ -49,28 +41,25 @@ class CancelledItem extends Component {
     let { makerToken, takerToken } = this.state;
 
     return (
-      <TouchableOpacity onPress={() => this.props.dispatch(gotoEtherScan(id))}>
-        <View>
-          <Row>
-            <Text>
-              {formatAmountWithDecimals(
-                cancelledMakerTokenAmount,
-                makerToken.decimals
-              )}{' '}
-              {makerToken.symbol}
-            </Text>
-            <Text> for </Text>
-            <Text>
-              {formatAmountWithDecimals(
-                cancelledTakerTokenAmount,
-                takerToken.decimals
-              )}{' '}
-              {takerToken.symbol}
-            </Text>
-          </Row>
-          <MutedText>{formatTimestamp(timestamp)}</MutedText>
-        </View>
-      </TouchableOpacity>
+      <TransactionItem
+        action="CANCEL"
+        label={'Cancelled'}
+        source={{
+          amount: formatAmountWithDecimals(
+            cancelledMakerTokenAmount,
+            makerToken.decimals
+          ),
+          symbol: makerToken.symbol
+        }}
+        destination={{
+          amount: formatAmountWithDecimals(
+            cancelledTakerTokenAmount,
+            takerToken.decimals
+          ),
+          symbol: takerToken.symbol
+        }}
+        timestamp={timestamp}
+      />
     );
   }
 }
