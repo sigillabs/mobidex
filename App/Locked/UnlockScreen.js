@@ -33,14 +33,10 @@ class UnlockScreen extends Component {
                   routeName: 'ImportPrivateKey'
                 });
                 break;
-
-              case 2:
-                this.props.navigation.navigate({ routeName: 'GenerateWallet' });
-                break;
             }
           }}
           selectedIndex={0}
-          buttons={['Unlock', 'Import', 'New']}
+          buttons={['Unlock', 'Import']}
         />
       </BigCenter>
     );

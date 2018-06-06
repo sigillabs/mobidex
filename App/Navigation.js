@@ -1,12 +1,7 @@
 import React from 'react';
 import { StackNavigator, SwitchNavigator } from 'react-navigation';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
-import FAIcon from 'react-native-vector-icons/FontAwesome';
-
 import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
-import GenerateWalletScreen from './Locked/GenerateWalletScreen';
 import UnlockScreen from './Locked/UnlockScreen';
-
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
 import OrdersScreen from './Main/OrdersScreen';
@@ -18,10 +13,7 @@ import SendScreen from './Main/SendScreen';
 import TransactionHistoryScreen from './Main/TransactionHistoryScreen';
 import UnwrapEtherScreen from './Main/UnwrapEtherScreen';
 import WrapEtherScreen from './Main/WrapEtherScreen';
-
 import IntroScreen from './Onboarding/IntroScreen';
-
-import GenerateWallet from './views/GenerateWallet';
 import ImportPrivateKey from './views/ImportPrivateKey';
 import TransactionsProcessing from './views/TransactionsProcessing';
 import Err from './views/Error';
@@ -31,8 +23,7 @@ import { colors } from '../styles';
 const LockedNavigation = SwitchNavigator(
   {
     Unlock: { screen: UnlockScreen },
-    ImportPrivateKey: { screen: ImportPrivateKeyScreen },
-    GenerateWallet: { screen: GenerateWalletScreen }
+    ImportPrivateKey: { screen: ImportPrivateKeyScreen }
   },
   {
     initialRouteName: 'Unlock'
@@ -42,7 +33,6 @@ const LockedNavigation = SwitchNavigator(
 const OnboardingNavigation = StackNavigator(
   {
     Intro: { screen: IntroScreen },
-    NewWallet: { screen: GenerateWallet },
     Import: { screen: ImportPrivateKey }
   },
   {

@@ -48,14 +48,8 @@ export default class Intro extends Component {
             paddingBottom: 100
           }}
         >
-          To generate a new Wallet, please click New Wallet. To import a wallet,
-          press Import.
+          To get started, Import a wallet.
         </Text>
-        <LongButton
-          large
-          onPress={() => this.props.navigation.push('NewWallet')}
-          title="New Wallet"
-        />
         <LongButton
           large
           onPress={() => this.props.navigation.push('Import')}
