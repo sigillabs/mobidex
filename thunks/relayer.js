@@ -4,7 +4,7 @@ import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { NavigationActions } from 'react-navigation';
-import { addTickerWatching, setError } from '../actions';
+import { addActiveTransactions, addTickerWatching, setError } from '../actions';
 import { loadTransactions } from '../thunks';
 import {
   batchFillOrKill,
@@ -141,11 +141,19 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
 
       // Make sure allowance is available.
       if (order.makerTokenAmount.gt(allowance)) {
-        let txhash = await setTokenUnlimitedAllowance(
+        const txhash = await setTokenUnlimitedAllowance(
           web3,
           order.makerTokenAddress
         );
-        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        const activeTransaction = {
+          id: txhash,
+          type: 'ALLOWANCE',
+          token: order,
+          amount: 'UNLIMITED'
+        };
+        dispatch(addActiveTransactions([activeTransaction]));
+        const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        console.log('Receipt: ', receipt);
       }
 
       // Guarantee WETH is available.
@@ -155,7 +163,14 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
           order.makerTokenAmount
         );
         if (txhash) {
-          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          const activeTransaction = {
+            id: txhash,
+            type: 'WRAP',
+            amount: order.takerTokenAmount
+          };
+          dispatch(addActiveTransactions([activeTransaction]));
+          const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          console.log('Receipt: ', receipt);
         }
       }
 
@@ -168,10 +183,7 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
       dispatch(addOrders([signedOrder]));
     } catch (err) {
       console.warn(err);
-      await dispatch(setError(err));
-    } finally {
-      dispatch(notProcessing());
-      dispatch(NavigationActions.push({ routeName: 'List' }));
+      dispatch(setError(err));
     }
   };
 }
@@ -190,23 +202,24 @@ export function cancelOrder(order) {
         throw new Error('Cannot cancel order that is not yours');
       }
 
-
       let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
-      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+
+      const activeTransaction = {
+        id: txhash,
+        type: 'CANCEL',
+        ...order
+      };
+
+      dispatch(addActiveTransactions([activeTransaction]));
     } catch (err) {
       console.warn(err);
       dispatch(setError(err));
-    } finally {
-      dispatch(notProcessing());
-      dispatch(NavigationActions.push({ routeName: 'Trading' }));
     }
   };
 }
 
 export function fillOrder(order) {
   return async (dispatch, getState) => {
-    dispatch(processing());
-
     try {
       let {
         wallet: { web3 }
@@ -217,11 +230,19 @@ export function fillOrder(order) {
 
       // Make sure allowance is available.
       if (fillAmount.gt(allowance)) {
-        let txhash = await setTokenUnlimitedAllowance(
+        const txhash = await setTokenUnlimitedAllowance(
           web3,
           order.takerTokenAddress
         );
-        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        const activeTransaction = {
+          id: txhash,
+          type: 'ALLOWANCE',
+          token: order,
+          amount: 'UNLIMITED'
+        };
+        dispatch(addActiveTransactions([activeTransaction]));
+        const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        console.log('Receipt: ', receipt);
       }
 
       // Guarantee WETH is available.
@@ -231,40 +252,57 @@ export function fillOrder(order) {
           order.takerTokenAmount
         );
         if (txhash) {
-          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          const activeTransaction = {
+            id: txhash,
+            type: 'WRAP',
+            amount: order.takerTokenAmount
+          };
+          dispatch(addActiveTransactions([activeTransaction]));
+          const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          console.log('Receipt: ', receipt);
         }
       }
 
       let txhash = await fillOrderUtil(web3, order);
-      let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-
-      dispatch(loadTransactions());
+      const activeTransaction = {
+        id: txhash,
+        type: 'FILL',
+        ...order
+      };
+      dispatch(addActiveTransactions([activeTransaction]));
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log('Receipt: ', receipt);
     } catch (err) {
       console.warn(err);
       dispatch(setError(err));
-    } finally {
-      dispatch(notProcessing());
     }
   };
 }
 
 export function fillUpToBaseAmount(amount, base, quote, side) {
   return async (dispatch, getState) => {
-    dispatch(processing());
-
     try {
       const {
-        wallet: { web3, address },
+        wallet: { web3 },
         relayer: { orders }
       } = getState();
       const zeroEx = await getZeroExClient(web3);
-      const tokenAddress = side == 'buy' ? quote.address : base.address;
+      const token = side == 'buy' ? quote : base;
+      const tokenAddress = token.address;
       let allowance = await getTokenAllowance(web3, tokenAddress);
 
       // Make sure allowance is available.
       if (allowance.lt(ZeroEx.NULL_ADDRESS)) {
-        let txhash = await setTokenUnlimitedAllowance(web3, tokenAddress);
-        let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        const txhash = await setTokenUnlimitedAllowance(web3, tokenAddress);
+        const activeTransaction = {
+          id: txhash,
+          type: 'ALLOWANCE',
+          token: token,
+          amount: 'UNLIMITED'
+        };
+        dispatch(addActiveTransactions([activeTransaction]));
+        const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        console.log('Receipt: ', receipt);
       }
 
       // Filter orders until amount is met.
@@ -288,22 +326,30 @@ export function fillUpToBaseAmount(amount, base, quote, side) {
       if (await isWETHAddress(web3, tokenAddress)) {
         let txhash = await guaranteeWETHInWeiAmount(web3, amount);
         if (txhash) {
-          let receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-          console.log(receipt);
+          const activeTransaction = {
+            id: txhash,
+            type: 'WRAP',
+            amount: amount
+          };
+          dispatch(addActiveTransactions([activeTransaction]));
+          const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+          console.log('Receipt: ', receipt);
         }
       }
 
       // Fill orders
       let txhash = await batchFillOrKill(web3, ordersToFill, amount);
+      const activeTransaction = {
+        id: txhash,
+        type: 'BATCH_FILL',
+        amount: amount
+      };
+      dispatch(addActiveTransactions([activeTransaction]));
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log(receipt);
-
-      dispatch(loadTransactions());
+      console.log('Receipt: ', receipt);
     } catch (err) {
       console.warn(err);
       dispatch(setError(err));
-    } finally {
-      dispatch(notProcessing());
     }
   };
 }

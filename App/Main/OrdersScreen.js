@@ -31,7 +31,7 @@ const TokenOrder = connect(
   }),
   dispatch => ({ dispatch })
 )(
-  class extends Component {
+  class BaseTokenOrder extends Component {
     constructor(props) {
       super(props);
 
@@ -132,7 +132,7 @@ class OrdersScreen extends Component {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh.bind(this)}
+            onRefresh={() => this.onRefresh}
           />
         }
       >
@@ -141,6 +141,7 @@ class OrdersScreen extends Component {
             {orders.map((order, index) => {
               return (
                 <Swipeout
+                  key={index}
                   autoClose={true}
                   style={{
                     backgroundColor: 'transparent'
@@ -189,11 +190,11 @@ class OrdersScreen extends Component {
     await this.onRefresh();
   }
 
-  onRefresh = async () => {
+  async onRefresh() {
     this.setState({ refreshing: true });
     await this.props.dispatch(loadOrders());
     this.setState({ refreshing: false });
-  };
+  }
 }
 
 const styles = {
