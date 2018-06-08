@@ -70,6 +70,7 @@
     "devDependencies": {
         "@types/qs": "^6.5.1",
         "babel-jest": "22.4.3",
+        "babel-plugin-transform-async-to-generator": "^6.24.1",
         "babel-plugin-transform-decorators-legacy": "^1.3.4",
         "babel-preset-es2015": "^6.24.1",
         "babel-preset-es2017": "^6.24.1",

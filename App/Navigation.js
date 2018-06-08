@@ -36,7 +36,8 @@ const OnboardingNavigation = StackNavigator(
     Import: { screen: ImportPrivateKey }
   },
   {
-    initialRouteName: 'Intro'
+    initialRouteName: 'Intro',
+    headerMode: 'none'
   }
 );
 
