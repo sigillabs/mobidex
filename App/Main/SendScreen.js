@@ -87,9 +87,9 @@ class SendScreen extends Component {
     } = this.props;
     let { address, amount } = this.state;
     if (token.address === null) {
-      await this.props.dispatch(sendEther(address, amount));
+      this.props.dispatch(sendEther(address, amount));
     } else {
-      await this.props.dispatch(sendTokens(token, address, amount));
+      this.props.dispatch(sendTokens(token, address, amount));
     }
     this.props.navigation.goBack(null);
   }

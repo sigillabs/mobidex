@@ -5,7 +5,6 @@ import {
   addActiveTransactions,
   addAssets,
   addTransactions,
-  setError,
   setWallet
 } from '../actions';
 import {
@@ -22,6 +21,7 @@ import {
   wrapEther as wrapEtherUtil,
   unwrapEther as unwrapEtherUtil
 } from '../utils';
+import { gotoErrorScreen } from './navigation';
 
 // Would like to password protect using Ethereum Secret Storage
 export function generateWallet(password) {
@@ -181,7 +181,7 @@ export function loadTransactions() {
 
       dispatch(addTransactions(filltxs.concat(canceltxs)));
     } catch (err) {
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -206,8 +206,7 @@ export function sendTokens(token, to, amount) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -231,8 +230,7 @@ export function sendEther(to, amount) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -255,8 +253,7 @@ export function wrapEther(amount) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -279,8 +276,7 @@ export function unwrapEther(amount) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }

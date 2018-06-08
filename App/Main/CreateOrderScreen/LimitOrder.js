@@ -47,8 +47,6 @@ class CreateLimitOrder extends Component {
       total = total.negated();
     }
 
-    console.warn(subTotal.toNumber(), getProfitLossStyle(subTotal.toNumber()));
-
     switch (side) {
       case 'buy':
         buttonLabel = `Bid ${base.symbol}`;
@@ -136,7 +134,8 @@ class CreateLimitOrder extends Component {
       }
     } = this.props;
     const { amount, price } = this.state;
-    const result = await this.props.dispatch(
+
+    this.props.dispatch(
       createSignSubmitOrder(
         new BigNumber(price),
         new BigNumber(amount),
@@ -145,10 +144,7 @@ class CreateLimitOrder extends Component {
         side
       )
     );
-
-    if (result) {
-      this.props.navigation.push('List');
-    }
+    this.props.navigation.push('List');
   }
 }
 

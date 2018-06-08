@@ -32,442 +32,442 @@ export function formatAmount(amount) {
 export function getImage(symbol) {
   switch (symbol) {
     case 'ABT':
-      return require('../images/logos/ABT.png');
+      return require('../images/tokens/ABT.png');
 
     case 'AE':
-      return require('../images/logos/AE.png');
+      return require('../images/tokens/AE.png');
 
     case 'AGI':
-      return require('../images/logos/AGI.png');
+      return require('../images/tokens/AGI.png');
 
     case 'AION':
-      return require('../images/logos/AION.png');
+      return require('../images/tokens/AION.png');
 
     case 'AIR':
-      return require('../images/logos/AIR.png');
+      return require('../images/tokens/AIR.png');
 
     case 'AIX':
-      return require('../images/logos/AIX.png');
+      return require('../images/tokens/AIX.png');
 
     case 'ANT':
-      return require('../images/logos/ANT.png');
+      return require('../images/tokens/ANT.png');
 
     case 'ARN':
-      return require('../images/logos/ARN.png');
+      return require('../images/tokens/ARN.png');
 
     case 'ART':
-      return require('../images/logos/ART.png');
+      return require('../images/tokens/ART.png');
 
     case 'AST':
-      return require('../images/logos/AST.png');
+      return require('../images/tokens/AST.png');
 
     case 'AUC':
-      return require('../images/logos/AUC.png');
+      return require('../images/tokens/AUC.png');
 
     case 'BAX':
-      return require('../images/logos/BAX.png');
+      return require('../images/tokens/BAX.png');
 
     case 'BCDT':
-      return require('../images/logos/BCDT.png');
+      return require('../images/tokens/BCDT.png');
 
     case 'BEE':
-      return require('../images/logos/BEE.png');
+      return require('../images/tokens/BEE.png');
 
     case 'BERRY':
-      return require('../images/logos/BERRY.png');
+      return require('../images/tokens/BERRY.png');
 
     case 'BLT':
-      return require('../images/logos/BLT.png');
+      return require('../images/tokens/BLT.png');
 
     case 'BLZ':
-      return require('../images/logos/BLZ.png');
+      return require('../images/tokens/BLZ.png');
 
     case 'BNT':
-      return require('../images/logos/BNT.png');
+      return require('../images/tokens/BNT.png');
 
     case 'BNTY':
-      return require('../images/logos/BNTY.png');
+      return require('../images/tokens/BNTY.png');
 
     case 'CAG':
-      return require('../images/logos/CAG.png');
+      return require('../images/tokens/CAG.png');
 
     case 'CAN':
-      return require('../images/logos/CAN.png');
+      return require('../images/tokens/CAN.png');
 
     case 'CAT':
-      return require('../images/logos/CAT.png');
+      return require('../images/tokens/CAT.png');
 
     case 'CBT':
-      return require('../images/logos/CBT.png');
+      return require('../images/tokens/CBT.png');
 
     case 'CDT':
-      return require('../images/logos/CDT.png');
+      return require('../images/tokens/CDT.png');
 
     case 'CFI':
-      return require('../images/logos/CFI.png');
+      return require('../images/tokens/CFI.png');
 
     case 'CL':
-      return require('../images/logos/CL.png');
+      return require('../images/tokens/CL.png');
 
     case 'CND':
-      return require('../images/logos/CND.png');
+      return require('../images/tokens/CND.png');
 
     case 'CRED':
-      return require('../images/logos/CRED.png');
+      return require('../images/tokens/CRED.png');
 
     case 'CVC':
-      return require('../images/logos/CVC.png');
+      return require('../images/tokens/CVC.png');
 
     case 'CVT':
-      return require('../images/logos/CVT.png');
+      return require('../images/tokens/CVT.png');
 
     case 'DAI':
-      return require('../images/logos/DAI.png');
+      return require('../images/tokens/DAI.png');
 
     case 'DALA':
-      return require('../images/logos/DALA.png');
+      return require('../images/tokens/DALA.png');
 
     case 'DATA':
-      return require('../images/logos/DATA.png');
+      return require('../images/tokens/DATA.png');
 
     case 'DCL':
-      return require('../images/logos/DCL.png');
+      return require('../images/tokens/DCL.png');
 
     case 'DENT':
-      return require('../images/logos/DENT.png');
+      return require('../images/tokens/DENT.png');
 
     case 'DFS':
-      return require('../images/logos/DFS.png');
+      return require('../images/tokens/DFS.png');
 
     case 'DGD':
-      return require('../images/logos/DGD.png');
+      return require('../images/tokens/DGD.png');
 
     case 'DGPT':
-      return require('../images/logos/DGPT.png');
+      return require('../images/tokens/DGPT.png');
 
     case 'DNT':
-      return require('../images/logos/DNT.png');
+      return require('../images/tokens/DNT.png');
 
     case 'DOV':
-      return require('../images/logos/DOV.png');
+      return require('../images/tokens/DOV.png');
 
     case 'DPP':
-      return require('../images/logos/DPP.png');
+      return require('../images/tokens/DPP.png');
 
     case 'DRT':
-      return require('../images/logos/DRT.png');
+      return require('../images/tokens/DRT.png');
 
     case 'DXT':
-      return require('../images/logos/DXT.png');
+      return require('../images/tokens/DXT.png');
 
     case 'EBTC':
-      return require('../images/logos/EBTC.png');
+      return require('../images/tokens/EBTC.png');
 
     case 'ELF':
-      return require('../images/logos/ELF.png');
+      return require('../images/tokens/ELF.png');
 
     case 'EMONT':
-      return require('../images/logos/EMONT.png');
+      return require('../images/tokens/EMONT.png');
 
     case 'ENO':
-      return require('../images/logos/ENO.png');
+      return require('../images/tokens/ENO.png');
 
     case 'ENTRP':
-      return require('../images/logos/ENTRP.png');
+      return require('../images/tokens/ENTRP.png');
 
     case 'ETH':
-      return require('../images/logos/ETH.png');
+      return require('../images/tokens/ETH.png');
 
     case 'ETHOS':
-      return require('../images/logos/ETHOS.png');
+      return require('../images/tokens/ETHOS.png');
 
     case 'EUSD':
-      return require('../images/logos/EUSD.png');
+      return require('../images/tokens/EUSD.png');
 
     case 'EVC':
-      return require('../images/logos/EVC.png');
+      return require('../images/tokens/EVC.png');
 
     case 'EVE':
-      return require('../images/logos/EVE.png');
+      return require('../images/tokens/EVE.png');
 
     case 'FDX':
-      return require('../images/logos/FDX.png');
+      return require('../images/tokens/FDX.png');
 
     case 'FLIP':
-      return require('../images/logos/FLIP.png');
+      return require('../images/tokens/FLIP.png');
 
     case 'FLLW':
-      return require('../images/logos/FLLW.png');
+      return require('../images/tokens/FLLW.png');
 
     case 'FND':
-      return require('../images/logos/FND.png');
+      return require('../images/tokens/FND.png');
 
     case 'FUEL':
-      return require('../images/logos/FUEL.png');
+      return require('../images/tokens/FUEL.png');
 
     case 'FUN':
-      return require('../images/logos/FUN.png');
+      return require('../images/tokens/FUN.png');
 
     case 'FYN':
-      return require('../images/logos/FYN.png');
+      return require('../images/tokens/FYN.png');
 
     case 'GET':
-      return require('../images/logos/GET.png');
+      return require('../images/tokens/GET.png');
 
     case 'GNO':
-      return require('../images/logos/GNO.png');
+      return require('../images/tokens/GNO.png');
 
     case 'GNT':
-      return require('../images/logos/GNT.png');
+      return require('../images/tokens/GNT.png');
 
     case 'GOAL':
-      return require('../images/logos/GOAL.png');
+      return require('../images/tokens/GOAL.png');
 
     case 'GOLDX':
-      return require('../images/logos/GOLDX.png');
+      return require('../images/tokens/GOLDX.png');
 
     case 'GRID':
-      return require('../images/logos/GRID.png');
+      return require('../images/tokens/GRID.png');
 
     case 'GUP':
-      return require('../images/logos/GUP.png');
+      return require('../images/tokens/GUP.png');
 
     case 'HAV':
-      return require('../images/logos/HAV.png');
+      return require('../images/tokens/HAV.png');
 
     case 'HGT':
-      return require('../images/logos/HGT.png');
+      return require('../images/tokens/HGT.png');
 
     case 'HIRE':
-      return require('../images/logos/HIRE.png');
+      return require('../images/tokens/HIRE.png');
 
     case 'HST':
-      return require('../images/logos/HST.png');
+      return require('../images/tokens/HST.png');
 
     case 'ICX':
-      return require('../images/logos/ICX.png');
+      return require('../images/tokens/ICX.png');
 
     case 'IFT':
-      return require('../images/logos/IFT.png');
+      return require('../images/tokens/IFT.png');
 
     case 'INS':
-      return require('../images/logos/INS.png');
+      return require('../images/tokens/INS.png');
 
     case 'INXT':
-      return require('../images/logos/INXT.png');
+      return require('../images/tokens/INXT.png');
 
     case 'IOST':
-      return require('../images/logos/IOST.png');
+      return require('../images/tokens/IOST.png');
 
     case 'JNT':
-      return require('../images/logos/JNT.png');
+      return require('../images/tokens/JNT.png');
 
     case 'KICK':
-      return require('../images/logos/KICK.png');
+      return require('../images/tokens/KICK.png');
 
     case 'KNC':
-      return require('../images/logos/KNC.png');
+      return require('../images/tokens/KNC.png');
 
     case 'LEND':
-      return require('../images/logos/LEND.png');
+      return require('../images/tokens/LEND.png');
 
     case 'LINK':
-      return require('../images/logos/LINK.png');
+      return require('../images/tokens/LINK.png');
 
     case 'LNK':
-      return require('../images/logos/LNK.png');
+      return require('../images/tokens/LNK.png');
 
     case 'LOC':
-      return require('../images/logos/LOC.png');
+      return require('../images/tokens/LOC.png');
 
     case 'LOOM':
-      return require('../images/logos/LOOM.png');
+      return require('../images/tokens/LOOM.png');
 
     case 'MANA':
-      return require('../images/logos/MANA.png');
+      return require('../images/tokens/MANA.png');
 
     case 'MBRS':
-      return require('../images/logos/MBRS.png');
+      return require('../images/tokens/MBRS.png');
 
     case 'MKR':
-      return require('../images/logos/MKR.png');
+      return require('../images/tokens/MKR.png');
 
     case 'MLN':
-      return require('../images/logos/MLN.png');
+      return require('../images/tokens/MLN.png');
 
     case 'MTL':
-      return require('../images/logos/MTL.png');
+      return require('../images/tokens/MTL.png');
 
     case 'MWAT':
-      return require('../images/logos/MWAT.png');
+      return require('../images/tokens/MWAT.png');
 
     case 'NEWB':
-      return require('../images/logos/NEWB.png');
+      return require('../images/tokens/NEWB.png');
 
     case 'NMR':
-      return require('../images/logos/NMR.png');
+      return require('../images/tokens/NMR.png');
 
     case 'NVT':
-      return require('../images/logos/NVT.png');
+      return require('../images/tokens/NVT.png');
 
     case 'OMG':
-      return require('../images/logos/OMG.png');
+      return require('../images/tokens/OMG.png');
 
     case 'PCL':
-      return require('../images/logos/PCL.png');
+      return require('../images/tokens/PCL.png');
 
     case 'PLU':
-      return require('../images/logos/PLU.png');
+      return require('../images/tokens/PLU.png');
 
     case 'POE':
-      return require('../images/logos/POE.png');
+      return require('../images/tokens/POE.png');
 
     case 'POLY':
-      return require('../images/logos/POLY.png');
+      return require('../images/tokens/POLY.png');
 
     case 'POW':
-      return require('../images/logos/POW.png');
+      return require('../images/tokens/POW.png');
 
     case 'POWR':
-      return require('../images/logos/POWR.png');
+      return require('../images/tokens/POWR.png');
 
     case 'PTOY':
-      return require('../images/logos/PTOY.png');
+      return require('../images/tokens/PTOY.png');
 
     case 'QSP':
-      return require('../images/logos/QSP.png');
+      return require('../images/tokens/QSP.png');
 
     case 'QVT':
-      return require('../images/logos/QVT.png');
+      return require('../images/tokens/QVT.png');
 
     case 'RCN':
-      return require('../images/logos/RCN.png');
+      return require('../images/tokens/RCN.png');
 
     case 'RDN':
-      return require('../images/logos/RDN.png');
+      return require('../images/tokens/RDN.png');
 
     case 'REAL':
-      return require('../images/logos/REAL.png');
+      return require('../images/tokens/REAL.png');
 
     case 'REN':
-      return require('../images/logos/REN.png');
+      return require('../images/tokens/REN.png');
 
     case 'REP':
-      return require('../images/logos/REP.png');
+      return require('../images/tokens/REP.png');
 
     case 'REQ':
-      return require('../images/logos/REQ.png');
+      return require('../images/tokens/REQ.png');
 
     case 'RHOC':
-      return require('../images/logos/RHOC.png');
+      return require('../images/tokens/RHOC.png');
 
     case 'RKT':
-      return require('../images/logos/RKT.png');
+      return require('../images/tokens/RKT.png');
 
     case 'RLC':
-      return require('../images/logos/RLC.png');
+      return require('../images/tokens/RLC.png');
 
     case 'RVT':
-      return require('../images/logos/RVT.png');
+      return require('../images/tokens/RVT.png');
 
     case 'SALT':
-      return require('../images/logos/SALT.png');
+      return require('../images/tokens/SALT.png');
 
     case 'SHP':
-      return require('../images/logos/SHP.png');
+      return require('../images/tokens/SHP.png');
 
     case 'SNIP':
-      return require('../images/logos/SNIP.png');
+      return require('../images/tokens/SNIP.png');
 
     case 'SNM':
-      return require('../images/logos/SNM.png');
+      return require('../images/tokens/SNM.png');
 
     case 'SNOV':
-      return require('../images/logos/SNOV.png');
+      return require('../images/tokens/SNOV.png');
 
     case 'SNT':
-      return require('../images/logos/SNT.png');
+      return require('../images/tokens/SNT.png');
 
     case 'SPANK':
-      return require('../images/logos/SPANK.png');
+      return require('../images/tokens/SPANK.png');
 
     case 'STAC':
-      return require('../images/logos/STAC.png');
+      return require('../images/tokens/STAC.png');
 
     case 'STORJ':
-      return require('../images/logos/STORJ.png');
+      return require('../images/tokens/STORJ.png');
 
     case 'STORM':
-      return require('../images/logos/STORM.png');
+      return require('../images/tokens/STORM.png');
 
     case 'STU':
-      return require('../images/logos/STU.png');
+      return require('../images/tokens/STU.png');
 
     case 'SUB':
-      return require('../images/logos/SUB.png');
+      return require('../images/tokens/SUB.png');
 
     case 'TAU':
-      return require('../images/logos/TAU.png');
+      return require('../images/tokens/TAU.png');
 
     case 'THETA':
-      return require('../images/logos/THETA.png');
+      return require('../images/tokens/THETA.png');
 
     case 'TIX':
-      return require('../images/logos/TIX.png');
+      return require('../images/tokens/TIX.png');
 
     case 'UFR':
-      return require('../images/logos/UFR.png');
+      return require('../images/tokens/UFR.png');
 
     case 'UKG':
-      return require('../images/logos/UKG.png');
+      return require('../images/tokens/UKG.png');
 
     case 'VEE':
-      return require('../images/logos/VEE.png');
+      return require('../images/tokens/VEE.png');
 
     case 'VIT':
-      return require('../images/logos/VIT.png');
+      return require('../images/tokens/VIT.png');
 
     case 'WAND':
-      return require('../images/logos/WAND.png');
+      return require('../images/tokens/WAND.png');
 
     case 'WAX':
-      return require('../images/logos/WAX.png');
+      return require('../images/tokens/WAX.png');
 
     case 'WETH':
-      return require('../images/logos/WETH.png');
+      return require('../images/tokens/WETH.png');
 
     case 'WLK':
-      return require('../images/logos/WLK.png');
+      return require('../images/tokens/WLK.png');
 
     case 'WYS':
-      return require('../images/logos/WYS.png');
+      return require('../images/tokens/WYS.png');
 
     case 'XAUR':
-      return require('../images/logos/XAUR.png');
+      return require('../images/tokens/XAUR.png');
 
     case 'XGM':
-      return require('../images/logos/XGM.png');
+      return require('../images/tokens/XGM.png');
 
     case 'XRL':
-      return require('../images/logos/XRL.png');
+      return require('../images/tokens/XRL.png');
 
     case 'XSC':
-      return require('../images/logos/XSC.png');
+      return require('../images/tokens/XSC.png');
 
     case 'ZAP':
-      return require('../images/logos/ZAP.png');
+      return require('../images/tokens/ZAP.png');
 
     case 'ZAPIT':
-      return require('../images/logos/ZAPIT.png');
+      return require('../images/tokens/ZAPIT.png');
 
     case 'ZIL':
-      return require('../images/logos/ZIL.png');
+      return require('../images/tokens/ZIL.png');
 
     case 'ZRX':
-      return require('../images/logos/ZRX.png');
+      return require('../images/tokens/ZRX.png');
 
     default:
-      return require('../images/logos/WETH.png');
+      return require('../images/tokens/WETH.png');
   }
 }
 

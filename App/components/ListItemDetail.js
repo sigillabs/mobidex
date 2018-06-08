@@ -69,11 +69,11 @@ export default class ListItemDetail extends Component {
 
 ListItemDetail.propTypes = {
   left: PropTypes.string.isRequired,
-  leftHeader: PropTypes.string.isRequired,
+  leftHeader: PropTypes.string,
   leftHeaderStyle: PropTypes.object,
   leftStyle: PropTypes.object,
   right: PropTypes.string.isRequired,
-  rightHeader: PropTypes.string.isRequired,
+  rightHeader: PropTypes.string,
   rightHeaderStyle: PropTypes.object,
   rightStyle: PropTypes.object,
   rowStyle: PropTypes.object

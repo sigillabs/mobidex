@@ -1,9 +1,4 @@
 import * as _ from 'lodash';
-import BigNumber from 'bignumber.js';
-import { Linking } from 'react-native';
-import Wallet from 'ethereumjs-wallet';
-import ethUtil from 'ethereumjs-util';
-import * as qs from 'qs';
 import { updateForexTicker, updateTokenTicker } from '../actions';
 import { getForexTicker, getTokenTicker } from '../utils';
 

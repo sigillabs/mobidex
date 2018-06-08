@@ -133,7 +133,7 @@ class FillOrders extends Component {
           label={label}
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onChange={this.onSetAmount}
+          onChange={value => this.onSetAmount(value)}
           amount={this.state.amount}
         />
         <ListItemDetail
@@ -157,7 +157,7 @@ class FillOrders extends Component {
         />
         <Button
           large
-          onPress={this.submit}
+          onPress={() => this.submit()}
           icon={<Icon name="check" size={24} color="white" />}
           title={buttonLabel}
         />
@@ -230,7 +230,7 @@ class FillOrders extends Component {
     return average.toNumber();
   }
 
-  onSetAmount = value => {
+  onSetAmount(value) {
     try {
       let amount = new BigNumber(value.replace(/,/g, ''));
       if (amount.gt(0)) {
@@ -241,9 +241,9 @@ class FillOrders extends Component {
     } catch (err) {
       this.setState({ amount: new BigNumber(0), amountError: true });
     }
-  };
+  }
 
-  submit = async () => {
+  submit() {
     let {
       navigation: {
         state: {
@@ -260,19 +260,10 @@ class FillOrders extends Component {
       side === 'buy'
         ? ZeroEx.toBaseUnitAmount(amount.mul(price), quote.decimals)
         : ZeroEx.toBaseUnitAmount(amount, base.decimals);
-    const result = await this.props.dispatch(
-      fillUpToBaseAmount(
-        baseAmount,
-        base,
-        quote,
-        side === 'buy' ? 'sell' : 'buy'
-      )
-    );
 
-    if (result) {
-      this.props.navigation.push('List');
-    }
-  };
+    this.props.dispatch(fillUpToBaseAmount(baseAmount, base, quote, otherSide));
+    this.props.navigation.push('List');
+  }
 }
 
 export default connect(

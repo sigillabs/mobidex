@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -34,6 +35,7 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* mobidexTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* mobidexTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		302A3BB220CA6E030010CDB5 /* logo-with-text-transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 302A3BB120CA6E030010CDB5 /* logo-with-text-transparent.png */; };
 		306571F22079560A007C056C /* EncryptionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 306571EA2079560A007C056C /* EncryptionManager.m */; };
 		306571F32079560A007C056C /* NSData+Encrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 306571ED2079560A007C056C /* NSData+Encrypt.m */; };
 		306571F42079560A007C056C /* NSData+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 306571F02079560A007C056C /* NSData+Hex.m */; };
@@ -47,8 +49,10 @@
 		96CB12E1B8D64B728779CD59 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4AF3E53FD52B461BB4126751 /* MaterialCommunityIcons.ttf */; };
 		9BB036A842FB4920BD32F22C /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C95BAC1CEAB46318646671B /* libRNRandomBytes.a */; };
 		9DF9A9AD5EC74F19961272F6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55B1650C034A42B4B8C42502 /* FontAwesome.ttf */; };
+		9E6B043B21E24475833F6B49 /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49B573E193B9414EB5AC8D6A /* TSBackgroundFetch.framework */; };
 		A03E931952194C208BFDAD8B /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27E0CA02291242ED8927E20D /* Feather.ttf */; };
 		A8FF37871F3E4A9E9F7E770A /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5BDBDF0A17B4BFDB0ADD72B /* EvilIcons.ttf */; };
+		AA30192D39E84916BA4075E6 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 569D57FB27574DF1897BA076 /* RNBackgroundFetch+AppDelegate.m */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B14990A7EECF4FF996B2CBD9 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1FEF0C089F14F7CAC5703FE /* libRNVectorIcons.a */; };
 		B5BB4627BE9D49D68B80EADF /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ADDE69AF88541B4990EED0E /* libRNSVG-tvOS.a */; };
@@ -57,8 +61,6 @@
 		C4B6206B869F4558BDD93EED /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FFD74C574D94F28A95A4C27 /* libRNSVG.a */; };
 		C9634CD03B9A401BB6D6BFDD /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E800FFF71B1474C875ED91A /* Foundation.ttf */; };
 		E5CF88EE22274481823B9C14 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 44E5D43F7D424F919C19B620 /* SimpleLineIcons.ttf */; };
-		9E6B043B21E24475833F6B49 /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49B573E193B9414EB5AC8D6A /* TSBackgroundFetch.framework */; };
-		AA30192D39E84916BA4075E6 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 569D57FB27574DF1897BA076 /* RNBackgroundFetch+AppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -399,6 +401,7 @@
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E800FFF71B1474C875ED91A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		302A3BB120CA6E030010CDB5 /* logo-with-text-transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-with-text-transparent.png"; path = "../images/logo-with-text/logo-with-text-transparent.png"; sourceTree = "<group>"; };
 		306571EA2079560A007C056C /* EncryptionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EncryptionManager.m; path = mobidex/EncryptionManager.m; sourceTree = "<group>"; };
 		306571EB2079560A007C056C /* NSData+Encrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Encrypt.h"; path = "mobidex/NSData+Encrypt.h"; sourceTree = "<group>"; };
 		306571EC2079560A007C056C /* NSData+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+Hex.h"; path = "mobidex/NSData+Hex.h"; sourceTree = "<group>"; };
@@ -409,8 +412,10 @@
 		306571F12079560A007C056C /* NSString+KDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+KDF.m"; path = "mobidex/NSString+KDF.m"; sourceTree = "<group>"; };
 		3088056F20A3D99A00AEE2E4 /* RNBackgroundFetch.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundFetch.xcodeproj; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch.xcodeproj"; sourceTree = "<group>"; };
 		44E5D43F7D424F919C19B620 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		49B573E193B9414EB5AC8D6A /* TSBackgroundFetch.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = TSBackgroundFetch.framework; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/TSBackgroundFetch.framework"; sourceTree = SDKROOT; };
 		4AF3E53FD52B461BB4126751 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		55B1650C034A42B4B8C42502 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		569D57FB27574DF1897BA076 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		5C95BAC1CEAB46318646671B /* libRNRandomBytes.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNRandomBytes.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		65250B4D42B549EBA814DE5B /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -426,8 +431,6 @@
 		E155367D80CE42D69BF433F3 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		E82345EA89794749948A0C4C /* RNRandomBytes.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRandomBytes.xcodeproj; path = "../node_modules/react-native-randombytes/RNRandomBytes.xcodeproj"; sourceTree = "<group>"; };
 		FACD98FD08D545758EBD55B7 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		49B573E193B9414EB5AC8D6A /* TSBackgroundFetch.framework */ = {isa = PBXFileReference; name = "TSBackgroundFetch.framework"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/TSBackgroundFetch.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
-		569D57FB27574DF1897BA076 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +576,7 @@
 		13B07FAE1A68108700A75B9A /* mobidex */ = {
 			isa = PBXGroup;
 			children = (
+				302A3BB120CA6E030010CDB5 /* logo-with-text-transparent.png */,
 				306571EE2079560A007C056C /* EncryptionManager.h */,
 				306571EA2079560A007C056C /* EncryptionManager.m */,
 				306571EB2079560A007C056C /* NSData+Encrypt.h */,
@@ -864,6 +868,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 7ST75QNP4P;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = true;
@@ -1285,6 +1290,7 @@
 				9DF9A9AD5EC74F19961272F6 /* FontAwesome.ttf in Resources */,
 				C9634CD03B9A401BB6D6BFDD /* Foundation.ttf in Resources */,
 				804F8EB4D3D24FAA955F985F /* Ionicons.ttf in Resources */,
+				302A3BB220CA6E030010CDB5 /* logo-with-text-transparent.png in Resources */,
 				96CB12E1B8D64B728779CD59 /* MaterialCommunityIcons.ttf in Resources */,
 				BF8FD978821B496CBFB1D9F0 /* MaterialIcons.ttf in Resources */,
 				C41EDE63891946EC836B00C5 /* Octicons.ttf in Resources */,
@@ -1414,6 +1420,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1440,9 +1447,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex.app/mobidex";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Debug;
 		};
@@ -1452,6 +1456,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1474,9 +1479,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex.app/mobidex";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Release;
 		};
@@ -1484,9 +1486,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1501,10 +1506,9 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = mobidex;
+				PROVISIONING_PROFILE = "a3cfb202-bb7c-4013-b6e3-87b3cf55428f";
+				PROVISIONING_PROFILE_SPECIFIER = "mobidex-distribution";
 				VERSIONING_SYSTEM = "apple-generic";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Debug;
 		};
@@ -1512,8 +1516,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7ST75QNP4P;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
@@ -1528,10 +1535,9 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = mobidex;
+				PROVISIONING_PROFILE = "a3cfb202-bb7c-4013-b6e3-87b3cf55428f";
+				PROVISIONING_PROFILE_SPECIFIER = "mobidex-distribution";
 				VERSIONING_SYSTEM = "apple-generic";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Release;
 		};
@@ -1546,6 +1552,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1570,9 +1577,6 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Debug;
 		};
@@ -1587,6 +1591,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1611,9 +1616,6 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Release;
 		};
@@ -1627,6 +1629,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1651,9 +1654,6 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex-tvOS.app/mobidex-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Debug;
 		};
@@ -1667,6 +1667,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1691,9 +1692,6 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mobidex-tvOS.app/mobidex-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
-				);
 			};
 			name = Release;
 		};

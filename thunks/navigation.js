@@ -1,5 +1,6 @@
 import { Linking } from 'react-native';
 import { NavigationActions } from 'react-navigation';
+import { setError } from '../actions';
 import { getNetworkId, hasWalletOnFileSystem } from '../utils';
 
 export function gotoEtherScan(txaddr) {
@@ -32,5 +33,14 @@ export function gotoOnboardingOrLocked() {
 export function gotoTransactionScreen() {
   return async dispatch => {
     dispatch(NavigationActions.navigate({ routeName: 'History' }));
+  };
+}
+
+export function gotoErrorScreen(error) {
+  return dispatch => {
+    dispatch(setError(error));
+    dispatch(
+      NavigationActions.navigate({ routeName: 'Error', params: { error } })
+    );
   };
 }

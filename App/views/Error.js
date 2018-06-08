@@ -1,24 +1,18 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Card, Text } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { setError } from '../../actions';
 import Button from '../components/Button.js';
 import { colors } from '../../styles';
 
 class Err extends Component {
-  leave = () => {
-    this.props.dispatch(setError(null));
-  };
-
   render() {
-    let { message, stack } = this.props.error;
-    console.warn(message, stack);
+    const { message, stack } = this.props.navigation.getParam('error');
 
     return (
       <View
-        backgroundColor={colors.grey1}
+        backgroundColor={colors.transparent}
         style={{
           flex: 1,
           alignItems: 'center',
@@ -43,7 +37,7 @@ class Err extends Component {
           title="Get Out Of Here"
           icon={<Icon name="refresh" color="white" />}
           buttonStyle={{ borderRadius: 0 }}
-          onPress={this.leave}
+          onPress={() => this.props.navigation.goBack()}
         />
       </View>
     );

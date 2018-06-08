@@ -20,13 +20,13 @@ const LABEL_LOOKUP = {
 
 class TransactionsList extends Component {
   render() {
-    this.props.active.push({
-      id: '0x74dba1e2fa8ae73265520f3370c28c386a8fd89ce9c45e48a5e74c757cb70e08',
-      type: 'SEND_ETHER',
-      from: '0x55287087b765715477b3d8da6ffbe8f069403a16',
-      to: '0x9bca8678b0239b604a26A57CBE76DC0D16d61e1F',
-      amount: new BigNumber(10)
-    });
+    // this.props.active.push({
+    //   id: '0x74dba1e2fa8ae73265520f3370c28c386a8fd89ce9c45e48a5e74c757cb70e08',
+    //   type: 'SEND_ETHER',
+    //   from: '0x55287087b765715477b3d8da6ffbe8f069403a16',
+    //   to: '0x9bca8678b0239b604a26A57CBE76DC0D16d61e1F',
+    //   amount: new BigNumber(10)
+    // });
 
     const activeItems = this.props.active.map((tx, index) => {
       if (tx.status) {

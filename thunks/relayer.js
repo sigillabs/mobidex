@@ -3,9 +3,14 @@ import { HttpClient } from '@0xproject/connect';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { NavigationActions } from 'react-navigation';
-import { addActiveTransactions, addTickerWatching, setError } from '../actions';
-import { loadTransactions } from '../thunks';
+import {
+  addActiveTransactions,
+  addOrders,
+  addTickerWatching,
+  setOrders,
+  setProducts,
+  setTokens
+} from '../actions';
 import {
   batchFillOrKill,
   cancelOrder as cancelOrderUtil,
@@ -22,14 +27,7 @@ import {
   signOrder,
   isWETHAddress
 } from '../utils';
-import {
-  addOrders,
-  notProcessing,
-  processing,
-  setOrders,
-  setProducts,
-  setTokens
-} from '../actions';
+import { gotoErrorScreen } from './navigation';
 
 export function loadOrders() {
   return async (dispatch, getState) => {
@@ -42,7 +40,7 @@ export function loadOrders() {
       dispatch(setOrders(await client.getOrdersAsync()));
       return true;
     } catch (err) {
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
       return false;
     }
   };
@@ -58,7 +56,7 @@ export function loadOrder(orderHash) {
     try {
       dispatch(addOrders([await client.getOrderAsync(orderHash)]));
     } catch (err) {
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -107,8 +105,7 @@ export function loadProductsAndTokens(force = false) {
         )
       );
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -116,8 +113,6 @@ export function loadProductsAndTokens(force = false) {
 export function createSignSubmitOrder(price, amount, base, quote, side) {
   return async (dispatch, getState) => {
     try {
-      dispatch(processing());
-
       let {
         wallet: { web3, address },
         settings: { relayerEndpoint }
@@ -182,8 +177,7 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
 
       dispatch(addOrders([signedOrder]));
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -191,29 +185,26 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
 export function cancelOrder(order) {
   return async (dispatch, getState) => {
     try {
-      dispatch(processing());
-
-      let {
+      const {
         wallet: { web3, address }
       } = getState();
-      let zeroEx = await getZeroExClient(web3);
+      const zeroEx = await getZeroExClient(web3);
 
       if (order.maker !== address) {
         throw new Error('Cannot cancel order that is not yours');
       }
 
-      let txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
-
+      const txhash = await cancelOrderUtil(web3, order, order.makerTokenAmount);
       const activeTransaction = {
         id: txhash,
         type: 'CANCEL',
         ...order
       };
-
       dispatch(addActiveTransactions([activeTransaction]));
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -247,7 +238,7 @@ export function fillOrder(order) {
 
       // Guarantee WETH is available.
       if (await isWETHAddress(web3, order.takerTokenAddress)) {
-        let txhash = await guaranteeWETHInWeiAmount(
+        const txhash = await guaranteeWETHInWeiAmount(
           web3,
           order.takerTokenAmount
         );
@@ -263,7 +254,7 @@ export function fillOrder(order) {
         }
       }
 
-      let txhash = await fillOrderUtil(web3, order);
+      const txhash = await fillOrderUtil(web3, order);
       const activeTransaction = {
         id: txhash,
         type: 'FILL',
@@ -273,8 +264,7 @@ export function fillOrder(order) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }
@@ -324,7 +314,7 @@ export function fillUpToBaseAmount(amount, base, quote, side) {
 
       // Guarantee WETH is available.
       if (await isWETHAddress(web3, tokenAddress)) {
-        let txhash = await guaranteeWETHInWeiAmount(web3, amount);
+        const txhash = await guaranteeWETHInWeiAmount(web3, amount);
         if (txhash) {
           const activeTransaction = {
             id: txhash,
@@ -338,7 +328,7 @@ export function fillUpToBaseAmount(amount, base, quote, side) {
       }
 
       // Fill orders
-      let txhash = await batchFillOrKill(web3, ordersToFill, amount);
+      const txhash = await batchFillOrKill(web3, ordersToFill, amount);
       const activeTransaction = {
         id: txhash,
         type: 'BATCH_FILL',
@@ -348,8 +338,7 @@ export function fillUpToBaseAmount(amount, base, quote, side) {
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
       console.log('Receipt: ', receipt);
     } catch (err) {
-      console.warn(err);
-      dispatch(setError(err));
+      dispatch(gotoErrorScreen(err));
     }
   };
 }

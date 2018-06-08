@@ -16,7 +16,9 @@ const colors = {
   orange0: '#ff9200',
   orange1: '#F37438',
   red0: '#ff190c',
-  yellow0: '#ffb22c'
+  yellow0: '#ffb22c',
+  white: 'white',
+  transparent: 'transparent'
 };
 
 export function getProfitLossColor(number) {
