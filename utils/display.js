@@ -29,6 +29,45 @@ export function formatAmount(amount) {
   return amountBN.toFixed(6);
 }
 
+export function formatTimestamp(timestamp) {
+  return moment.unix(timestamp).format('MMMM Do YYYY, h:mm:ss a');
+}
+
+export function formatMoney(n) {
+  return '$' + zeroDecimalPad(Math.floor(n * 100) / 100, 2).toString();
+}
+
+export function formatPercent(n) {
+  return (Math.round(n * 10000) / 100).toString() + '%';
+}
+
+export function zeroDecimalPad(n, d) {
+  let str = n.toString();
+
+  if (d <= 0) {
+    return str;
+  }
+
+  let index = str.indexOf('.');
+
+  if (index === -1) {
+    str = `${str}.`;
+    index = str.length - 1;
+  }
+
+  let existing = str.length - index - 1;
+
+  if (d < existing) {
+    return str;
+  }
+
+  while (d-- > existing) {
+    str += '0';
+  }
+
+  return str;
+}
+
 export function getImage(symbol) {
   switch (symbol) {
     case 'ABT':
@@ -469,43 +508,4 @@ export function getImage(symbol) {
     default:
       return require('../images/tokens/WETH.png');
   }
-}
-
-export function formatTimestamp(timestamp) {
-  return moment.unix(timestamp).format('MMMM Do YYYY, h:mm:ss a');
-}
-
-export function formatMoney(n) {
-  return '$' + zeroDecimalPad(Math.floor(n * 100) / 100, 2).toString();
-}
-
-export function formatPercent(n) {
-  return (Math.round(n * 10000) / 100).toString() + '%';
-}
-
-export function zeroDecimalPad(n, d) {
-  let str = n.toString();
-
-  if (d <= 0) {
-    return str;
-  }
-
-  let index = str.indexOf('.');
-
-  if (index === -1) {
-    str = `${str}.`;
-    index = str.length - 1;
-  }
-
-  let existing = str.length - index - 1;
-
-  if (d < existing) {
-    return str;
-  }
-
-  while (d-- > existing) {
-    str += '0';
-  }
-
-  return str;
 }

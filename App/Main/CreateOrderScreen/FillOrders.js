@@ -7,7 +7,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { setError } from '../../../actions';
-import { getProfitLossStyle } from '../../../styles';
+import { colors, getProfitLossStyle } from '../../../styles';
 import { fillUpToBaseAmount, loadOrders } from '../../../thunks';
 import {
   calculateAmount,
@@ -15,11 +15,10 @@ import {
   filterAndSortOrdersByTokensAndTakerAddress,
   filterOrdersToBaseAmount,
   formatAmount,
-  formatPercent
+  formatAmountWithDecimals
 } from '../../../utils';
 import Button from '../../components/Button';
 import ListItemDetail from '../../components/ListItemDetail';
-import ButtonGroup from '../../components/ButtonGroup';
 import Row from '../../components/Row';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
@@ -84,6 +83,7 @@ class FillOrders extends Component {
       this.state.amount,
       base.decimals
     );
+    const baseAsset = _.find(this.props.asset, { address: base.address });
     const priceAverage = this.getPriceAverage();
     const fillableOrders = filterAndSortOrdersByTokensAndTakerAddress(
       orders,
@@ -139,21 +139,39 @@ class FillOrders extends Component {
         <ListItemDetail
           left="Average Price"
           right={formatAmount(priceAverage)}
+          bottomDivider={false}
+          leftStyle={{ fontSize: 10, color: colors.grey3 }}
+          rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
         <ListItemDetail
           left="Sub-Total"
           right={formatAmount(subTotal.toNumber())}
-          rightStyle={getProfitLossStyle(subTotal.toNumber())}
+          bottomDivider={false}
+          leftStyle={{ fontSize: 10, color: colors.grey3 }}
+          rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
         <ListItemDetail
           left="Fee"
           right={formatAmount(fee.toNumber())}
-          rightStyle={getProfitLossStyle(fee.toNumber())}
+          bottomDivider={false}
+          leftStyle={{ fontSize: 10, color: colors.grey3 }}
+          rightStyle={{ fontSize: 10, color: colors.grey3 }}
+        />
+        <ListItemDetail
+          left="Holding"
+          right={
+            baseAsset
+              ? formatAmountWithDecimals(baseAsset.balance, baseAsset.decimals)
+              : 0
+          }
+          topDivider={true}
+          bottomDivider={true}
         />
         <ListItemDetail
           left="Total"
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
+          bottomDivider={true}
         />
         <Button
           large

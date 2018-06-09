@@ -1,3 +1,4 @@
+import { ZeroEx } from '0x.js';
 import * as _ from 'lodash';
 import React, { Component } from 'react';
 import {
@@ -12,23 +13,32 @@ import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
   detailsFromTicker,
   formatAmount,
+  formatAmountWithDecimals,
   formatMoney,
   formatPercent,
   getImage
 } from '../../utils';
+import Col from '../components/Col';
 import Row from '../components/Row';
 import MutedText from '../components/MutedText';
 
 class TokenIcon extends Component {
   render() {
     return (
-      <View>
+      <View
+        style={[
+          { justifyContent: 'center', alignItems: 'center' },
+          this.props.style
+        ]}
+      >
         <Avatar
           rounded
           source={getImage(this.props.symbol)}
           containerStyle={[styles.padBottom]}
         />
-        <Text style={[styles.small, styles.center]}>{this.props.title}</Text>
+        <Text style={[styles.small, styles.center]}>
+          {this.props.amount} {this.props.title}
+        </Text>
       </View>
     );
   }
@@ -36,7 +46,7 @@ class TokenIcon extends Component {
 
 class TokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, tokenTicker } = this.props;
+    const { quoteToken, baseToken, tokenTicker, amount } = this.props;
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
@@ -44,42 +54,39 @@ class TokenItem extends Component {
         roundAvatar
         bottomDivider
         leftElement={
-          <TokenIcon symbol={baseToken.symbol} title={baseToken.symbol} />
+          <TokenIcon
+            symbol={baseToken.symbol}
+            title={baseToken.symbol}
+            amount={amount}
+            style={{ flex: 0 }}
+            numberOfLines={1}
+          />
         }
         title={
-          <View style={styles.itemContainer}>
-            <Row>
+          <Row style={[{ flex: 1 }, styles.itemContainer]}>
+            <Col style={{ flex: 1 }}>
               <Text
                 style={[
-                  styles.left,
                   styles.large,
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
                 {this.props.price}
               </Text>
+              <MutedText>Price</MutedText>
+            </Col>
+            <Col style={{ flex: 1 }}>
               <Text
                 style={[
-                  styles.right,
                   styles.large,
-                  styles.padLeft,
                   tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
                 ]}
               >
                 {this.props.change}
               </Text>
-            </Row>
-          </View>
-        }
-        subtitle={
-          <View style={styles.itemContainer}>
-            <Row>
-              <MutedText style={[styles.left]}>Price</MutedText>
-              <MutedText style={[styles.right, styles.padLeft]}>
-                24 Hour Change
-              </MutedText>
-            </Row>
-          </View>
+              <MutedText>24 Hour Change</MutedText>
+            </Col>
+          </Row>
         }
         hideChevron={true}
       />
@@ -89,7 +96,7 @@ class TokenItem extends Component {
 
 class QuoteTokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, tokenTicker } = this.props;
+    const { quoteToken, baseToken, tokenTicker, amount } = this.props;
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
@@ -97,9 +104,8 @@ class QuoteTokenItem extends Component {
         price={`${formatAmount(Math.abs(tokenDetails.price))} ${
           quoteToken.symbol
         }`}
-        change={`${formatAmount(
-          Math.abs(tokenDetails.changePrice)
-        )} (${formatPercent(Math.abs(tokenDetails.changePercent))})`}
+        change={formatPercent(Math.abs(tokenDetails.changePercent))}
+        amount={formatAmountWithDecimals(baseToken.balance, baseToken.decimals)}
         {...this.props}
       />
     );
@@ -115,8 +121,11 @@ class ForexTokenItem extends Component {
     return (
       <TokenItem
         price={formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
-        change={formatMoney(
-          Math.abs(tokenDetails.changePrice * forexDetails.price)
+        change={formatPercent(Math.abs(tokenDetails.changePercent))}
+        amount={formatMoney(
+          ZeroEx.toUnitAmount(baseToken.balance, baseToken.decimals).mul(
+            Math.abs(tokenDetails.price * forexDetails.price)
+          )
         )}
         {...this.props}
       />

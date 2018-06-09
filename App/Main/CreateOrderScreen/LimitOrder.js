@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { setError } from '../../../actions';
-import { getProfitLossStyle } from '../../../styles';
+import { colors, getProfitLossStyle } from '../../../styles';
 import { createSignSubmitOrder } from '../../../thunks';
 import { formatAmount } from '../../../utils';
 import Button from '../../components/Button';
@@ -85,17 +85,23 @@ class CreateLimitOrder extends Component {
         <ListItemDetail
           left="Sub-Total"
           right={formatAmount(subTotal.toNumber())}
-          rightStyle={getProfitLossStyle(subTotal.toNumber())}
+          bottomDivider={false}
+          leftStyle={{ fontSize: 10, color: colors.grey3 }}
+          rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
         <ListItemDetail
           left="Fee"
           right={formatAmount(fee.toNumber())}
-          rightStyle={getProfitLossStyle(fee.toNumber())}
+          bottomDivider={false}
+          leftStyle={{ fontSize: 10, color: colors.grey3 }}
+          rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
         <ListItemDetail
           left="Total"
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
+          topDivider={true}
+          bottomDivider={true}
         />
         <Button
           large
