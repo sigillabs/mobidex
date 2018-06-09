@@ -6,7 +6,7 @@ import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { generateWallet } from '../../thunks';
-import LongButton from '../components/LongButton';
+import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
 
@@ -55,7 +55,7 @@ class GenerateWallet extends Component {
           icon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ width: '100%', marginBottom: 10 }}
         />
-        <LongButton large title="Generate New Wallet" onPress={this.generate} />
+        <Button large title="Generate New Wallet" onPress={this.generate} />
       </BigCenter>
     );
   }

@@ -276,8 +276,11 @@ class FillOrders extends Component {
     const { amount, price } = this.state;
     const baseAmount =
       side === 'buy'
-        ? ZeroEx.toBaseUnitAmount(amount.mul(price), quote.decimals)
-        : ZeroEx.toBaseUnitAmount(amount, base.decimals);
+        ? ZeroEx.toBaseUnitAmount(
+            new BigNumber(amount || 0).mul(price || 0),
+            quote.decimals
+          )
+        : ZeroEx.toBaseUnitAmount(new BigNumber(amount || 0), base.decimals);
 
     this.props.dispatch(fillUpToBaseAmount(baseAmount, base, quote, otherSide));
     this.props.navigation.push('List');

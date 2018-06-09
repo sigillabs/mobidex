@@ -14,13 +14,12 @@
 ```
 npm i -g react-native-cli
 npm i
-react-native run-ios
 ```
 
 System Dependencies:
 
-- node 8.6.0 or newer
-- g++
+* node 8.6.0 or newer
+* g++
 
 ### Mac OS X Specific Setup
 
@@ -35,6 +34,36 @@ Using [homebrew](https://brew.sh/), run the following:
 ```
 brew install node
 ```
+
+### iOS
+
+Use the following to run Mobidex on an iOS simulator:
+
+1.  From the CLI
+
+```
+react-native run-ios
+```
+
+2.  From XCode
+
+### Android
+
+```
+react-native run-android
+```
+
+Use the following to run Mobidex on an Android simulator:
+
+1.  From the CLI
+
+```
+react-native run-android
+```
+
+2.  From Android Studio
+
+* Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
 ## Available Scripts
 
@@ -64,5 +93,5 @@ Web3.js does not load because of its dependence on node.js standard libraries. T
 
 See the for more details:
 
-- https://gist.github.com/parshap/e3063d9bf6058041b34b26b7166fd6bd
-- https://medium.com/@aakashns/using-core-node-js-modules-in-react-native-apps-64acd4d07140
+* https://gist.github.com/parshap/e3063d9bf6058041b34b26b7166fd6bd
+* https://medium.com/@aakashns/using-core-node-js-modules-in-react-native-apps-64acd4d07140

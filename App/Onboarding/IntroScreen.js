@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors } from '../../styles.js';
-import LongButton from '../components/LongButton';
+import Button from '../components/Button';
 import Padding from '../components/Padding';
 
 export default class Intro extends Component {
@@ -16,7 +16,8 @@ export default class Intro extends Component {
           paddingTop: '35%',
           paddingRight: 10,
           paddingBottom: 10,
-          paddingLeft: 10
+          paddingLeft: 10,
+          width: '100%'
         }}
       >
         <Image
@@ -32,7 +33,7 @@ export default class Intro extends Component {
         <Padding size={20} />
         <Text h6>To get started, Import a wallet.</Text>
         <Padding size={20} />
-        <LongButton
+        <Button
           large
           onPress={() => this.props.navigation.push('Import')}
           title="Import"

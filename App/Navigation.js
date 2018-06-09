@@ -15,7 +15,7 @@ import UnwrapEtherScreen from './Main/UnwrapEtherScreen';
 import WrapEtherScreen from './Main/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
 import ImportPrivateKey from './views/ImportPrivateKey';
-import Err from './views/Error';
+import ErrorScreen from './Error';
 import LoadingScreen from './LoadingScreen';
 
 import { colors } from '../styles';
@@ -78,7 +78,7 @@ const MainNavigation = StackNavigator(
 export default SwitchNavigator(
   {
     Loading: { screen: LoadingScreen },
-    Error: { screen: Err },
+    Error: { screen: ErrorScreen },
     Onboarding: { screen: OnboardingNavigation },
     Main: { screen: MainNavigation },
     Locked: { screen: LockedNavigation }

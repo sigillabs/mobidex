@@ -8,7 +8,7 @@ export default class LongButton extends Component {
     return (
       <Button
         containerStyle={[
-          { width: '100%', flexDirection: 'row' },
+          { flex: 1, width: '100%', flexDirection: 'row' },
           containerStyle
         ]}
         style={[{ flex: 1 }, style]}

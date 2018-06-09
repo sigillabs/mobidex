@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import { generateWallet, lock, unlock } from '../../thunks';
-import LongButton from '../components/LongButton';
+import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
 
@@ -39,7 +39,7 @@ class Unlock extends Component {
 
   render() {
     return (
-      <BigCenter>
+      <BigCenter style={{ width: '100%' }}>
         <LongInput
           secureTextEntry={true}
           placeholder="Password"
@@ -53,7 +53,12 @@ class Unlock extends Component {
           leftIcon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ marginBottom: 10 }}
         />
-        <LongButton large title="Unlock" onPress={this.unlock} />
+        <Button
+          large
+          title="Unlock"
+          onPress={this.unlock}
+          containerStyle={{ width: '100%' }}
+        />
       </BigCenter>
     );
   }

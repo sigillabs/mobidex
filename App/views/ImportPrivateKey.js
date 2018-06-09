@@ -5,7 +5,7 @@ import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { importPrivateKey } from '../../thunks';
-import LongButton from '../components/LongButton';
+import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
 
@@ -57,7 +57,7 @@ class ImportPrivateKey extends Component {
 
   render() {
     return (
-      <BigCenter>
+      <BigCenter style={{ width: '100%' }}>
         <LongInput
           secureTextEntry={true}
           placeholder="Private Key"
@@ -84,10 +84,11 @@ class ImportPrivateKey extends Component {
           icon={<Icon name="person" size={24} color="black" />}
           containerStyle={{ width: '100%', marginBottom: 10 }}
         />
-        <LongButton
+        <Button
           large
           title="Import Private Key"
           onPress={this.importPrivateKey}
+          containerStyle={{ width: '100%' }}
         />
       </BigCenter>
     );

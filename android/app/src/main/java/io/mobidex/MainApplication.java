@@ -31,7 +31,6 @@ public class MainApplication extends Application implements ReactApplication {
             new ReactNativePushNotificationPackage(),
             new BackgroundTaskPackage(),
             new SvgPackage(),
-            new RandomBytesPackage(),
           new EncryptionManagerPackage(),
           new VectorIconsPackage(),
           new RandomBytesPackage()

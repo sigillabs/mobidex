@@ -312,6 +312,12 @@ export function fillUpToBaseAmount(amount, base, quote, side) {
         throw new Error(`Cannot fill orders for unknown side ${side}`);
       }
 
+      if (!ordersToFill.length) {
+        throw new Error(
+          'No orders to fill! Try increasing the amount of the order.'
+        );
+      }
+
       // Guarantee WETH is available.
       if (await isWETHAddress(web3, tokenAddress)) {
         const txhash = await guaranteeWETHInWeiAmount(web3, amount);

@@ -14,6 +14,7 @@ import {
   getTokenBalance,
   getWalletFromFileSystem,
   getZeroExClient,
+  importSecret,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
   storeWalletOnFileSystem,

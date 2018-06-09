@@ -9,7 +9,6 @@ import ImportPrivateKey from '../views/ImportPrivateKey';
 import GenerateWallet from '../views/GenerateWallet';
 import ButtonGroup from '../components/ButtonGroup';
 import BigCenter from '../components/BigCenter';
-import LongButton from '../components/LongButton';
 
 class Locked extends Component {
   constructor(props) {

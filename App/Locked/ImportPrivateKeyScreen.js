@@ -15,7 +15,7 @@ class ImportPrivateKeyScreen extends Component {
             try {
               await this.props.dispatch(loadProductsAndTokens());
               await this.props.dispatch(loadAssets());
-              this.props.navigation.navigate({ routeName: 'Main' });
+              this.props.navigation.navigate({ routeName: 'List' });
             } catch (err) {
               this.props.dispatch(setError(err));
             }
