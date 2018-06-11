@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { View, Image } from 'react-native';
 import { Text } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { setError } from '../../actions';
+import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import { colors } from '../../styles.js';
 import Button from '../components/Button';
 import Padding from '../components/Padding';
+import ImportPrivateKey from '../views/ImportPrivateKey';
 
-export default class Intro extends Component {
+class Intro extends Component {
   render() {
     return (
       <View
@@ -33,12 +37,25 @@ export default class Intro extends Component {
         <Padding size={20} />
         <Text h6>To get started, Import a wallet.</Text>
         <Padding size={20} />
-        <Button
-          large
-          onPress={() => this.props.navigation.push('Import')}
-          title="Import"
+        <ImportPrivateKey
+          onFinish={async () => {
+            try {
+              await this.props.dispatch(loadProductsAndTokens());
+              await this.props.dispatch(loadAssets());
+              this.props.navigation.navigate({ routeName: 'List' });
+            } catch (err) {
+              this.props.dispatch(setError(err));
+            }
+          }}
         />
+        {/*<Button
+                  large
+                  onPress={() => this.props.navigation.push('Import')}
+                  title="Import"
+                />*/}
       </View>
     );
   }
 }
+
+export default connect(() => ({}), dispatch => ({ dispatch }))(Intro);

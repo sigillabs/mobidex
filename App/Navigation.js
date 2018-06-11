@@ -14,7 +14,6 @@ import TransactionHistoryScreen from './Main/TransactionHistoryScreen';
 import UnwrapEtherScreen from './Main/UnwrapEtherScreen';
 import WrapEtherScreen from './Main/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
-import ImportPrivateKey from './views/ImportPrivateKey';
 import ErrorScreen from './Error';
 import LoadingScreen from './LoadingScreen';
 
@@ -32,8 +31,7 @@ const LockedNavigation = SwitchNavigator(
 
 const OnboardingNavigation = StackNavigator(
   {
-    Intro: { screen: IntroScreen },
-    Import: { screen: ImportPrivateKey }
+    Intro: { screen: IntroScreen }
   },
   {
     initialRouteName: 'Intro',
