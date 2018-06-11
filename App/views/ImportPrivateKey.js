@@ -22,15 +22,54 @@ class ImportPrivateKey extends Component {
     };
   }
 
-  onSetPrivateKey = value => {
+  render() {
+    return (
+      <BigCenter style={{ width: '100%' }}>
+        <LongInput
+          secureTextEntry={true}
+          placeholder="Private Key"
+          onChangeText={value => this.onSetPrivateKey(value)}
+          errorMessage={
+            this.state.privateKeyError
+              ? "Private key isn't right for some reason. Make sure you've typed it in correctly."
+              : null
+          }
+          errorStyle={{ color: 'red' }}
+          icon={<Icon name="vpn-key" size={24} color="black" />}
+          containerStyle={{ width: '100%', marginBottom: 10 }}
+        />
+        <LongInput
+          secureTextEntry={true}
+          placeholder="Password"
+          onChangeText={value => this.onSetPassword(value)}
+          errorMessage={
+            this.state.passwordError
+              ? 'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
+              : null
+          }
+          errorStyle={{ color: 'red' }}
+          icon={<Icon name="person" size={24} color="black" />}
+          containerStyle={{ width: '100%', marginBottom: 10 }}
+        />
+        <Button
+          large
+          title="Import Private Key"
+          onPress={() => this.importPrivateKey()}
+          containerStyle={{ width: '100%' }}
+        />
+      </BigCenter>
+    );
+  }
+
+  onSetPrivateKey(value) {
     this.setState({ privateKey: value, privateKeyError: false });
-  };
+  }
 
-  onSetPassword = value => {
+  onSetPassword(value) {
     this.setState({ password: value, passwordError: false });
-  };
+  }
 
-  importPrivateKey = () => {
+  importPrivateKey() {
     if (!this.state.privateKey) {
       this.setState({ privateKeyError: true });
       return;
@@ -53,45 +92,6 @@ class ImportPrivateKey extends Component {
 
       if (this.props.onFinish) await this.props.onFinish();
     });
-  };
-
-  render() {
-    return (
-      <BigCenter style={{ width: '100%' }}>
-        <LongInput
-          secureTextEntry={true}
-          placeholder="Private Key"
-          onChangeText={this.onSetPrivateKey}
-          errorMessage={
-            this.state.privateKeyError
-              ? "Private key isn't right for some reason. Make sure you've typed it in correctly."
-              : null
-          }
-          errorStyle={{ color: 'red' }}
-          icon={<Icon name="vpn-key" size={24} color="black" />}
-          containerStyle={{ width: '100%', marginBottom: 10 }}
-        />
-        <LongInput
-          secureTextEntry={true}
-          placeholder="Password"
-          onChangeText={this.onSetPassword}
-          errorMessage={
-            this.state.passwordError
-              ? 'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
-              : null
-          }
-          errorStyle={{ color: 'red' }}
-          icon={<Icon name="person" size={24} color="black" />}
-          containerStyle={{ width: '100%', marginBottom: 10 }}
-        />
-        <Button
-          large
-          title="Import Private Key"
-          onPress={this.importPrivateKey}
-          containerStyle={{ width: '100%' }}
-        />
-      </BigCenter>
-    );
   }
 }
 
