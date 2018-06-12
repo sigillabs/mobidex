@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import { TouchableOpacity } from 'react-native';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { importPrivateKey } from '../../thunks';
 import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
+import QRCodeScan from '../views/QRCodeScan';
 
 @reactMixin.decorate(TimerMixin)
 class ImportPrivateKey extends Component {
@@ -18,13 +21,17 @@ class ImportPrivateKey extends Component {
       privateKey: '',
       privateKeyError: false,
       password: '',
-      passwordError: false
+      passwordError: false,
+      showQRCodeScanner: false
     };
   }
 
   render() {
     return (
       <BigCenter style={{ width: '100%' }}>
+        {this.state.showQRCodeScanner ? (
+          <QRCodeScan onSuccess={value => this.onSetPrivateKey(value)} />
+        ) : null}
         <LongInput
           secureTextEntry={true}
           placeholder="Private Key"
@@ -35,8 +42,19 @@ class ImportPrivateKey extends Component {
               : null
           }
           errorStyle={{ color: 'red' }}
-          icon={<Icon name="vpn-key" size={24} color="black" />}
+          leftIcon={<Icon name="vpn-key" size={12} color="black" />}
           containerStyle={{ width: '100%', marginBottom: 10 }}
+          // rightIcon={
+          //   <TouchableOpacity
+          //     onPress={() => this.setState({ showQRCodeScanner: true })}
+          //   >
+          //     <MaterialCommunityIcon
+          //       name="qrcode-scan"
+          //       size={24}
+          //       color="black"
+          //     />
+          //   </TouchableOpacity>
+          // }
         />
         <LongInput
           secureTextEntry={true}
@@ -48,7 +66,7 @@ class ImportPrivateKey extends Component {
               : null
           }
           errorStyle={{ color: 'red' }}
-          icon={<Icon name="person" size={24} color="black" />}
+          leftIcon={<Icon name="person" size={12} color="black" />}
           containerStyle={{ width: '100%', marginBottom: 10 }}
         />
         <Button

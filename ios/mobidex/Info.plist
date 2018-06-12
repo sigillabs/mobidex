@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -40,8 +40,20 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Mobidex does not use music.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Mobidex does not use bluetooth currently.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Mobidex does not use calendars currently.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Mobidex identifies QR codes to import private keys.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSMotionUsageDescription</key>
+	<string>Mobidex identifies QR codes to import private keys.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Mobidex does not use speech recognition.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
