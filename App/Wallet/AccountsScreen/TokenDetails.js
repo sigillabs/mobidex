@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
-import Button from '../components/Button';
-import { closeDrawer } from '../../actions';
+import { gotoSendScreen, gotoReceiveScreen } from '../../../thunks';
 import {
   formatAmountWithDecimals,
   summarizeAddress,
   getImage
-} from '../../utils';
+} from '../../../utils';
+import Button from '../../components/Button';
 
 class TokenDetails extends Component {
   constructor(props) {
@@ -22,20 +21,11 @@ class TokenDetails extends Component {
   }
 
   receive = () => {
-    this.props.dispatch(closeDrawer());
-    this.props.dispatch(NavigationActions.push({ routeName: 'Receive' }));
+    this.props.dispatch(gotoReceiveScreen(this.props.token));
   };
 
   send = () => {
-    this.props.dispatch(closeDrawer());
-    this.props.dispatch(
-      NavigationActions.push({
-        routeName: 'Send',
-        params: {
-          token: this.props.token
-        }
-      })
-    );
+    this.props.dispatch(gotoSendScreen(this.props.token));
   };
 
   toggleShowAddress = () => {
@@ -106,8 +96,7 @@ class TokenDetails extends Component {
 
 export default connect(
   state => ({
-    ...state.wallet,
-    navigation: state.navigation
+    ...state.wallet
   }),
   dispatch => ({ dispatch })
 )(TokenDetails);

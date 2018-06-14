@@ -4,13 +4,13 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { colors } from '../../styles';
+import { colors } from '../../../styles';
 import {
   findTickerDetails,
   formatAmount,
   formatMoney,
   getImage
-} from '../../utils';
+} from '../../../utils';
 
 const styles = {
   itemContainer: {

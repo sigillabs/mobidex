@@ -1,20 +1,15 @@
 import React, { Component } from 'react';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { connect } from 'react-redux';
 import { colors } from '../../styles';
 
-export default class extends Component {
+export default class BlankHeader extends Component {
   render() {
     return (
       <Header
-        backgroundColor={colors.grey1}
+        backgroundColor={colors.background}
         statusBarProps={{ barStyle: 'light-content' }}
-        centerComponent={{
-          text: 'Mobidex',
-          style: { color: 'white', fontSize: 18 }
-        }}
-        outerContainerStyles={{ height: 80 }}
+        outerContainerStyles={{ height: 30, borderBottomWidth: 0 }}
       />
     );
   }

@@ -4,23 +4,23 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
 
-export default class extends Component {
+export default class NormalHeader extends Component {
   render() {
     return (
       <Header
-        backgroundColor={colors.grey1}
+        backgroundColor={colors.background}
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
           <TouchableOpacity
             style={{ padding: 10 }}
             onPress={() => this.props.navigation.goBack(null)}
           >
-            <Icon name="arrow-back" color="white" size={15} />
+            <Icon name="arrow-back" color="black" size={15} />
           </TouchableOpacity>
         }
         centerComponent={{
           text: 'Mobidex',
-          style: { color: 'white', fontSize: 18 }
+          style: { color: 'black', fontSize: 18 }
         }}
         outerContainerStyles={{ height: 80 }}
       />

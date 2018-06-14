@@ -23,6 +23,7 @@ import {
 import EmptyList from '../components/EmptyList';
 import MutedText from '../components/MutedText';
 import Row from '../components/Row';
+import Tabs from './Tabs';
 
 const TokenOrder = connect(
   state => ({
@@ -128,47 +129,50 @@ class OrdersScreen extends Component {
     const orders = this.filterOrders();
 
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={() => this.onRefresh}
-          />
-        }
-      >
-        {orders.length > 0 ? (
-          <View style={{ width: '100%', backgroundColor: 'white' }}>
-            {orders.map((order, index) => {
-              return (
-                <Swipeout
-                  key={index}
-                  autoClose={true}
-                  style={{
-                    backgroundColor: 'transparent'
-                  }}
-                  right={[
-                    {
-                      backgroundColor: colors.yellow0,
-                      text: 'Delete',
-                      type: 'delete',
-                      underlayColor: colors.yellow0,
-                      onPress: () => this.cancelOrder(order)
-                    }
-                  ]}
-                >
-                  <TokenOrder order={order} />
-                </Swipeout>
-              );
-            })}
-          </View>
-        ) : (
-          <EmptyList style={{ height: '100%', width: '100%' }}>
-            <MutedText style={{ marginTop: 25 }}>
-              No active orders to show.
-            </MutedText>
-          </EmptyList>
-        )}
-      </ScrollView>
+      <View>
+        <Tabs index={1} />
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => this.onRefresh}
+            />
+          }
+        >
+          {orders.length > 0 ? (
+            <View style={{ width: '100%', backgroundColor: 'white' }}>
+              {orders.map((order, index) => {
+                return (
+                  <Swipeout
+                    key={index}
+                    autoClose={true}
+                    style={{
+                      backgroundColor: 'transparent'
+                    }}
+                    right={[
+                      {
+                        backgroundColor: colors.yellow0,
+                        text: 'Delete',
+                        type: 'delete',
+                        underlayColor: colors.yellow0,
+                        onPress: () => this.cancelOrder(order)
+                      }
+                    ]}
+                  >
+                    <TokenOrder order={order} />
+                  </Swipeout>
+                );
+              })}
+            </View>
+          ) : (
+            <EmptyList style={{ height: '100%', width: '100%' }}>
+              <MutedText style={{ marginTop: 25 }}>
+                No active orders to show.
+              </MutedText>
+            </EmptyList>
+          )}
+        </ScrollView>
+      </View>
     );
   }
 

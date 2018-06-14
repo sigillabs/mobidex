@@ -26,7 +26,7 @@ export function formatAmountWithDecimals(amount, decimals) {
 
 export function formatAmount(amount) {
   const amountBN = new BigNumber(amount);
-  return amountBN.toFixed(6);
+  return amountBN.toFixed(4);
 }
 
 export function formatTimestamp(timestamp) {

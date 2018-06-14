@@ -1,25 +1,33 @@
 import React from 'react';
-import { StackNavigator, SwitchNavigator } from 'react-navigation';
+import {
+  createStackNavigator,
+  createSwitchNavigator,
+  createTabNavigator
+} from 'react-navigation';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
 import UnlockScreen from './Locked/UnlockScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
-import OrdersScreen from './Main/OrdersScreen';
+import BlankHeader from './headers/Blank';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
-import ReceiveScreen from './Main/ReceiveScreen';
-import SendScreen from './Main/SendScreen';
-import TransactionHistoryScreen from './Main/TransactionHistoryScreen';
-import UnwrapEtherScreen from './Main/UnwrapEtherScreen';
-import WrapEtherScreen from './Main/WrapEtherScreen';
+import AccountsScreen from './Wallet/AccountsScreen';
+import OrdersScreen from './Wallet/OrdersScreen';
+import ReceiveScreen from './Wallet/ReceiveScreen';
+import SendScreen from './Wallet/SendScreen';
+import TransactionHistoryScreen from './Wallet/TransactionHistoryScreen';
+import UnwrapEtherScreen from './Wallet/UnwrapEtherScreen';
+import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
 import ErrorScreen from './Error';
+import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
-
 import { colors } from '../styles';
 
-const LockedNavigation = SwitchNavigator(
+const LockedNavigation = createSwitchNavigator(
   {
     Unlock: { screen: UnlockScreen },
     ImportPrivateKey: { screen: ImportPrivateKeyScreen }
@@ -29,7 +37,7 @@ const LockedNavigation = SwitchNavigator(
   }
 );
 
-const OnboardingNavigation = StackNavigator(
+const OnboardingNavigation = createStackNavigator(
   {
     Intro: { screen: IntroScreen }
   },
@@ -39,17 +47,33 @@ const OnboardingNavigation = StackNavigator(
   }
 );
 
-const MainNavigation = StackNavigator(
+const WalletNavigation = createStackNavigator(
   {
-    List: { screen: ProductScreen },
-    Details: { screen: ProductDetailsScreen },
-    CreateOrder: { screen: CreateOrderScreen },
-    Orders: { screen: OrdersScreen },
-    History: { screen: TransactionHistoryScreen },
+    Accounts: { screen: AccountsScreen },
     Receive: { screen: ReceiveScreen },
     Send: { screen: SendScreen },
     Wrap: { screen: WrapEtherScreen },
-    Unwrap: { screen: UnwrapEtherScreen }
+    Unwrap: { screen: UnwrapEtherScreen },
+    Orders: { screen: OrdersScreen },
+    History: { screen: TransactionHistoryScreen }
+  },
+  {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
+    initialRouteName: 'Accounts',
+    headerMode: 'float',
+    navigationOptions: ({ navigation }) => ({
+      header: <BlankHeader />
+    })
+  }
+);
+
+const ProductsNavigation = createStackNavigator(
+  {
+    List: { screen: ProductScreen },
+    Details: { screen: ProductDetailsScreen },
+    CreateOrder: { screen: CreateOrderScreen }
   },
   {
     cardStyle: {
@@ -73,12 +97,45 @@ const MainNavigation = StackNavigator(
   }
 );
 
-export default SwitchNavigator(
+const MainTabsNavigator = createTabNavigator(
+  {
+    Products: { screen: ProductsNavigation },
+    Wallet: { screen: WalletNavigation },
+    Settings: { screen: SettingsScreen }
+  },
+  {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
+    tabBarPosition: 'bottom',
+    lazy: true,
+    initialRouteName: 'Products',
+    headerMode: 'float',
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        switch (navigation.state.routeName) {
+          case 'Products':
+            return (
+              <FontAwesome name="line-chart" size={25} color={tintColor} />
+            );
+
+          case 'Wallet':
+            return <Ionicons name="md-card" size={25} color={tintColor} />;
+
+          case 'Settings':
+            return <Ionicons name="ios-settings" size={25} color={tintColor} />;
+        }
+      }
+    })
+  }
+);
+
+export default createSwitchNavigator(
   {
     Loading: { screen: LoadingScreen },
     Error: { screen: ErrorScreen },
     Onboarding: { screen: OnboardingNavigation },
-    Main: { screen: MainNavigation },
+    Main: { screen: MainTabsNavigator },
     Locked: { screen: LockedNavigation }
   },
   {

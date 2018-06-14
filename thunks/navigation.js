@@ -1,6 +1,6 @@
 import { Linking } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import { setError } from '../actions';
+import NavigationService from '../App/NavigationService';
 import { getNetworkId, hasWalletOnFileSystem } from '../utils';
 
 export function gotoEtherScan(txaddr) {
@@ -23,24 +23,53 @@ export function gotoOnboardingOrLocked() {
   return async dispatch => {
     let hasWallet = await hasWalletOnFileSystem();
     if (hasWallet) {
-      dispatch(NavigationActions.navigate({ routeName: 'Locked' }));
+      NavigationService.navigate('Locked');
     } else {
-      dispatch(NavigationActions.navigate({ routeName: 'Onboarding' }));
+      NavigationService.navigate('Onboarding');
     }
   };
 }
 
 export function gotoTransactionScreen() {
   return async dispatch => {
-    dispatch(NavigationActions.navigate({ routeName: 'History' }));
+    NavigationService.navigate('History');
   };
 }
 
 export function gotoErrorScreen(error) {
   return dispatch => {
     dispatch(setError(error));
-    dispatch(
-      NavigationActions.navigate({ routeName: 'Error', params: { error } })
-    );
+    NavigationService.navigate('Error', { error });
   };
 }
+
+export function gotoSendScreen(token) {
+  return () => {
+    NavigationService.navigate('Send', { token });
+  };
+}
+
+export function gotoReceiveScreen(token) {
+  return () => {
+    NavigationService.navigate('Receive', { token });
+  };
+}
+
+export function gotoHistoryScreen() {
+  return () => {
+    NavigationService.navigate('History');
+  };
+}
+
+export function gotoMyOrdersScreen() {
+  return () => {
+    NavigationService.navigate('Orders');
+  };
+}
+
+export function gotoAccountsScreen() {
+  return () => {
+    NavigationService.navigate('Accounts');
+  };
+}
+

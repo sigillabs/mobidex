@@ -6,13 +6,13 @@ import {
   loadTokens,
   updateForexTickers,
   updateTokenTickers
-} from '../../thunks';
-import Row from '../components/Row';
-import Actions from './Actions';
+} from '../../../thunks';
+import Row from '../../components/Row';
+import Tabs from '../Tabs';
 import TokenList from './TokenList';
 import TokenDetails from './TokenDetails';
 
-class DrawerController extends Component {
+class AccountsScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -40,31 +40,31 @@ class DrawerController extends Component {
     filteredTokens = _.without(this.props.assets, { symbol: 'WETH' });
 
     return (
-      <ScrollView
-        style={{ width: '100%', borderRightWidth: 1 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-          />
-        }
-      >
-        <View style={{ height: '100%', paddingTop: 25 }}>
-          <Row style={{ height: 200 }}>
-            <TokenDetails token={this.state.token || ethToken} />
-          </Row>
-          <Row>
-            <TokenList
-              token={this.state.token}
-              tokens={filteredTokens}
-              onPress={token => this.setState({ token })}
+      <View style={{ width: '100%' }}>
+        <Tabs index={0} />
+        <ScrollView
+          style={{ width: '100%' }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
             />
-          </Row>
-          <Row>
-            <Actions />
-          </Row>
-        </View>
-      </ScrollView>
+          }
+        >
+          <View style={{ height: '100%', paddingTop: 25 }}>
+            <Row style={{ height: 200 }}>
+              <TokenDetails token={this.state.token || ethToken} />
+            </Row>
+            <Row>
+              <TokenList
+                token={this.state.token}
+                tokens={filteredTokens}
+                onPress={token => this.setState({ token })}
+              />
+            </Row>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 
@@ -74,9 +74,16 @@ class DrawerController extends Component {
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
   };
+
+  updateIndex(index) {
+    switch (index) {
+      case 0:
+        break;
+    }
+  }
 }
 
 export default connect(
   state => ({ ...state.wallet, ...state.device.layout }),
   dispatch => ({ dispatch })
-)(DrawerController);
+)(AccountsScreen);
