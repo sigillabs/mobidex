@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
@@ -9,7 +8,8 @@ const initialState = {
   network: 'kovan',
   // network: 'mainnet',
   relayerEndpoint: BASE_URL,
-  forexCurrency: 'USD'
+  forexCurrency: 'USD',
+  quoteSymbol: 'WETH'
 };
 
 export default handleActions(
@@ -23,4 +23,3 @@ export default handleActions(
   },
   initialState
 );
-``;

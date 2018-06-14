@@ -64,7 +64,59 @@ const WalletNavigation = createStackNavigator(
     initialRouteName: 'Accounts',
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
-      header: <BlankHeader />
+      header: () => {
+        switch (navigation.state.routeName) {
+          case 'History':
+          case 'Orders':
+          case 'Accounts':
+            return <BlankHeader />;
+
+          case 'Receive':
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Receive Tokens"
+                showBackButton={true}
+              />
+            );
+
+          case 'Send':
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Send Tokens"
+                showBackButton={true}
+              />
+            );
+
+          case 'Wrap':
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Wrap Ether"
+                showBackButton={true}
+              />
+            );
+
+          case 'Unwrap':
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Unwrap Ether"
+                showBackButton={true}
+              />
+            );
+
+          default:
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Mobidex"
+                showBackButton={true}
+              />
+            );
+        }
+      }
     })
   }
 );
@@ -81,19 +133,34 @@ const ProductsNavigation = createStackNavigator(
     },
     initialRouteName: 'List',
     headerMode: 'float',
-    navigationOptions: ({ navigation }) => {
-      switch (navigation.state.routeName) {
-        case 'List':
-          return {
-            header: <ProductsHeader navigation={navigation} />
-          };
+    navigationOptions: ({ navigation }) => ({
+      header: () => {
+        switch (navigation.state.routeName) {
+          case 'List':
+            return (
+              <ProductsHeader navigation={navigation} showBackButton={false} />
+            );
 
-        default:
-          return {
-            header: <NormalHeader navigation={navigation} />
-          };
+          case 'Details':
+            return (
+              <ProductsHeader
+                navigation={navigation}
+                product={navigation.state.params.product}
+                showBackButton={true}
+              />
+            );
+
+          default:
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Mobidex"
+                showBackButton={true}
+              />
+            );
+        }
       }
-    }
+    })
   }
 );
 

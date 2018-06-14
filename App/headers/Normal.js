@@ -11,15 +11,17 @@ export default class NormalHeader extends Component {
         backgroundColor={colors.background}
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
-          <TouchableOpacity
-            style={{ padding: 10 }}
-            onPress={() => this.props.navigation.goBack(null)}
-          >
-            <Icon name="arrow-back" color="black" size={15} />
-          </TouchableOpacity>
+          this.props.showBackButton ? (
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={() => this.props.navigation.goBack(null)}
+            >
+              <Icon name="arrow-back" color="black" size={15} />
+            </TouchableOpacity>
+          ) : null
         }
         centerComponent={{
-          text: 'Mobidex',
+          text: this.props.title || 'Mobidex',
           style: { color: 'black', fontSize: 18 }
         }}
         outerContainerStyles={{ height: 80 }}
