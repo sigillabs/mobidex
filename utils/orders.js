@@ -117,6 +117,7 @@ export async function fillOrKillOrder(web3, order, amount = null) {
     amountBN.lte(order.takerTokenAmount) && amountBN.gt(0)
       ? amountBN
       : new BigNumber(order.takerTokenAmount),
+    true,
     account.toLowerCase(),
     { shouldValidate: true }
   );
