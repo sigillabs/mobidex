@@ -7,7 +7,7 @@
         "start": "node node_modules/react-native/local-cli/cli.js start",
         "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
         "patch:web3": "./patches/web3.sh",
-        "build:android:release": "pushd android; read -sp 'If you would like to sign the APK, please add your store passphrase now: ' MOBIDEX_RELEASE_STORE_PASSWORD; ./gradlew clean assembleRelease -PMOBIDEX_RELEASE_STORE_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_RELEASE_KEY_PASSWORD=${MOBIDEX_RELEASE_STORE_PASSWORD} -PMOBIDEX_SIGN=1; popd android;",
+        "build:android:release": "cli/build-android.sh",
         "build:ios:release": "echo 'You need to build an archive via XCode!'"
     },
     "dependencies": {
@@ -65,7 +65,8 @@
         "underscore": "^1.8.3",
         "url": "~0.10.1",
         "web3": "^0.20.4",
-        "web3-contracts-loader": "github:abec/web3-contracts-loader#729941574db1dcf45bda37623d12e0dee040a487",
+        "web3-contracts-loader":
+            "github:abec/web3-contracts-loader#729941574db1dcf45bda37623d12e0dee040a487",
         "web3-provider-engine": "^13.6.5"
     },
     "devDependencies": {
