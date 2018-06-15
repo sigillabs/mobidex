@@ -8,8 +8,6 @@ const initialState = {
   token: {}
 };
 
-let timer = null;
-
 function tickersToState(tickers) {
   const obj = {};
   for (let ticker of _.values(tickers)) {
