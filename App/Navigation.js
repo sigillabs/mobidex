@@ -138,7 +138,11 @@ const ProductsNavigation = createStackNavigator(
         switch (navigation.state.routeName) {
           case 'List':
             return (
-              <ProductsHeader navigation={navigation} showBackButton={false} />
+              <ProductsHeader
+                navigation={navigation}
+                showBackButton={false}
+                showForexToggleButton={true}
+              />
             );
 
           case 'Details':
@@ -147,6 +151,7 @@ const ProductsNavigation = createStackNavigator(
                 navigation={navigation}
                 product={navigation.state.params.product}
                 showBackButton={true}
+                showForexToggleButton={false}
               />
             );
 
@@ -156,6 +161,7 @@ const ProductsNavigation = createStackNavigator(
                 navigation={navigation}
                 title="Mobidex"
                 showBackButton={true}
+                showForexToggleButton={false}
               />
             );
         }

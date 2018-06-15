@@ -29,18 +29,20 @@ class ProductsHeader extends Component {
           style: { color: 'black', fontSize: 18 }
         }}
         rightComponent={
-          <TouchableOpacity
-            style={{ padding: 10 }}
-            onPress={() =>
-              this.props.navigation.setParams({
-                showForexPrices: !this.props.navigation.getParam(
-                  'showForexPrices'
-                )
-              })
-            }
-          >
-            <Icon name="attach-money" color="black" size={15} />
-          </TouchableOpacity>
+          this.props.showForexToggleButton ? (
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={() =>
+                this.props.navigation.setParams({
+                  showForexPrices: !this.props.navigation.getParam(
+                    'showForexPrices'
+                  )
+                })
+              }
+            >
+              <Icon name="attach-money" color="black" size={15} />
+            </TouchableOpacity>
+          ) : null
         }
         outerContainerStyles={{ height: 80 }}
       />
