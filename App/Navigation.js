@@ -10,6 +10,7 @@ import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
 import UnlockScreen from './Locked/UnlockScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
+import CreateOrderHeader from './headers/CreateOrder';
 import BlankHeader from './headers/Blank';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
@@ -152,6 +153,15 @@ const ProductsNavigation = createStackNavigator(
                 product={navigation.state.params.product}
                 showBackButton={true}
                 showForexToggleButton={false}
+              />
+            );
+
+          case 'CreateOrder':
+            return (
+              <CreateOrderHeader
+                navigation={navigation}
+                token={navigation.state.params.product.base}
+                side={navigation.state.params.side}
               />
             );
 

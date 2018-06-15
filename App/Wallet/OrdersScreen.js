@@ -152,7 +152,7 @@ class OrdersScreen extends Component {
                     right={[
                       {
                         backgroundColor: colors.yellow0,
-                        text: 'Delete',
+                        text: 'Cancel',
                         type: 'delete',
                         underlayColor: colors.yellow0,
                         onPress: () => this.cancelOrder(order)
