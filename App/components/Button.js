@@ -24,7 +24,9 @@ export default class Button extends Component {
             marginTop: 5,
             marginRight: 5,
             marginBottom: 5,
-            marginLeft: 5
+            marginLeft: 5,
+            paddingLeft: 10,
+            paddingRight: 10
           },
           buttonStyle
         ]}

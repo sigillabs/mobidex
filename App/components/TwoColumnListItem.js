@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { ListItem, Text } from 'react-native-elements';
 import Row from './Row';
 
-export default class ListItemDetail extends Component {
+export default class TwoColumnListItem extends Component {
   render() {
     const rest = _.omit(this.props, [
       'left',
@@ -30,13 +30,27 @@ export default class ListItemDetail extends Component {
 
   renderTitle() {
     const { left, right, leftStyle, rightStyle, rowStyle } = this.props;
+    let leftElement = left;
+    let rightElement = right;
 
-    return (
-      <Row style={[{ flex: 1 }, rowStyle]}>
+    if (typeof left === 'string') {
+      leftElement = (
         <Text style={[{ flex: 1, textAlign: 'left' }, leftStyle]}>{left}</Text>
+      );
+    }
+
+    if (typeof right === 'string') {
+      rightElement = (
         <Text style={[{ flex: 1, textAlign: 'right' }, rightStyle]}>
           {right}
         </Text>
+      );
+    }
+
+    return (
+      <Row style={[{ flex: 1 }, rowStyle]}>
+        {leftElement}
+        {rightElement}
       </Row>
     );
   }
@@ -67,12 +81,12 @@ export default class ListItemDetail extends Component {
   }
 }
 
-ListItemDetail.propTypes = {
-  left: PropTypes.string.isRequired,
+TwoColumnListItem.propTypes = {
+  left: PropTypes.node.isRequired,
   leftHeader: PropTypes.string,
   leftHeaderStyle: PropTypes.object,
   leftStyle: PropTypes.object,
-  right: PropTypes.string.isRequired,
+  right: PropTypes.node.isRequired,
   rightHeader: PropTypes.string,
   rightHeaderStyle: PropTypes.object,
   rightStyle: PropTypes.object,

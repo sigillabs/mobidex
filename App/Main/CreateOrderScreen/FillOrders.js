@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { setError } from '../../../actions';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { fillUpToBaseAmount, loadOrders } from '../../../thunks';
@@ -18,7 +17,7 @@ import {
   formatAmountWithDecimals
 } from '../../../utils';
 import Button from '../../components/Button';
-import ListItemDetail from '../../components/ListItemDetail';
+import TwoColumnListItem from '../../components/TwoColumnListItem';
 import Row from '../../components/Row';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
@@ -109,12 +108,12 @@ class FillOrders extends Component {
     switch (side) {
       case 'buy':
         label = 'Buying';
-        buttonLabel = `Buy ${base.symbol}`;
+        buttonLabel = 'Confirm Buy';
         break;
 
       case 'sell':
         label = 'Selling';
-        buttonLabel = `Sell ${base.symbol}`;
+        buttonLabel = 'Confirm Sell';
         break;
 
       default:
@@ -136,28 +135,28 @@ class FillOrders extends Component {
           onChange={value => this.onSetAmount(value)}
           amount={this.state.amount}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Average Price"
           right={formatAmount(priceAverage)}
           bottomDivider={false}
           leftStyle={{ fontSize: 10, color: colors.grey3 }}
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Sub-Total"
           right={formatAmount(subTotal.toNumber())}
           bottomDivider={false}
           leftStyle={{ fontSize: 10, color: colors.grey3 }}
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Fee"
           right={formatAmount(fee.toNumber())}
           bottomDivider={false}
           leftStyle={{ fontSize: 10, color: colors.grey3 }}
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Holding"
           right={
             baseAsset
@@ -167,18 +166,13 @@ class FillOrders extends Component {
           topDivider={true}
           bottomDivider={true}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Total"
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
           bottomDivider={true}
         />
-        <Button
-          large
-          onPress={() => this.submit()}
-          icon={<Icon name="check" size={24} color="white" />}
-          title={buttonLabel}
-        />
+        <Button large onPress={() => this.submit()} title={buttonLabel} />
         {fillableOrders.map((o, i) => (
           <Order
             key={o.orderHash || o.hash || i}

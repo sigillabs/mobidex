@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { gotoSendScreen, gotoReceiveScreen } from '../../../thunks';
 import {
@@ -39,53 +40,50 @@ class TokenDetails extends Component {
     return (
       <View
         style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-around',
-          alignItems: 'stretch'
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: 10,
+          paddingBottom: 10
         }}
       >
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Avatar
-            large
-            rounded
-            width={34}
-            height={34}
-            source={getImage(token.symbol)}
-            activeOpacity={0.7}
-            onPress={this.toggleShowAddress}
-          />
-          <Text style={{ marginTop: 10, marginBottom: 10 }}>
-            {formatAmountWithDecimals(balance, decimals)}
-          </Text>
-          <Text onPress={this.toggleShowAddress}>
-            {this.state.showAddress ? address : summarizeAddress(address)}
-          </Text>
-        </View>
+        <Avatar
+          size="large"
+          rounded
+          source={getImage(token.symbol)}
+          activeOpacity={0.7}
+          onPress={this.toggleShowAddress}
+        />
+        <Text style={{ marginTop: 5 }}>
+          {formatAmountWithDecimals(balance, decimals)}
+        </Text>
+        <Text style={{ marginTop: 5 }} onPress={this.toggleShowAddress}>
+          {this.state.showAddress ? address : summarizeAddress(address)}
+        </Text>
 
         <View
           style={{
             height: 50,
             flexDirection: 'row',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginTop: 10
           }}
         >
           <Button
             large
             title="Receive"
-            icon={<Icon name="move-to-inbox" color="white" size={18} />}
-            buttonStyle={{ borderRadius: 0 }}
+            icon={
+              <MaterialCommunityIcons name="qrcode" color="white" size={18} />
+            }
             onPress={this.receive}
           />
           <View style={{ width: 10 }} />
           <Button
             large
             title="Send"
-            icon={<Icon name="send" color="white" size={18} />}
-            buttonStyle={{ borderRadius: 0 }}
+            icon={<MaterialIcons name="send" color="white" size={18} />}
+            iconRight={true}
             onPress={this.send}
           />
         </View>

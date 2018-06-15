@@ -1,35 +1,14 @@
 import { ZeroEx } from '0x.js';
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../../styles';
-import {
-  findTickerDetails,
-  formatAmount,
-  formatMoney,
-  getImage
-} from '../../../utils';
-
-const styles = {
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    // marginLeft: 5,
-    height: 25,
-    width: '100%'
-  },
-  itemText: {
-    marginLeft: 10
-  },
-  highlight: {
-    backgroundColor: colors.grey3,
-    borderColor: colors.grey3,
-    borderWidth: 1
-  }
-};
+import { findTickerDetails, formatAmount, formatMoney } from '../../../utils';
+import TokenIcon from '../../components/TokenIcon';
+import TwoColumnListItem from '../../components/TwoColumnListItem';
 
 class BaseTokenItem extends Component {
   render() {
@@ -40,13 +19,18 @@ class BaseTokenItem extends Component {
     const forex = findTickerDetails(ticker.forex, symbol, forexCurrency);
 
     return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.itemText}>{symbol.toString()}</Text>
-        <Text style={styles.itemText}>{formatAmount(balance)}</Text>
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'flex-end'
+        }}
+      >
+        <Text>
+          {formatAmount(balance)} {symbol}
+        </Text>
         {forex && forex.price ? (
-          <Text style={styles.itemText}>
-            ({formatMoney(balance.mul(forex.price).toNumber())})
-          </Text>
+          <Text>({formatMoney(balance.mul(forex.price).toNumber())})</Text>
         ) : null}
       </View>
     );
@@ -78,17 +62,26 @@ class TokenList extends Component {
             key={`token-${index}`}
             onPress={() => this.props.onPress(token)}
           >
-            <ListItem
+            <TwoColumnListItem
               roundAvatar
               bottomDivider
-              avatar={{ source: getImage(token.symbol) }}
-              title={<TokenItem token={token} />}
-              avatarOverlayContainerStyle={{ backgroundColor: 'transparent' }}
+              leftElement={
+                <TokenIcon
+                  token={token}
+                  style={{ flex: 0 }}
+                  numberOfLines={1}
+                  showSymbol={false}
+                  showName={false}
+                />
+              }
+              left={token.name}
+              right={<TokenItem token={token} />}
               containerStyle={[
                 this.props.token &&
                   this.props.token.address === token.address &&
                   styles.highlight
               ]}
+              rightStyle={{ textAlign: 'right' }}
             />
           </TouchableOpacity>
         ))}
@@ -109,3 +102,12 @@ export default connect(
   }),
   dispatch => ({ dispatch })
 )(TokenList);
+
+const styles = {
+  highlight: {
+    backgroundColor: colors.yellow0,
+    borderColor: colors.yellow0,
+    color: colors.white,
+    borderWidth: 1
+  }
+};

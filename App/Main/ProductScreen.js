@@ -7,7 +7,7 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { Avatar, ListItem, Text } from 'react-native-elements';
+import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
@@ -15,34 +15,12 @@ import {
   formatAmount,
   formatAmountWithDecimals,
   formatMoney,
-  formatPercent,
-  getImage
+  formatPercent
 } from '../../utils';
 import Col from '../components/Col';
 import Row from '../components/Row';
 import MutedText from '../components/MutedText';
-
-class TokenIcon extends Component {
-  render() {
-    return (
-      <View
-        style={[
-          { justifyContent: 'center', alignItems: 'center' },
-          this.props.style
-        ]}
-      >
-        <Avatar
-          rounded
-          source={getImage(this.props.symbol)}
-          containerStyle={[styles.padBottom]}
-        />
-        <Text style={[styles.small, styles.center]}>
-          {this.props.amount} {this.props.title}
-        </Text>
-      </View>
-    );
-  }
-}
+import TokenIcon from '../components/TokenIcon';
 
 class TokenItem extends Component {
   render() {
@@ -55,11 +33,12 @@ class TokenItem extends Component {
         bottomDivider
         leftElement={
           <TokenIcon
-            symbol={baseToken.symbol}
-            title={baseToken.symbol}
+            token={baseToken}
             amount={amount}
             style={{ flex: 0 }}
             numberOfLines={1}
+            showName={false}
+            showSymbol={true}
           />
         }
         title={

@@ -9,7 +9,7 @@ import { sendEther, sendTokens } from '../../thunks';
 import { findTickerDetails, formatMoney } from '../../utils';
 import AddressInput from '../components/AddressInput';
 import Button from '../components/Button';
-import ListItemDetail from '../components/ListItemDetail';
+import TwoColumnListItem from '../components/TwoColumnListItem';
 import TokenInput from '../components/TokenInput';
 
 class SendScreen extends Component {
@@ -58,7 +58,7 @@ class SendScreen extends Component {
           onChange={v => this.onSetAmount(v)}
           amount={this.state.amount}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Amount"
           right={formatMoney(forexAmount)}
           style={{ marginBottom: 10, marginTop: 10 }}

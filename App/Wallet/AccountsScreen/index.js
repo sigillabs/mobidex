@@ -36,50 +36,47 @@ class AccountsScreen extends Component {
     }
 
     let ethToken = _.find(this.props.assets, { symbol: 'ETH' });
-    let filteredTokens = _.without(this.props.assets, ethToken);
-    filteredTokens = _.without(this.props.assets, { symbol: 'WETH' });
+    let filteredTokens = _.filter(
+      this.props.assets,
+      asset => asset.symbol !== 'ETH' && asset.symbol !== 'WETH'
+    );
 
     return (
-      <View style={{ width: '100%' }}>
+      <View>
         <Tabs index={0} />
         <ScrollView
           style={{ width: '100%' }}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
+              onRefresh={() => this.onRefresh()}
             />
           }
         >
-          <View style={{ height: '100%', paddingTop: 25 }}>
-            <Row style={{ height: 200 }}>
-              <TokenDetails token={this.state.token || ethToken} />
-            </Row>
-            <Row>
-              <TokenList
-                token={this.state.token}
-                tokens={filteredTokens}
-                onPress={token => this.setState({ token })}
-              />
-            </Row>
-          </View>
+          <Row>
+            <TokenDetails token={this.state.token || ethToken} />
+          </Row>
+          <Row>
+            <TokenList
+              token={this.state.token}
+              tokens={filteredTokens}
+              onPress={token =>
+                this.state.token !== token
+                  ? this.setState({ token })
+                  : this.setState({ token: null })
+              }
+            />
+          </Row>
         </ScrollView>
       </View>
     );
   }
 
-  onRefresh = async () => {
+  async onRefresh() {
     this.setState({ refreshing: true });
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
-  };
-
-  updateIndex(index) {
-    switch (index) {
-      case 0:
-        break;
-    }
   }
 }
 

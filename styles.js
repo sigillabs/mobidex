@@ -21,6 +21,10 @@ const colors = {
   transparent: 'transparent'
 };
 
+const small = {
+  fontSize: 10
+};
+
 export function getProfitLossColor(number) {
   if (number > 0) {
     return colors.green0;
@@ -37,4 +41,4 @@ export function getProfitLossStyle(number) {
   };
 }
 
-export { colors };
+export { colors, small };

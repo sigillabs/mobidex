@@ -2,14 +2,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import BigNumber from 'bignumber.js';
 import { setError } from '../../../actions';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { createSignSubmitOrder } from '../../../thunks';
 import { formatAmount } from '../../../utils';
 import Button from '../../components/Button';
-import ListItemDetail from '../../components/ListItemDetail';
+import TwoColumnListItem from '../../components/TwoColumnListItem';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
 
@@ -49,11 +48,11 @@ class CreateLimitOrder extends Component {
 
     switch (side) {
       case 'buy':
-        buttonLabel = `Bid ${base.symbol}`;
+        buttonLabel = 'Confirm Bid';
         break;
 
       case 'sell':
-        buttonLabel = `Ask ${base.symbol}`;
+        buttonLabel = 'Confirm Ask';
         break;
 
       default:
@@ -82,33 +81,28 @@ class CreateLimitOrder extends Component {
           onChange={this.onSetValue('price', 'priceError')}
           amount={this.state.price}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Sub-Total"
           right={formatAmount(subTotal.toNumber())}
           bottomDivider={false}
           leftStyle={{ fontSize: 10, color: colors.grey3 }}
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Fee"
           right={formatAmount(fee.toNumber())}
           bottomDivider={false}
           leftStyle={{ fontSize: 10, color: colors.grey3 }}
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
-        <ListItemDetail
+        <TwoColumnListItem
           left="Total"
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
           topDivider={true}
           bottomDivider={true}
         />
-        <Button
-          large
-          onPress={() => this.submit()}
-          icon={<Icon name="check" size={24} color="white" />}
-          title={buttonLabel}
-        />
+        <Button large onPress={() => this.submit()} title={buttonLabel} />
       </View>
     );
   }

@@ -179,6 +179,14 @@ const MainTabsNavigator = createTabNavigator(
     initialRouteName: 'Products',
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
+      tabBarLabel: ({ focused, tintColor }) => {
+        switch (navigation.state.routeName) {
+          case 'Products':
+            return 'Trade';
+          default:
+            return navigation.state.routeName;
+        }
+      },
       tabBarIcon: ({ focused, tintColor }) => {
         switch (navigation.state.routeName) {
           case 'Products':
