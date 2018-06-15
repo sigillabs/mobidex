@@ -44,10 +44,11 @@ export default class TokenInput extends Component {
             value={amount}
             onChangeText={onChange}
             options={{
-              precision: 6,
+              precision: 4,
               unit: '',
               separator: '.',
-              delimiter: ','
+              delimiter: ',',
+              zeroCents: true
             }}
           />
 

@@ -1,44 +1,31 @@
 import React, { Component } from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import Unlock from '../views/Unlock';
-import ButtonGroup from '../components/ButtonGroup';
 import BigCenter from '../components/BigCenter';
+import Tabs from './Tabs';
 
 class UnlockScreen extends Component {
   render() {
     return (
-      <BigCenter>
-        <Unlock
-          onFinish={async () => {
-            try {
-              await this.props.dispatch(loadProductsAndTokens(true));
-              await this.props.dispatch(loadAssets());
-              this.props.navigation.navigate({ routeName: 'Main' });
-            } catch (err) {
-              this.props.dispatch(setError(err));
-            }
-          }}
-        />
-        <ButtonGroup
-          onPress={index => {
-            switch (index) {
-              case 0:
-                this.props.navigation.navigate({ routeName: 'Unlock' });
-                break;
-
-              case 1:
-                this.props.navigation.navigate({
-                  routeName: 'ImportPrivateKey'
-                });
-                break;
-            }
-          }}
-          selectedIndex={0}
-          buttons={['Unlock', 'Import']}
-        />
-      </BigCenter>
+      <View style={{ flex: 1, paddingTop: 40 }}>
+        <Tabs index={0} />
+        <BigCenter>
+          <Unlock
+            onFinish={async () => {
+              try {
+                await this.props.dispatch(loadProductsAndTokens(true));
+                await this.props.dispatch(loadAssets());
+                this.props.navigation.navigate({ routeName: 'Main' });
+              } catch (err) {
+                this.props.dispatch(setError(err));
+              }
+            }}
+          />
+        </BigCenter>
+      </View>
     );
   }
 }

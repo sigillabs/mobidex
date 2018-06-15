@@ -9,7 +9,14 @@ export default class BlankHeader extends Component {
       <Header
         backgroundColor={colors.background}
         statusBarProps={{ barStyle: 'light-content' }}
-        outerContainerStyles={{ height: 30, borderBottomWidth: 0 }}
+        outerContainerStyles={{
+          height: 40,
+          borderBottomWidth: 0,
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
+          paddingLeft: 0
+        }}
       />
     );
   }

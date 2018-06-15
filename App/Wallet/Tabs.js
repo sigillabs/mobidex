@@ -7,7 +7,7 @@ import {
 } from '../../thunks';
 import TabsComponent from '../components/Tabs';
 
-class AccountsScreen extends Component {
+class WalletTabs extends Component {
   render() {
     return (
       <TabsComponent
@@ -34,7 +34,4 @@ class AccountsScreen extends Component {
   }
 }
 
-export default connect(
-  state => ({ ...state.wallet, ...state.device.layout }),
-  dispatch => ({ dispatch })
-)(AccountsScreen);
+export default connect(state => ({}), dispatch => ({ dispatch }))(WalletTabs);

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import ImportPrivateKey from '../views/ImportPrivateKey';
-import ButtonGroup from '../components/ButtonGroup';
 import BigCenter from '../components/BigCenter';
+import Tabs from './Tabs';
 
 class ImportPrivateKeyScreen extends Component {
   render() {
     return (
-      <BigCenter>
+      <View style={{ flex: 1, paddingTop: 40, alignItems: 'center' }}>
+        <Tabs index={1} />
         <ImportPrivateKey
           onFinish={async () => {
             try {
@@ -20,25 +22,9 @@ class ImportPrivateKeyScreen extends Component {
               this.props.dispatch(setError(err));
             }
           }}
+          style={{ paddingTop: 50 }}
         />
-        <ButtonGroup
-          onPress={index => {
-            switch (index) {
-              case 0:
-                this.props.navigation.navigate({ routeName: 'Unlock' });
-                break;
-
-              case 1:
-                this.props.navigation.navigate({
-                  routeName: 'ImportPrivateKey'
-                });
-                break;
-            }
-          }}
-          selectedIndex={1}
-          buttons={['Unlock', 'Import']}
-        />
-      </BigCenter>
+      </View>
     );
   }
 }

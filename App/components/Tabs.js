@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { ButtonGroup } from 'react-native-elements';
 import { colors } from '../../styles';
 
@@ -18,6 +17,7 @@ export default class Tabs extends Component {
         buttonStyle={[styles.button, buttonStyle]}
         selectedButtonStyle={[styles.selectedButton, selectedButtonStyle]}
         containerStyle={[styles.container, containerStyle]}
+        innerBorderStyle={styles.innerBorder}
         {...rest}
       />
     );
@@ -33,6 +33,7 @@ Tabs.propTypes = {
 const styles = {
   container: {
     height: 50,
+    borderWidth: 0,
     borderRadius: 0,
     padding: 0,
     margin: 0,
@@ -43,10 +44,16 @@ const styles = {
   },
   button: {
     backgroundColor: colors.background,
-    color: colors.primary
+    color: colors.primary,
+    borderLeftWidth: 0,
+    borderRightWidth: 0
   },
   selectedButton: {
     backgroundColor: colors.yellow0,
+    color: colors.white
+  },
+  innerBorder: {
+    width: 0,
     color: colors.white
   }
 };

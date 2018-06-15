@@ -31,7 +31,7 @@ export function gotoOnboardingOrLocked() {
 }
 
 export function gotoTransactionScreen() {
-  return async dispatch => {
+  return async () => {
     NavigationService.navigate('History');
   };
 }
@@ -70,6 +70,18 @@ export function gotoMyOrdersScreen() {
 export function gotoAccountsScreen() {
   return () => {
     NavigationService.navigate('Accounts');
+  };
+}
+
+export function gotoUnlockScreen() {
+  return () => {
+    NavigationService.navigate('Unlock');
+  };
+}
+
+export function gotoImportPrivateKeyScreen() {
+  return () => {
+    NavigationService.navigate('ImportPrivateKey');
   };
 }
 
