@@ -82,7 +82,7 @@ class FillOrders extends Component {
       this.state.amount,
       base.decimals
     );
-    const baseAsset = _.find(this.props.asset, { address: base.address });
+    const quoteAsset = _.find(this.props.assets, { symbol: quote.symbol });
     const priceAverage = this.getPriceAverage();
     const fillableOrders = filterAndSortOrdersByTokensAndTakerAddress(
       orders,
@@ -157,19 +157,22 @@ class FillOrders extends Component {
           rightStyle={{ fontSize: 10, color: colors.grey3 }}
         />
         <TwoColumnListItem
-          left="Holding"
-          right={
-            baseAsset
-              ? formatAmountWithDecimals(baseAsset.balance, baseAsset.decimals)
-              : 0
-          }
-          topDivider={true}
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
           left="Total"
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
+          bottomDivider={true}
+        />
+        <TwoColumnListItem
+          left="Funds Available"
+          right={
+            quoteAsset
+              ? formatAmountWithDecimals(
+                  quoteAsset.balance,
+                  quoteAsset.decimals
+                )
+              : 0
+          }
+          topDivider={true}
           bottomDivider={true}
         />
         <Button large onPress={() => this.submit()} title={buttonLabel} />
