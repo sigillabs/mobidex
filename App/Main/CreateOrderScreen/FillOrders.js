@@ -21,6 +21,7 @@ import TwoColumnListItem from '../../components/TwoColumnListItem';
 import Row from '../../components/Row';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
+import { getBalanceByAddress } from '../../services/WalletService';
 
 class Order extends Component {
   render() {
@@ -82,7 +83,6 @@ class FillOrders extends Component {
       this.state.amount,
       base.decimals
     );
-    const quoteAsset = _.find(this.props.assets, { symbol: quote.symbol });
     const priceAverage = this.getPriceAverage();
     const fillableOrders = filterAndSortOrdersByTokensAndTakerAddress(
       orders,
@@ -161,18 +161,14 @@ class FillOrders extends Component {
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
           bottomDivider={true}
+          topDivider={true}
         />
         <TwoColumnListItem
           left="Funds Available"
-          right={
-            quoteAsset
-              ? formatAmountWithDecimals(
-                  quoteAsset.balance,
-                  quoteAsset.decimals
-                )
-              : 0
-          }
-          topDivider={true}
+          right={`${formatAmountWithDecimals(
+            getBalanceByAddress(quote.address),
+            quote.decimals
+          )} ${quote.symbol}`}
           bottomDivider={true}
         />
         <Button large onPress={() => this.submit()} title={buttonLabel} />

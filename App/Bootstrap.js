@@ -3,7 +3,7 @@ import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { forget, gotoOnboardingOrLocked } from '../thunks';
 import Navigator from './Navigation';
-import NavigationService from './NavigationService';
+import NavigationService from './services/NavigationService';
 
 class Bootstrap extends Component {
   componentDidMount() {

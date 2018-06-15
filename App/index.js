@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-native';
+// import { Alert } from 'react-native';
 // import BackgroundTask from 'react-native-background-task';
 import { Provider } from 'react-redux';
 import configureStore from '../store';
 import Bootstrap from './Bootstrap';
+import { setStore as setStoreForTokenService } from './services/TokenService';
+import { setStore as setStoreForProductService } from './services/ProductService';
+import { setStore as setStoreForWalletService } from './services/WalletService';
 
 const store = configureStore();
+
+setStoreForTokenService(store);
+setStoreForProductService(store);
+setStoreForWalletService(store);
 
 // BackgroundTask.define(() => {
 //   console.log('Hello from a background task');

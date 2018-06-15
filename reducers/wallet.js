@@ -90,8 +90,6 @@ export default handleActions(
         state.activeTransactions,
         'id'
       );
-      console.warn(activeTransactions);
-      console.warn(action.payload);
       for (const tx of state.transactions) {
         _.remove(activeTransactions, atx => {
           atx.id === tx.id;

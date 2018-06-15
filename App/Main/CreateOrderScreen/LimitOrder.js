@@ -6,11 +6,12 @@ import BigNumber from 'bignumber.js';
 import { setError } from '../../../actions';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { createSignSubmitOrder } from '../../../thunks';
-import { formatAmount } from '../../../utils';
+import { formatAmount, formatAmountWithDecimals } from '../../../utils';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
+import { getBalanceByAddress } from '../../services/WalletService';
 
 class CreateLimitOrder extends Component {
   constructor(props) {
@@ -100,6 +101,14 @@ class CreateLimitOrder extends Component {
           right={formatAmount(total.toNumber())}
           rightStyle={getProfitLossStyle(total.toNumber())}
           topDivider={true}
+          bottomDivider={true}
+        />
+        <TwoColumnListItem
+          left="Funds Available"
+          right={`${formatAmountWithDecimals(
+            getBalanceByAddress(quote.address),
+            quote.decimals
+          )} ${quote.symbol}`}
           bottomDivider={true}
         />
         <Button large onPress={() => this.submit()} title={buttonLabel} />

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
-import ButtonGroup from '../../components/ButtonGroup';
+import { ScrollView, View } from 'react-native';
+import Tabs from '../../components/Tabs';
 import FillOrders from './FillOrders';
 import LimitOrder from './LimitOrder';
 
@@ -32,8 +32,8 @@ export default class CreateOrderScreen extends Component {
     }
 
     return (
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <ButtonGroup
+      <View style={{ width: '100%' }}>
+        <Tabs
           onPress={index =>
             this.props.navigation.replace('CreateOrder', {
               product: { base, quote },
@@ -43,10 +43,11 @@ export default class CreateOrderScreen extends Component {
           }
           selectedIndex={index}
           buttons={BUTTONS}
-          containerStyle={{ marginBottom: 20 }}
         />
-        {subview}
-      </ScrollView>
+        <ScrollView contentContainerStyle={{ padding: 20 }}>
+          {subview}
+        </ScrollView>
+      </View>
     );
   }
 }

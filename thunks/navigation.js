@@ -1,6 +1,6 @@
 import { Linking } from 'react-native';
 import { setError } from '../actions';
-import NavigationService from '../App/NavigationService';
+import NavigationService from '../App/services/NavigationService';
 import { getNetworkId, hasWalletOnFileSystem } from '../utils';
 
 export function gotoEtherScan(txaddr) {
