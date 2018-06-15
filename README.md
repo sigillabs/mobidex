@@ -55,13 +55,18 @@ react-native run-android
 
 Use the following to run Mobidex on an Android simulator:
 
-1.  From the CLI
+#### From the CLI
 
 ```
 react-native run-android
 ```
 
-2.  From Android Studio
+#### From Android Studio
+
+1.  Open android studio and import mobidex from the `android` directory
+2.  Comment out `android.enableAapt2=false` in `gradle.properties`
+3.  Sync gradle files
+4.  Click play!
 
 * Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
@@ -84,6 +89,29 @@ yarn start -- --reset-cache
 ### `npm run patch`
 
 Patches isomorphic-fetch for use with react-native.
+
+### `npm run build:android:release`
+
+This will construct a signed android release. This is the preferred method of constructing an APK at the moment.
+
+NOTE: Make sure `gradle.properties` has `android.enableAapt2=false`. Otherwise, the build will fail with:
+
+```
+mobidex/android/app/build/intermediates/res/merged/release/drawable-hdpi/node_modules_reactnavigation_src_views_assets_backicon.png: error: uncompiled PNG file passed as argument. Must be compiled first into .flat file..
+error: failed parsing overlays.
+```
+
+## Release
+
+### Android
+
+Run `npm run build:android:release`. See notes above.
+
+### iOS
+
+1.  Open mobidex in XCode
+2.  Archive App
+3.  Upload app to app store
 
 ## Notes
 

@@ -95,8 +95,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.1.0'
 
     signingConfigs {
         release {
@@ -111,10 +111,10 @@ android {
 
     defaultConfig {
         applicationId "io.mobidex"
-        minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 26
+        targetSdkVersion 26
+        versionCode 6
+        versionName "0.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
