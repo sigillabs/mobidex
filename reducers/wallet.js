@@ -9,6 +9,25 @@ import sigUtil from 'eth-sig-util';
 import * as Actions from '../constants/actions';
 import { getURLFromNetwork } from '../utils';
 
+// if (opts.getAccounts) self.getAccounts = opts.getAccounts
+// // high level override
+// if (opts.processTransaction) self.processTransaction = opts.processTransaction
+// if (opts.processMessage) self.processMessage = opts.processMessage
+// if (opts.processPersonalMessage) self.processPersonalMessage = opts.processPersonalMessage
+// if (opts.processTypedMessage) self.processTypedMessage = opts.processTypedMessage
+// // approval hooks
+// self.approveTransaction = opts.approveTransaction || self.autoApprove
+// self.approveMessage = opts.approveMessage || self.autoApprove
+// self.approvePersonalMessage = opts.approvePersonalMessage || self.autoApprove
+// self.approveTypedMessage = opts.approveTypedMessage || self.autoApprove
+// // actually perform the signature
+// if (opts.signTransaction) self.signTransaction = opts.signTransaction  || mustProvideInConstructor('signTransaction')
+// if (opts.signMessage) self.signMessage = opts.signMessage  || mustProvideInConstructor('signMessage')
+// if (opts.signPersonalMessage) self.signPersonalMessage = opts.signPersonalMessage  || mustProvideInConstructor('signPersonalMessage')
+// if (opts.signTypedMessage) self.signTypedMessage = opts.signTypedMessage  || mustProvideInConstructor('signTypedMessage')
+// if (opts.recoverPersonalSignature) self.recoverPersonalSignature = opts.recoverPersonalSignature
+// // publish to network
+// if (opts.publishTransaction) self.publishTransaction = opts.publishTransaction
 function getWeb3(network, privateKey, address) {
   const engine = ZeroClientProvider({
     rpcUrl: getURLFromNetwork(network),

@@ -29,11 +29,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNCameraPackage(),
-            new ReactNativePushNotificationPackage(),
-            new BackgroundTaskPackage(),
-            new SvgPackage(),
           new EncryptionManagerPackage(),
+          new WalletManagerPackage(),
+          new RNCameraPackage(),
+          new ReactNativePushNotificationPackage(),
+          new BackgroundTaskPackage(),
+          new SvgPackage(),
           new VectorIconsPackage(),
           new RandomBytesPackage()
       );
