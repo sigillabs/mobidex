@@ -32,11 +32,11 @@
         "qs": "^6.5.1",
         "react": "16.3.1",
         "react-mixin": "^4.0.0",
-        "react-native": "0.55.1",
+        "react-native": "^0.55.4",
         "react-native-animatable": "^1.2.4",
         "react-native-background-fetch": "^2.0.8",
         "react-native-background-task": "^0.2.1",
-        "react-native-camera": "^1.1.4",
+        "react-native-camera": "git+https://git@github.com/react-native-community/react-native-camera",
         "react-native-communications": "^2.2.1",
         "react-native-crypto": "^2.1.2",
         "react-native-drawer": "^2.5.0",
@@ -65,8 +65,7 @@
         "underscore": "^1.8.3",
         "url": "~0.10.1",
         "web3": "^0.20.4",
-        "web3-contracts-loader":
-            "github:abec/web3-contracts-loader#729941574db1dcf45bda37623d12e0dee040a487",
+        "web3-contracts-loader": "github:abec/web3-contracts-loader#729941574db1dcf45bda37623d12e0dee040a487",
         "web3-provider-engine": "^13.6.5"
     },
     "devDependencies": {

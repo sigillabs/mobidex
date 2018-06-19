@@ -37,31 +37,17 @@ brew install node
 
 ### iOS
 
-Use the following to run Mobidex on an iOS simulator:
+Run Mobidex from XCode to use the simulator. First do the following:
 
-1.  From the CLI
+1.  `pushd ios && pod install && popd`
+2.  Open `ios/mobidex.xcworkspace` in XCode
+3.  Go to **Build Settings** for Pods > libsodium and disable **Use Header Maps**
 
-```
-react-native run-ios
-```
-
-2.  From XCode
+Then, click the **play** icon at the top.
 
 ### Android
 
-```
-react-native run-android
-```
-
-Use the following to run Mobidex on an Android simulator:
-
-#### From the CLI
-
-```
-react-native run-android
-```
-
-#### From Android Studio
+Run Mobidex in an Android emulator:
 
 1.  Open android studio and import mobidex from the `android` directory
 2.  Comment out `android.enableAapt2=false` in `gradle.properties`
