@@ -38,9 +38,9 @@ target 'mobidex' do
   # Pods connected to RN modules
   # pod 'RNRandomBytes', :path => node_modules_path + '/react-native-randombytes'
   pod 'RNBackgroundFetch', :path => node_modules_path + '/react-native-background-fetch'
-  pod 'react-native-camera', :path => node_modules_path + '/react-native-camera', :modular_headers => true
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  pod 'react-native-camera', :path => node_modules_path + '/react-native-camera'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
 end
 

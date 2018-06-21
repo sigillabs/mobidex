@@ -48,7 +48,7 @@ export default class TokenInput extends Component {
               unit: '',
               separator: '.',
               delimiter: ',',
-              zeroCents: true
+              zeroCents: false
             }}
           />
 

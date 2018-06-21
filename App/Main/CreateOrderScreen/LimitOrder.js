@@ -118,6 +118,7 @@ class CreateLimitOrder extends Component {
 
   onSetValue(column, errorColumn) {
     return value => {
+      console.warn(column, value);
       try {
         let amount = new BigNumber(value.replace(/,/g, ''));
         if (amount.gt(0)) {

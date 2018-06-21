@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.horcrux.svg.SvgPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
@@ -37,7 +36,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RandomBytesPackage(),
             new VectorIconsPackage(),
-            new SvgPackage(),
             new ReactNativePushNotificationPackage(),
             new RNCameraPackage(),
             new BackgroundTaskPackage(),

@@ -1,7 +1,8 @@
 import { Linking } from 'react-native';
 import { setError } from '../actions';
 import NavigationService from '../App/services/NavigationService';
-import { getNetworkId, hasWalletOnFileSystem } from '../utils';
+import * as WalletService from '../App/services/WalletService';
+import { getNetworkId } from '../utils';
 
 export function gotoEtherScan(txaddr) {
   return async (dispatch, getState) => {
@@ -21,7 +22,7 @@ export function gotoEtherScan(txaddr) {
 
 export function gotoOnboardingOrLocked() {
   return async dispatch => {
-    let hasWallet = await hasWalletOnFileSystem();
+    let hasWallet = await WalletService.isLocked();
     if (hasWallet) {
       NavigationService.navigate('Locked');
     } else {
@@ -84,4 +85,3 @@ export function gotoImportPrivateKeyScreen() {
     NavigationService.navigate('ImportPrivateKey');
   };
 }
-

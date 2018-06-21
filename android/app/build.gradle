@@ -157,7 +157,6 @@ android {
 dependencies {
     compile project(':react-native-randombytes')
     compile project(':react-native-vector-icons')
-    compile project(':react-native-svg')
     compile project(':react-native-push-notification')
     compile project(':react-native-camera')
     compile project(':react-native-background-task')
@@ -193,7 +192,7 @@ dependencies {
     api ("com.android.support:appcompat-v7:26.1.0") {
         exclude group: "com.android.support", module: "support-v4"
     }
-    api ("com.android.support:support-v4:26.1.0")
+    api ("com.android.support:support-v4:27.1.0")
 }
 
 // Run this once to be able to run the application with BUCK

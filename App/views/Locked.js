@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Input, Text, Avatar, Card } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { generateWallet, lock, unlock } from '../../thunks';
 import Unlock from '../views/Unlock';
 import ImportPrivateKey from '../views/ImportPrivateKey';
 import GenerateWallet from '../views/GenerateWallet';

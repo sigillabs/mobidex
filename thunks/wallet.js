@@ -1,93 +1,92 @@
 import BigNumber from 'bignumber.js';
-import Wallet from 'ethereumjs-wallet';
-import ethUtil from 'ethereumjs-util';
+// import Wallet from 'ethereumjs-wallet';
+// import ethUtil from 'ethereumjs-util';
 import {
   addActiveTransactions,
   addAssets,
-  addTransactions,
-  setWallet
+  addTransactions
+  // setWallet
 } from '../actions';
 import {
   cache,
-  fromV3,
+  // fromV3,
   getBalance,
   getTokenBalance,
-  getWalletFromFileSystem,
+  // getWalletFromFileSystem,
   getZeroExClient,
-  importSecret,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
-  storeWalletOnFileSystem,
-  toV3,
+  // storeWalletOnFileSystem,
+  // toV3,
   wrapEther as wrapEtherUtil,
   unwrapEther as unwrapEtherUtil
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
 // Would like to password protect using Ethereum Secret Storage
-export function generateWallet(password) {
-  return async (dispatch, getState) => {
-    let {
-      settings: { network }
-    } = getState();
-    let wallet = await Wallet.generate();
-    dispatch(setWallet({ network, wallet }));
-    await dispatch(lock(password));
-  };
-}
+// export function generateWallet(password) {
+//   return async (dispatch, getState) => {
+//     let {
+//       settings: { network }
+//     } = getState();
+//     let wallet = await Wallet.generate();
+//     dispatch(setWallet({ network, wallet }));
+//     await dispatch(lock(password));
+//   };
+// }
 
-export function importPrivateKey(privateKey, password) {
-  return async (dispatch, getState) => {
-    let {
-      settings: { network }
-    } = getState();
-    let wallet = Wallet.fromPrivateKey(
-      Buffer.from(ethUtil.stripHexPrefix(privateKey), 'hex')
-    );
-    dispatch(setWallet({ network, wallet }));
-    await dispatch(lock(password));
-  };
-}
+// export function importPrivateKey(privateKey, password) {
+//   return async (dispatch, getState) => {
+//     let {
+//       settings: { network }
+//     } = getState();
+//     let wallet = Wallet.fromPrivateKey(
+//       Buffer.from(ethUtil.stripHexPrefix(privateKey), 'hex')
+//     );
+//     dispatch(setWallet({ network, wallet }));
+//     await dispatch(lock(password));
+//   };
+// }
 
-export function forget() {
-  return async dispatch => {
-    dispatch(setWallet({ wallet: null }));
-  };
-}
+// export function forget() {
+//   return async dispatch => {
+//     dispatch(setWallet({ wallet: null }));
+//   };
+// }
 
-export function lock(password) {
-  return async (dispatch, getState) => {
-    let {
-      wallet: { privateKey, address }
-    } = getState();
-    let v3 = await toV3(
-      ethUtil.stripHexPrefix(privateKey),
-      ethUtil.stripHexPrefix(address),
-      password
-    );
-    let json = JSON.stringify(v3);
-    await storeWalletOnFileSystem(json);
-  };
-}
+// export function lock(password) {
+//   return async (dispatch, getState) => {
+//     let {
+//       wallet: { privateKey, address }
+//     } = getState();
+//     let v3 = await toV3(
+//       ethUtil.stripHexPrefix(privateKey),
+//       ethUtil.stripHexPrefix(address),
+//       password
+//     );
+//     let json = JSON.stringify(v3);
+//     await storeWalletOnFileSystem(json);
+//   };
+// }
 
-export function unlock(password) {
-  return async (dispatch, getState) => {
-    let {
-      settings: { network }
-    } = getState();
-    let v3json = await getWalletFromFileSystem();
-    if (v3json) {
-      let v3 = JSON.parse(v3json);
-      let walletobj = await fromV3(v3, password);
-      let wallet = Wallet.fromPrivateKey(
-        Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), 'hex')
-      );
-      dispatch(setWallet({ network, wallet }));
-    } else {
-      throw new Error('Wallet does not exist.');
-    }
-  };
-}
+// export function unlock(password) {
+//   return async (dispatch, getState) => {
+//     let {
+//       settings: { network }
+//     } = getState();
+//     let v3json = await getWalletFromFileSystem();
+//     if (v3json) {
+//       let v3 = JSON.parse(v3json);
+//       let walletobj = await fromV3(v3, password);
+//       let wallet = Wallet.fromPrivateKey(
+//         Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), 'hex')
+//       );
+//       dispatch(setWallet({ network, wallet }));
+//     } else {
+//       throw new Error('Wallet does not exist.');
+//     }
+//   };
+// }
 
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {

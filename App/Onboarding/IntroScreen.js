@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import { colors } from '../../styles.js';
-import Button from '../components/Button';
 import Padding from '../components/Padding';
 import ImportPrivateKey from '../views/ImportPrivateKey';
+import ImportMnemonic from '../views/ImportMnemonic';
 
 class Intro extends Component {
   render() {
@@ -37,7 +37,7 @@ class Intro extends Component {
         <Padding size={20} />
         <Text h6>To get started, Import a wallet.</Text>
         <Padding size={20} />
-        <ImportPrivateKey
+        <ImportMnemonic
           onFinish={async () => {
             try {
               await this.props.dispatch(loadProductsAndTokens());
@@ -48,11 +48,6 @@ class Intro extends Component {
             }
           }}
         />
-        {/*<Button
-                  large
-                  onPress={() => this.props.navigation.push('Import')}
-                  title="Import"
-                />*/}
       </View>
     );
   }

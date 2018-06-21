@@ -121,7 +121,7 @@ export function createSignSubmitOrder(price, amount, base, quote, side) {
       let relayerClient = new HttpClient(relayerEndpoint);
       let order = {
         ...convertLimitOrderToZeroExOrder(price, amount, base, quote, side),
-        maker: address.toLowerCase(),
+        maker: `0x${address.toLowerCase()}`,
         makerFee: new BigNumber(0),
         taker: ZeroEx.NULL_ADDRESS,
         takerFee: new BigNumber(0),

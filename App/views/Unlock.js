@@ -4,10 +4,11 @@ import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
-import { generateWallet, lock, unlock } from '../../thunks';
+import { unlock } from '../../thunks';
 import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
+import * as WalletService from '../services/WalletService';
 
 @reactMixin.decorate(TimerMixin)
 class Unlock extends Component {
@@ -27,7 +28,7 @@ class Unlock extends Component {
   unlock = () => {
     this.requestAnimationFrame(async () => {
       try {
-        await this.props.dispatch(unlock(this.state.password));
+        await WalletService.unlock(this.state.password);
       } catch (err) {
         this.setState({ passwordError: true });
         return;
