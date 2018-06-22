@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { gotoUnlockScreen, gotoImportPrivateKeyScreen } from '../../thunks';
+import { gotoUnlockScreen, gotoImportAccountScreen } from '../../thunks';
 import TabsComponent from '../components/Tabs';
 
 class LockedTabs extends Component {
@@ -21,7 +21,7 @@ class LockedTabs extends Component {
         this.props.dispatch(gotoUnlockScreen());
         break;
       case 1:
-        this.props.dispatch(gotoImportPrivateKeyScreen());
+        this.props.dispatch(gotoImportAccountScreen());
         break;
     }
   }

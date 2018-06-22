@@ -6,7 +6,7 @@ import {
 } from 'react-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ImportPrivateKeyScreen from './Locked/ImportPrivateKeyScreen';
+import ImportAccountScreen from './Locked/ImportAccountScreen';
 import UnlockScreen from './Locked/UnlockScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
@@ -31,7 +31,7 @@ import { colors } from '../styles';
 const LockedNavigation = createSwitchNavigator(
   {
     Unlock: { screen: UnlockScreen },
-    ImportPrivateKey: { screen: ImportPrivateKeyScreen }
+    ImportAccount: { screen: ImportAccountScreen }
   },
   {
     initialRouteName: 'Unlock'

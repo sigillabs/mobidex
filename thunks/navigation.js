@@ -80,8 +80,8 @@ export function gotoUnlockScreen() {
   };
 }
 
-export function gotoImportPrivateKeyScreen() {
+export function gotoImportAccountScreen() {
   return () => {
-    NavigationService.navigate('ImportPrivateKey');
+    NavigationService.navigate('ImportAccount');
   };
 }
