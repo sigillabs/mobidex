@@ -14,7 +14,7 @@ import web3swift
 class WalletManager: NSObject {
   func getKeystoreDirectory() -> String {
     let userDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-    return userDir + "/bip32keystore"
+    return userDir + "/bip39keystore"
   }
   
   func getKeystorePath() -> String {

@@ -19,7 +19,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
     public WalletManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        walletDirectory = new File(reactContext.getFilesDir().getAbsolutePath() + "/bip32keystore");
+        walletDirectory = new File(reactContext.getFilesDir().getAbsolutePath() + "/bip39keystore");
         if (!ensureWalletDirectoryExists()) {
             Log.w("WalletManager", "Could not create wallet directory: " + walletDirectory.toString());
         }

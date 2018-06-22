@@ -61,7 +61,7 @@ export default class TokenInput extends Component {
             //   return /^\d+(\.\d*)?$/.test(next);
             // }}
             options={{
-              mask: '99.9999',
+              mask: '9999.999999',
               validator: value => {
                 // return /^\d+(\.\d+)?$/.test(value);
                 return true;
