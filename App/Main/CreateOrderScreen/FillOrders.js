@@ -133,7 +133,7 @@ class FillOrders extends Component {
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
           onChange={value => this.onSetAmount(value)}
-          amount={this.state.amount}
+          amount={this.state.amount.toString()}
         />
         <TwoColumnListItem
           left="Average Price"

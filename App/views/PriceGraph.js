@@ -53,7 +53,7 @@ export default class PriceGraph extends React.PureComponent {
     interval: PropTypes.string.isRequired,
     data: PropTypes.arrayOf(
       PropTypes.shape({
-        timestamp: PropTypes.number.isRequired,
+        timestamp: PropTypes.string.isRequired,
         price: PropTypes.number.isRequired
       })
     ).isRequired

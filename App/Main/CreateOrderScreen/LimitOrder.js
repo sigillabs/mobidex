@@ -73,14 +73,14 @@ class CreateLimitOrder extends Component {
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
           onChange={this.onSetValue('amount', 'amountError')}
-          amount={this.state.amount}
+          amount={this.state.amount.toString()}
         />
         <TokenInput
           label={'Price'}
           token={quote}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
           onChange={this.onSetValue('price', 'priceError')}
-          amount={this.state.price}
+          amount={this.state.price.toString()}
         />
         <TwoColumnListItem
           left="Sub-Total"
@@ -118,7 +118,10 @@ class CreateLimitOrder extends Component {
 
   onSetValue(column, errorColumn) {
     return value => {
-      console.warn(column, value);
+      if (value === this.state.amount.toString()) {
+        this.forceUpdate();
+        return;
+      }
       try {
         let amount = new BigNumber(value.replace(/,/g, ''));
         if (amount.gt(0)) {

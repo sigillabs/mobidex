@@ -34,7 +34,7 @@ class TokenItem extends Component {
         leftElement={
           <TokenIcon
             token={baseToken}
-            amount={amount}
+            amount={parseFloat(amount)}
             style={{ flex: 0 }}
             numberOfLines={1}
             showName={false}

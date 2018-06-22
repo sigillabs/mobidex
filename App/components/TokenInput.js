@@ -12,8 +12,8 @@ export default class TokenInput extends Component {
       avatarProps,
       label,
       token,
-      onChange,
       amount,
+      onChange,
       containerStyle,
       inputStyle,
       nameStyle,
@@ -38,7 +38,7 @@ export default class TokenInput extends Component {
           ]}
         >
           <Avatar source={getImage(symbol)} {...avatarProps} />
-          <TextInputMask
+          {/*<TextInputMask
             style={[{ width: 100, marginLeft: 10 }, inputStyle]}
             type={'money'}
             value={amount}
@@ -49,6 +49,26 @@ export default class TokenInput extends Component {
               separator: '.',
               delimiter: ',',
               zeroCents: false
+            }}
+          />*/}
+          <TextInputMask
+            style={[{ width: 100, marginLeft: 10 }, inputStyle]}
+            type={'custom'}
+            keyboardType={'numeric'}
+            value={amount}
+            onChangeText={onChange}
+            // checkText={(previous, next) => {
+            //   return /^\d+(\.\d*)?$/.test(next);
+            // }}
+            options={{
+              mask: '99.9999',
+              validator: value => {
+                // return /^\d+(\.\d+)?$/.test(value);
+                return true;
+              },
+              getRawValue: value => {
+                return value.replace(/\s+/gi, '').replace(/[a-zA-Z]+/gi, '');
+              }
             }}
           />
 
@@ -72,8 +92,8 @@ TokenInput.propTypes = {
   }),
   label: PropTypes.string,
   token: PropTypes.object,
+  amount: PropTypes.string,
   onChange: PropTypes.func,
-  amount: PropTypes.object,
   containerStyle: PropTypes.object,
   inputStyle: PropTypes.object,
   nameStyle: PropTypes.object,

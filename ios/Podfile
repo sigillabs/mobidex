@@ -108,4 +108,16 @@ post_install do |installer|
             config.build_settings['SWIFT_VERSION'] = '4.1'
         end
     end
+    
+    # https://github.com/facebook/react-native/issues/2133#issuecomment-308337530
+    print "patching gcc preprocessor definitions"
+    installer.pods_project.targets.each do |target|
+        if target.name == 'React'
+            target.build_configurations.each do |config|
+                if config.name == 'Debug'
+                    config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['RCT_DEBUG=1','RCT_DEV=1','RCT_NSASSERT=1']
+                end
+            end
+        end
+    end
 end

@@ -44,13 +44,12 @@ const styles = {
   },
   button: {
     backgroundColor: colors.background,
-    color: colors.primary,
+    // color: colors.primary,
     borderLeftWidth: 0,
     borderRightWidth: 0
   },
   selectedButton: {
-    backgroundColor: colors.yellow0,
-    color: colors.white
+    backgroundColor: colors.yellow0
   },
   innerBorder: {
     width: 0,
