@@ -1,60 +1,52 @@
 package io.mobidex;
 
-import android.security.keystore.KeyProperties;
-import android.security.keystore.KeyProtection;
 import android.util.Log;
 
 import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.NativeModule;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.SignatureException;
-import java.security.UnrecoverableEntryException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
-import org.bouncycastle.crypto.params.KeyParameter;
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECDSASignature;
-import org.web3j.crypto.Sign;
-import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletUtils;
 
 public class WalletManagerModule extends ReactContextBaseJavaModule {
-    private final static String WALLET_PATH = "m/44'/60'/0'/0/0";
-//    private final static String WALLET_PATH = "mobidex-key-store.bin";
+    private File walletDirectory;
 
     public WalletManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
+        walletDirectory = new File(reactContext.getFilesDir().getAbsolutePath() + "/bip32keystore");
+        if (!ensureWalletDirectoryExists()) {
+            Log.w("WalletManager", "Could not create wallet directory: " + walletDirectory.toString());
+        }
+    }
+
+    private boolean ensureWalletDirectoryExists() {
+        return walletDirectory.mkdirs();
+    }
+
+    private File getWalletFile() {
+        File[] files = walletDirectory.listFiles();
+        if (files == null || files.length == 0) {
+            return null;
+        } else {
+            return files[0];
+        }
+    }
+
+    private boolean clearKeystorePath() {
+        boolean success = true;
+        File[] walletFiles = walletDirectory.listFiles();
+        if (walletFiles != null) {
+            for (File f : walletDirectory.listFiles()) {
+                success = success && f.delete();
+            }
+        }
+        return success;
     }
 
     @Override
@@ -63,27 +55,65 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void doesWalletExist(Callback successCallback) {
-        File f = new File(WALLET_PATH);
-        successCallback.invoke(null, f.exists());
+    public void doesWalletExist(Callback cb) {
+        File walletFile = getWalletFile();
+        cb.invoke(null, walletFile != null && walletFile.exists());
     }
 
     @ReactMethod
-    public void generateMnemonics(Callback successCallback) throws CipherException, IOException {
-        Bip39Wallet wallet = WalletUtils.generateBip39Wallet(null, new File(WALLET_PATH));
-        successCallback.invoke(null, wallet.getMnemonic());
+    public void generateMnemonics(Callback cb) {
+        try {
+            Bip39Wallet wallet = WalletUtils.generateBip39Wallet(null, walletDirectory);
+            cb.invoke(null, wallet.getMnemonic());
+        } catch(CipherException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e);
+        } catch(IOException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e);
+        }
     }
 
     @ReactMethod
-    public void importWalletByMnemonics(String password, String mnemonic, Callback successCallback) throws CipherException, IOException {
+    public void importWalletByMnemonics(String mnemonic, String password, Callback cb) {
         Credentials credentials = WalletUtils.loadBip39Credentials(null, mnemonic);
-        WalletUtils.generateWalletFile(password, credentials.getEcKeyPair(), new File(WALLET_PATH), false);
-        successCallback.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+
+        if (!clearKeystorePath()) {
+            cb.invoke("Could not clear Keystore Path to make way for new credentials.", null);
+        }
+
+        try {
+            WalletUtils.generateWalletFile(password, credentials.getEcKeyPair(), walletDirectory, false);
+            cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+        } catch(CipherException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e.getMessage());
+        } catch(IOException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e.getMessage());
+        }
     }
 
     @ReactMethod
-    public void loadWallet(String password, Callback successCallback) throws CipherException, IOException {
-        Credentials credentials = WalletUtils.loadCredentials(password, WALLET_PATH);
-        successCallback.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+    public void loadWallet(String password, Callback cb) {
+        File walletFile = getWalletFile();
+
+        if (walletFile == null) {
+            cb.invoke(null, null);
+        }
+
+        try {
+            Log.d("WalletManager", password);
+            Credentials credentials = WalletUtils.loadCredentials(password, walletFile);
+            cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+        } catch(CipherException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e.getMessage());
+        } catch(IOException e) {
+            Log.e("WalletManager", e.getMessage());
+            cb.invoke(e.getMessage());
+        }
+
+
     }
 }

@@ -96,7 +96,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.1.0'
+    buildToolsVersion '27.0.3'
 
     signingConfigs {
         release {
@@ -155,11 +155,6 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-randombytes')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-push-notification')
-    compile project(':react-native-camera')
-    compile project(':react-native-background-task')
     api (project(':react-native-camera')) {
         exclude group: "com.android.support", module: "support-v4"
     }
