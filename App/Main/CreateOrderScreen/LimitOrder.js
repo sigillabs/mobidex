@@ -11,6 +11,7 @@ import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
+import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import { getBalanceByAddress } from '../../services/WalletService';
 
 class CreateLimitOrder extends Component {
@@ -21,7 +22,8 @@ class CreateLimitOrder extends Component {
       amount: new BigNumber(0),
       amountError: false,
       price: new BigNumber(0),
-      priceError: false
+      priceError: false,
+      focus: 'amount'
     };
   }
 
@@ -72,15 +74,25 @@ class CreateLimitOrder extends Component {
           label={side === 'buy' ? 'Buying' : 'Selling'}
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onChange={this.onSetValue('amount', 'amountError')}
+          // onChange={this.onSetValue('amount')}
+          onFocus={() => this.setState({ focus: 'amount' })}
+          // onBlur={() => this.setState({ focus: null })}
           amount={this.state.amount.toString()}
         />
         <TokenInput
           label={'Price'}
           token={quote}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onChange={this.onSetValue('price', 'priceError')}
+          // onChange={this.onSetValue('price')}
+          onFocus={() => this.setState({ focus: 'price' })}
+          // onBlur={() => this.setState({ focus: null })}
           amount={this.state.price.toString()}
+        />
+        <TokenAmountKeyboard
+          onChange={c => this.onSetValue(this.state.focus, c)}
+          // onChange={value => console.warn(value)}
+          onSubmit={() => this.submit()}
+          pressMode="char"
         />
         <TwoColumnListItem
           left="Sub-Total"
@@ -116,23 +128,51 @@ class CreateLimitOrder extends Component {
     );
   }
 
-  onSetValue(column, errorColumn) {
-    return value => {
-      if (value === this.state.amount.toString()) {
-        this.forceUpdate();
-        return;
+  // onSetValue(column) {
+  //   const errorColumn = `${column}Error`;
+  //   return value => {
+  //     if (value === this.state.amount.toString()) {
+  //       this.forceUpdate();
+  //       return;
+  //     }
+  //     try {
+  //       let amount = new BigNumber(value.replace(/,/g, ''));
+  //       if (amount.gt(0)) {
+  //         this.setState({ [column]: amount, [errorColumn]: false });
+  //       } else {
+  //         this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
+  //       }
+  //     } catch (err) {
+  //       this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
+  //     }
+  //   };
+  // }
+
+  onSetValue(column, value) {
+    const errorColumn = `${column}Error`;
+    const text = this.state[column].toString();
+    let newText = null;
+
+    if (isNaN(value)) {
+      if (value === 'back') {
+        newText = text.slice(0, -1);
+      } else {
+        newText = text + value;
       }
-      try {
-        let amount = new BigNumber(value.replace(/,/g, ''));
-        if (amount.gt(0)) {
-          this.setState({ [column]: amount, [errorColumn]: false });
-        } else {
-          this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
-        }
-      } catch (err) {
+    } else {
+      newText = text + value;
+    }
+
+    try {
+      const newValue = new BigNumber(newText);
+      if (newValue.gt(0)) {
+        this.setState({ [column]: newValue, [errorColumn]: false });
+      } else {
         this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
       }
-    };
+    } catch (err) {
+      this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
+    }
   }
 
   async submit() {

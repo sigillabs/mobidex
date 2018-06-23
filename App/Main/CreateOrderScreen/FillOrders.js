@@ -21,6 +21,7 @@ import TwoColumnListItem from '../../components/TwoColumnListItem';
 import Row from '../../components/Row';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
+import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import { getBalanceByAddress } from '../../services/WalletService';
 
 class Order extends Component {
@@ -132,8 +133,14 @@ class FillOrders extends Component {
           label={label}
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onChange={value => this.onSetAmount(value)}
+          // onChange={value => this.onSetAmount(value)}
           amount={this.state.amount.toString()}
+        />
+        <TokenAmountKeyboard
+          onChange={value => this.onSetAmount(value)}
+          // onChange={value => console.warn(value)}
+          onSubmit={() => this.submit()}
+          pressMode="string"
         />
         <TwoColumnListItem
           left="Average Price"

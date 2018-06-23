@@ -52,6 +52,7 @@ export default class TokenInput extends Component {
             }}
           />*/}
           <TextInputMask
+            {...this.props}
             style={[{ width: 100, marginLeft: 10 }, inputStyle]}
             type={'custom'}
             keyboardType={'numeric'}
