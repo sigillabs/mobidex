@@ -10,6 +10,6 @@ export async function getWalletFromFileSystem() {
   return await AsyncStorage.getItem(V0_PATH);
 }
 
-export async function storeWalletOnFileSystem(json: string) {
+export async function storeWalletOnFileSystem(json) {
   return await AsyncStorage.setItem(V0_PATH, json);
 }

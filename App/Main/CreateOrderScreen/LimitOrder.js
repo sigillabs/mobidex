@@ -1,20 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { setError } from '../../../actions';
-import { colors, getProfitLossStyle } from '../../../styles';
-import { createSignSubmitOrder } from '../../../thunks';
-import { formatAmount, formatAmountWithDecimals } from '../../../utils';
-import Button from '../../components/Button';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
-import { getBalanceByAddress } from '../../services/WalletService';
+import { createOrder } from '../../services/OrderService';
+import NavigationService from '../../services/NavigationService';
 
-class CreateLimitOrder extends Component {
+export default class CreateLimitOrder extends Component {
   constructor(props) {
     super(props);
 
@@ -39,32 +34,8 @@ class CreateLimitOrder extends Component {
       }
     } = this.props;
 
-    let buttonLabel = null;
-    let subTotal = new BigNumber(this.state.amount).mul(this.state.price);
-    let fee = new BigNumber(0).negated();
-    let total = subTotal.add(fee);
-
-    if (side === 'buy') {
-      subTotal = subTotal.negated();
-      total = total.negated();
-    }
-
-    switch (side) {
-      case 'buy':
-        buttonLabel = 'Confirm Bid';
-        break;
-
-      case 'sell':
-        buttonLabel = 'Confirm Ask';
-        break;
-
-      default:
-        this.props.dispatch(
-          setError(
-            new Error(`Order side ${side} is not supported by Mobidex yet!`)
-          )
-        );
-        return null;
+    if (side !== 'buy' && side !== 'sell') {
+      NavigationService.goBack();
     }
 
     return (
@@ -78,6 +49,7 @@ class CreateLimitOrder extends Component {
           onFocus={() => this.setState({ focus: 'amount' })}
           // onBlur={() => this.setState({ focus: null })}
           amount={this.state.amount.toString()}
+          editable={false}
         />
         <TokenInput
           label={'Price'}
@@ -87,66 +59,54 @@ class CreateLimitOrder extends Component {
           onFocus={() => this.setState({ focus: 'price' })}
           // onBlur={() => this.setState({ focus: null })}
           amount={this.state.price.toString()}
+          editable={false}
         />
         <TokenAmountKeyboard
           onChange={c => this.onSetValue(this.state.focus, c)}
           // onChange={value => console.warn(value)}
-          onSubmit={() => this.submit()}
+          onSubmit={() =>
+            this.state.focus === 'amount'
+              ? this.setState({ focus: 'price' })
+              : this.submit()
+          }
           pressMode="char"
+          buttonTitle={this.getButtonTitle()}
+          buttonIcon={this.getButtonIcon()}
+          buttonIconRight={this.getButtonIconRight()}
         />
-        <TwoColumnListItem
-          left="Sub-Total"
-          right={formatAmount(subTotal.toNumber())}
-          bottomDivider={false}
-          leftStyle={{ fontSize: 10, color: colors.grey3 }}
-          rightStyle={{ fontSize: 10, color: colors.grey3 }}
-        />
-        <TwoColumnListItem
-          left="Fee"
-          right={formatAmount(fee.toNumber())}
-          bottomDivider={false}
-          leftStyle={{ fontSize: 10, color: colors.grey3 }}
-          rightStyle={{ fontSize: 10, color: colors.grey3 }}
-        />
-        <TwoColumnListItem
-          left="Total"
-          right={formatAmount(total.toNumber())}
-          rightStyle={getProfitLossStyle(total.toNumber())}
-          topDivider={true}
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
-          left="Funds Available"
-          right={`${formatAmountWithDecimals(
-            getBalanceByAddress(quote.address),
-            quote.decimals
-          )} ${quote.symbol}`}
-          bottomDivider={true}
-        />
-        <Button large onPress={() => this.submit()} title={buttonLabel} />
       </View>
     );
   }
 
-  // onSetValue(column) {
-  //   const errorColumn = `${column}Error`;
-  //   return value => {
-  //     if (value === this.state.amount.toString()) {
-  //       this.forceUpdate();
-  //       return;
-  //     }
-  //     try {
-  //       let amount = new BigNumber(value.replace(/,/g, ''));
-  //       if (amount.gt(0)) {
-  //         this.setState({ [column]: amount, [errorColumn]: false });
-  //       } else {
-  //         this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
-  //       }
-  //     } catch (err) {
-  //       this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
-  //     }
-  //   };
-  // }
+  getButtonTitle() {
+    if (this.state.focus === 'price') {
+      if (this.props.navigation.state.params.side === 'buy') {
+        return 'Preview Buy Order';
+      } else if (this.props.navigation.state.params.side === 'sell') {
+        return 'Preview Sell Order';
+      } else {
+        return null;
+      }
+    } else if (this.state.focus === 'amount') {
+      return 'Next';
+    }
+  }
+
+  getButtonIcon() {
+    if (this.state.focus === 'amount') {
+      return (
+        <MaterialCommunityIcons
+          name="arrow-collapse-right"
+          color="white"
+          size={15}
+        />
+      );
+    }
+  }
+
+  getButtonIconRight() {
+    return this.state.focus === 'amount';
+  }
 
   onSetValue(column, value) {
     const errorColumn = `${column}Error`;
@@ -187,22 +147,26 @@ class CreateLimitOrder extends Component {
       }
     } = this.props;
     const { amount, price } = this.state;
+    const order = await createOrder({
+      baseAddress: quote.address,
+      quoteAddress: base.address,
+      price,
+      amount,
+      side
+    });
 
-    this.props.dispatch(
-      createSignSubmitOrder(
-        new BigNumber(price),
-        new BigNumber(amount),
-        base,
-        quote,
-        side
-      )
-    );
-    this.props.navigation.push('List');
+    NavigationService.navigate('PreviewOrders', {
+      type: 'limit',
+      order: order,
+      side,
+      product: { base, quote }
+    });
   }
 }
 
 CreateLimitOrder.propTypes = {
   navigation: PropTypes.shape({
+    push: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -215,14 +179,3 @@ CreateLimitOrder.propTypes = {
     }).isRequired
   }).isRequired
 };
-
-export default connect(
-  (state, ownProps) => ({
-    ...state.device,
-    ...state.relayer,
-    ...state.settings,
-    ...state.wallet,
-    ...ownProps
-  }),
-  dispatch => ({ dispatch })
-)(CreateLimitOrder);

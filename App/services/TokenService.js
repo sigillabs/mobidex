@@ -19,3 +19,18 @@ export function findTokenBySymbol(symbol) {
   } = _store.getState();
   return _.find(tokens, { symbol });
 }
+
+export function getQuoteToken() {
+  const {
+    relayer: { tokens },
+    settings: { quoteSymbol }
+  } = _store.getState();
+  return _.find(tokens, { symbol: quoteSymbol });
+}
+
+export function getWETHToken() {
+  const {
+    relayer: { tokens }
+  } = _store.getState();
+  return _.find(tokens, { symbol: 'WETH' });
+}

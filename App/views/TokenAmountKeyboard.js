@@ -18,8 +18,10 @@ export default class TokenAmountKeyboard extends Component {
         <Button
           large
           title={this.props.buttonTitle}
+          icon={this.props.buttonIcon}
           onPress={() => this.onSubmit()}
           containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
+          iconRight={this.props.buttonIconRight}
         />
       </View>
     );
@@ -37,7 +39,9 @@ export default class TokenAmountKeyboard extends Component {
 TokenAmountKeyboard.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  buttonTitle: PropTypes.string.isRequired
+  buttonTitle: PropTypes.string.isRequired,
+  buttonIcon: PropTypes.node,
+  buttonIconRight: PropTypes.bool
 };
 
 TokenAmountKeyboard.defaultProps = {

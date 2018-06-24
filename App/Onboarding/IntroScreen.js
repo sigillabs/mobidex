@@ -6,8 +6,7 @@ import { setError } from '../../actions';
 import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import { colors } from '../../styles.js';
 import Padding from '../components/Padding';
-import ImportPrivateKey from '../views/ImportPrivateKey';
-import ImportMnemonic from '../views/ImportMnemonic';
+import ImportMnemonicWizard from '../views/ImportMnemonicWizard';
 
 class Intro extends Component {
   render() {
@@ -37,8 +36,8 @@ class Intro extends Component {
         <Padding size={20} />
         <Text h6>To get started, Import a wallet.</Text>
         <Padding size={20} />
-        <ImportMnemonic
-          onFinish={async () => {
+        <ImportMnemonicWizard
+          onSubmit={async () => {
             try {
               await this.props.dispatch(loadProductsAndTokens());
               await this.props.dispatch(loadAssets());

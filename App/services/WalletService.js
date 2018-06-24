@@ -30,7 +30,6 @@ import { setWallet } from '../../actions';
 import { getURLFromNetwork } from '../../utils';
 
 const WalletManager = NativeModules.WalletManager;
-console.warn(NativeModules.RNSVG);
 
 let _store;
 let _web3;
@@ -41,14 +40,24 @@ export function setStore(store) {
 
 export async function isLocked() {
   return await new Promise((resolve, reject) =>
-    WalletManager.doesWalletExist((err, data) => resolve(data))
+    WalletManager.doesWalletExist((err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    })
   );
 }
 
 export async function getPrivateKey(password) {
   return await new Promise((resolve, reject) =>
-    WalletManager.loadWallet(password, (err, data) => resolve(data))
+    WalletManager.loadWallet(password, (err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    })
   );
+}
+
+export async function getAddress() {
+  return _store.getState().wallet.address;
 }
 
 export async function lock() {
@@ -101,10 +110,11 @@ export async function unlock(password = null) {
 }
 
 export async function importMnemonics(mnemonics, password) {
-  const privateKey = await new Promise((resolve, reject) => {
-    WalletManager.importWalletByMnemonics(mnemonics, password, (err, data) =>
-      resolve(data)
-    );
+  await new Promise((resolve, reject) => {
+    WalletManager.importWalletByMnemonics(mnemonics, password, (err, data) => {
+      if (err) return reject(reject);
+      resolve(data);
+    });
   });
   return await unlock(password);
 }

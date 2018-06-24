@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { connect } from 'react-redux';
 import Button from '../components/Button.js';
+import NavigationService from '../services/NavigationService.js';
 import { colors } from '../../styles';
 import RelayerError from './RelayerError';
 
-class ErrorScreen extends Component {
+export default class ErrorScreen extends Component {
   // ${response.status} - ${response.statusText}\n${requestType} ${url}\n${text}
   renderRelayerErrors() {
-    const { message } = this.props.navigation.getParam('error');
+    const error = this.props.navigation.state.params.error;
+    const message = error.message;
     const lines = message.split('\n');
     const json = lines[lines.length - 1];
     const errorObject = JSON.parse(json);
@@ -23,7 +24,11 @@ class ErrorScreen extends Component {
   }
 
   renderMessage() {
-    const { message } = this.props.navigation.getParam('error');
+    if (!this.props.navigation.state.params) {
+      return this.renderGeneral();
+    }
+    const error = this.props.navigation.state.params.error;
+    const message = error.message;
 
     if (message.indexOf('400') === 0) {
       const errorElements = this.renderRelayerErrors();
@@ -31,6 +36,10 @@ class ErrorScreen extends Component {
     } else {
       return <Text style={styles.text}>{message}</Text>;
     }
+  }
+
+  renderGeneral() {
+    return <Text style={styles.text}>Something went wrong :-/.</Text>;
   }
 
   render() {
@@ -53,9 +62,7 @@ class ErrorScreen extends Component {
           title="Get Out Of Here"
           icon={<Icon name="refresh" color="white" />}
           buttonStyle={{ borderRadius: 0 }}
-          onPress={() => {
-            this.props.navigation.navigate('List');
-          }}
+          onPress={() => NavigationService.navigate('List')}
         />
       </View>
     );
@@ -69,5 +76,3 @@ const styles = {
     paddingBottom: 10
   }
 };
-
-export default connect(state => ({}), dispatch => ({ dispatch }))(ErrorScreen);

@@ -10,6 +10,7 @@ import {
 import {
   cache,
   // fromV3,
+  getAccount,
   getBalance,
   getTokenBalance,
   // getWalletFromFileSystem,
@@ -18,8 +19,10 @@ import {
   sendEther as sendEtherUtil,
   // storeWalletOnFileSystem,
   // toV3,
-  wrapEther as wrapEtherUtil,
-  unwrapEther as unwrapEtherUtil
+  wrapEther as _wrapEther,
+  wrapWei as _wrapWei,
+  unwrapEther as _unwrapEther,
+  unwrapWei as _unwrapWei
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
@@ -235,17 +238,46 @@ export function sendEther(to, amount) {
   };
 }
 
-export function wrapEther(amount) {
+export function wrapEther(amount, wei = false) {
+  return async (dispatch, getState) => {
+    const {
+      wallet: { web3 }
+    } = getState();
+    let zeroEx = await getZeroExClient(web3);
+
+    try {
+      let txhash = wei
+        ? await _wrapWei(web3, amount)
+        : await _wrapEther(web3, amount);
+      if (txhash) {
+        const activeTransaction = {
+          id: txhash,
+          type: 'WRAP_ETHER',
+          amount: amount
+        };
+        dispatch(addActiveTransactions([activeTransaction]));
+        const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        console.log('Receipt: ', receipt);
+      }
+    } catch (err) {
+      dispatch(gotoErrorScreen(err));
+    }
+  };
+}
+
+export function unwrapEther(amount, wei = false) {
   return async (dispatch, getState) => {
     try {
       const {
         wallet: { web3, address }
       } = getState();
       let zeroEx = await getZeroExClient(web3);
-      const txhash = await wrapEtherUtil(web3, amount);
+      const txhash = wei
+        ? await _unwrapWei(web3, amount)
+        : await _unwrapEther(web3, amount);
       const activeTransaction = {
         id: txhash,
-        type: 'WRAP_ETHER',
+        type: 'UNWRAP_ETHER',
         address,
         amount
       };
@@ -258,19 +290,23 @@ export function wrapEther(amount) {
   };
 }
 
-export function unwrapEther(amount) {
+export function setTokenAllowance(address) {
   return async (dispatch, getState) => {
     try {
       const {
-        wallet: { web3, address }
+        wallet: { web3 }
       } = getState();
-      let zeroEx = await getZeroExClient(web3);
-      const txhash = await unwrapEtherUtil(web3, amount);
+      const zeroEx = await getZeroExClient(web3);
+      const account = await getAccount(web3, address);
+      const txhash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(
+        address,
+        account
+      );
       const activeTransaction = {
         id: txhash,
-        type: 'UNWRAP_ETHER',
-        address,
-        amount
+        type: 'ALLOWANCE',
+        token: address,
+        amount: 'UNLIMITED'
       };
       dispatch(addActiveTransactions([activeTransaction]));
       const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);

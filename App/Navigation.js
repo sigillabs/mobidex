@@ -14,6 +14,7 @@ import CreateOrderHeader from './headers/CreateOrder';
 import BlankHeader from './headers/Blank';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
+import PreviewOrdersScreen from './Main/PreviewOrdersScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
 import AccountsScreen from './Wallet/AccountsScreen';
 import OrdersScreen from './Wallet/OrdersScreen';
@@ -126,7 +127,8 @@ const ProductsNavigation = createStackNavigator(
   {
     List: { screen: ProductScreen },
     Details: { screen: ProductDetailsScreen },
-    CreateOrder: { screen: CreateOrderScreen }
+    CreateOrder: { screen: CreateOrderScreen },
+    PreviewOrders: { screen: PreviewOrdersScreen }
   },
   {
     cardStyle: {

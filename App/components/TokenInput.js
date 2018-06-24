@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Avatar, Divider, Text } from 'react-native-elements';
 import { TextInputMask } from 'react-native-masked-text';
 import { getImage } from '../../utils';
+import DismissableKeyboard from './DismissableKeyboard';
 import MutedText from './MutedText';
 
 export default class TokenInput extends Component {
@@ -18,27 +19,29 @@ export default class TokenInput extends Component {
       inputStyle,
       nameStyle,
       symbolStyle,
-      wrapperStyle
+      wrapperStyle,
+      ...rest
     } = this.props;
     const { name, symbol } = token;
 
     return (
-      <View style={[{ padding: 20 }, containerStyle]}>
-        {label ? <MutedText>{label}</MutedText> : null}
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              marginTop: 10,
-              marginBottom: 10
-            },
-            wrapperStyle
-          ]}
-        >
-          <Avatar source={getImage(symbol)} {...avatarProps} />
-          {/*<TextInputMask
+      <DismissableKeyboard>
+        <View style={[{ padding: 20 }, containerStyle]}>
+          {label ? <MutedText>{label}</MutedText> : null}
+          <View
+            style={[
+              {
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                marginTop: 10,
+                marginBottom: 10
+              },
+              wrapperStyle
+            ]}
+          >
+            <Avatar source={getImage(symbol)} {...avatarProps} />
+            {/*<TextInputMask
             style={[{ width: 100, marginLeft: 10 }, inputStyle]}
             type={'money'}
             value={amount}
@@ -51,35 +54,38 @@ export default class TokenInput extends Component {
               zeroCents: false
             }}
           />*/}
-          <TextInputMask
-            {...this.props}
-            style={[{ width: 100, marginLeft: 10 }, inputStyle]}
-            type={'custom'}
-            keyboardType={'numeric'}
-            value={amount}
-            onChangeText={onChange}
-            // checkText={(previous, next) => {
-            //   return /^\d+(\.\d*)?$/.test(next);
-            // }}
-            options={{
-              mask: '9999.999999',
-              validator: value => {
-                // return /^\d+(\.\d+)?$/.test(value);
-                return true;
-              },
-              getRawValue: value => {
-                return value.replace(/\s+/gi, '').replace(/[a-zA-Z]+/gi, '');
-              }
-            }}
-          />
+            <TextInputMask
+              style={[{ width: 100, marginLeft: 10 }, inputStyle]}
+              type={'custom'}
+              keyboardType={'numeric'}
+              value={amount}
+              onChangeText={onChange}
+              // checkText={(previous, next) => {
+              //   return /^\d+(\.\d*)?$/.test(next);
+              // }}
+              options={{
+                mask: '9999.999999',
+                validator: value => {
+                  // return /^\d+(\.\d+)?$/.test(value);
+                  return true;
+                },
+                getRawValue: value => {
+                  return value.replace(/\s+/gi, '').replace(/[a-zA-Z]+/gi, '');
+                }
+              }}
+              {...rest}
+            />
 
-          <Text style={[{ marginLeft: 10 }, symbolStyle]}>
-            {symbol.toUpperCase()}
-          </Text>
-          <MutedText style={[{ marginLeft: 10 }, nameStyle]}>{name}</MutedText>
+            <Text style={[{ marginLeft: 10 }, symbolStyle]}>
+              {symbol.toUpperCase()}
+            </Text>
+            <MutedText style={[{ marginLeft: 10 }, nameStyle]}>
+              {name}
+            </MutedText>
+          </View>
+          <Divider />
         </View>
-        <Divider />
-      </View>
+      </DismissableKeyboard>
     );
   }
 }
