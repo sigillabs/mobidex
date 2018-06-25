@@ -45,9 +45,7 @@ export default class CreateLimitOrder extends Component {
           label={side === 'buy' ? 'Buying' : 'Selling'}
           token={base}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          // onChange={this.onSetValue('amount')}
           onFocus={() => this.setState({ focus: 'amount' })}
-          // onBlur={() => this.setState({ focus: null })}
           amount={this.state.amount.toString()}
           editable={false}
         />
@@ -55,15 +53,12 @@ export default class CreateLimitOrder extends Component {
           label={'Price'}
           token={quote}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          // onChange={this.onSetValue('price')}
           onFocus={() => this.setState({ focus: 'price' })}
-          // onBlur={() => this.setState({ focus: null })}
           amount={this.state.price.toString()}
           editable={false}
         />
         <TokenAmountKeyboard
           onChange={c => this.onSetValue(this.state.focus, c)}
-          // onChange={value => console.warn(value)}
           onSubmit={() =>
             this.state.focus === 'amount'
               ? this.setState({ focus: 'price' })

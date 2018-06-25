@@ -15,7 +15,7 @@ class Cell extends Component {
           {...rest}
           refInput={input => (this.input = input)}
           type={'custom'}
-          autoCapitalize={false}
+          autoCapitalize={'none'}
           keyboardType={'ascii-capable'}
           value={word}
           onChangeText={onChange}

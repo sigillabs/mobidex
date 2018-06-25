@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { View, Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { setError } from '../../actions';
-import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import { colors } from '../../styles.js';
+import Button from '../components/Button';
 import Padding from '../components/Padding';
-import ImportMnemonicWizard from '../views/ImportMnemonicWizard';
+import NavigationService from '../services/NavigationService';
 
 class Intro extends Component {
   render() {
@@ -36,16 +35,10 @@ class Intro extends Component {
         <Padding size={20} />
         <Text h6>To get started, Import a wallet.</Text>
         <Padding size={20} />
-        <ImportMnemonicWizard
-          onSubmit={async () => {
-            try {
-              await this.props.dispatch(loadProductsAndTokens());
-              await this.props.dispatch(loadAssets());
-              this.props.navigation.navigate({ routeName: 'List' });
-            } catch (err) {
-              this.props.dispatch(setError(err));
-            }
-          }}
+        <Button
+          large
+          title="Let's Get Started"
+          onPress={() => NavigationService.navigate('ImportFirstAccount')}
         />
       </View>
     );

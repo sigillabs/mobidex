@@ -24,6 +24,7 @@ import TransactionHistoryScreen from './Wallet/TransactionHistoryScreen';
 import UnwrapEtherScreen from './Wallet/UnwrapEtherScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
+import ImportFirstAccount from './Onboarding/ImportAccountScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
@@ -41,7 +42,8 @@ const LockedNavigation = createSwitchNavigator(
 
 const OnboardingNavigation = createStackNavigator(
   {
-    Intro: { screen: IntroScreen }
+    Intro: { screen: IntroScreen },
+    ImportFirstAccount: { screen: ImportFirstAccount }
   },
   {
     initialRouteName: 'Intro',

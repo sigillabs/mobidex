@@ -12,7 +12,7 @@ import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import MnemonicInput from '../components/MnemonicInput';
 import PinView from '../components/PinView';
-import BigCenter from '../components/BigCenter';
+import WizardNavigation from '../components/WizardNavigation';
 import * as WalletService from '../services/WalletService';
 import PinKeyboard from './PinKeyboard';
 
@@ -26,16 +26,18 @@ class MnemonicPage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({ mnemonic: this.props.defaultMnemonic });
+  }
+
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 3 }}>
-          <MnemonicInput
-            onChange={words => this.setState({ mnemonic: words })}
-            onSubmit={() => this.submit()}
-          />
-        </View>
-        <View style={{ flex: 0 }}>
+      <View style={{ marginTop: 50, flex: 1, alignItems: 'center' }}>
+        <MnemonicInput
+          onChange={words => this.setState({ mnemonic: words })}
+          onSubmit={() => this.submit()}
+        />
+        <View>
           {this.state.mnemonicError ? (
             <Text style={{ color: colors.error }}>
               Mnemonic must be 12 english words.
@@ -44,15 +46,8 @@ class MnemonicPage extends Component {
             <Text style={{ color: colors.error }}> </Text>
           )}
         </View>
-        <View style={{ flex: 3 }} />
-        <View style={{ flex: 0 }}>
-          <Button
-            large
-            title="Next"
-            onPress={() => this.submit()}
-            containerStyle={{ width: '100%' }}
-          />
-        </View>
+        <Button large title="Next" onPress={() => this.submit()} />
+        <View style={{ flex: 2 }} />
       </View>
     );
   }
@@ -143,9 +138,18 @@ export default class ImportMnemonicWizard extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <WizardNavigation
+          step={this.state.page + 1}
+          steps={2}
+          onSelect={step => this.setState({ page: step - 1 })}
+          containerStyle={{ width: 150 }}
+        />
         {this.state.page === 0 ? (
-          <MnemonicPage onSubmit={mnemonic => this.submitMnemonic(mnemonic)} />
+          <MnemonicPage
+            defaultMnemonic={this.state.mnemonic}
+            onSubmit={mnemonic => this.submitMnemonic(mnemonic)}
+          />
         ) : null}
         {this.state.page === 1 ? (
           <PinPage onSubmit={pin => this.submitPin(pin)} />
@@ -179,87 +183,3 @@ export default class ImportMnemonicWizard extends Component {
     });
   }
 }
-
-// @reactMixin.decorate(TimerMixin)
-// export default class ImportMnemonicWizard extends Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       mnemonic: '',
-//       mnemonicError: false,
-//       password: '',
-//       passwordError: false
-//     };
-//   }
-
-//   render() {
-//     return (
-//       <BigCenter style={{ width: '100%' }}>
-//         <MnemonicInput onSubmit={words => this.setState({ mnemonic: words })} />
-//         <LongInput
-//           secureTextEntry={true}
-//           placeholder="Password"
-//           onChangeText={value => this.onSetPassword(value)}
-//           errorMessage={
-//             this.state.passwordError
-//               ? 'Wrong or poorly formatted password. Passwords must be at least 6 characters long and must contain both numbers and letters.'
-//               : null
-//           }
-//           errorStyle={{ color: 'red' }}
-//           leftIcon={<Icon name="person" size={12} color="black" />}
-//           containerStyle={{ width: '100%', marginBottom: 10 }}
-//         />
-//         <Button
-//           large
-//           title="Import"
-//           onPress={() => this.submit()}
-//           containerStyle={{ width: '100%' }}
-//         />
-//       </BigCenter>
-//     );
-//   }
-
-//   onSetMnemonic(value) {
-//     this.setState({ mnemonic: value, privateKeyError: false });
-//   }
-
-//   onSetPassword(value) {
-//     this.setState({ password: value, passwordError: false });
-//   }
-
-//   submit() {
-//     if (!this.state.mnemonic) {
-//       this.setState({ mnemonicError: true });
-//       return;
-//     }
-
-//     if (!this.state.password) {
-//       this.setState({ passwordError: true });
-//       return;
-//     }
-
-//     const mnemonicArray = this.state.mnemonic.split(/\s+/);
-
-//     if (mnemonicArray.length !== 12) {
-//       this.setState({ mnemonicError: true });
-//       return;
-//     }
-
-//     const formattedMnemonic = mnemonicArray.join(' ');
-
-//     this.requestAnimationFrame(async () => {
-//       try {
-//         const web3 = await WalletService.importMnemonics(
-//           formattedMnemonic,
-//           this.state.password
-//         );
-//         if (this.props.onFinish) await this.props.onFinish(web3);
-//       } catch (err) {
-//         console.warn(err);
-//         this.setState({ passwordError: true });
-//         return;
-//       }
-//     });
-//   }
-// }
