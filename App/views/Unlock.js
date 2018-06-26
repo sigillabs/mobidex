@@ -24,50 +24,9 @@ class Unlock extends Component {
     };
   }
 
-  onSetPin = value => {
-    this.setState({ pin: value, pinError: false });
-  };
-
-  unlock = () => {
-    if (this.state.pin.length != 6) {
-      this.setState({ pinError: true });
-      return;
-    }
-
-    this.requestAnimationFrame(async () => {
-      try {
-        await WalletService.unlock(this.state.pin);
-      } catch (err) {
-        this.setState({ pinError: true });
-        return;
-      }
-
-      if (this.props.onFinish) await this.props.onFinish();
-    });
-  };
-
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {/*<LongInput
-          secureTextEntry={true}
-          placeholder="Pin"
-          onChangeText={this.onSetPin}
-          errorMessage={
-            this.state.pinError
-              ? 'Wrong or poorly formatted pin. Pins must be 6 characters long.'
-              : null
-          }
-          errorStyle={{ color: 'red' }}
-          leftIcon={<Icon name="person" size={24} color="black" />}
-          containerStyle={{ marginBottom: 10 }}
-        />*/}
-        {/*<Button
-          large
-          title="Unlock"
-          onPress={this.unlock}
-          containerStyle={{ width: '100%' }}
-        />*/}
         <View style={{ flex: 1, marginHorizontal: 50 }}>
           <PinView
             value={this.state.pin}
@@ -86,11 +45,47 @@ class Unlock extends Component {
           )}
         </View>
         <PinKeyboard
-          onChange={value => this.setState({ pin: value })}
+          onChange={value => this.setPin(value)}
           onSubmit={() => this.unlock()}
         />
       </View>
     );
+  }
+
+  setPin(value) {
+    let current = this.state.pin.slice();
+    if (current.length > 6) {
+      this.setState({ pin: '', pinError: false });
+    } else {
+      if (isNaN(value)) {
+        if (value === 'back') {
+          current = current.slice(0, -1);
+        } else {
+          current += value;
+        }
+      } else {
+        current += value;
+      }
+      this.setState({ pin: current, pinError: false });
+    }
+  }
+
+  unlock() {
+    if (this.state.pin.length < 6) {
+      this.setState({ pinError: true });
+      return;
+    }
+
+    this.requestAnimationFrame(async () => {
+      try {
+        await WalletService.unlock(this.state.pin.slice(0, 6));
+      } catch (err) {
+        this.setState({ pinError: true });
+        return;
+      }
+
+      if (this.props.onFinish) await this.props.onFinish();
+    });
   }
 }
 

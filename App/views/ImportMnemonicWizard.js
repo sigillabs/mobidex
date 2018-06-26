@@ -104,7 +104,7 @@ class PinPage extends Component {
           )}
         </View>
         <PinKeyboard
-          onChange={value => this.setState({ pin: value })}
+          onChange={value => this.setPin(value)}
           onSubmit={() => this.submit()}
           buttonTitle={'Import'}
         />
@@ -112,8 +112,26 @@ class PinPage extends Component {
     );
   }
 
+  setPin(value) {
+    let current = this.state.pin.slice();
+    if (current.length > 6) {
+      this.setState({ pin: '', pinError: false });
+    } else {
+      if (isNaN(value)) {
+        if (value === 'back') {
+          current = current.slice(0, -1);
+        } else {
+          current += value;
+        }
+      } else {
+        current += value;
+      }
+      this.setState({ pin: current, pinError: false });
+    }
+  }
+
   submit() {
-    if (!this.state.pin || this.state.pin.length != 6) {
+    if (this.state.pin.length < 6) {
       this.setState({ pinError: true });
       return;
     }
