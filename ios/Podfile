@@ -34,6 +34,7 @@ target 'mobidex' do
   
   # Pods that are not connected to RN modules
   pod 'web3swift', '~> 0.9.0'
+  pod 'DeviceKit', '~> 1.7'
 
   # Pods connected to RN modules
   # pod 'RNRandomBytes', :path => node_modules_path + '/react-native-randombytes'

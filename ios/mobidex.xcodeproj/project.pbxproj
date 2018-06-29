@@ -38,6 +38,9 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		30437C8A20E599CF00720DD0 /* KeystoreParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437C8920E599CF00720DD0 /* KeystoreParams.swift */; };
+		30437C8C20E5ABAE00720DD0 /* Entitlements.pinfo in Resources */ = {isa = PBXBuildFile; fileRef = 30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */; };
+		30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437CA920E5B6BE00720DD0 /* Device.swift */; };
 		309C4D3F20DD721D00B6EBB5 /* RNSVG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309C4D3E20DD721D00B6EBB5 /* RNSVG.framework */; };
 		309C4DA220DD763100B6EBB5 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 309C4D9F20DD761500B6EBB5 /* libRNSVG.a */; };
 		30EB9EFB20DB9D700088F4BF /* WalletManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */; };
@@ -383,6 +386,9 @@
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		30437C8920E599CF00720DD0 /* KeystoreParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystoreParams.swift; sourceTree = "<group>"; };
+		30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */ = {isa = PBXFileReference; lastKnownFileType = text; name = Entitlements.pinfo; path = mobidex/Entitlements.pinfo; sourceTree = "<group>"; };
+		30437CA920E5B6BE00720DD0 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		309C4D3E20DD721D00B6EBB5 /* RNSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		309C4D7320DD761500B6EBB5 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		30D3983020DC80910016BC91 /* RNSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,7 +536,6 @@
 		13B07FAE1A68108700A75B9A /* mobidex */ = {
 			isa = PBXGroup;
 			children = (
-				30EB9EFC20DB9E390088F4BF /* WalletManager.swift */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -541,6 +546,10 @@
 				2B4B6BD279A84645840A2AF9 /* RNBackgroundFetch+AppDelegate.m */,
 				30EB9EF720DB98FC0088F4BF /* mobidex-Bridging-Header.h */,
 				30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */,
+				30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */,
+				30EB9EFC20DB9E390088F4BF /* WalletManager.swift */,
+				30437C8920E599CF00720DD0 /* KeystoreParams.swift */,
+				30437CA920E5B6BE00720DD0 /* Device.swift */,
 			);
 			name = mobidex;
 			sourceTree = "<group>";
@@ -1200,6 +1209,7 @@
 				D2DC8355516646D09E47956A /* FontAwesome.ttf in Resources */,
 				1D49FD0C99E04C54B4B2B86F /* Foundation.ttf in Resources */,
 				07F7FBD0BE244C4CAFA99C31 /* Ionicons.ttf in Resources */,
+				30437C8C20E5ABAE00720DD0 /* Entitlements.pinfo in Resources */,
 				C87B1B02CB19440194224338 /* MaterialCommunityIcons.ttf in Resources */,
 				82783636A8ED43EBAECC7D72 /* MaterialIcons.ttf in Resources */,
 				5628E0CFC0E44E199504EE56 /* Octicons.ttf in Resources */,
@@ -1265,6 +1275,7 @@
 				"${BUILT_PRODUCTS_DIR}/Alamofire-Synchronous/Alamofire_Synchronous.framework",
 				"${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework",
 				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/DeviceKit/DeviceKit.framework",
 				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
 				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
@@ -1286,6 +1297,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire_Synchronous.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BigInt.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeviceKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoubleConversion.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/folly.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
@@ -1339,9 +1351,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EB9EFD20DB9E3A0088F4BF /* WalletManager.swift in Sources */,
+				30437C8A20E599CF00720DD0 /* KeystoreParams.swift in Sources */,
 				30EB9EFB20DB9D700088F4BF /* WalletManagerBridge.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */,
 				8B07C717DB4F4D2AAEC3F426 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1467,7 +1481,7 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1501,7 +1515,7 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

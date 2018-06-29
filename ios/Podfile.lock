@@ -6,6 +6,7 @@ PODS:
     - SipHash (~> 1.2)
   - boost-for-react-native (1.63.0)
   - CryptoSwift (0.10.0)
+  - DeviceKit (1.7.0)
   - DoubleConversion (1.1.5)
   - Folly (2016.09.26.00):
     - boost-for-react-native
@@ -86,6 +87,7 @@ PODS:
   - yoga (0.55.4.React)
 
 DEPENDENCIES:
+  - DeviceKit (~> 1.7)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -110,6 +112,7 @@ SPEC REPOS:
     - BigInt
     - boost-for-react-native
     - CryptoSwift
+    - DeviceKit
     - libsodium
     - PromiseKit
     - Result
@@ -143,6 +146,7 @@ SPEC CHECKSUMS:
   BigInt: 8e8a52161c745cd3ab78e3dc346a9fbee51e6cf6
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CryptoSwift: 6c778d69282bed3b4e975ff97a79d074f20bb011
+  DeviceKit: 6a5bdeb103c03757bb94aef1ccb01e08bc8ef4ee
   DoubleConversion: e22e0762848812a87afd67ffda3998d9ef29170c
   Folly: 211775e49d8da0ca658aebc8eab89d642935755c
   glog: 1de0bb937dccdc981596d3b5825ebfb765017ded
@@ -159,6 +163,6 @@ SPEC CHECKSUMS:
   web3swift: 3aec6f5285c79d2fd5d3a5be05a813329b909934
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 5433bdc6d8bd9a2490678cb6ec607d15271e598c
+PODFILE CHECKSUM: 2b314a597cf949572c3572402e0eb4fe0cfc6bf4
 
 COCOAPODS: 1.5.3

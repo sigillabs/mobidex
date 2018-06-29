@@ -14,7 +14,7 @@
 
 RCT_EXTERN_METHOD(doesWalletExist:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(generateMnemonic:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(importWalletByMnemonics:(NSString *)mnemonics password:(NSString *)password callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(loadWallet:(NSString *)password callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(importWalletByMnemonics:(NSString *)mnemonics callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(loadWallet:(RCTResponseSenderBlock)callback)
 
 @end

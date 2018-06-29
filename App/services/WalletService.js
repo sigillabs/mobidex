@@ -47,9 +47,9 @@ export async function isLocked() {
   );
 }
 
-export async function getPrivateKey(password) {
+export async function getPrivateKey() {
   return await new Promise((resolve, reject) =>
-    WalletManager.loadWallet(password, (err, data) => {
+    WalletManager.loadWallet((err, data) => {
       if (err) return reject(err);
       resolve(data);
     })
@@ -73,7 +73,7 @@ export async function unlock(password = null) {
     const exists = await isLocked();
     if (!exists) return null;
 
-    const privateKey = await getPrivateKey(password);
+    const privateKey = await getPrivateKey();
     const privateKeyBuffer = new Buffer(privateKey, 'hex');
     const addressBuffer = ethUtil.privateToAddress(`0x${privateKey}`);
     const address = ethUtil.stripHexPrefix(addressBuffer.toString('hex'));
@@ -111,7 +111,7 @@ export async function unlock(password = null) {
 
 export async function importMnemonics(mnemonics, password) {
   await new Promise((resolve, reject) => {
-    WalletManager.importWalletByMnemonics(mnemonics, password, (err, data) => {
+    WalletManager.importWalletByMnemonics(mnemonics, (err, data) => {
       if (err) return reject(reject);
       resolve(data);
     });
