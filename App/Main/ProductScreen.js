@@ -9,7 +9,12 @@ import {
 } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { updateForexTickers, updateTokenTickers } from '../../thunks';
+import {
+  loadAssets,
+  loadProductsAndTokens,
+  updateForexTickers,
+  updateTokenTickers
+} from '../../thunks';
 import {
   detailsFromTicker,
   formatAmount,
@@ -190,6 +195,8 @@ class ProductScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
+    await this.props.dispatch(loadAssets());
+    await this.props.dispatch(loadProductsAndTokens(true));
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });

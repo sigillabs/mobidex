@@ -7,9 +7,8 @@ import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
-import LongInput from '../components/LongInput';
-import BigCenter from '../components/BigCenter';
 import PinView from '../components/PinView';
+import NavigationService from '../services/NavigationService';
 import * as WalletService from '../services/WalletService';
 import PinKeyboard from '../views/PinKeyboard';
 
@@ -67,6 +66,11 @@ class UnlockWithPinScreen extends Component {
         current += value;
       }
       this.setState({ pin: current, pinError: false });
+
+      if (current.length === 6) {
+        this.state.pin = current;
+        this.unlock();
+      }
     }
   }
 
@@ -84,7 +88,7 @@ class UnlockWithPinScreen extends Component {
         return;
       }
 
-      NavigationService.navigate('InitialLoad');
+      NavigationService.navigate('Products');
     });
   }
 }

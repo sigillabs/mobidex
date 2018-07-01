@@ -155,6 +155,10 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-svg')
+    compile project(':react-native-randombytes')
+    compile project(':react-native-push-notification')
     api (project(':react-native-camera')) {
         exclude group: "com.android.support", module: "support-v4"
     }

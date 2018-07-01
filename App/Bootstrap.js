@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { AppState } from 'react-native';
 import { connect } from 'react-redux';
-import { forget, gotoOnboardingOrLocked } from '../thunks';
+import { gotoOnboardingOrLocked } from '../thunks';
 import Navigator from './Navigation';
 import NavigationService from './services/NavigationService';
+import * as WalletService from './services/WalletService';
 
 class Bootstrap extends Component {
   componentDidMount() {
@@ -25,7 +26,7 @@ class Bootstrap extends Component {
 
   handleAppStateChange(nextAppState) {
     if (nextAppState === 'background') {
-      this.props.dispatch(forget());
+      WalletService.lock();
       this.props.dispatch(gotoOnboardingOrLocked());
     }
   }

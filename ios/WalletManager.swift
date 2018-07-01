@@ -50,8 +50,13 @@ class WalletManager: NSObject {
   }
   
   func findWallet() -> web3swift.BIP32Keystore? {
-    let keystoreManager = KeystoreManager.managerForPath(getKeystoreDirectory(), scanForHDwallets: true)
-    return keystoreManager?.walletForAddress((keystoreManager?.addresses![0])!) as? web3swift.BIP32Keystore
+    guard let keystoreManager = KeystoreManager.managerForPath(getKeystoreDirectory(), scanForHDwallets: true),
+      let addresses = keystoreManager.addresses,
+      addresses.count > 0
+      else {
+      return nil
+    }
+    return (keystoreManager.walletForAddress(addresses[0]) as! web3swift.BIP32Keystore)
   }
   
 //  func saveKey(encryptedKey: Data, prefix: String) throws -> Void {
@@ -276,30 +281,50 @@ class WalletManager: NSObject {
 //  }
 
   
-  func getPasscodeFromKeychain() throws -> String? {
-    let query: [String: Any] = [
-      kSecClass as String: kSecClassGenericPassword,
-      kSecReturnData as String: true,
-      kSecReturnAttributes as String: true,
-      kSecAttrLabel as String: "io.mobidex.app.password".data(using: .utf8)!,
-      kSecMatchLimit as String: kSecMatchLimitOne,
-      kSecUseOperationPrompt as String: "Unlock your wallet",
-    ]
-    
-    var item: CFTypeRef?
-    let status = SecItemCopyMatching(query as CFDictionary, &item)
-    guard status != errSecItemNotFound else { return nil }
-    guard status == errSecSuccess else { throw WalletManagerError(message: "Could not fetch item. Status Code: " + String(status)) }
-    guard let existingItem = item as? [String : Any],
-      let passwordData = existingItem[kSecValueData as String] as? Data,
-      let password = String(data: passwordData, encoding: .utf8)
-      else { throw WalletManagerError(message: "Data in keychain is bad.") }
-    
-    return password
+  func getPasscodeFromKeychain(callback: @escaping (Error?, String?) -> Void) -> Void {
+    let context = LAContext()
+    let policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
+    // TODO: Remove evaluatePolicy and separate LAContext in favor of kSecUseOperationPrompt
+    context.evaluatePolicy(policy, localizedReason: "Unlock your wallet") { success, error in
+      if success {
+        let query: [String: Any] = [
+          kSecClass as String: kSecClassGenericPassword,
+          kSecReturnData as String: true,
+          kSecReturnAttributes as String: true,
+          kSecAttrAccount as String: "mobidex",
+          kSecAttrService as String: "io.mobidex.app.password",
+          kSecMatchLimit as String: kSecMatchLimitOne,
+          kSecUseAuthenticationContext as String: context,
+//          kSecUseOperationPrompt as String: "Unlock your wallet",
+//          kSecUseAuthenticationUI as String: true,
+        ]
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        guard status != errSecItemNotFound else {
+          callback(WalletManagerError(message: "Could not find password"), nil)
+          return
+        }
+        guard status == errSecSuccess else {
+          callback(WalletManagerError(message: "Could not fetch item. Status Code: " + String(status)), nil)
+          return
+        }
+        guard let existingItem = item as? [String : Any],
+          let passwordData = existingItem[kSecValueData as String] as? Data,
+          let password = String(data: passwordData, encoding: .utf8)
+          else {
+            callback(WalletManagerError(message: "Data in keychain is bad."), nil)
+            return
+        }
+        print("fetch4")
+        callback(nil, password)
+      } else {
+        callback(nil, nil)
+      }
+    }
   }
   
   
-  func storePasscodeInKeychain(password: String) throws -> Void {
+  func storePasscodeInKeychain(_ password: String) throws -> Void {
     let access = SecAccessControlCreateWithFlags(nil,
       kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
       .userPresence,
@@ -309,7 +334,8 @@ class WalletManager: NSObject {
 
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
-      kSecAttrLabel as String: "io.mobidex.app.password".data(using: .utf8)!,
+      kSecAttrAccount as String: "mobidex",
+      kSecAttrService as String: "io.mobidex.app.password",
       kSecValueData as String: password.data(using: .utf8)!,
       kSecAttrAccessControl as String: access as Any,
       kSecUseAuthenticationContext as String: context
@@ -319,14 +345,13 @@ class WalletManager: NSObject {
     guard status == errSecSuccess else { throw WalletManagerError(message: "Could not store passcode in keychain. Status code: " + String(status)) }
   }
   
-  func ensurePasscode(_ password: String?) throws -> String {
-    if password != nil {
-      return password!
+  func ensurePasscode(_ password: String?, callback: @escaping (Error?, String?) -> Void) -> Void {
+    if password != nil && password! != "" {
+      callback(nil, password)
+      return
     }
-    guard let realpass = try! getPasscodeFromKeychain() else {
-      throw WalletManagerError(message: "Could not get password.")
-    }
-    return realpass
+    
+    getPasscodeFromKeychain(callback: callback)
   }
   
   @objc(supportsFingerPrintAuthentication:) func supportsFingerPrintAuthentication(callback: RCTResponseSenderBlock) -> Void {
@@ -355,23 +380,23 @@ class WalletManager: NSObject {
     callback([NSNull(), mnemonic as Any])
   }
   
-  @objc(importWalletByMnemonics:password:callback:) func importWalletByMnemonics(mnemonic: String, password: String?, callback: RCTResponseSenderBlock) -> Void {
+  @objc(importWalletByMnemonics:password:callback:) func importWalletByMnemonics(mnemonic: String, password: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     do {
-      let realpass = try ensurePasscode(password)
-      
+      try storePasscodeInKeychain(password)
+
       // Do not provide password -- only mnemonicsPassword
-      guard let store = try web3swift.BIP32Keystore(mnemonics: mnemonic, password: realpass, mnemonicsPassword: ""),
+      guard let store = try web3swift.BIP32Keystore(mnemonics: mnemonic, password: password, mnemonicsPassword: ""),
         let params = store.keystoreParams,
         let addresses = store.addresses,
         addresses.count != 0
         else {
           callback([NSNull(), NSNull()])
           return;
-        }
+      }
       
-      try saveKeystore(params: params)
+      try self.saveKeystore(params: params)
       
-      let privateKey = try store.UNSAFE_getPrivateKeyData(password: realpass, account: addresses[0])
+      let privateKey = try store.UNSAFE_getPrivateKeyData(password: password, account: addresses[0])
       callback([NSNull(), privateKey.toHexString()])
     } catch let error as NSError {
       print(error.localizedDescription);
@@ -381,22 +406,28 @@ class WalletManager: NSObject {
 
   
   @objc(loadWallet:callback:) func loadWallet(password: String?, callback: @escaping RCTResponseSenderBlock) -> Void {
-    guard let store = findWallet(),
-      let addresses = store.addresses,
-      addresses.count != 0
-      else {
-        callback([NSNull(), NSNull()])
-        return;
+    ensurePasscode(password, callback: { error, password in
+      guard error == nil else {
+        callback([error!, NSNull()])
+        return
       }
 
-    do {
-      let realpass = try ensurePasscode(password)
-      let privateKey = try store.UNSAFE_getPrivateKeyData(password: realpass, account: addresses[0])
-      callback([NSNull(), privateKey.toHexString()])
-    } catch let error as NSError {
-      print(error.localizedDescription);
-      callback([error, NSNull()])
-    }
+      guard let store = self.findWallet(),
+        let addresses = store.addresses,
+        addresses.count != 0
+        else {
+          callback([NSNull(), NSNull()])
+          return;
+      }
+      
+      do {
+        let privateKey = try store.UNSAFE_getPrivateKeyData(password: password!, account: addresses[0])
+        callback([NSNull(), privateKey.toHexString()])
+      } catch let error {
+        print(error.localizedDescription);
+        callback([error, NSNull()])
+      }
+    })
   }
 }
 

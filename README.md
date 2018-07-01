@@ -39,7 +39,7 @@ brew install node
 
 Run Mobidex from XCode to use the simulator. First do the following:
 
-1.  `pushd ios && pod install && popd`
+1.  `pushd ios && bundle install --path .gems && bundle exec pod install && popd`
 2.  Open `ios/mobidex.xcworkspace` in XCode
 3.  Go to **Build Settings** for Pods > libsodium and disable **Use Header Maps**
 
@@ -114,19 +114,4 @@ See the for more details:
 
 #### iOS
 
-Keys are stored in the following fashion:
-
-1.  Secure Enclave if it exists on the device
-2.  In the Key Chain
-
-We use [LocalAuthentication](https://developer.apple.com/documentation/localauthentication/) which provides the following with fallback:
-
-1.  Touch ID
-2.  Passcode
-
-This delegates authentication to the device rather than the App.
-
-The Enclave or Key Chain store RSA key pairs. These key pairs are used to do asymmetric encryption of the wallet. The keys and encryption have the following properties:
-
-* [kSecAttrKeyTypeECSECPrimeRandom](https://developer.apple.com/documentation/security/ksecattrkeytypeecsecprimerandom)
-* [eciesEncryptionStandardX963SHA256AESGCM encryption](https://developer.apple.com/documentation/security/seckeyalgorithm/2091899-eciesencryptionstandardx963sha25)
+Keys are stored on disk and unlocked using a passcode. Passcode can be provided or unlocked using touch ID. Touch ID unlock is provided through the Keychain services and [LocalAuthentication](https://developer.apple.com/documentation/localauthentication/).

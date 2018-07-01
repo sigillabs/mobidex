@@ -33,7 +33,11 @@ class Intro extends Component {
         <Padding size={20} />
         <Text h4>Trade ERC-20 Tokens.</Text>
         <Padding size={20} />
-        <Text h6>To get started, Import a wallet.</Text>
+        <Text h6>
+          To get started, Import your Meta Mask wallet using your seed words. It
+          is the 12-word mnemonic Meta Mask gives while you are generating a
+          wallet.
+        </Text>
         <Padding size={20} />
         <Button
           large

@@ -56,6 +56,8 @@ class UnlockWithFingerScreen extends Component {
         this.setState({ error: true });
         return;
       }
+
+      NavigationService.navigate('Products');
     });
   }
 }

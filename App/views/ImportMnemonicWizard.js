@@ -90,7 +90,7 @@ class PinPage extends Component {
           <PinView
             value={this.state.pin}
             containerStyle={{
-              flex: 4,
+              flex: 3,
               alignItems: 'flex-end',
               marginBottom: 50
             }}
@@ -112,7 +112,7 @@ class PinPage extends Component {
     );
   }
 
-  setPin(value) {
+  async setPin(value) {
     let current = this.state.pin.slice();
     if (current.length > 6) {
       this.setState({ pin: '', pinError: false });
@@ -126,7 +126,13 @@ class PinPage extends Component {
       } else {
         current += value;
       }
+
       this.setState({ pin: current, pinError: false });
+
+      if (current.length === 6) {
+        this.state.pin = current;
+        this.submit();
+      }
     }
   }
 
@@ -157,12 +163,6 @@ export default class ImportMnemonicWizard extends Component {
   render() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <WizardNavigation
-          step={this.state.page + 1}
-          steps={2}
-          onSelect={step => this.setState({ page: step - 1 })}
-          containerStyle={{ width: 150 }}
-        />
         {this.state.page === 0 ? (
           <MnemonicPage
             defaultMnemonic={this.state.mnemonic}

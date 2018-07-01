@@ -3,7 +3,12 @@ import { EventEmitter } from 'events';
 import { AppRegistry, YellowBox } from 'react-native';
 import App from './App';
 
-YellowBox.ignoreWarnings(['Class RCTCxxModule', 'Warning:', 'Method']);
+YellowBox.ignoreWarnings([
+  'Class RCTCxxModule',
+  'Warning:',
+  'Method',
+  'Module'
+]);
 EventEmitter.defaultMaxListeners = 1000;
 
 AppRegistry.registerComponent('mobidex', () => App);

@@ -74,13 +74,13 @@ export async function lock() {
 }
 
 export async function unlock(password = null) {
-  if (!_web3 && password) {
+  if (!_web3) {
     const {
       settings: { network }
     } = _store.getState();
 
     const exists = await isLocked();
-    if (!exists) return null;
+    if (!exists) throw new Error('Wallet does not exist!');
 
     const privateKey = await getPrivateKey(password);
     const privateKeyBuffer = new Buffer(privateKey, 'hex');

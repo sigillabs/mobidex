@@ -15,12 +15,6 @@ export default class PinKeyboard extends Component {
           decimal={false}
           {...this.props}
         />
-        <Button
-          large
-          title={this.props.buttonTitle}
-          onPress={() => this.onSubmit()}
-          containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
-        />
       </View>
     );
   }
