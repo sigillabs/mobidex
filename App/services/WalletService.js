@@ -38,6 +38,15 @@ export function setStore(store) {
   _store = store;
 }
 
+export async function supportsFingerPrintUnlock() {
+  return await new Promise((resolve, reject) =>
+    WalletManager.supportsFingerPrintAuthentication((err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    })
+  );
+}
+
 export async function isLocked() {
   return await new Promise((resolve, reject) =>
     WalletManager.doesWalletExist((err, data) => {
@@ -47,9 +56,9 @@ export async function isLocked() {
   );
 }
 
-export async function getPrivateKey() {
+export async function getPrivateKey(password) {
   return await new Promise((resolve, reject) =>
-    WalletManager.loadWallet((err, data) => {
+    WalletManager.loadWallet(password, (err, data) => {
       if (err) return reject(err);
       resolve(data);
     })
@@ -73,7 +82,7 @@ export async function unlock(password = null) {
     const exists = await isLocked();
     if (!exists) return null;
 
-    const privateKey = await getPrivateKey();
+    const privateKey = await getPrivateKey(password);
     const privateKeyBuffer = new Buffer(privateKey, 'hex');
     const addressBuffer = ethUtil.privateToAddress(`0x${privateKey}`);
     const address = ethUtil.stripHexPrefix(addressBuffer.toString('hex'));
@@ -111,7 +120,7 @@ export async function unlock(password = null) {
 
 export async function importMnemonics(mnemonics, password) {
   await new Promise((resolve, reject) => {
-    WalletManager.importWalletByMnemonics(mnemonics, (err, data) => {
+    WalletManager.importWalletByMnemonics(mnemonics, password, (err, data) => {
       if (err) return reject(reject);
       resolve(data);
     });

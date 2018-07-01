@@ -38,7 +38,6 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
-		30437C8A20E599CF00720DD0 /* KeystoreParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437C8920E599CF00720DD0 /* KeystoreParams.swift */; };
 		30437C8C20E5ABAE00720DD0 /* Entitlements.pinfo in Resources */ = {isa = PBXBuildFile; fileRef = 30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */; };
 		30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437CA920E5B6BE00720DD0 /* Device.swift */; };
 		309C4D3F20DD721D00B6EBB5 /* RNSVG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309C4D3E20DD721D00B6EBB5 /* RNSVG.framework */; };
@@ -386,7 +385,6 @@
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		30437C8920E599CF00720DD0 /* KeystoreParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystoreParams.swift; sourceTree = "<group>"; };
 		30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */ = {isa = PBXFileReference; lastKnownFileType = text; name = Entitlements.pinfo; path = mobidex/Entitlements.pinfo; sourceTree = "<group>"; };
 		30437CA920E5B6BE00720DD0 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		309C4D3E20DD721D00B6EBB5 /* RNSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -548,7 +546,6 @@
 				30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */,
 				30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */,
 				30EB9EFC20DB9E390088F4BF /* WalletManager.swift */,
-				30437C8920E599CF00720DD0 /* KeystoreParams.swift */,
 				30437CA920E5B6BE00720DD0 /* Device.swift */,
 			);
 			name = mobidex;
@@ -1351,7 +1348,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EB9EFD20DB9E3A0088F4BF /* WalletManager.swift in Sources */,
-				30437C8A20E599CF00720DD0 /* KeystoreParams.swift in Sources */,
 				30EB9EFB20DB9D700088F4BF /* WalletManagerBridge.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,

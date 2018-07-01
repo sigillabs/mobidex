@@ -10,7 +10,7 @@ export default class PinKeyboard extends Component {
       <View style={{ flex: 1 }}>
         <VirtualKeyboard
           color="black"
-          pressMode="character"
+          pressMode="char"
           onPress={val => this.onChange(val)}
           decimal={false}
           {...this.props}

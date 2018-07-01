@@ -6,8 +6,9 @@ import {
 } from 'react-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import ImportAccountScreen from './Locked/ImportAccountScreen';
-import UnlockScreen from './Locked/UnlockScreen';
+import ChooseUnlockMethodScreen from './Locked/ChooseUnlockMethodScreen';
+import UnlockWithFingerScreen from './Locked/UnlockWithFingerScreen';
+import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
 import CreateOrderHeader from './headers/CreateOrder';
@@ -32,11 +33,12 @@ import { colors } from '../styles';
 
 const LockedNavigation = createSwitchNavigator(
   {
-    Unlock: { screen: UnlockScreen },
-    ImportAccount: { screen: ImportAccountScreen }
+    ChooseUnlockMethod: { screen: ChooseUnlockMethodScreen },
+    UnlockWithFinger: { screen: UnlockWithFingerScreen },
+    UnlockWithPin: { screen: UnlockWithPinScreen }
   },
   {
-    initialRouteName: 'Unlock'
+    initialRouteName: 'ChooseUnlockMethod'
   }
 );
 
