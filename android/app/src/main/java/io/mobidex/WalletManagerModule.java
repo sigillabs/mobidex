@@ -8,21 +8,25 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
 import java.io.File;
-import java.io.IOException;
+
 import org.web3j.crypto.Bip39Wallet;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 
 public class WalletManagerModule extends ReactContextBaseJavaModule {
     private File walletDirectory;
+    private PasscodeManager passcodeManager;
 
-    public WalletManagerModule(ReactApplicationContext reactContext) {
+    WalletManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
         walletDirectory = new File(reactContext.getFilesDir().getAbsolutePath() + "/bip39keystore");
+
         if (!ensureWalletDirectoryExists()) {
             Log.w("WalletManager", "Could not create wallet directory: " + walletDirectory.toString());
         }
+
+        passcodeManager = new PasscodeManager(reactContext, reactContext.getFilesDir().getAbsolutePath() + "/pass");
     }
 
     private boolean ensureWalletDirectoryExists() {
@@ -55,6 +59,11 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void supportsFingerPrintAuthentication(Callback cb) {
+        cb.invoke(null, passcodeManager.supportsFingerPrintAuthentication());
+    }
+
+    @ReactMethod
     public void doesWalletExist(Callback cb) {
         File walletFile = getWalletFile();
         cb.invoke(null, walletFile != null && walletFile.exists());
@@ -65,55 +74,89 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         try {
             Bip39Wallet wallet = WalletUtils.generateBip39Wallet(null, walletDirectory);
             cb.invoke(null, wallet.getMnemonic());
-        } catch(CipherException e) {
-            Log.e("WalletManager", e.getMessage());
-            cb.invoke(e);
-        } catch(IOException e) {
+        } catch(Exception e) {
             Log.e("WalletManager", e.getMessage());
             cb.invoke(e);
         }
     }
 
     @ReactMethod
-    public void importWalletByMnemonics(String mnemonic, String password, Callback cb) {
-        Credentials credentials = WalletUtils.loadBip39Credentials(null, mnemonic);
+    public void importWalletByMnemonics(final String mnemonic, final String password, final Callback cb) {
+        final Credentials credentials = WalletUtils.loadBip39Credentials(null, mnemonic);
 
         if (!clearKeystorePath()) {
             cb.invoke("Could not clear Keystore Path to make way for new credentials.", null);
         }
 
-        try {
-            WalletUtils.generateWalletFile(password, credentials.getEcKeyPair(), walletDirectory, false);
-            cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
-        } catch(CipherException e) {
-            Log.e("WalletManager", e.getMessage());
-            cb.invoke(e.getMessage());
-        } catch(IOException e) {
-            Log.e("WalletManager", e.getMessage());
-            cb.invoke(e.getMessage());
-        }
+        final PasscodeManager.SavePasscodeCallback passcodeCallback = new PasscodeManager.SavePasscodeCallback() {
+            public void invoke(Exception error) {
+                if (error != null) {
+                    cb.invoke(error.getMessage());
+                    return;
+                }
+
+                try {
+                    WalletUtils.generateWalletFile(password, credentials.getEcKeyPair(), walletDirectory, false);
+                    cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+                } catch(Exception e) {
+                    Log.e("WalletManager", e.getMessage());
+                    cb.invoke(e.getMessage());
+                }
+            }
+        };
+
+        passcodeManager.savePasscode(password, passcodeCallback);
     }
 
     @ReactMethod
-    public void loadWallet(String password, Callback cb) {
-        File walletFile = getWalletFile();
+    public void loadWallet(String password, final Callback cb) {
+        final File walletFile = getWalletFile();
+        Log.w("WalletManager", "start");
 
         if (walletFile == null) {
             cb.invoke(null, null);
         }
 
+        Log.w("WalletManager", "middle");
+
+        final PasscodeManager.GetPasscodeCallback passcodeCallback = new PasscodeManager.GetPasscodeCallback() {
+            public void invoke(Exception error, String password) {
+                if (error != null) {
+                    cb.invoke(error.getMessage());
+                    return;
+                }
+
+                try {
+                    Credentials credentials = WalletUtils.loadCredentials(password, walletFile);
+                    cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+                } catch (Exception e) {
+                    Log.e("WalletManager", e.getMessage());
+                    cb.invoke(e.getMessage());
+                }
+            }
+        };
+
+        Log.w("WalletManager", "end");
+
         try {
-            Log.d("WalletManager", password);
-            Credentials credentials = WalletUtils.loadCredentials(password, walletFile);
-            cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
-        } catch(CipherException e) {
+            if (password == null) {
+                Log.w("WalletManager", "Before supports finger print");
+                if (this.passcodeManager.supportsFingerPrintAuthentication()) {
+                    Log.w("WalletManager", "After supports finger print");
+                    this.passcodeManager.getPasscode(passcodeCallback);
+                } else {
+                    Log.w("WalletManager", "no support?");
+                    cb.invoke(null, null);
+                }
+            } else {
+                Log.w("WalletManager", "Pass sent?");
+                passcodeCallback.invoke(null, password);
+            }
+        } catch (Exception e) {
+            Log.e("WalletManager", e.getClass().getCanonicalName());
             Log.e("WalletManager", e.getMessage());
-            cb.invoke(e.getMessage());
-        } catch(IOException e) {
-            Log.e("WalletManager", e.getMessage());
+            Log.e("WalletManager", e.getStackTrace().toString());
             cb.invoke(e.getMessage());
         }
-
-
     }
 }

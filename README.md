@@ -49,10 +49,11 @@ Then, click the **play** icon at the top.
 
 Run Mobidex in an Android emulator:
 
-1.  Open android studio and import mobidex from the `android` directory
-2.  Comment out `android.enableAapt2=false` in `gradle.properties`
-3.  Sync gradle files
-4.  Click play!
+1.  In the terminal, execute `npm start`.
+2.  Open android studio and import mobidex from the `android` directory
+3.  Comment out `android.enableAapt2=false` in `gradle.properties`
+4.  Sync gradle files
+5.  Click play!
 
 * Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
@@ -60,17 +61,7 @@ Run Mobidex in an Android emulator:
 
 ### `npm start`
 
-Runs your app in development mode.
-
-Open it in the [Expo app](https://expo.io) on your phone to view it. It will reload if you save edits to your files, and you will see build errors and logs in the terminal.
-
-Sometimes you may need to reset or clear the React Native packager's cache. To do so, you can pass the `--reset-cache` flag to the start script:
-
-```
-npm start -- --reset-cache
-# or
-yarn start -- --reset-cache
-```
+Run the development server which is necessary for debug configurations of the App.
 
 ### `npm run patch`
 

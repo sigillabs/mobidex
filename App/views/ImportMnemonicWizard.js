@@ -154,8 +154,8 @@ export default class ImportMnemonicWizard extends Component {
     super(props);
 
     this.state = {
-      mnemonic: '',
-      pin: '',
+      mnemonic: 'a a a a a a a a a a a a',
+      pin: '111111',
       page: 0
     };
   }

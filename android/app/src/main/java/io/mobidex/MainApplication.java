@@ -7,17 +7,6 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import org.reactnative.camera.RNCameraPackage;
-import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
-import org.reactnative.camera.RNCameraPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
-import com.horcrux.svg.SvgPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -38,15 +27,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new VectorIconsPackage(),
-            new SvgPackage(),
-            new RandomBytesPackage(),
-            new ReactNativePushNotificationPackage(),
           new EncryptionManagerPackage(),
           new WalletManagerPackage(),
-          new RNCameraPackage(),
           new ReactNativePushNotificationPackage(),
-          new BackgroundTaskPackage(),
           new SvgPackage(),
           new VectorIconsPackage(),
           new RandomBytesPackage()
@@ -68,6 +51,5 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    BackgroundTaskPackage.useContext(this);
   }
 }

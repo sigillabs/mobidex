@@ -155,17 +155,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-svg')
-    compile project(':react-native-randombytes')
-    compile project(':react-native-push-notification')
-    api (project(':react-native-camera')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
     api (project(':react-native-push-notification')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-background-task')) {
         exclude group: "com.android.support", module: "support-v4"
     }
     api (project(':react-native-svg')) {
