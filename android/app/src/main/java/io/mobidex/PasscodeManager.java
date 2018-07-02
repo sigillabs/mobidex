@@ -9,7 +9,6 @@ import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.UserNotAuthenticatedException;
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.util.Log;
 
 import com.facebook.react.bridge.BaseActivityEventListener;
@@ -34,10 +33,10 @@ public class PasscodeManager extends BaseActivityEventListener {
     }
 
     abstract public static class SavePasscodeCallback {
-        public abstract void invoke(Exception error);
+        public abstract void invoke(Exception error, boolean success);
     }
 
-    private static final int REQUEST_CODE_CONFIRM_CREDENTIALS_ENCRYPT = 10;
+//    private static final int REQUEST_CODE_CONFIRM_CREDENTIALS_ENCRYPT = 10;
     private static final int REQUEST_CODE_CONFIRM_CREDENTIALS_DECRYPT = 20;
 
     private ReactApplicationContext context;
@@ -68,7 +67,10 @@ public class PasscodeManager extends BaseActivityEventListener {
     }
 
     void savePasscode(String passcode, SavePasscodeCallback callback) {
-        if (!supportsFingerPrintAuthentication()) return;
+        if (!supportsFingerPrintAuthentication()) {
+            callback.invoke(null, false);
+            return;
+        }
 
         try {
             KeyStore keyStore
@@ -84,7 +86,6 @@ public class PasscodeManager extends BaseActivityEventListener {
                     .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
                     .setKeySize(2048)
                     .setUserAuthenticationRequired(true)
-//                    .setUserAuthenticationValidityDurationSeconds(10)
                     .build());
 
             KeyPair kp = keyGenerator.generateKeyPair();
@@ -100,18 +101,22 @@ public class PasscodeManager extends BaseActivityEventListener {
             if (file.exists()) {
                 file.delete();
             }
+
             FileOutputStream os = new FileOutputStream(file);
             os.write(bytes);
             os.close();
 
-            callback.invoke(null);
+            callback.invoke(null, true);
         } catch (Exception e) {
-            callback.invoke(e);
+            callback.invoke(e, false);
         }
     }
 
     void getPasscode(final GetPasscodeCallback callback) {
-        if (!supportsFingerPrintAuthentication()) return;
+        if (!supportsFingerPrintAuthentication()) {
+            callback.invoke(null, null);
+            return;
+        }
 
         try {
             final File file = new File(path);

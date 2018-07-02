@@ -1,38 +1,61 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import { View } from 'react-native';
-import { Input, Text } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Platform, TouchableHighlight, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
-import LongInput from '../components/LongInput';
-import PinView from '../components/PinView';
 import * as WalletService from '../services/WalletService';
 import NavigationService from '../services/NavigationService';
-import PinKeyboard from '../views/PinKeyboard';
 
 @reactMixin.decorate(TimerMixin)
-class UnlockWithFingerScreen extends Component {
+export default class UnlockWithFingerScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      error: false
+      error: false,
+      showUnlocking: false
     };
   }
 
   render() {
+    if (this.state.showUnlocking) {
+      return this.renderUnlocking();
+    }
+
     return (
-      <View style={{ flex: 1 }}>
-        <Button large onPress={() => this.unlock()} title="Unlock" />
-        {this.state.error ? this.renderError() : null}
-        <Button
-          large
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableHighlight onPress={() => this.unlock()}>
+          <View>
+            <MaterialIcon name="fingerprint" color="black" size={100} />
+            <Text>Press to unlock</Text>
+          </View>
+        </TouchableHighlight>
+        {this.state.error ? this.renderError() : <Text>Or</Text>}
+        <TouchableHighlight
           onPress={() => NavigationService.navigate('UnlockWithPin')}
-          title="Try pin"
-        />
+        >
+          <Text>Unlock with pin</Text>
+        </TouchableHighlight>
+      </View>
+    );
+  }
+
+  renderUnlocking() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderWidth: 1
+        }}
+      >
+        <MaterialIcon name="fingerprint" color="green" size={100} />
+        <Text>Start scanning your fingerprint</Text>
       </View>
     );
   }
@@ -49,19 +72,18 @@ class UnlockWithFingerScreen extends Component {
   }
 
   unlock() {
+    this.setState({ showUnlocking: Platform.OS === 'android' });
     this.requestAnimationFrame(async () => {
       try {
         await WalletService.unlock();
       } catch (err) {
         this.setState({ error: true });
         return;
+      } finally {
+        this.setState({ showUnlocking: false });
       }
 
       NavigationService.navigate('Products');
     });
   }
 }
-
-export default connect(state => ({}), dispatch => ({ dispatch }))(
-  UnlockWithFingerScreen
-);

@@ -89,10 +89,14 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         }
 
         final PasscodeManager.SavePasscodeCallback passcodeCallback = new PasscodeManager.SavePasscodeCallback() {
-            public void invoke(Exception error) {
+            public void invoke(Exception error, boolean success) {
                 if (error != null) {
                     cb.invoke(error.getMessage());
                     return;
+                }
+
+                if (!success) {
+                    Log.d("WalletManager", "Skipped finger print authentication setup.");
                 }
 
                 try {
@@ -111,13 +115,10 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void loadWallet(String password, final Callback cb) {
         final File walletFile = getWalletFile();
-        Log.w("WalletManager", "start");
 
         if (walletFile == null) {
             cb.invoke(null, null);
         }
-
-        Log.w("WalletManager", "middle");
 
         final PasscodeManager.GetPasscodeCallback passcodeCallback = new PasscodeManager.GetPasscodeCallback() {
             public void invoke(Exception error, String password) {
@@ -136,20 +137,14 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
             }
         };
 
-        Log.w("WalletManager", "end");
-
         try {
             if (password == null) {
-                Log.w("WalletManager", "Before supports finger print");
                 if (this.passcodeManager.supportsFingerPrintAuthentication()) {
-                    Log.w("WalletManager", "After supports finger print");
                     this.passcodeManager.getPasscode(passcodeCallback);
                 } else {
-                    Log.w("WalletManager", "no support?");
                     cb.invoke(null, null);
                 }
             } else {
-                Log.w("WalletManager", "Pass sent?");
                 passcodeCallback.invoke(null, password);
             }
         } catch (Exception e) {
