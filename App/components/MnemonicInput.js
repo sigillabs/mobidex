@@ -19,11 +19,20 @@ class Cell extends Component {
           keyboardType={'ascii-capable'}
           value={word}
           onChangeText={onChange}
+          style={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
+          containerStyle={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
+          inputContainerStyle={{
+            borderBottomWidth: 0,
+            borderWidth: 0,
+            flex: 1
+          }}
+          inputStyle={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
           options={{
             mask: 'AAAAAAAA',
             validator: () => true,
             getRawValue: value => value.replace(/\s+/gi, '')
           }}
+          underlineColorAndroid="white"
         />
       </View>
     );

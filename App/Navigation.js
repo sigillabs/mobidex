@@ -38,6 +38,9 @@ const LockedNavigation = createSwitchNavigator(
     UnlockWithPin: { screen: UnlockWithPinScreen }
   },
   {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
     initialRouteName: 'ChooseUnlockMethod'
   }
 );
@@ -48,6 +51,9 @@ const OnboardingNavigation = createStackNavigator(
     ImportFirstAccount: { screen: ImportFirstAccount }
   },
   {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
     initialRouteName: 'Intro',
     headerMode: 'none'
   }
@@ -236,6 +242,9 @@ export default createSwitchNavigator(
     Locked: { screen: LockedNavigation }
   },
   {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
     initialRouteName: 'Loading'
   }
 );
