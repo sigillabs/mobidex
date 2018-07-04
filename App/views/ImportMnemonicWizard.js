@@ -32,22 +32,27 @@ class MnemonicPage extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 50, flex: 1, alignItems: 'center' }}>
+      <View
+        style={{
+          marginTop: 50,
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'flex-start'
+        }}
+      >
         <MnemonicInput
           onChange={words => this.setState({ mnemonic: words })}
           onSubmit={() => this.submit()}
+          containerStyle={{ flex: 0, height: 250 }}
         />
-        <View>
-          {this.state.mnemonicError ? (
-            <Text style={{ color: colors.error }}>
-              Mnemonic must be 12 english words.
-            </Text>
-          ) : (
-            <Text style={{ color: colors.error }}> </Text>
-          )}
-        </View>
+        {this.state.mnemonicError ? (
+          <Text style={{ color: colors.error }}>
+            Mnemonic must be 12 english words.
+          </Text>
+        ) : (
+          <Text style={{ color: colors.error }}> </Text>
+        )}
         <Button large title="Next" onPress={() => this.submit()} />
-        <View style={{ flex: 2 }} />
       </View>
     );
   }

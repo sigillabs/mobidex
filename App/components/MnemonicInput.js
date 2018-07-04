@@ -19,14 +19,7 @@ class Cell extends Component {
           keyboardType={'ascii-capable'}
           value={word}
           onChangeText={onChange}
-          style={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
-          containerStyle={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
-          inputContainerStyle={{
-            borderBottomWidth: 0,
-            borderWidth: 0,
-            flex: 1
-          }}
-          inputStyle={{ borderBottomWidth: 0, borderWidth: 0, flex: 1 }}
+          inputStyle={{ height: 20, width: 100 }}
           options={{
             mask: 'AAAAAAAA',
             validator: () => true,
@@ -124,13 +117,16 @@ MnemonicInput.propTypes = {
 
 const styles = {
   cell: {
-    width: 70,
-    height: 30,
+    width: 90,
+    height: 50,
     margin: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey3
+    // borderBottomWidth: 1,
+    // borderBottomColor: colors.grey3,
+    borderWidth: 1,
+    borderColor: colors.grey3,
+    borderRadius: 5
   },
   container: {
     flex: 1,
