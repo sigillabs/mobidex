@@ -64,7 +64,7 @@ export default class MnemonicInput extends Component {
       this.setState({ words });
     }
 
-    this.cells[0].focus();
+    // this.cells[0].focus();
   }
 
   render() {
@@ -75,6 +75,7 @@ export default class MnemonicInput extends Component {
         key={`cell-${i}`}
         ref={cell => (this.cells[i] = cell)}
         word={w}
+        autoFocus={i === 0}
         containerStyle={cellStyle}
         onChange={value => this.changeWord(i, value)}
         onSubmitEditing={() =>
