@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import { TouchableOpacity } from 'react-native';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { View } from 'react-native';
-import { Input, Text } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { connect } from 'react-redux';
+import { Text } from 'react-native-elements';
 import { colors } from '../../styles';
 import Button from '../components/Button';
-import LongInput from '../components/LongInput';
 import MnemonicInput from '../components/MnemonicInput';
 import PinView from '../components/PinView';
 import WizardNavigation from '../components/WizardNavigation';

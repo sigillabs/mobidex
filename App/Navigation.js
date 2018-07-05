@@ -12,6 +12,7 @@ import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
 import CreateOrderHeader from './headers/CreateOrder';
+import SendTokensHeader from './headers/SendTokens';
 import BlankHeader from './headers/Blank';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
@@ -94,10 +95,9 @@ const WalletNavigation = createStackNavigator(
 
           case 'Send':
             return (
-              <NormalHeader
+              <SendTokensHeader
                 navigation={navigation}
-                title="Send Tokens"
-                showBackButton={true}
+                token={navigation.state.params.token}
               />
             );
 

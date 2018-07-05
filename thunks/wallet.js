@@ -1,95 +1,19 @@
 import BigNumber from 'bignumber.js';
-// import Wallet from 'ethereumjs-wallet';
-// import ethUtil from 'ethereumjs-util';
-import {
-  addActiveTransactions,
-  addAssets,
-  addTransactions
-  // setWallet
-} from '../actions';
+import { addActiveTransactions, addAssets, addTransactions } from '../actions';
 import {
   cache,
-  // fromV3,
   getAccount,
   getBalance,
   getTokenBalance,
-  // getWalletFromFileSystem,
   getZeroExClient,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil,
-  // storeWalletOnFileSystem,
-  // toV3,
   wrapEther as _wrapEther,
   wrapWei as _wrapWei,
   unwrapEther as _unwrapEther,
   unwrapWei as _unwrapWei
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
-
-// Would like to password protect using Ethereum Secret Storage
-// export function generateWallet(password) {
-//   return async (dispatch, getState) => {
-//     let {
-//       settings: { network }
-//     } = getState();
-//     let wallet = await Wallet.generate();
-//     dispatch(setWallet({ network, wallet }));
-//     await dispatch(lock(password));
-//   };
-// }
-
-// export function importPrivateKey(privateKey, password) {
-//   return async (dispatch, getState) => {
-//     let {
-//       settings: { network }
-//     } = getState();
-//     let wallet = Wallet.fromPrivateKey(
-//       Buffer.from(ethUtil.stripHexPrefix(privateKey), 'hex')
-//     );
-//     dispatch(setWallet({ network, wallet }));
-//     await dispatch(lock(password));
-//   };
-// }
-
-// export function forget() {
-//   return async dispatch => {
-//     dispatch(setWallet({ wallet: null }));
-//   };
-// }
-
-// export function lock(password) {
-//   return async (dispatch, getState) => {
-//     let {
-//       wallet: { privateKey, address }
-//     } = getState();
-//     let v3 = await toV3(
-//       ethUtil.stripHexPrefix(privateKey),
-//       ethUtil.stripHexPrefix(address),
-//       password
-//     );
-//     let json = JSON.stringify(v3);
-//     await storeWalletOnFileSystem(json);
-//   };
-// }
-
-// export function unlock(password) {
-//   return async (dispatch, getState) => {
-//     let {
-//       settings: { network }
-//     } = getState();
-//     let v3json = await getWalletFromFileSystem();
-//     if (v3json) {
-//       let v3 = JSON.parse(v3json);
-//       let walletobj = await fromV3(v3, password);
-//       let wallet = Wallet.fromPrivateKey(
-//         Buffer.from(ethUtil.stripHexPrefix(walletobj.privateKey), 'hex')
-//       );
-//       dispatch(setWallet({ network, wallet }));
-//     } else {
-//       throw new Error('Wallet does not exist.');
-//     }
-//   };
-// }
 
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
@@ -206,8 +130,8 @@ export function sendTokens(token, to, amount) {
         token
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      // console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -230,8 +154,8 @@ export function sendEther(to, amount) {
         amount
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      // console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -256,8 +180,8 @@ export function wrapEther(amount, wei = false) {
           amount: amount
         };
         dispatch(addActiveTransactions([activeTransaction]));
-        const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-        console.log('Receipt: ', receipt);
+        // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+        // console.log('Receipt: ', receipt);
       }
     } catch (err) {
       dispatch(gotoErrorScreen(err));
@@ -282,8 +206,8 @@ export function unwrapEther(amount, wei = false) {
         amount
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      // console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -309,8 +233,8 @@ export function setTokenAllowance(address) {
         amount: 'UNLIMITED'
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      // console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
