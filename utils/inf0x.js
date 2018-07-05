@@ -33,7 +33,8 @@ export async function getForexTicker(
   const response = await fetch(
     `https://mobidex.io/inf0x/${network}/forex/ticker?${qs}`
   );
-  return await response.json();
+  const json = await response.json();
+  return json;
 }
 
 export async function getTokenPrices(
@@ -52,7 +53,8 @@ export async function getTokenPrices(
   const response = await fetch(
     `https://mobidex.io/inf0x/${network}/token/history?${qs}`
   );
-  return await response.json();
+  const json = await response.json();
+  return json;
 }
 
 export async function getTokenTicker(
@@ -71,7 +73,8 @@ export async function getTokenTicker(
   const response = await fetch(
     `https://mobidex.io/inf0x/${network}/tokens/ticker?${qs}`
   );
-  return await response.json();
+  const json = await response.json();
+  return json;
 }
 
 export function findTicker(tickers, base, quote) {

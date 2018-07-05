@@ -8,7 +8,6 @@ export function updateForexTickers() {
       ticker: { watching },
       settings: { network, forexCurrency }
     } = getState();
-
     const products = _.chain(watching)
       .map(({ tokenA, tokenB }) => [
         `${tokenA.symbol}-${forexCurrency}`,
@@ -17,9 +16,7 @@ export function updateForexTickers() {
       .flatten()
       .uniq()
       .value();
-
     const jsonResponse = await getForexTicker(network, { products });
-
     dispatch(updateForexTicker(jsonResponse));
   };
 }
@@ -30,13 +27,10 @@ export function updateTokenTickers() {
       ticker: { watching },
       settings: { network }
     } = getState();
-
     const products = watching.map(
       ({ tokenA, tokenB }) => `${tokenB.symbol}-${tokenA.symbol}`
     );
-
     const jsonResponse = await getTokenTicker(network, { products });
-
     dispatch(updateTokenTicker(jsonResponse));
   };
 }

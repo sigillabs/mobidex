@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { setError } from '../../actions';
-import { loadAssets, loadProductsAndTokens } from '../../thunks';
 import ImportMnemonicWizard from '../views/ImportMnemonicWizard';
 import NavigationService from '../services/NavigationService';
 
-class ImportAccountScreen extends Component {
+export default class ImportAccountScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -19,23 +16,9 @@ class ImportAccountScreen extends Component {
   render() {
     return (
       <ImportMnemonicWizard
-        onSubmit={() => this.onSubmit()}
+        onSubmit={() => NavigationService.navigate('Products')}
         style={{ paddingTop: 50 }}
       />
     );
   }
-
-  async onSubmit() {
-    try {
-      await this.props.dispatch(loadProductsAndTokens());
-      await this.props.dispatch(loadAssets());
-      NavigationService.navigate('List');
-    } catch (err) {
-      this.props.dispatch(setError(err));
-    }
-  }
 }
-
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  ImportAccountScreen
-);

@@ -16,12 +16,12 @@ export function filterProductsByTokenAddress(address) {
   );
 }
 
-export function filterProductsByQuoteToken() {
+export function filterProductsByQuoteToken(symbol = null) {
   const {
     relayer: { tokens },
     settings: { quoteSymbol }
   } = _store.getState();
-  const quoteToken = _.find(tokens, { symbol: quoteSymbol });
+  const quoteToken = _.find(tokens, { symbol: symbol || quoteSymbol });
   if (!quoteToken) return [];
   return filterProductsByTokenAddress(quoteToken.address);
 }

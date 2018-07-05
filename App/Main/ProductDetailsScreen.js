@@ -19,6 +19,9 @@ import ButtonGroup from '../components/ButtonGroup';
 import Divider from '../components/Divider';
 import Padding from '../components/Padding';
 import Row from '../components/Row';
+import NavigationService from '../services/NavigationService';
+import * as TickerService from '../services/TickerService';
+import * as TokenService from '../services/TokenService';
 import LogoTicker from '../views/LogoTicker';
 import PriceGraph from '../views/PriceGraph';
 
@@ -47,15 +50,13 @@ class ProductDetailListItem extends Component {
 
 class ProductDetailsView extends Component {
   render() {
-    const {
-      base,
-      quote,
-      forexTicker,
-      tokenTicker,
-      periodIndex,
-      periods,
-      onChoosePeriod
-    } = this.props;
+    const { base, quote, periodIndex, periods, onChoosePeriod } = this.props;
+    const forexTicker = TickerService.getForexTicker(quote.symbol);
+    const tokenTicker = TickerService.getQuoteTicker(base.symbol, quote.symbol);
+
+    if (!forexTicker || !forexTicker.history) return null;
+    if (!tokenTicker || !tokenTicker.history) return null;
+
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = forexTicker.history[period];
     const { changePrice, changePercent, dayAverage } = detailsFromTicker(
@@ -117,7 +118,7 @@ class ProductDetailsView extends Component {
               <Icon name="arrow-with-circle-left" size={20} color="white" />
             }
             onPress={() =>
-              this.props.navigation.push('CreateOrder', {
+              NavigationService.navigate('CreateOrder', {
                 product: { base, quote },
                 type: 'fill',
                 side: 'buy'
@@ -132,7 +133,7 @@ class ProductDetailsView extends Component {
               <Icon name="arrow-with-circle-right" size={20} color="white" />
             }
             onPress={() =>
-              this.props.navigation.push('CreateOrder', {
+              NavigationService.navigate('CreateOrder', {
                 product: { base, quote },
                 type: 'fill',
                 side: 'sell'
@@ -159,13 +160,13 @@ class ProductDetailsView extends Component {
 }
 
 class ProductDetailsScreen extends Component {
-  static periods = ['Day', 'Month'];
+  static periods = ['Day', 'Month', 'Year'];
 
   constructor(props) {
     super(props);
 
     this.state = {
-      period: 1,
+      period: 2,
       refreshing: false
     };
   }
@@ -175,18 +176,13 @@ class ProductDetailsScreen extends Component {
   }
 
   render() {
-    const { forexCurrency } = this.props;
-    const forexTickers = this.props.ticker.forex;
-    const tokenTickers = this.props.ticker.token;
-    const baseToken = this.getToken('base');
-    const quoteToken = this.getToken('quote');
-
-    const proceed =
-      baseToken &&
-      forexTickers[baseToken.symbol] &&
-      forexTickers[baseToken.symbol][forexCurrency] &&
-      tokenTickers[baseToken.symbol] &&
-      tokenTickers[baseToken.symbol][quoteToken.symbol];
+    const {
+      navigation: {
+        state: {
+          params: { base, quote }
+        }
+      }
+    } = this.props;
 
     return (
       <ScrollView
@@ -197,22 +193,17 @@ class ProductDetailsScreen extends Component {
           />
         }
       >
-        {proceed ? (
-          <ProductDetailsView
-            navigation={this.props.navigation}
-            base={baseToken}
-            quote={quoteToken}
-            forexTicker={forexTickers[baseToken.symbol][forexCurrency]}
-            tokenTicker={tokenTickers[baseToken.symbol][quoteToken.symbol]}
-            periodIndex={this.state.period}
-            periods={ProductDetailsScreen.periods}
-            onChoosePeriod={index => {
-              this.setState({
-                period: index
-              });
-            }}
-          />
-        ) : null}
+        <ProductDetailsView
+          base={base}
+          quote={quote}
+          periodIndex={this.state.period}
+          periods={ProductDetailsScreen.periods}
+          onChoosePeriod={index => {
+            this.setState({
+              period: index
+            });
+          }}
+        />
       </ScrollView>
     );
   }
@@ -222,24 +213,6 @@ class ProductDetailsScreen extends Component {
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
-  };
-
-  getToken = (quoteOrBase = 'base') => {
-    let {
-      navigation: {
-        state: {
-          params: {
-            product: { tokenA, tokenB }
-          }
-        }
-      }
-    } = this.props;
-
-    if (quoteOrBase === 'base') {
-      return _.find(this.props.assets, { address: tokenB.address });
-    } else {
-      return _.find(this.props.assets, { address: tokenA.address });
-    }
   };
 }
 
@@ -264,12 +237,6 @@ const styles = {
   }
 };
 
-export default connect(
-  state => ({
-    ...state.wallet,
-    ...state.device.layout,
-    ...state.settings,
-    ticker: state.ticker
-  }),
-  dispatch => ({ dispatch })
-)(ProductDetailsScreen);
+export default connect(state => ({}), dispatch => ({ dispatch }))(
+  ProductDetailsScreen
+);

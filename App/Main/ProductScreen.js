@@ -1,5 +1,4 @@
-import { ZeroEx } from '0x.js';
-import * as _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   RefreshControl,
@@ -10,7 +9,6 @@ import {
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import {
-  loadAssets,
   loadProductsAndTokens,
   updateForexTickers,
   updateTokenTickers
@@ -18,19 +16,21 @@ import {
 import {
   detailsFromTicker,
   formatAmount,
-  formatAmountWithDecimals,
   formatMoney,
   formatPercent
 } from '../../utils';
 import Col from '../components/Col';
 import Row from '../components/Row';
+import EmptyList from '../components/EmptyList';
 import MutedText from '../components/MutedText';
 import TokenIcon from '../components/TokenIcon';
+import NavigationService from '../services/NavigationService';
+import * as TickerService from '../services/TickerService';
+import * as TokenService from '../services/TokenService';
 
 class TokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, tokenTicker, amount } = this.props;
-    const tokenDetails = detailsFromTicker(tokenTicker);
+    const { baseToken, quoteToken, price, change, priceFormatter } = this.props;
 
     return (
       <ListItem
@@ -39,7 +39,6 @@ class TokenItem extends Component {
         leftElement={
           <TokenIcon
             token={baseToken}
-            amount={parseFloat(amount)}
             style={{ flex: 0 }}
             numberOfLines={1}
             showName={false}
@@ -52,10 +51,10 @@ class TokenItem extends Component {
               <Text
                 style={[
                   styles.large,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+                  change >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {this.props.price}
+                {`${priceFormatter(price)} ${quoteToken.symbol}`}
               </Text>
               <MutedText>Price</MutedText>
             </Col>
@@ -63,10 +62,10 @@ class TokenItem extends Component {
               <Text
                 style={[
                   styles.large,
-                  tokenDetails.changePrice >= 0 ? styles.profit : styles.loss
+                  change >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {this.props.change}
+                {`${formatPercent(change)}`}
               </Text>
               <MutedText>24 Hour Change</MutedText>
             </Col>
@@ -78,44 +77,88 @@ class TokenItem extends Component {
   }
 }
 
-class QuoteTokenItem extends Component {
+TokenItem.propTypes = {
+  baseToken: PropTypes.object.isRequired,
+  quoteToken: PropTypes.object.isRequired,
+  price: PropTypes.number.isRequired,
+  change: PropTypes.number.isRequired,
+  priceFormatter: PropTypes.func.isRequired
+};
+
+class BaseQuoteTokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, tokenTicker, amount } = this.props;
+    const { quoteToken, baseToken } = this.props;
+
+    if (!quoteToken) return null;
+    if (!baseToken) return null;
+
+    const tokenTicker = TickerService.getQuoteTicker(
+      baseToken.symbol,
+      quoteToken.symbol
+    );
+
+    if (!tokenTicker || !tokenTicker.price) return null;
+
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
       <TokenItem
-        price={`${formatAmount(Math.abs(tokenDetails.price))} ${
-          quoteToken.symbol
-        }`}
-        change={formatPercent(Math.abs(tokenDetails.changePercent))}
-        amount={formatAmountWithDecimals(baseToken.balance, baseToken.decimals)}
+        price={Math.abs(tokenDetails.price)}
+        change={Math.abs(tokenDetails.changePercent)}
+        priceFormatter={formatAmount}
         {...this.props}
       />
     );
   }
 }
 
-class ForexTokenItem extends Component {
+BaseQuoteTokenItem.propTypes = {
+  quoteToken: PropTypes.object.isRequired,
+  baseToken: PropTypes.object.isRequired
+};
+
+const QuoteTokenItem = connect(state => ({ ticker: state.ticker }))(
+  BaseQuoteTokenItem
+);
+
+class BaseForexTokenItem extends Component {
   render() {
-    const { quoteToken, baseToken, forexTicker, tokenTicker } = this.props;
+    const { quoteToken, baseToken } = this.props;
+
+    if (!quoteToken) return null;
+    if (!baseToken) return null;
+
+    const forexTicker = TickerService.getForexTicker(quoteToken.symbol);
+    const tokenTicker = TickerService.getQuoteTicker(
+      baseToken.symbol,
+      quoteToken.symbol
+    );
+
+    if (!forexTicker || !forexTicker.price) return null;
+    if (!tokenTicker || !tokenTicker.price) return null;
+
     const forexDetails = detailsFromTicker(forexTicker);
     const tokenDetails = detailsFromTicker(tokenTicker);
 
     return (
       <TokenItem
-        price={formatMoney(Math.abs(tokenDetails.price * forexDetails.price))}
-        change={formatPercent(Math.abs(tokenDetails.changePercent))}
-        amount={formatMoney(
-          ZeroEx.toUnitAmount(baseToken.balance, baseToken.decimals).mul(
-            Math.abs(tokenDetails.price * forexDetails.price)
-          )
-        )}
+        price={Math.abs(tokenDetails.price * forexDetails.price)}
+        change={Math.abs(tokenDetails.changePercent)}
+        priceFormatter={formatMoney}
         {...this.props}
       />
     );
   }
 }
+
+BaseForexTokenItem.propTypes = {
+  quoteToken: PropTypes.object.isRequired,
+  baseToken: PropTypes.object.isRequired
+};
+
+const ForexTokenItem = connect(state => ({ ticker: state.ticker }))(
+  BaseForexTokenItem
+);
 
 class ProductScreen extends Component {
   constructor(props) {
@@ -127,17 +170,25 @@ class ProductScreen extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this.onRefresh();
+  componentDidMount() {
+    this.onRefresh();
   }
 
   render() {
-    const { products, forexCurrency } = this.props;
-    const forexTickers = this.props.ticker.forex;
-    const tokenTickers = this.props.ticker.token;
+    const { products } = this.props;
     const ProductItem = this.props.navigation.getParam('showForexPrices')
       ? ForexTokenItem
       : QuoteTokenItem;
+
+    if (!products || !products.length) {
+      return (
+        <EmptyList style={{ height: '100%', width: '100%' }}>
+          <MutedText style={{ marginTop: 25 }}>
+            No products to show...
+          </MutedText>
+        </EmptyList>
+      );
+    }
 
     return (
       <ScrollView
@@ -150,41 +201,20 @@ class ProductScreen extends Component {
       >
         <View style={{ width: '100%', backgroundColor: 'white' }}>
           {products.map(({ tokenA, tokenB }, index) => {
-            const fullTokenA = _.find(this.props.assets, {
-              address: tokenA.address
-            });
-            const fullTokenB = _.find(this.props.assets, {
-              address: tokenB.address
-            });
-
-            if (!fullTokenA) return null;
-            if (!fullTokenB) return null;
-
-            const quoteSymbol = fullTokenA.symbol;
-
-            if (!forexTickers[fullTokenA.symbol]) return null;
-            if (!forexTickers[fullTokenA.symbol][forexCurrency]) return null;
-            if (!tokenTickers[fullTokenB.symbol]) return null;
-            if (!tokenTickers[fullTokenB.symbol][quoteSymbol]) return null;
-
-            const forexTickerA = forexTickers[fullTokenA.symbol][forexCurrency];
-            const tokenTickerB = tokenTickers[fullTokenB.symbol][quoteSymbol];
+            const fullTokenA = TokenService.findTokenByAddress(tokenA.address);
+            const fullTokenB = TokenService.findTokenByAddress(tokenB.address);
 
             return (
               <TouchableOpacity
                 key={`token-${index}`}
                 onPress={() =>
-                  this.props.navigation.push('Details', {
-                    product: { tokenA, tokenB }
+                  NavigationService.navigate('Details', {
+                    quote: fullTokenA,
+                    base: fullTokenB
                   })
                 }
               >
-                <ProductItem
-                  quoteToken={fullTokenA}
-                  baseToken={fullTokenB}
-                  forexTicker={forexTickerA}
-                  tokenTicker={tokenTickerB}
-                />
+                <ProductItem quoteToken={fullTokenA} baseToken={fullTokenB} />
               </TouchableOpacity>
             );
           })}
@@ -195,13 +225,18 @@ class ProductScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAssets());
     await this.props.dispatch(loadProductsAndTokens(true));
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });
   }
 }
+
+ProductScreen.propTypes = {
+  products: PropTypes.array.isRequired,
+  navigation: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
+};
 
 const styles = {
   itemContainer: {

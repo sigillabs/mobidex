@@ -74,6 +74,7 @@ class AccountsScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
+    await this.props.dispatch(loadAssets());
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });

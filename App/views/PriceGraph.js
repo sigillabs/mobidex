@@ -69,10 +69,10 @@ export default class PriceGraph extends React.PureComponent {
     const { containerStyle, chartStyle, ...rest } = this.props;
     const { data } = rest;
     const min = parseFloat(
-      _.minBy(data, ({ price }) => parseFloat(price)).price
+      (_.minBy(data, ({ price }) => parseFloat(price)) || { price: 0 }).price
     );
     const max = parseFloat(
-      _.maxBy(data, ({ price }) => parseFloat(price)).price
+      (_.maxBy(data, ({ price }) => parseFloat(price)) || { price: 0 }).price
     );
     const middle = max - (max - min) / 2;
     const MinimumHorizontalLine = ({ y }) => (
