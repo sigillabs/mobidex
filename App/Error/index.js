@@ -34,6 +34,12 @@ export default class ErrorScreen extends Component {
     if (message.indexOf('400') === 0) {
       const errorElements = this.renderRelayerErrors();
       return errorElements[0];
+    } else if (message === 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT') {
+      return (
+        <Text style={styles.text}>
+          You don't have enough Ether for the transaction!
+        </Text>
+      );
     } else {
       return <Text style={styles.text}>{message}</Text>;
     }

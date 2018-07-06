@@ -17,6 +17,7 @@ import {
   fillOrders
 } from '../../services/OrderService';
 import { getBalanceByAddress } from '../../services/WalletService';
+import FillingOrders from './FillingOrders';
 
 class Order extends Component {
   render() {
@@ -52,6 +53,14 @@ Order.propTypes = {
 };
 
 class PreviewFillOrders extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showFilling: false
+    };
+  }
+
   UNSAFE_componentWillMount() {
     const {
       navigation: {
@@ -71,6 +80,10 @@ class PreviewFillOrders extends Component {
   }
 
   render() {
+    if (this.state.showFilling) {
+      return <FillingOrders />;
+    }
+
     const {
       navigation: {
         state: {
@@ -285,9 +298,17 @@ class PreviewFillOrders extends Component {
     } = this.props;
     const fillAmount = new BigNumber(amount);
 
-    if (await fillOrders(orders, fillAmount)) {
-      NavigationService.navigate('List');
+    this.setState({ showFilling: true });
+
+    try {
+      await fillOrders(orders, fillAmount);
+    } catch (err) {
+      this.setState({ showFilling: false });
+      NavigationService.error(err);
+      return;
     }
+
+    NavigationService.navigate('List');
   }
 }
 

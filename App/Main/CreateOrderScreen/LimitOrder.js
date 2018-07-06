@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import BigNumber from 'bignumber.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { printOrder } from '../../../utils';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
@@ -143,20 +142,25 @@ export default class CreateLimitOrder extends Component {
       }
     } = this.props;
     const { amount, price } = this.state;
-    const order = await createOrder({
-      baseAddress: quote.address,
-      quoteAddress: base.address,
-      price,
-      amount,
-      side
-    });
 
-    NavigationService.navigate('PreviewOrders', {
-      type: 'limit',
-      order: order,
-      side,
-      product: { base, quote }
-    });
+    try {
+      const order = await createOrder({
+        baseAddress: quote.address,
+        quoteAddress: base.address,
+        price,
+        amount,
+        side
+      });
+      NavigationService.navigate('PreviewOrders', {
+        type: 'limit',
+        order: order,
+        side,
+        product: { base, quote }
+      });
+    } catch (error) {
+      NavigationService.error(error);
+      return;
+    }
   }
 }
 

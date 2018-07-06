@@ -7,11 +7,7 @@ import {
   getTokenBalance,
   getZeroExClient,
   sendTokens as sendTokensUtil,
-  sendEther as sendEtherUtil,
-  wrapEther as _wrapEther,
-  wrapWei as _wrapWei,
-  unwrapEther as _unwrapEther,
-  unwrapWei as _unwrapWei
+  sendEther as sendEtherUtil
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
@@ -130,8 +126,8 @@ export function sendTokens(token, to, amount) {
         token
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      // console.log('Receipt: ', receipt);
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -154,8 +150,8 @@ export function sendEther(to, amount) {
         amount
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      // console.log('Receipt: ', receipt);
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -181,8 +177,8 @@ export function setTokenAllowance(address) {
         amount: 'UNLIMITED'
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      // console.log('Receipt: ', receipt);
+      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+      console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }

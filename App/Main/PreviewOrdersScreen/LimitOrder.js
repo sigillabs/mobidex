@@ -155,7 +155,12 @@ class PreviewLimitOrder extends Component {
       return;
     }
 
-    submitOrder(signedOrder);
+    try {
+      await submitOrder(signedOrder);
+    } catch (error) {
+      NavigationService.error(error);
+      return;
+    }
 
     NavigationService.navigate('List');
   }
