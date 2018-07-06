@@ -162,58 +162,6 @@ export function sendEther(to, amount) {
   };
 }
 
-export function wrapEther(amount, wei = false) {
-  return async (dispatch, getState) => {
-    const {
-      wallet: { web3 }
-    } = getState();
-    let zeroEx = await getZeroExClient(web3);
-
-    try {
-      let txhash = wei
-        ? await _wrapWei(web3, amount)
-        : await _wrapEther(web3, amount);
-      if (txhash) {
-        const activeTransaction = {
-          id: txhash,
-          type: 'WRAP_ETHER',
-          amount: amount
-        };
-        dispatch(addActiveTransactions([activeTransaction]));
-        // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-        // console.log('Receipt: ', receipt);
-      }
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
-export function unwrapEther(amount, wei = false) {
-  return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { web3, address }
-      } = getState();
-      let zeroEx = await getZeroExClient(web3);
-      const txhash = wei
-        ? await _unwrapWei(web3, amount)
-        : await _unwrapEther(web3, amount);
-      const activeTransaction = {
-        id: txhash,
-        type: 'UNWRAP_ETHER',
-        address,
-        amount
-      };
-      dispatch(addActiveTransactions([activeTransaction]));
-      // const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      // console.log('Receipt: ', receipt);
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
 export function setTokenAllowance(address) {
   return async (dispatch, getState) => {
     try {

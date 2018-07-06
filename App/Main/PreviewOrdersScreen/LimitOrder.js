@@ -151,6 +151,10 @@ class PreviewLimitOrder extends Component {
     } = this.props;
 
     const signedOrder = await signOrder(order);
+    if (!signedOrder) {
+      return;
+    }
+
     submitOrder(signedOrder);
 
     NavigationService.navigate('List');

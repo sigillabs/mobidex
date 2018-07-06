@@ -183,7 +183,7 @@ class FillOrders extends Component {
       NavigationService.navigate('PreviewOrders', {
         type: 'fill',
         side,
-        amount: baseAmount,
+        amount: baseAmount.toString(),
         orders: ordersToFill,
         product: { base, quote }
       });

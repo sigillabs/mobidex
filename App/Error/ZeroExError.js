@@ -5,7 +5,7 @@ export default class ZeroExError extends Component {
   render() {
     const { field, code, reason, ...rest } = this.props;
 
-    if (reason.toLowerCase().indexOf('below')) {
+    if (~reason.toLowerCase().indexOf('below')) {
       return <Text {...rest}>Price or amount is too low</Text>;
     }
 

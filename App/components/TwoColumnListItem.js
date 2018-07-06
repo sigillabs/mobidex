@@ -84,11 +84,26 @@ export default class TwoColumnListItem extends Component {
 TwoColumnListItem.propTypes = {
   left: PropTypes.node.isRequired,
   leftHeader: PropTypes.string,
-  leftHeaderStyle: PropTypes.object,
-  leftStyle: PropTypes.object,
+  leftHeaderStyle: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
+  leftStyle: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
   right: PropTypes.node.isRequired,
   rightHeader: PropTypes.string,
-  rightHeaderStyle: PropTypes.object,
-  rightStyle: PropTypes.object,
-  rowStyle: PropTypes.object
+  rightHeaderStyle: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
+  rightStyle: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
+  rowStyle: PropTypes.oneOf([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ])
 };

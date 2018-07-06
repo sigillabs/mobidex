@@ -1,5 +1,5 @@
-import * as _ from 'lodash';
 import { HttpClient } from '@0xproject/connect';
+import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import {
   addActiveTransactions,
@@ -153,14 +153,13 @@ export function fillOrder(order, amount = null) {
       const amountBN = amount
         ? new BigNumber(amount)
         : new BigNumber(order.takerTokenAmount);
-
       const txhash = await zeroEx.exchange.fillOrderAsync(
         order,
         amountBN,
         true,
-        account.toLowerCase()
+        account.toLowerCase(),
+        { shouldValidate: true }
       );
-
       const activeTransaction = {
         id: txhash,
         type: 'FILL',
@@ -203,7 +202,7 @@ export function fillOrders(orders, amount) {
         .filter(_.identity)
         .value();
 
-      const txhash = zeroEx.exchange.batchFillOrKillAsync(
+      const txhash = await zeroEx.exchange.batchFillOrKillAsync(
         ordersToFill,
         account.toLowerCase(),
         { shouldValidate: true }

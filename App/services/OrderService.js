@@ -7,9 +7,9 @@ import {
   cancelOrder as _cancelOrder,
   fillOrder as _fillOrder,
   fillOrders as _fillOrders,
+  gotoErrorScreen,
   setTokenAllowance,
-  submitOrder as _submitOrder,
-  wrapEther
+  submitOrder as _submitOrder
 } from '../../thunks';
 import {
   filterAndSortOrdersByTokens,
@@ -20,7 +20,7 @@ import {
   getZeroExClient,
   getZeroExContractAddress
 } from '../../utils';
-import { getWETHToken } from './TokenService';
+import * as TokenService from './TokenService';
 
 let _store;
 
@@ -50,12 +50,12 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
     case 'buy':
       order.makerTokenAddress = quoteToken.address;
       order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
-        new BigNumber(limitOrder.price).mul(limitOrder.amount),
+        new BigNumber(limitOrder.price).mul(limitOrder.amount).abs(),
         quoteToken.decimals
       );
       order.takerTokenAddress = baseToken.address;
       order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
-        new BigNumber(limitOrder.amount),
+        new BigNumber(limitOrder.amount).abs(),
         baseToken.decimals
       );
       break;
@@ -63,12 +63,12 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
     case 'sell':
       order.makerTokenAddress = baseToken.address;
       order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
-        new BigNumber(limitOrder.amount),
+        new BigNumber(limitOrder.amount).abs(),
         baseToken.decimals
       );
       order.takerTokenAddress = quoteToken.address;
       order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
-        new BigNumber(limitOrder.price).mul(limitOrder.amount),
+        new BigNumber(limitOrder.price).mul(limitOrder.amount).abs(),
         quoteToken.decimals
       );
       break;
@@ -142,36 +142,42 @@ export async function createOrder(limitOrder) {
 }
 
 export async function signOrder(order) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
+  try {
+    const {
+      wallet: { web3 }
+    } = _store.getState();
 
-  const zeroEx = await getZeroExClient(web3);
-  const account = await getAccount(web3);
+    const zeroEx = await getZeroExClient(web3);
+    const account = await getAccount(web3);
 
-  order.salt = ZeroEx.generatePseudoRandomSalt();
+    if (!order.salt) order.salt = ZeroEx.generatePseudoRandomSalt();
 
-  const hash = ZeroEx.getOrderHashHex(order);
-  // Halting at signature -- seems like a performance issue.
-  // Actually a network request issue.
-  const ecSignature = await zeroEx.signOrderHashAsync(
-    hash,
-    account.toLowerCase()
-  );
+    const hash = ZeroEx.getOrderHashHex(order);
+    // Halting at signature -- seems like a performance issue.
+    // Actually a network request issue.
+    const ecSignature = await zeroEx.signOrderHashAsync(
+      hash,
+      account.toLowerCase()
+    );
 
-  return {
-    ...order,
-    orderHash: hash,
-    ecSignature
-  };
+    return {
+      ...order,
+      orderHash: hash,
+      ecSignature
+    };
+  } catch (err) {
+    _store.dispatch(gotoErrorScreen(err));
+    return null;
+  }
 }
 
 export async function submitOrder(signedOrder) {
-  await ensureTokenAllowance(
-    signedOrder.makerTokenAddress,
-    signedOrder.makerTokenAmount
-  );
   await ensureWrappedEther(
+    signedOrder.makerTokenAddress,
+    signedOrder.makerTokenAmount,
+    true
+  );
+  await ensureTokenAllowance(
     signedOrder.makerTokenAddress,
     signedOrder.makerTokenAmount
   );
@@ -206,17 +212,17 @@ export async function fillOrders(orders, amount = null) {
   }
 
   const address = takerTokenAddresses[0];
-  const wei = _.reduce(
+  const takerToken = await TokenService.findTokenByAddress(address);
+  const fullBaseUnitAmount = _.reduce(
     orders,
     (s, o) => s.add(o.takerTokenAmount),
     new BigNumber(0)
   );
-  const weth = ZeroEx.toUnitAmount(wei, weth.decimals);
-  const baseUnitAmount = ZeroEx.toUnitAmount(
+  const baseUnitAmount = ZeroEx.toBaseUnitAmount(
     new BigNumber(amount || 0),
-    address
+    takerToken.decimals
   );
-  const fillBaseUnitAmount = amount ? baseUnitAmount : wei;
+  const fillBaseUnitAmount = amount ? baseUnitAmount : fullBaseUnitAmount;
   const fillableOrders = amount
     ? getOrdersToFill(
         orders,
@@ -227,14 +233,22 @@ export async function fillOrders(orders, amount = null) {
       )
     : filterAndSortOrdersByTokens(orders, makerTokenAddresses[0], address);
 
-  await ensureTokenAllowance(address, amount ? weth : amount);
-  await ensureWrappedEther(address, amount ? weth : amount);
+  await ensureWrappedEther(
+    takerToken.takerTokenAddress,
+    fillBaseUnitAmount,
+    true
+  );
+  await ensureTokenAllowance(address, fillBaseUnitAmount);
   await _store.dispatch(_fillOrders(fillableOrders, fillBaseUnitAmount));
 }
 
 export async function fillOrder(order, amount = null) {
+  await ensureWrappedEther(
+    order.takerTokenAddress,
+    order.takerTokenAmount,
+    true
+  );
   await ensureTokenAllowance(order.takerTokenAddress, order.takerTokenAmount);
-  await ensureWrappedEther(order.takerTokenAddress, order.takerTokenAmount);
   await _store.dispatch(_fillOrder(order, amount));
 }
 
@@ -253,31 +267,78 @@ export async function ensureTokenAllowance(address, amount) {
   }
 }
 
-export async function ensureWrappedEther(address, amount) {
+export async function ensureWrappedEther(address, amount, wei = false) {
   const {
     wallet: { web3 }
   } = _store.getState();
 
-  const zeroEx = await getZeroExClient(web3);
-  const weth = await getWETHToken();
+  const weth = await TokenService.getWETHToken();
 
-  if (weth.address !== address) return null;
-
-  const wethAmount = await getTokenBalance(web3, weth.address);
-  const weiAmount = ZeroEx.toBaseUnitAmount(wethAmount, weth.decimals);
-  if (new BigNumber(weiAmount).gt(amount)) {
-    const txhash = _store.dispatch(
-      wrapEther(new BigNumber(amount).sub(weiAmount), true)
-    );
-    if (txhash) {
-      const activeTransaction = {
-        id: txhash,
-        type: 'WRAP',
-        amount: new BigNumber(amount).toString()
-      };
-      _store.dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+  if ((address = weth.address)) {
+    const baseAmount = wei
+      ? new BigNumber(amount)
+      : ZeroEx.toBaseUnitAmount(new BigNumber(amount), weth.decimals);
+    const balance = await getTokenBalance(web3, address);
+    if (new BigNumber(baseAmount).gt(balance)) {
+      await wrapEther(new BigNumber(baseAmount).sub(balance), wei);
     }
+  }
+}
+
+export async function wrapEther(amount, wei = false) {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+  const { address, decimals } = await TokenService.getWETHToken();
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const value = wei
+    ? new BigNumber(amount)
+    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  const txhash = await zeroEx.etherToken.depositAsync(
+    address,
+    value,
+    account.toLowerCase()
+  );
+
+  if (txhash) {
+    const activeTransaction = {
+      id: txhash,
+      type: 'WRAP_ETHER',
+      address,
+      amount
+    };
+    _store.dispatch(addActiveTransactions([activeTransaction]));
+    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    console.log('Receipt: ', receipt);
+  }
+}
+
+export async function unwrapEther(amount, wei = false) {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const { address, decimals } = await TokenService.getWETHToken();
+  const value = wei
+    ? new BigNumber(amount)
+    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  const txhash = await zeroEx.etherToken.withdrawAsync(
+    address,
+    value,
+    account.toLowerCase()
+  );
+
+  if (txhash) {
+    const activeTransaction = {
+      id: txhash,
+      type: 'UNWRAP_ETHER',
+      address,
+      amount
+    };
+    _store.dispatch(addActiveTransactions([activeTransaction]));
+    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    console.log('Receipt: ', receipt);
   }
 }

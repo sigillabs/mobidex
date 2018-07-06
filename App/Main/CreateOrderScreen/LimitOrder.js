@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import BigNumber from 'bignumber.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import { printOrder } from '../../../utils';
 import TokenInput from '../../components/TokenInput';
 import LogoTicker from '../../views/LogoTicker';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';

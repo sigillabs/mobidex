@@ -1,3 +1,4 @@
+import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -201,17 +202,32 @@ class PreviewFillOrders extends Component {
   }
 
   getReceipt() {
-    const { side, amount } = this.props.navigation.state.params;
+    const {
+      navigation: {
+        state: {
+          params: {
+            product: { quote, base },
+            side,
+            amount
+          }
+        }
+      }
+    } = this.props;
     const priceAverage = this.getPriceAverage();
 
     let subtotal = new BigNumber(amount).mul(priceAverage);
     let fee = new BigNumber(0).negated();
     let total = subtotal.add(fee);
+    let takerToken = base;
 
     if (side === 'buy') {
       subtotal = subtotal.negated();
       total = total.negated();
+      takerToken = quote;
     }
+
+    subtotal = ZeroEx.toUnitAmount(subtotal, takerToken.decimals);
+    total = ZeroEx.toUnitAmount(total, takerToken.decimals);
 
     return {
       priceAverage,
@@ -259,7 +275,7 @@ class PreviewFillOrders extends Component {
     return average.toNumber();
   }
 
-  submit() {
+  async submit() {
     let {
       navigation: {
         state: {
@@ -269,8 +285,9 @@ class PreviewFillOrders extends Component {
     } = this.props;
     const fillAmount = new BigNumber(amount);
 
-    fillOrders(orders, fillAmount);
-    NavigationService.navigate('List');
+    if (await fillOrders(orders, fillAmount)) {
+      NavigationService.navigate('List');
+    }
   }
 }
 
@@ -281,7 +298,7 @@ PreviewFillOrders.propTypes = {
       params: PropTypes.shape({
         side: PropTypes.string.isRequired,
         amount: PropTypes.string.isRequired,
-        fee: PropTypes.string.isRequired,
+        fee: PropTypes.string,
         orders: PropTypes.arrayOf(PropTypes.object).isRequired,
         product: PropTypes.shape({
           base: PropTypes.object.isRequired,

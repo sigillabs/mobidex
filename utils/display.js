@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import moment from 'moment';
 
-BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false });
+BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false, EXPONENTIAL_AT: [-77, 77] });
 
 export function summarizeAddress(address) {
   if (!address) return address;

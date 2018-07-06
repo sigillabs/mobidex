@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
@@ -10,7 +11,7 @@ import RelayerError from './RelayerError';
 export default class ErrorScreen extends Component {
   // ${response.status} - ${response.statusText}\n${requestType} ${url}\n${text}
   renderRelayerErrors() {
-    const error = this.props.navigation.state.params.error;
+    const { error } = this.props.navigation.state.params;
     const message = error.message;
     const lines = message.split('\n');
     const json = lines[lines.length - 1];
@@ -24,10 +25,10 @@ export default class ErrorScreen extends Component {
   }
 
   renderMessage() {
-    if (!this.props.navigation.state.params) {
+    const error = this.props.navigation.getParam('error');
+    if (!error || !error.message) {
       return this.renderGeneral();
     }
-    const error = this.props.navigation.state.params.error;
     const message = error.message;
 
     if (message.indexOf('400') === 0) {
@@ -68,6 +69,10 @@ export default class ErrorScreen extends Component {
     );
   }
 }
+
+ErrorScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
 
 const styles = {
   text: {
