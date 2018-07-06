@@ -1,9 +1,10 @@
 import * as _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import {
-  loadTokens,
+  loadAssets,
   updateForexTickers,
   updateTokenTickers
 } from '../../../thunks';
@@ -27,10 +28,6 @@ class AccountsScreen extends Component {
   }
 
   render() {
-    if (!this.props.web3) {
-      return <View />;
-    }
-
     if (!this.props.assets.length) {
       return <View />;
     }
@@ -80,6 +77,11 @@ class AccountsScreen extends Component {
     this.setState({ refreshing: false });
   }
 }
+
+AccountsScreen.propTypes = {
+  assets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired
+};
 
 export default connect(
   state => ({ ...state.wallet, ...state.device.layout }),
