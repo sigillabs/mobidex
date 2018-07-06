@@ -63,19 +63,19 @@ export function loadTransactions() {
       };
       let promises = [
         fetch(
-          `http://mobidex.io/inf0x/${network}/fills?maker=${address}`,
+          `https://mobidex.io/inf0x/${network}/fills?maker=${address}`,
           options
         ),
         fetch(
-          `http://mobidex.io/inf0x/${network}/fills?taker=${address}`,
+          `https://mobidex.io/inf0x/${network}/fills?taker=${address}`,
           options
         ),
         fetch(
-          `http://mobidex.io/inf0x/${network}/cancels?maker=${address}`,
+          `https://mobidex.io/inf0x/${network}/cancels?maker=${address}`,
           options
         ),
         fetch(
-          `http://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
+          `https://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
           options
         )
       ];

@@ -25,7 +25,7 @@ class TransactionHistoryScreen extends Component {
       .concat(this.props.activeTransactions)
       .concat(this.props.transactions);
     return (
-      <View>
+      <View style={{ height: '100%' }}>
         <Tabs index={2} />
         <ScrollView
           refreshControl={

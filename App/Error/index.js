@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Button from '../components/Button.js';
 import NavigationService from '../services/NavigationService.js';
 import { colors } from '../../styles';
@@ -37,7 +37,14 @@ export default class ErrorScreen extends Component {
     } else if (message === 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT') {
       return (
         <Text style={styles.text}>
-          You don't have enough Ether for the transaction!
+          You do not have enough Ether for the transaction!
+        </Text>
+      );
+    } else if (message === 'ORDER_ALREADY_CANCELLED_OR_FILLED') {
+      return (
+        <Text style={styles.text}>
+          The order has already been filled or cancelled. Give our server 5 - 10
+          minutes to update...
         </Text>
       );
     } else {
@@ -63,6 +70,7 @@ export default class ErrorScreen extends Component {
           paddingLeft: 10
         }}
       >
+        <Entypo name="emoji-sad" size={50} />
         <View>{this.renderMessage()}</View>
         <Button
           large

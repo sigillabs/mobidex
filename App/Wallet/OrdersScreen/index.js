@@ -1,29 +1,20 @@
-import * as _ from 'lodash';
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
+import ethUtil from 'ethereumjs-util';
 import React, { Component } from 'react';
-import {
-  RefreshControl,
-  TouchableOpacity,
-  ScrollView,
-  View
-} from 'react-native';
-import { Avatar, List, ListItem, Text } from 'react-native-elements';
+import { RefreshControl, ScrollView, View } from 'react-native';
+import { ListItem, Text } from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
-import { colors } from '../../styles';
-import { loadOrders, cancelOrder } from '../../thunks';
-import {
-  formatAmountWithDecimals,
-  getImage,
-  getTokenByAddress,
-  prices
-} from '../../utils';
-import EmptyList from '../components/EmptyList';
-import MutedText from '../components/MutedText';
-import Row from '../components/Row';
-import Tabs from './Tabs';
+import { colors } from '../../../styles';
+import { loadOrders, cancelOrder } from '../../../thunks';
+import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
+import EmptyList from '../../components/EmptyList';
+import MutedText from '../../components/MutedText';
+import Row from '../../components/Row';
+import NavigationService from '../../services/NavigationService';
+import Tabs from '../Tabs';
+import Cancelling from './Cancelling';
+import Cancelled from './Cancelled';
 
 const TokenOrder = connect(
   state => ({
@@ -117,7 +108,9 @@ class OrdersScreen extends Component {
 
     this.state = {
       refreshing: true,
-      showForexPrices: false
+      showForexPrices: false,
+      showCancelling: false,
+      showCancelled: false
     };
   }
 
@@ -126,6 +119,17 @@ class OrdersScreen extends Component {
   }
 
   render() {
+    if (this.state.showCancelled)
+      return (
+        <Cancelled
+          onLeave={this.setState({
+            showCancelled: false,
+            showCancelling: false
+          })}
+        />
+      );
+    if (this.state.showCancelling) return <Cancelling />;
+
     const orders = this.filterOrders();
 
     return (
@@ -179,7 +183,11 @@ class OrdersScreen extends Component {
   filterOrders() {
     const { params } = this.props.navigation.state;
     let orders = this.props.orders
-      .filter(o => o.maker === this.props.address)
+      .filter(
+        o =>
+          ethUtil.stripHexPrefix(o.maker) ===
+          ethUtil.stripHexPrefix(this.props.address)
+      )
       .filter(o => o.status === 0);
     if (params && params.token) {
       orders = orders.filter(
@@ -190,8 +198,17 @@ class OrdersScreen extends Component {
   }
 
   async cancelOrder(order) {
-    await this.props.dispatch(cancelOrder(order));
-    await this.onRefresh();
+    this.setState({ showCancelling: true });
+    try {
+      await this.props.dispatch(cancelOrder(order));
+    } catch (error) {
+      NavigationService.error(error);
+      return;
+    } finally {
+      this.setState({ showCancelling: false });
+    }
+    this.setState({ showCancelled: true });
+    this.onRefresh();
   }
 
   async onRefresh() {

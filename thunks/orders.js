@@ -1,4 +1,5 @@
 import { HttpClient } from '@0xproject/connect';
+import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import {
@@ -119,7 +120,9 @@ export function cancelOrder(order) {
       } = getState();
       const zeroEx = await getZeroExClient(web3);
 
-      if (order.maker !== address) {
+      if (
+        ethUtil.stripHexPrefix(order.maker) !== ethUtil.stripHexPrefix(address)
+      ) {
         throw new Error('Cannot cancel order that is not yours');
       }
 

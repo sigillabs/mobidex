@@ -170,7 +170,7 @@ class ProductScreen extends Component {
     };
   }
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     this.onRefresh();
   }
 

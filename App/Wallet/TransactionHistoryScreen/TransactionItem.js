@@ -34,9 +34,9 @@ class TransactionItem extends Component {
           <Row>
             <Text>{label}</Text>
             <Text> </Text>
-            <Text>{source.amount}</Text>
+            <Text>{source ? source.amount : null}</Text>
             <Text> </Text>
-            <Text>{source.symbol}</Text>
+            <Text>{source ? source.symbol : null}</Text>
             <Text> for </Text>
             <Text>{destination.amount}</Text>
             <Text> </Text>

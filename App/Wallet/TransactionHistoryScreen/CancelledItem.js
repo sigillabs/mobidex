@@ -19,7 +19,6 @@ class CancelledItem extends Component {
       getTokenByAddress(this.props.web3, this.props.transaction.makerToken),
       getTokenByAddress(this.props.web3, this.props.transaction.takerToken)
     ]);
-
     this.setState({
       makerToken,
       takerToken,

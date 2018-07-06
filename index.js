@@ -7,7 +7,8 @@ YellowBox.ignoreWarnings([
   'Class RCTCxxModule',
   'Warning:',
   'Method',
-  'Module'
+  'Module',
+  'MOBIDEX:'
 ]);
 EventEmitter.defaultMaxListeners = 1000;
 

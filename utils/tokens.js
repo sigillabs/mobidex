@@ -73,7 +73,7 @@ export async function getTokenByAddress(web3, address, force = false) {
       });
     });
   } catch (err) {
-    console.warn(err);
+    console.warn('MOBIDEX: ', 'Could not fetch name', err);
     return null;
   }
 
@@ -85,7 +85,7 @@ export async function getTokenByAddress(web3, address, force = false) {
       });
     });
   } catch (err) {
-    console.warn(err);
+    console.warn('MOBIDEX: ', 'Could not fetch symbol', err);
     return null;
   }
 
@@ -97,7 +97,7 @@ export async function getTokenByAddress(web3, address, force = false) {
       });
     });
   } catch (err) {
-    console.warn(err);
+    console.warn('MOBIDEX: ', 'Could not fetch decimals', err);
     return null;
   }
 

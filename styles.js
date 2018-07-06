@@ -4,6 +4,7 @@ const colors = {
   primary: 'black',
   secondary: '#8F0CE8',
   background: 'white',
+  success: 'green',
 
   error: '#ff190c',
   green0: 'green',

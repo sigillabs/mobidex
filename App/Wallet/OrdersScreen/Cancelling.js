@@ -3,7 +3,7 @@ import { View, Image, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors } from '../../../styles';
 
-export default class FillingOrdersScreen extends Component {
+export default class CancellingOrdersScreen extends Component {
   render() {
     return (
       <View
@@ -26,7 +26,7 @@ export default class FillingOrdersScreen extends Component {
             resizeMode: Image.resizeMode.contain
           }}
         />
-        <Text h3>Filling orders</Text>
+        <Text h3>Cancelling order</Text>
         <ActivityIndicator size="large" color={colors.gray1} />
       </View>
     );

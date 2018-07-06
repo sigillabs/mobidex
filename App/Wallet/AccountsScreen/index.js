@@ -5,6 +5,7 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import {
   loadAssets,
+  loadProductsAndTokens,
   updateForexTickers,
   updateTokenTickers
 } from '../../../thunks';
@@ -13,13 +14,49 @@ import Tabs from '../Tabs';
 import TokenList from './TokenList';
 import TokenDetails from './TokenDetails';
 
+class AccountsView extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      token: null
+    };
+  }
+
+  render() {
+    let ethToken = _.find(this.props.assets, { symbol: 'ETH' });
+    let filteredTokens = _.filter(
+      this.props.assets,
+      asset => asset.symbol !== 'ETH' && asset.symbol !== 'WETH'
+    );
+
+    return (
+      <View>
+        <Row>
+          <TokenDetails token={this.state.token || ethToken} />
+        </Row>
+        <Row>
+          <TokenList
+            token={this.state.token}
+            tokens={filteredTokens}
+            onPress={token =>
+              this.state.token !== token
+                ? this.setState({ token })
+                : this.setState({ token: null })
+            }
+          />
+        </Row>
+      </View>
+    );
+  }
+}
+
 class AccountsScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      refreshing: false,
-      token: null
+      refreshing: false
     };
   }
 
@@ -29,14 +66,8 @@ class AccountsScreen extends Component {
 
   render() {
     if (!this.props.assets.length) {
-      return <View />;
+      return null;
     }
-
-    let ethToken = _.find(this.props.assets, { symbol: 'ETH' });
-    let filteredTokens = _.filter(
-      this.props.assets,
-      asset => asset.symbol !== 'ETH' && asset.symbol !== 'WETH'
-    );
 
     return (
       <View>
@@ -50,20 +81,9 @@ class AccountsScreen extends Component {
             />
           }
         >
-          <Row>
-            <TokenDetails token={this.state.token || ethToken} />
-          </Row>
-          <Row>
-            <TokenList
-              token={this.state.token}
-              tokens={filteredTokens}
-              onPress={token =>
-                this.state.token !== token
-                  ? this.setState({ token })
-                  : this.setState({ token: null })
-              }
-            />
-          </Row>
+          {this.props.assets.length ? (
+            <AccountsView assets={this.props.assets} />
+          ) : null}
         </ScrollView>
       </View>
     );
@@ -71,6 +91,9 @@ class AccountsScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
+    if (!this.props.tokens.length) {
+      await this.props.dispatch(loadProductsAndTokens(true));
+    }
     await this.props.dispatch(loadAssets());
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
@@ -80,10 +103,11 @@ class AccountsScreen extends Component {
 
 AccountsScreen.propTypes = {
   assets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
 export default connect(
-  state => ({ ...state.wallet, ...state.device.layout }),
+  state => ({ ...state.wallet, ...state.relayer, ...state.device.layout }),
   dispatch => ({ dispatch })
 )(AccountsScreen);
