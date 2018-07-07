@@ -152,6 +152,10 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/main.kotlin_module'
+    }
 }
 
 dependencies {
@@ -173,7 +177,19 @@ dependencies {
     api ("org.bouncycastle:bcprov-jdk15on:1.59") {
         exclude group: "com.android.support", module: "support-v4"
     }
-    api ("org.web3j:core:3.3.1-android") {
+//    api ("org.web3j:core:3.3.1-android") {
+//        exclude group: "com.android.support", module: "support-v4"
+//    }
+    implementation ('com.github.walleth.kethereum:base58:0.53') {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    implementation ("com.github.walleth.kethereum:bip39:0.53") {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    implementation ("com.github.walleth.kethereum:bip32:0.53") {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    implementation ("com.github.walleth.kethereum:wallet:0.53") {
         exclude group: "com.android.support", module: "support-v4"
     }
     // Make sure appcompat and support are the same version

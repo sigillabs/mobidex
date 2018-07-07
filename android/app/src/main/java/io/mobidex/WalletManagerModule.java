@@ -9,9 +9,14 @@ import com.facebook.react.bridge.ReactMethod;
 
 import java.io.File;
 
-import org.web3j.crypto.Bip39Wallet;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
+import org.kethereum.bip32.ExtendedKey;
+import org.kethereum.bip39.Mnemonic;
+import org.kethereum.crypto.ECKeyPair;
+import org.kethereum.wallet.WalletKt;
+
+import static org.kethereum.bip32.BIP32.generateKey;
+import static org.kethereum.wallet.WalletFileKt.generateWalletFile;
+import static org.kethereum.wallet.WalletFileKt.loadKeysFromWalletFile;
 
 public class WalletManagerModule extends ReactContextBaseJavaModule {
     private File walletDirectory;
@@ -34,12 +39,15 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     private File getWalletFile() {
-        File[] files = walletDirectory.listFiles();
-        if (files == null || files.length == 0) {
-            return null;
-        } else {
-            return files[0];
+        File[] walletFiles = walletDirectory.listFiles();
+        if (walletFiles != null) {
+            for (File f : walletFiles) {
+                if (f.getName().endsWith(".json")) {
+                    return f;
+                }
+            }
         }
+        return null;
     }
 
     private boolean clearKeystorePath() {
@@ -72,8 +80,8 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void generateMnemonics(Callback cb) {
         try {
-            Bip39Wallet wallet = WalletUtils.generateBip39Wallet(null, walletDirectory);
-            cb.invoke(null, wallet.getMnemonic());
+            String mnemonic = Mnemonic.INSTANCE.generateMnemonic(128);
+            cb.invoke(null, mnemonic);
         } catch(Exception e) {
             Log.e("WalletManager", e.getMessage());
             cb.invoke(e);
@@ -82,7 +90,9 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void importWalletByMnemonics(final String mnemonic, final String password, final Callback cb) {
-        final Credentials credentials = WalletUtils.loadBip39Credentials(null, mnemonic);
+        final byte[] seed = Mnemonic.INSTANCE.mnemonicToSeed(mnemonic, "");
+        final ExtendedKey key = generateKey(seed, "m/44'/60'/0'/0/0");
+        final ECKeyPair pair = key.getKeyPair();
 
         if (!clearKeystorePath()) {
             cb.invoke("Could not clear Keystore Path to make way for new credentials.", null);
@@ -90,22 +100,22 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
         final PasscodeManager.SavePasscodeCallback passcodeCallback = new PasscodeManager.SavePasscodeCallback() {
             public void invoke(Exception error, boolean success) {
-                if (error != null) {
-                    cb.invoke(error.getMessage());
-                    return;
-                }
+            if (error != null) {
+                cb.invoke(error.getMessage());
+                return;
+            }
 
-                if (!success) {
-                    Log.d("WalletManager", "Skipped finger print authentication setup.");
-                }
+            if (!success) {
+                Log.d("WalletManager", "Skipped finger print authentication setup.");
+            }
 
-                try {
-                    WalletUtils.generateWalletFile(password, credentials.getEcKeyPair(), walletDirectory, false);
-                    cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
-                } catch(Exception e) {
-                    Log.e("WalletManager", e.getMessage());
-                    cb.invoke(e.getMessage());
-                }
+            try {
+                generateWalletFile(pair, password, walletDirectory, WalletKt.getLIGHT_SCRYPT_CONFIG());
+                cb.invoke(null, pair.getPrivateKey().toString(16));
+            } catch(Exception e) {
+                Log.e("WalletManager", e.getMessage());
+                cb.invoke(e.getMessage());
+            }
             }
         };
 
@@ -128,8 +138,8 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
                 }
 
                 try {
-                    Credentials credentials = WalletUtils.loadCredentials(password, walletFile);
-                    cb.invoke(null, credentials.getEcKeyPair().getPrivateKey().toString(16));
+                    ECKeyPair pair = loadKeysFromWalletFile(walletFile, password);
+                    cb.invoke(null, pair.getPrivateKey().toString(16));
                 } catch (Exception e) {
                     Log.e("WalletManager", e.getMessage());
                     cb.invoke(e.getMessage());
