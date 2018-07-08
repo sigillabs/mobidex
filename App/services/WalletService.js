@@ -70,6 +70,7 @@ export async function getAddress() {
 }
 
 export async function lock() {
+  _web3 = null;
   await _store.dispatch(setWallet({ web3: null, address: null }));
 }
 

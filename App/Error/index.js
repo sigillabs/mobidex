@@ -75,7 +75,7 @@ export default class ErrorScreen extends Component {
         <Button
           large
           title="Get Out Of Here"
-          icon={<Entypo name="refresh" color="white" />}
+          icon={<Entypo name="arrow-with-circle-left" color="white" />}
           buttonStyle={{ borderRadius: 0 }}
           onPress={() => NavigationService.navigate('List')}
         />
