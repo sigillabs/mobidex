@@ -38,6 +38,7 @@
         "react-native-crypto": "^2.1.2",
         "react-native-drawer": "^2.5.0",
         "react-native-elements": "^1.0.0-beta5",
+        "react-native-google-analytics-bridge": "^5.8.0",
         "react-native-masked-text": "^1.7.0",
         "react-native-modal-dropdown": "^0.6.0",
         "react-native-push-notification": "^3.0.2",

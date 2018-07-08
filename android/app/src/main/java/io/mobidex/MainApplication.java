@@ -7,6 +7,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -26,12 +27,13 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-          new WalletManagerPackage(),
-          new ReactNativePushNotificationPackage(),
-          new SvgPackage(),
-          new VectorIconsPackage(),
-          new RandomBytesPackage()
+        new MainReactPackage(),
+        new GoogleAnalyticsBridgePackage(),
+        new WalletManagerPackage(),
+        new ReactNativePushNotificationPackage(),
+        new SvgPackage(),
+        new VectorIconsPackage(),
+        new RandomBytesPackage()
       );
     }
 

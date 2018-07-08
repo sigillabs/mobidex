@@ -6,6 +6,7 @@ import {
 } from 'react-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { colors } from '../styles';
 import ChooseUnlockMethodScreen from './Locked/ChooseUnlockMethodScreen';
 import UnlockWithFingerScreen from './Locked/UnlockWithFingerScreen';
 import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
@@ -30,7 +31,7 @@ import ImportFirstAccount from './Onboarding/ImportAccountScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
-import { colors } from '../styles';
+import * as AnalyticsService from './services/AnalyticsService';
 
 const LockedNavigation = createSwitchNavigator(
   {
@@ -45,6 +46,7 @@ const LockedNavigation = createSwitchNavigator(
     initialRouteName: 'ChooseUnlockMethod'
   }
 );
+LockedNavigation.router = AnalyticsService.wrapRouter(LockedNavigation.router);
 
 const OnboardingNavigation = createStackNavigator(
   {
@@ -58,6 +60,9 @@ const OnboardingNavigation = createStackNavigator(
     initialRouteName: 'Intro',
     headerMode: 'none'
   }
+);
+OnboardingNavigation.router = AnalyticsService.wrapRouter(
+  OnboardingNavigation.router
 );
 
 const WalletNavigation = createStackNavigator(
@@ -75,6 +80,7 @@ const WalletNavigation = createStackNavigator(
       backgroundColor: colors.background
     },
     initialRouteName: 'Accounts',
+    lazy: true,
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
       header: () => {
@@ -132,6 +138,7 @@ const WalletNavigation = createStackNavigator(
     })
   }
 );
+WalletNavigation.router = AnalyticsService.wrapRouter(WalletNavigation.router);
 
 const ProductsNavigation = createStackNavigator(
   {
@@ -144,6 +151,7 @@ const ProductsNavigation = createStackNavigator(
     cardStyle: {
       backgroundColor: colors.background
     },
+    lazy: true,
     initialRouteName: 'List',
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
@@ -191,6 +199,9 @@ const ProductsNavigation = createStackNavigator(
     })
   }
 );
+ProductsNavigation.router = AnalyticsService.wrapRouter(
+  ProductsNavigation.router
+);
 
 const MainTabsNavigator = createTabNavigator(
   {
@@ -231,6 +242,9 @@ const MainTabsNavigator = createTabNavigator(
       }
     })
   }
+);
+MainTabsNavigator.router = AnalyticsService.wrapRouter(
+  MainTabsNavigator.router
 );
 
 export default createSwitchNavigator(
