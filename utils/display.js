@@ -25,6 +25,7 @@ export function formatAmountWithDecimals(amount, decimals) {
 }
 
 export function formatAmount(amount) {
+  if (amount === null) amount = 0;
   const amountBN = new BigNumber(amount);
   return amountBN.toFixed(4);
 }

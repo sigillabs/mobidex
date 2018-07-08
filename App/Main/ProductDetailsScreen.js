@@ -10,6 +10,7 @@ import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
   detailsFromTicker,
   history as fetchHistory,
+  formatAmount,
   formatMoney,
   formatPercent,
   getPriceChangeFromTicker
@@ -50,48 +51,7 @@ class ProductDetailListItem extends Component {
 
 class ProductDetailsView extends Component {
   render() {
-    const { base, quote, periodIndex, periods, onChoosePeriod } = this.props;
-    const forexTicker = TickerService.getForexTicker(quote.symbol);
-    const tokenTicker = TickerService.getQuoteTicker(base.symbol, quote.symbol);
-
-    if (!forexTicker || !forexTicker.history) return null;
-    if (!tokenTicker || !tokenTicker.history) return null;
-
-    const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
-    const history = forexTicker.history[period];
-    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
-      forexTicker
-    );
-    const infolist = [
-      {
-        key: 'price',
-        left: 'Price',
-        right: formatMoney(forexTicker.price)
-      },
-      {
-        key: '24hrprice',
-        left: '24 Hour Price Average',
-        right: formatMoney(dayAverage)
-      },
-      {
-        key: '24hrpricechange',
-        left: '24 Hour Price Change',
-        right: `${changePrice < 0 ? '-' : ''}${formatMoney(
-          Math.abs(changePrice)
-        )} (${formatPercent(changePercent)})`,
-        rightStyle: getProfitLossStyle(changePercent)
-      },
-      {
-        key: '24hrmax',
-        left: '24 Hour Max',
-        right: formatMoney(forexTicker.daymax)
-      },
-      {
-        key: '24hrmin',
-        left: '24 Hour Min',
-        right: formatMoney(forexTicker.daymin)
-      }
-    ];
+    const { base, quote, period, infolist, history } = this.props;
 
     return (
       <View style={[styles.container]}>
@@ -104,13 +64,6 @@ class ProductDetailsView extends Component {
           label={'Last 30 Days'}
         />
         <Divider style={{ marginTop: 5 }} />
-        {/*<ButtonGroup
-          onPress={onChoosePeriod}
-          selectedIndex={periodIndex}
-          buttons={periods}
-          innerBorderStyle={{ width: -1 }}
-          containerStyle={{ width: 140, alignSelf: 'center' }}
-        />*/}
         <Row style={{ justifyContent: 'center' }}>
           <Button
             large
@@ -159,6 +112,128 @@ class ProductDetailsView extends Component {
   }
 }
 
+class TokenProductDetailsView extends Component {
+  render() {
+    const { base, quote, periodIndex, periods } = this.props;
+    const ticker = TickerService.getQuoteTicker(base.symbol, quote.symbol);
+
+    if (!ticker || !ticker.history) return null;
+
+    const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
+    const history = ticker.history[period];
+    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
+      ticker
+    );
+    const infolist = [
+      {
+        key: 'price',
+        left: 'Price',
+        right: `${formatAmount(ticker.price)} ${quote.symbol}`
+      },
+      {
+        key: '24hrprice',
+        left: '24 Hour Price Average',
+        right: `${formatAmount(dayAverage)} ${quote.symbol}`
+      },
+      {
+        key: '24hrpricechange',
+        left: '24 Hour Price Change',
+        right:
+          ticker.daymax === null
+            ? `${changePrice < 0 ? '-' : ''}${formatAmount(
+                Math.abs(changePrice)
+              )} ${quote.symbol} (${formatPercent(changePercent)})`
+            : 'N/A',
+        rightStyle: getProfitLossStyle(changePercent)
+      },
+      {
+        key: '24hrmax',
+        left: '24 Hour Max',
+        right:
+          ticker.daymax === null
+            ? `${formatAmount(ticker.daymax)} ${quote.symbol}`
+            : 'N/A'
+      },
+      {
+        key: '24hrmin',
+        left: '24 Hour Min',
+        right:
+          ticker.daymin === null
+            ? `${formatAmount(ticker.daymin)} ${quote.symbol}`
+            : 'N/A'
+      }
+    ];
+
+    return (
+      <ProductDetailsView
+        base={base}
+        quote={quote}
+        period={period}
+        infolist={infolist}
+        history={history}
+      />
+    );
+  }
+}
+
+class ForexProductDetailsView extends Component {
+  render() {
+    const { base, quote, periodIndex, periods } = this.props;
+    const ticker = TickerService.getForexTicker(quote.symbol);
+
+    if (!ticker || !ticker.history) return null;
+
+    const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
+    const history = ticker.history[period];
+    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
+      ticker
+    );
+    const infolist = [
+      {
+        key: 'price',
+        left: 'Price',
+        right: formatMoney(ticker.price)
+      },
+      {
+        key: '24hrprice',
+        left: '24 Hour Price Average',
+        right: formatMoney(dayAverage)
+      },
+      {
+        key: '24hrpricechange',
+        left: '24 Hour Price Change',
+        right:
+          ticker.daymax === null
+            ? `${changePrice < 0 ? '-' : ''}${formatMoney(
+                Math.abs(changePrice)
+              )} (${formatPercent(changePercent)})`
+            : 'N/A',
+        rightStyle: getProfitLossStyle(changePercent)
+      },
+      {
+        key: '24hrmax',
+        left: '24 Hour Max',
+        right: ticker.daymax === null ? formatMoney(ticker.daymax) : 'N/A'
+      },
+      {
+        key: '24hrmin',
+        left: '24 Hour Min',
+        right: ticker.daymin === null ? formatMoney(ticker.daymin) : 'N/A'
+      }
+    ];
+
+    return (
+      <ProductDetailsView
+        base={base}
+        quote={quote}
+        period={period}
+        infolist={infolist}
+        history={history}
+      />
+    );
+  }
+}
+
 class ProductDetailsScreen extends Component {
   static periods = ['Day', 'Month', 'Year'];
 
@@ -193,17 +268,21 @@ class ProductDetailsScreen extends Component {
           />
         }
       >
-        <ProductDetailsView
-          base={base}
-          quote={quote}
-          periodIndex={this.state.period}
-          periods={ProductDetailsScreen.periods}
-          onChoosePeriod={index => {
-            this.setState({
-              period: index
-            });
-          }}
-        />
+        {this.props.navigation.getParam('showForexPrices') ? (
+          <ForexProductDetailsView
+            base={base}
+            quote={quote}
+            periodIndex={this.state.period}
+            periods={ProductDetailsScreen.periods}
+          />
+        ) : (
+          <TokenProductDetailsView
+            base={base}
+            quote={quote}
+            periodIndex={this.state.period}
+            periods={ProductDetailsScreen.periods}
+          />
+        )}
       </ScrollView>
     );
   }

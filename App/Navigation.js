@@ -172,7 +172,7 @@ const ProductsNavigation = createStackNavigator(
                 navigation={navigation}
                 product={navigation.state.params.product}
                 showBackButton={true}
-                showForexToggleButton={false}
+                showForexToggleButton={true}
               />
             );
 

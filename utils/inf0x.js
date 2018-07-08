@@ -14,7 +14,10 @@ export async function getForexPrices(
     n
   });
   const response = await fetch(`https://mobidex.io/inf0x/forex/history?${qs}`);
-  return await response.json();
+  const json = await response.json();
+  // console.debug('Forex Prices', `https://mobidex.io/inf0x/forex/history?${qs}`);
+  // console.debug('Forex Prices', json);
+  return json;
 }
 
 export async function getForexTicker(
@@ -34,6 +37,11 @@ export async function getForexTicker(
     `https://mobidex.io/inf0x/${network}/forex/ticker?${qs}`
   );
   const json = await response.json();
+  // console.debug(
+  //   'Forex Ticker',
+  //   `https://mobidex.io/inf0x/${network}/forex/ticker?${qs}`
+  // );
+  // console.debug('Forex Ticker', json);
   return json;
 }
 
@@ -54,6 +62,11 @@ export async function getTokenPrices(
     `https://mobidex.io/inf0x/${network}/token/history?${qs}`
   );
   const json = await response.json();
+  // console.debug(
+  //   'Token Prices',
+  //   `https://mobidex.io/inf0x/${network}/token/history?${qs}`
+  // );
+  // console.debug('Token Prices', json);
   return json;
 }
 
@@ -74,6 +87,11 @@ export async function getTokenTicker(
     `https://mobidex.io/inf0x/${network}/tokens/ticker?${qs}`
   );
   const json = await response.json();
+  // console.debug(
+  //   'Token Ticker',
+  //   `https://mobidex.io/inf0x/${network}/tokens/ticker?${qs}`
+  // );
+  // console.debug('Token Ticker', json);
   return json;
 }
 

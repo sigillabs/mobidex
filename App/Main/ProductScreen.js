@@ -182,7 +182,13 @@ class ProductScreen extends Component {
 
     if (!products || !products.length) {
       return (
-        <EmptyList style={{ height: '100%', width: '100%' }}>
+        <EmptyList
+          wrapperStyle={{
+            height: '100%',
+            width: '100%',
+            justifyContent: 'flex-start'
+          }}
+        >
           <MutedText style={{ marginTop: 25 }}>
             No products to show...
           </MutedText>
