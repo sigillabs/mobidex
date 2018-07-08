@@ -70,7 +70,7 @@ export default class ErrorScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Entypo name="emoji-sad" size={50} />
+        <Entypo name="emoji-sad" size={100} style={{ marginBottom: 25 }} />
         <View>{this.renderMessage()}</View>
         <Button
           large
