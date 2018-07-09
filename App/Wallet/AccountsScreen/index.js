@@ -10,6 +10,7 @@ import {
   updateTokenTickers
 } from '../../../thunks';
 import Row from '../../components/Row';
+import PageRoot from '../../components/PageRoot';
 import Tabs from '../Tabs';
 import TokenList from './TokenList';
 import TokenDetails from './TokenDetails';
@@ -70,7 +71,7 @@ class AccountsScreen extends Component {
     }
 
     return (
-      <View>
+      <PageRoot>
         <Tabs index={0} />
         <ScrollView
           style={{ width: '100%' }}
@@ -85,7 +86,7 @@ class AccountsScreen extends Component {
             <AccountsView assets={this.props.assets} />
           ) : null}
         </ScrollView>
-      </View>
+      </PageRoot>
     );
   }
 

@@ -39,7 +39,7 @@ export default class CreateLimitOrder extends Component {
     }
 
     return (
-      <View>
+      <View style={{ width: '100%', height: '100%' }}>
         <LogoTicker token={base} />
         <TokenAmount
           label={side === 'buy' ? 'Buying' : 'Selling'}

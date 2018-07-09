@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import NavigationService from '../../services/NavigationService';
+import PageRoot from '../../components/PageRoot';
 import FillOrdersPreview from './FillOrders';
 import LimitOrderPreview from './LimitOrder';
 
@@ -25,7 +25,7 @@ export default class PreviewOrdersScreen extends Component {
         break;
     }
 
-    return <View style={{ flex: 1, width: '100%' }}>{subview}</View>;
+    return <PageRoot style={{ flex: 1 }}>{subview}</PageRoot>;
   }
 }
 

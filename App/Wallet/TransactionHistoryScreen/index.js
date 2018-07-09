@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import TransactionsList from './List';
 import { loadTransactions } from '../../../thunks';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
+import PageRoot from '../../components/PageRoot';
 import Tabs from '../Tabs';
 
 class TransactionHistoryScreen extends Component {
@@ -25,7 +26,7 @@ class TransactionHistoryScreen extends Component {
       .concat(this.props.activeTransactions)
       .concat(this.props.transactions);
     return (
-      <View style={{ height: '100%' }}>
+      <PageRoot>
         <Tabs index={2} />
         <ScrollView
           refreshControl={
@@ -48,7 +49,7 @@ class TransactionHistoryScreen extends Component {
             </EmptyList>
           )}
         </ScrollView>
-      </View>
+      </PageRoot>
     );
   }
 

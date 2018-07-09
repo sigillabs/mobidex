@@ -10,6 +10,7 @@ import { loadOrders } from '../../../thunks';
 import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
+import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
 import { cancelOrder } from '../../services/OrderService';
@@ -134,7 +135,7 @@ class OrdersScreen extends Component {
     const orders = this.filterOrders();
 
     return (
-      <View>
+      <PageRoot>
         <Tabs index={1} />
         <ScrollView
           refreshControl={
@@ -177,7 +178,7 @@ class OrdersScreen extends Component {
             </EmptyList>
           )}
         </ScrollView>
-      </View>
+      </PageRoot>
     );
   }
 

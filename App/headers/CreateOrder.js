@@ -24,7 +24,7 @@ class CreateOrderHeader extends Component {
           text: this.renderTitle(),
           style: { color: 'black', fontSize: 18 }
         }}
-        outerContainerStyles={{ height: 80 }}
+        outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
     );
   }

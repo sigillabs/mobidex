@@ -44,7 +44,7 @@ class ProductsHeader extends Component {
             </TouchableOpacity>
           ) : null
         }
-        outerContainerStyles={{ height: 80 }}
+        outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
     );
   }

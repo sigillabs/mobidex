@@ -104,7 +104,7 @@ class PreviewFillOrders extends Component {
     const { priceAverage, subtotal, fee, total } = this.state.receipt;
 
     return (
-      <View style={{ flex: 1, marginTop: 50 }}>
+      <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
         <TwoColumnListItem
           left="Average Price"
           leftStyle={{ height: 30 }}

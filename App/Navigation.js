@@ -88,7 +88,7 @@ const WalletNavigation = createStackNavigator(
           case 'History':
           case 'Orders':
           case 'Accounts':
-            return <BlankHeader />;
+            return null;
 
           case 'Receive':
             return (

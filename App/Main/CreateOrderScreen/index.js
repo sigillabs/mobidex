@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
+import PageRoot from '../../components/PageRoot';
 import Tabs from '../../components/Tabs';
 import FillOrders from './FillOrders';
 import LimitOrder from './LimitOrder';
@@ -32,7 +33,7 @@ export default class CreateOrderScreen extends Component {
     }
 
     return (
-      <View style={{ width: '100%' }}>
+      <PageRoot>
         <Tabs
           onPress={index =>
             this.props.navigation.replace('CreateOrder', {
@@ -47,7 +48,7 @@ export default class CreateOrderScreen extends Component {
         <ScrollView contentContainerStyle={{ padding: 20 }}>
           {subview}
         </ScrollView>
-      </View>
+      </PageRoot>
     );
   }
 }

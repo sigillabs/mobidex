@@ -32,7 +32,13 @@ class ReceiveScreen extends Component {
     return (
       <View
         style={[
-          { justifyContent: 'center', alignItems: 'center', marginTop: 25 }
+          {
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 25
+          }
         ]}
       >
         <Avatar size="xlarge" source={{ uri }} />

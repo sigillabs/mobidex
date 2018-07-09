@@ -24,7 +24,7 @@ export default class NormalHeader extends Component {
           text: this.props.title || 'Mobidex',
           style: { color: 'black', fontSize: 18 }
         }}
-        outerContainerStyles={{ height: 80 }}
+        outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
     );
   }

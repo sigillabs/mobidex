@@ -37,7 +37,15 @@ class SendTokensWizard extends Component {
     }
 
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View
+        style={{
+          width: '100%',
+          height: '100%',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         {this.state.page === 0 ? (
           <AmountPage
             token={token}
