@@ -18,7 +18,7 @@ import {
   getAveragePrice
 } from '../../services/OrderService';
 import { getBalanceByAddress } from '../../services/WalletService';
-import FillingOrders from './FillingOrders';
+import Loading from './Loading';
 
 class Order extends Component {
   render() {
@@ -84,7 +84,7 @@ class PreviewFillOrders extends Component {
 
   render() {
     if (this.state.showFilling) {
-      return <FillingOrders />;
+      return <Loading text={'Filling orders'} />;
     }
 
     if (!this.state.receipt) return null;
@@ -154,7 +154,10 @@ class PreviewFillOrders extends Component {
         {orders.map((o, i) => (
           <Order
             key={o.orderHash || o.hash || i}
-            limitOrder={convertZeroExOrderToLimitOrder(o, side)}
+            limitOrder={convertZeroExOrderToLimitOrder(
+              o,
+              side === 'buy' ? 'sell' : 'buy'
+            )}
             base={base}
             quote={quote}
             highlight={true}

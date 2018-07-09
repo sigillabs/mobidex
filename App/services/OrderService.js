@@ -73,7 +73,7 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
   return order;
 }
 
-export function convertZeroExOrderToLimitOrder(order, side) {
+export function convertZeroExOrderToLimitOrder(order, side = 'buy') {
   const {
     relayer: { tokens }
   } = _store.getState();

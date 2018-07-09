@@ -24,7 +24,7 @@ export default class FillingOrdersScreen extends Component {
           size={100}
           style={{ marginBottom: 25 }}
         />
-        <Text style={styles.text}>Filling orders</Text>
+        <Text style={styles.text}>{this.props.text}</Text>
         <ActivityIndicator size="large" color={colors.gray1} />
       </View>
     );

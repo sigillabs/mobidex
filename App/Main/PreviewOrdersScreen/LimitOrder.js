@@ -15,7 +15,7 @@ import {
 } from '../../services/OrderService';
 import { getQuoteToken } from '../../services/TokenService';
 import { getBalanceByAddress } from '../../services/WalletService';
-import CreatingLimitOrder from './CreatingLimitOrder';
+import Loading from './Loading';
 
 class PreviewLimitOrder extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class PreviewLimitOrder extends Component {
 
   render() {
     if (this.state.showCreating) {
-      return <CreatingLimitOrder />;
+      return <Loading text={'Creating limit order'} />;
     }
 
     const quoteToken = getQuoteToken();
