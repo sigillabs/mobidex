@@ -1,16 +1,13 @@
 import { HttpClient } from '@0xproject/connect';
-import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
-import BigNumber from 'bignumber.js';
 import {
-  addActiveTransactions,
   addOrders,
   addTickerWatching,
   setOrders,
   setProducts,
   setTokens
 } from '../actions';
-import { getAccount, getTokenByAddress, getZeroExClient } from '../utils';
+import { getTokenByAddress } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
 export function loadOrders() {
@@ -106,118 +103,6 @@ export function submitOrder(signedOrder) {
       await relayerClient.submitOrderAsync(signedOrder);
 
       dispatch(addOrders([signedOrder]));
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
-export function cancelOrder(order) {
-  return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { web3, address }
-      } = getState();
-      const zeroEx = await getZeroExClient(web3);
-
-      if (
-        ethUtil.stripHexPrefix(order.maker) !== ethUtil.stripHexPrefix(address)
-      ) {
-        throw new Error('Cannot cancel order that is not yours');
-      }
-
-      const txhash = await zeroEx.exchange.cancelOrderAsync(
-        order,
-        new BigNumber(order.makerTokenAmount)
-      );
-
-      const activeTransaction = {
-        id: txhash,
-        type: 'CANCEL',
-        ...order
-      };
-      dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
-export function fillOrder(order, amount = null) {
-  return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { web3 }
-      } = getState();
-      const zeroEx = await getZeroExClient(web3);
-      const account = await getAccount(web3);
-      const amountBN = amount
-        ? new BigNumber(amount)
-        : new BigNumber(order.takerTokenAmount);
-      const txhash = await zeroEx.exchange.fillOrderAsync(
-        order,
-        amountBN,
-        true,
-        account.toLowerCase(),
-        { shouldValidate: true }
-      );
-      const activeTransaction = {
-        id: txhash,
-        type: 'FILL',
-        ...order
-      };
-      dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
-export function fillOrders(orders, amount) {
-  return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { web3 }
-      } = getState();
-
-      const zeroEx = await getZeroExClient(web3);
-      const account = await getAccount(web3);
-      let amountBN = new BigNumber(amount);
-      const ordersToFill = _.chain(orders)
-        .map(o => {
-          if (amountBN.gt(o.takerTokenAmount)) {
-            amountBN = amountBN.sub(o.takerTokenAmount);
-            return {
-              signedOrder: o,
-              takerTokenFillAmount: new BigNumber(o.takerTokenAmount)
-            };
-          } else {
-            return {
-              signedOrder: o,
-              takerTokenFillAmount: new BigNumber(amountBN)
-            };
-          }
-        })
-        .filter(_.identity)
-        .value();
-
-      const txhash = await zeroEx.exchange.batchFillOrKillAsync(
-        ordersToFill,
-        account.toLowerCase(),
-        { shouldValidate: true }
-      );
-      const activeTransaction = {
-        id: txhash,
-        type: 'BATCH_FILL',
-        amount: amount
-      };
-      dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }

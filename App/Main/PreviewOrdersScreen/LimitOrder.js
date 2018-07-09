@@ -15,8 +15,17 @@ import {
 } from '../../services/OrderService';
 import { getQuoteToken } from '../../services/TokenService';
 import { getBalanceByAddress } from '../../services/WalletService';
+import CreatingLimitOrder from './CreatingLimitOrder';
 
 class PreviewLimitOrder extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showCreating: false
+    };
+  }
+
   UNSAFE_componentWillMount() {
     const {
       navigation: {
@@ -32,6 +41,10 @@ class PreviewLimitOrder extends Component {
   }
 
   render() {
+    if (this.state.showCreating) {
+      return <CreatingLimitOrder />;
+    }
+
     const quoteToken = getQuoteToken();
     const receipt = this.getReceipt();
 
@@ -150,8 +163,11 @@ class PreviewLimitOrder extends Component {
       }
     } = this.props;
 
+    this.setState({ showCreating: true });
+
     const signedOrder = await signOrder(order);
     if (!signedOrder) {
+      this.setState({ showCreating: false });
       return;
     }
 
@@ -160,6 +176,8 @@ class PreviewLimitOrder extends Component {
     } catch (error) {
       NavigationService.error(error);
       return;
+    } finally {
+      this.setState({ showCreating: false });
     }
 
     NavigationService.navigate('List');

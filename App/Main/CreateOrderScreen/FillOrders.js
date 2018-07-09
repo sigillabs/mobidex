@@ -5,21 +5,19 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { loadOrders } from '../../../thunks';
-import {
-  filterAndSortOrdersByTokens,
-  filterOrdersToBaseAmount
-} from '../../../utils';
-import TokenInput from '../../components/TokenInput';
+import { isValidAmount } from '../../../utils';
+import TokenAmount from '../../components/TokenAmount';
 import LogoTicker from '../../views/LogoTicker';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import NavigationService from '../../services/NavigationService';
+import { getFillableOrders } from '../../services/OrderService';
 
 class FillOrders extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      amount: new BigNumber(0),
+      amount: '',
       amountError: false
     };
   }
@@ -48,61 +46,23 @@ class FillOrders extends Component {
     return (
       <View>
         <LogoTicker token={base} />
-        <TokenInput
+        <TokenAmount
           label={this.getTokenInputTitle()}
-          token={base}
+          symbol={base.symbol}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
           amount={this.state.amount.toString()}
-          editable={false}
+          cursor={true}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          format={false}
         />
         <TokenAmountKeyboard
           onChange={value => this.onSetAmount(value)}
           onSubmit={() => this.submit()}
-          pressMode="string"
+          pressMode="char"
           buttonTitle={this.getButtonTitle()}
         />
       </View>
     );
-  }
-
-  getMakerToken() {
-    let {
-      navigation: {
-        state: {
-          params: {
-            product: { quote, base },
-            side
-          }
-        }
-      }
-    } = this.props;
-    if (side === 'buy') {
-      return quote;
-    } else if (side === 'sell') {
-      return base;
-    } else {
-      return null;
-    }
-  }
-
-  getTakerToken() {
-    let {
-      navigation: {
-        state: {
-          params: {
-            product: { quote, base },
-            side
-          }
-        }
-      }
-    } = this.props;
-    if (side === 'buy') {
-      return base;
-    } else if (side === 'sell') {
-      return quote;
-    } else {
-      return null;
-    }
   }
 
   getTokenInputTitle() {
@@ -133,19 +93,29 @@ class FillOrders extends Component {
   }
 
   onSetAmount(value) {
-    try {
-      let amount = new BigNumber(value.replace(/,/g, ''));
-      if (amount.gt(0)) {
-        this.setState({ amount: amount, amountError: false });
+    const text = this.state.amount.toString();
+    let newText = null;
+
+    if (isNaN(value)) {
+      if (value === 'back') {
+        newText = text.slice(0, -1);
+      } else if (value === '.') {
+        newText = text + value;
       } else {
-        this.setState({ amount: new BigNumber(0), amountError: true });
+        newText = text + value;
       }
-    } catch (err) {
-      this.setState({ amount: new BigNumber(0), amountError: true });
+    } else {
+      newText = text + value;
+    }
+
+    if (isValidAmount(newText)) {
+      this.setState({ amount: newText, amountError: false });
+    } else {
+      this.setState({ amountError: true });
     }
   }
 
-  submit() {
+  async submit() {
     let {
       navigation: {
         state: {
@@ -154,45 +124,34 @@ class FillOrders extends Component {
             side
           }
         }
-      },
-      orders
+      }
     } = this.props;
-    const makerToken = this.getMakerToken();
-    const takerToken = this.getTakerToken();
-    const { amount, price } = this.state;
-    const baseAmount =
-      side === 'buy'
-        ? ZeroEx.toBaseUnitAmount(
-            new BigNumber(amount || 0).mul(price || 0),
-            quote.decimals
-          )
-        : ZeroEx.toBaseUnitAmount(new BigNumber(amount || 0), base.decimals);
+    const { amount } = this.state;
 
-    const fillableOrders = filterAndSortOrdersByTokens(
-      orders,
-      makerToken.address,
-      takerToken.address
-    );
-    const ordersToFill = filterOrdersToBaseAmount(
-      fillableOrders,
-      baseAmount,
-      true
+    if (!isValidAmount(amount) || !amount) {
+      this.setState({ amountError: true });
+      return;
+    }
+
+    const orders = await getFillableOrders(base.address, amount, side);
+    const baseAmount = ZeroEx.toBaseUnitAmount(
+      new BigNumber(amount || 0),
+      base.decimals
     );
 
-    if (ordersToFill.length > 0) {
+    if (orders.length > 0) {
       NavigationService.navigate('PreviewOrders', {
         type: 'fill',
         side,
         amount: baseAmount.toString(),
-        orders: ordersToFill,
-        product: { base, quote }
+        product: { base, quote },
+        orders
       });
     }
   }
 }
 
 FillOrders.propTypes = {
-  orders: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
@@ -208,7 +167,4 @@ FillOrders.propTypes = {
   }).isRequired
 };
 
-export default connect(
-  state => ({ orders: state.relayer.orders }),
-  dispatch => ({ dispatch })
-)(FillOrders);
+export default connect(state => ({}), dispatch => ({ dispatch }))(FillOrders);

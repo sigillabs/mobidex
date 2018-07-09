@@ -14,7 +14,8 @@ import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
 import {
   convertZeroExOrderToLimitOrder,
-  fillOrders
+  fillOrders,
+  getAveragePrice
 } from '../../services/OrderService';
 import { getBalanceByAddress } from '../../services/WalletService';
 import FillingOrders from './FillingOrders';
@@ -57,7 +58,8 @@ class PreviewFillOrders extends Component {
     super(props);
 
     this.state = {
-      showFilling: false
+      showFilling: false,
+      receipt: null
     };
   }
 
@@ -75,14 +77,17 @@ class PreviewFillOrders extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.dispatch(loadOrders());
+    this.setState({ receipt: await this.getReceipt() });
   }
 
   render() {
     if (this.state.showFilling) {
       return <FillingOrders />;
     }
+
+    if (!this.state.receipt) return null;
 
     const {
       navigation: {
@@ -96,7 +101,7 @@ class PreviewFillOrders extends Component {
       }
     } = this.props;
 
-    const { priceAverage, subtotal, fee, total } = this.getReceipt();
+    const { priceAverage, subtotal, fee, total } = this.state.receipt;
 
     return (
       <View style={{ flex: 1, marginTop: 50 }}>
@@ -214,33 +219,34 @@ class PreviewFillOrders extends Component {
     }
   }
 
-  getReceipt() {
+  async getReceipt() {
     const {
       navigation: {
         state: {
           params: {
             product: { quote, base },
+            orders,
             side,
             amount
           }
         }
       }
     } = this.props;
-    const priceAverage = this.getPriceAverage();
+    const priceAverage = await getAveragePrice(orders, side);
 
     let subtotal = new BigNumber(amount).mul(priceAverage);
     let fee = new BigNumber(0).negated();
     let total = subtotal.add(fee);
     let takerToken = base;
 
+    subtotal = ZeroEx.toUnitAmount(subtotal, takerToken.decimals);
+    total = ZeroEx.toUnitAmount(total, takerToken.decimals);
+
     if (side === 'buy') {
       subtotal = subtotal.negated();
       total = total.negated();
       takerToken = quote;
     }
-
-    subtotal = ZeroEx.toUnitAmount(subtotal, takerToken.decimals);
-    total = ZeroEx.toUnitAmount(total, takerToken.decimals);
 
     return {
       priceAverage,
@@ -250,49 +256,11 @@ class PreviewFillOrders extends Component {
     };
   }
 
-  getPriceAverage() {
-    const { side, orders } = this.props.navigation.state.params;
-
-    if (orders.length === 0) {
-      return 0;
-    }
-
-    let average = null;
-
-    switch (side) {
-      case 'buy':
-        average = orders.reduce(
-          (s, o) =>
-            s.add(
-              new BigNumber(o.takerTokenAmount)
-                .div(o.makerTokenAmount)
-                .div(orders.length)
-            ),
-          new BigNumber(0)
-        );
-        break;
-
-      case 'sell':
-        average = orders.reduce(
-          (s, o) =>
-            s.add(
-              new BigNumber(o.makerTokenAmount)
-                .div(o.takerTokenAmount)
-                .div(orders.length)
-            ),
-          new BigNumber(0)
-        );
-        break;
-    }
-
-    return average.toNumber();
-  }
-
   async submit() {
     let {
       navigation: {
         state: {
-          params: { amount, orders }
+          params: { amount, orders, side }
         }
       }
     } = this.props;
@@ -301,7 +269,7 @@ class PreviewFillOrders extends Component {
     this.setState({ showFilling: true });
 
     try {
-      await fillOrders(orders, fillAmount);
+      await fillOrders(orders, fillAmount, side);
     } catch (err) {
       this.setState({ showFilling: false });
       NavigationService.error(err);

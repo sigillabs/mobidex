@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import BigNumber from 'bignumber.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import TokenInput from '../../components/TokenInput';
+import { isValidAmount } from '../../../utils';
+import TokenAmount from '../../components/TokenAmount';
 import LogoTicker from '../../views/LogoTicker';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import { createOrder } from '../../services/OrderService';
@@ -14,9 +14,9 @@ export default class CreateLimitOrder extends Component {
     super(props);
 
     this.state = {
-      amount: new BigNumber(0),
+      amount: '',
       amountError: false,
-      price: new BigNumber(0),
+      price: '',
       priceError: false,
       focus: 'amount'
     };
@@ -41,21 +41,25 @@ export default class CreateLimitOrder extends Component {
     return (
       <View>
         <LogoTicker token={base} />
-        <TokenInput
+        <TokenAmount
           label={side === 'buy' ? 'Buying' : 'Selling'}
-          token={base}
+          symbol={base.symbol}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onFocus={() => this.setState({ focus: 'amount' })}
+          onPress={() => this.setState({ focus: 'amount' })}
+          format={false}
+          cursor={this.state.focus === 'amount'}
+          cursorProps={{ style: { marginLeft: 2 } }}
           amount={this.state.amount.toString()}
-          editable={false}
         />
-        <TokenInput
+        <TokenAmount
           label={'Price'}
-          token={quote}
+          symbol={quote.symbol}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onFocus={() => this.setState({ focus: 'price' })}
+          onPress={() => this.setState({ focus: 'price' })}
+          format={false}
+          cursor={this.state.focus === 'price'}
+          cursorProps={{ style: { marginLeft: 2 } }}
           amount={this.state.price.toString()}
-          editable={false}
         />
         <TokenAmountKeyboard
           onChange={c => this.onSetValue(this.state.focus, c)}
@@ -111,6 +115,8 @@ export default class CreateLimitOrder extends Component {
     if (isNaN(value)) {
       if (value === 'back') {
         newText = text.slice(0, -1);
+      } else if (value === '.') {
+        newText = text + value;
       } else {
         newText = text + value;
       }
@@ -118,15 +124,10 @@ export default class CreateLimitOrder extends Component {
       newText = text + value;
     }
 
-    try {
-      const newValue = new BigNumber(newText);
-      if (newValue.gt(0)) {
-        this.setState({ [column]: newValue, [errorColumn]: false });
-      } else {
-        this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
-      }
-    } catch (err) {
-      this.setState({ [column]: new BigNumber(0), [errorColumn]: true });
+    if (isValidAmount(newText)) {
+      this.setState({ [column]: newText, [errorColumn]: false });
+    } else {
+      this.setState({ [errorColumn]: true });
     }
   }
 
@@ -143,24 +144,37 @@ export default class CreateLimitOrder extends Component {
     } = this.props;
     const { amount, price } = this.state;
 
+    if (!isValidAmount(amount) || !amount) {
+      this.setState({ amountError: true });
+      return;
+    }
+
+    if (!isValidAmount(price) || !price) {
+      this.setState({ priceError: true });
+      return;
+    }
+
+    let order;
+
     try {
-      const order = await createOrder({
-        baseAddress: quote.address,
-        quoteAddress: base.address,
+      order = await createOrder({
+        baseAddress: base.address,
+        quoteAddress: quote.address,
         price,
         amount,
         side
-      });
-      NavigationService.navigate('PreviewOrders', {
-        type: 'limit',
-        order: order,
-        side,
-        product: { base, quote }
       });
     } catch (error) {
       NavigationService.error(error);
       return;
     }
+
+    NavigationService.navigate('PreviewOrders', {
+      type: 'limit',
+      order: order,
+      side,
+      product: { base, quote }
+    });
   }
 }
 

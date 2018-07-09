@@ -6,12 +6,13 @@ import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { colors } from '../../../styles';
-import { loadOrders, cancelOrder } from '../../../thunks';
+import { loadOrders } from '../../../thunks';
 import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
 import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
+import { cancelOrder } from '../../services/OrderService';
 import Tabs from '../Tabs';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
@@ -200,7 +201,7 @@ class OrdersScreen extends Component {
   async cancelOrder(order) {
     this.setState({ showCancelling: true });
     try {
-      await this.props.dispatch(cancelOrder(order));
+      await cancelOrder(order);
     } catch (error) {
       NavigationService.error(error);
       return;

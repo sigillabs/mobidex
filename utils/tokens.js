@@ -6,15 +6,21 @@ import { getZeroExClient, getAccount, getNetworkId } from './ethereum';
 
 const TokenABI = require('../abi/Token.json');
 
-export async function getBalance(web3, address) {
+export async function getBalance(web3, address = null) {
+  let account = await getAccount(web3);
   return await new Promise((resolve, reject) => {
-    web3.eth.getBalance(address, (err, balance) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(balance);
+    web3.eth.getBalance(
+      address
+        ? address.toString().toLowerCase()
+        : account.toString().toLowerCase(),
+      (err, balance) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(balance);
+        }
       }
-    });
+    );
   });
 }
 
@@ -227,4 +233,8 @@ export async function sendTokens(web3, { address, decimals }, to, amount) {
     to.toLowerCase(),
     value
   );
+}
+
+export function isValidAmount(amount) {
+  return /^\d*(\.\d*)?$/.test(amount);
 }

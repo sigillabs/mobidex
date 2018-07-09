@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { colors } from '../../../styles';
 
-export default class CancellingOrdersScreen extends Component {
+export default class CreateLimitOrderScreen extends Component {
   render() {
     return (
       <View
@@ -19,8 +19,12 @@ export default class CancellingOrdersScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Entypo name="block" size={100} style={{ marginBottom: 25 }} />
-        <Text style={styles.text}>Cancelling order</Text>
+        <Entypo
+          name="chevron-with-circle-up"
+          size={100}
+          style={{ marginBottom: 25 }}
+        />
+        <Text style={styles.text}>Creating limit order</Text>
         <ActivityIndicator size="large" color={colors.gray1} />
       </View>
     );

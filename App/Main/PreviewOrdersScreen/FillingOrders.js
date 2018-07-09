@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-elements';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { colors } from '../../../styles';
 
 export default class FillingOrdersScreen extends Component {
@@ -18,17 +19,22 @@ export default class FillingOrdersScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Image
-          source={require('../../../images/logo-with-text/logo-with-text-transparent.png')}
-          style={{
-            marginHorizontal: 0,
-            width: '100%',
-            resizeMode: Image.resizeMode.contain
-          }}
+        <Entypo
+          name="chevron-with-circle-up"
+          size={100}
+          style={{ marginBottom: 25 }}
         />
-        <Text h3>Filling orders</Text>
+        <Text style={styles.text}>Filling orders</Text>
         <ActivityIndicator size="large" color={colors.gray1} />
       </View>
     );
   }
 }
+
+const styles = {
+  text: {
+    fontSize: 18,
+    color: colors.primary,
+    paddingBottom: 10
+  }
+};
