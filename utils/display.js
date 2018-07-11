@@ -69,6 +69,19 @@ export function zeroDecimalPad(n, d) {
   return str;
 }
 
+export function colorWithAlpha(hex, alpha) {
+  if (!/#?[a-fA-F0-9]{6}/.test(hex)) {
+    return null;
+  }
+  if (hex.indexOf('#') === 0) {
+    hex = hex.substring(1);
+  }
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export function getImage(symbol) {
   switch (symbol) {
     case 'ABT':

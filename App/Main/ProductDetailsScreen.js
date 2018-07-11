@@ -56,14 +56,15 @@ class ProductDetailsView extends Component {
     return (
       <View style={[styles.container]}>
         <LogoTicker token={base} />
-        <Divider style={{ marginBottom: 0 }} />
+        <Divider style={{ marginBottom: 5 }} />
         <PriceGraph
           interval={period}
           height={200}
           data={history}
           label={'Last 30 Days'}
+          formatAmount={this.props.formatAmount}
         />
-        <Divider style={{ marginTop: 5 }} />
+        <Divider style={{ marginTop: 0 }} />
         <Row style={{ justifyContent: 'center' }}>
           <Button
             large
@@ -171,6 +172,7 @@ class TokenProductDetailsView extends Component {
         period={period}
         infolist={infolist}
         history={history}
+        formatAmount={v => `${formatAmount(v)} ${quote.symbol}`}
       />
     );
   }
@@ -229,6 +231,7 @@ class ForexProductDetailsView extends Component {
         period={period}
         infolist={infolist}
         history={history}
+        formatAmount={v => formatMoney(v)}
       />
     );
   }

@@ -1,36 +1,19 @@
 import * as _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Animated, PanResponder, View } from 'react-native';
+import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { G, Line, Text as SVGText } from 'react-native-svg';
-import { LineChart } from 'react-native-svg-charts';
+import { AreaChart } from 'react-native-svg-charts';
 import { colors } from '../../styles';
-import { formatMoney } from '../../utils';
-
-const X_LABELS = {
-  MINUTE: timestamp => moment(timestamp).format('mm'),
-  HOUR: timestamp => moment(timestamp).format('h'),
-  DAY: timestamp => moment(timestamp).format('Do'),
-  MONTH: timestamp => moment(timestamp).format('Do'),
-  YEAR: timestamp => moment(timestamp).format('Y')
-};
-
-const X_ACCESSORS = {
-  MINUTE: ({ index, item }) => index,
-  HOUR: ({ index, item }) => index,
-  DAY: ({ index, item }) => index,
-  MONTH: ({ index, item }) => index,
-  YEAR: ({ index, item }) => index
-};
+import { colorWithAlpha, formatMoney } from '../../utils';
 
 class SVGHorizontalLine extends React.PureComponent {
   render() {
     return (
       <G y={this.props.y}>
         <SVGText x={0} y={4}>
-          {formatMoney(this.props.value)}
+          {this.props.value}
         </SVGText>
         <Line
           key={'min-axis'}
@@ -39,8 +22,8 @@ class SVGHorizontalLine extends React.PureComponent {
           y1={0}
           y2={0}
           stroke={'black'}
-          strokeDasharray={[4, 8]}
-          strokeWidth={2}
+          strokeDasharray={[1, 4]}
+          strokeWidth={1}
         />
       </G>
     );
@@ -48,23 +31,6 @@ class SVGHorizontalLine extends React.PureComponent {
 }
 
 export default class PriceGraph extends React.PureComponent {
-  static propTypes = {
-    height: PropTypes.number.isRequired,
-    interval: PropTypes.string.isRequired,
-    data: PropTypes.arrayOf(
-      PropTypes.shape({
-        timestamp: PropTypes.string.isRequired,
-        price: PropTypes.number.isRequired
-      })
-    ).isRequired
-  };
-
-  static defaultProps = {
-    height: 0,
-    interval: 'DAY',
-    data: []
-  };
-
   render() {
     const { containerStyle, chartStyle, ...rest } = this.props;
     const { data } = rest;
@@ -76,13 +42,16 @@ export default class PriceGraph extends React.PureComponent {
     );
     const middle = max - (max - min) / 2;
     const MinimumHorizontalLine = ({ y }) => (
-      <SVGHorizontalLine y={y(min)} value={min} />
+      <SVGHorizontalLine y={y(min)} value={this.props.formatAmount(min)} />
     );
     const MaximumHorizontalLine = ({ y }) => (
-      <SVGHorizontalLine y={y(max)} value={max} />
+      <SVGHorizontalLine y={y(max)} value={this.props.formatAmount(max)} />
     );
     const MiddleHorizontalLine = ({ y }) => (
-      <SVGHorizontalLine y={y(middle)} value={middle} />
+      <SVGHorizontalLine
+        y={y(middle)}
+        value={this.props.formatAmount(middle)}
+      />
     );
 
     return (
@@ -97,10 +66,15 @@ export default class PriceGraph extends React.PureComponent {
           containerStyle
         ]}
       >
-        <LineChart
+        <Text style={{ textAlign: 'center' }}>{this.props.label}</Text>
+        <AreaChart
           style={[{ flex: 1, marginHorizontal: 0 }, chartStyle]}
           data={data}
-          svg={{ stroke: colors.yellow0, strokeWidth: 2 }}
+          svg={{
+            stroke: colors.yellow0,
+            strokeWidth: 2,
+            fill: colorWithAlpha(colors.yellow0, 0.6)
+          }}
           contentInset={{ top: 10, right: 0, bottom: 10, left: 40 }}
           xAccessor={({ index, item }) => index}
           yAccessor={({ index, item }) => parseFloat(item.price)}
@@ -111,9 +85,29 @@ export default class PriceGraph extends React.PureComponent {
           <MinimumHorizontalLine />
           <MaximumHorizontalLine />
           <MiddleHorizontalLine />
-        </LineChart>
-        <Text style={{ textAlign: 'center' }}>{this.props.label}</Text>
+        </AreaChart>
       </View>
     );
   }
 }
+
+PriceGraph.propTypes = {
+  height: PropTypes.number.isRequired,
+  interval: PropTypes.string.isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      timestamp: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired
+    })
+  ).isRequired,
+  formatAmount: PropTypes.func.isRequired,
+  label: PropTypes.string,
+  containerStyle: PropTypes.object,
+  chartStyle: PropTypes.object
+};
+
+PriceGraph.defaultProps = {
+  height: 0,
+  interval: 'DAY',
+  data: []
+};

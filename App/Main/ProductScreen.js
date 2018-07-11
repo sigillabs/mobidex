@@ -189,9 +189,7 @@ class ProductScreen extends Component {
             justifyContent: 'flex-start'
           }}
         >
-          <MutedText style={{ marginTop: 25 }}>
-            No products to show...
-          </MutedText>
+          <MutedText style={{ marginTop: 25 }}>Loading Products</MutedText>
         </EmptyList>
       );
     }
