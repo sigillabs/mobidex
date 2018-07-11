@@ -2,6 +2,8 @@ import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import moment from 'moment';
+import React from 'react';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false, EXPONENTIAL_AT: [-77, 77] });
 
@@ -80,6 +82,13 @@ export function colorWithAlpha(hex, alpha) {
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
   return `rgba(${r},${g},${b},${alpha})`;
+}
+
+export function getForexIcon(symbol, extraProps = {}) {
+  switch (symbol) {
+    case 'USD':
+      return <FontAwesome name="usd" {...extraProps} />;
+  }
 }
 
 export function getImage(symbol) {

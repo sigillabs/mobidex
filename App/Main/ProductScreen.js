@@ -54,7 +54,7 @@ class TokenItem extends Component {
                   change >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {`${priceFormatter(price)} ${quoteToken.symbol}`}
+                {`${priceFormatter(price)}`}
               </Text>
               <MutedText>Price</MutedText>
             </Col>
@@ -105,7 +105,7 @@ class BaseQuoteTokenItem extends Component {
       <TokenItem
         price={Math.abs(tokenDetails.price)}
         change={Math.abs(tokenDetails.changePercent)}
-        priceFormatter={formatAmount}
+        priceFormatter={v => `${formatAmount(v)} ${quoteToken.symbol}`}
         {...this.props}
       />
     );

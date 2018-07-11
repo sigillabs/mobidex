@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import { formatMoney } from '../../../utils';
-import TokenInput from '../../components/TokenInput';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
+import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
+import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import * as TickerService from '../../services/TickerService';
 
@@ -14,41 +13,55 @@ class AmountPage extends Component {
     super(props);
 
     this.state = {
-      amount: '0',
+      amount: '',
+      forex: '',
+      focus: 'amount',
       error: false
     };
   }
 
   render() {
     const { token } = this.props;
-    const forex = TickerService.getForexTicker(token.symbol);
-    const forexAmount = forex
-      ? new BigNumber(this.state.amount).mul(forex.price).toNumber()
-      : null;
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
-        {forexAmount ? (
-          <TwoColumnListItem
-            left="Amount"
-            right={formatMoney(forexAmount)}
-            style={{ marginBottom: 10, marginTop: 10 }}
-            leftStyle={{ flex: 1, color: 'black' }}
-            rightStyle={{ flex: 1, color: 'black' }}
-            rowStyle={{ flex: 0, width: '100%' }}
-          />
-        ) : null}
-        <TokenInput
-          token={token}
-          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onChange={v => this.setState({ amount: v })}
-          amount={this.state.amount.toString()}
-          autoFocus={false}
+        <TokenAmount
+          symbol={token.symbol}
+          containerStyle={{
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 0
+          }}
+          symbolStyle={{ marginRight: 10 }}
+          format={false}
+          cursor={this.state.focus === 'amount'}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          amount={this.state.amount}
+          onPress={() => this.setState({ focus: 'amount' })}
+        />
+        <TokenAmount
+          symbol={'USD'}
+          icon={getForexIcon('USD', { size: 30, style: { marginLeft: 10 } })}
+          containerStyle={{
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 0
+          }}
+          symbolStyle={{ marginRight: 10 }}
+          format={false}
+          cursor={this.state.focus === 'forex'}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          amount={this.state.forex}
+          onPress={() => this.setState({ focus: 'forex' })}
         />
         <TokenAmountKeyboard
-          onChange={value => this.setState({ amount: value })}
+          onChange={v =>
+            this.state.focus === 'forex'
+              ? this.setForexAmount(v)
+              : this.setTokenAmount(v)
+          }
           onSubmit={() => this.submit()}
-          pressMode="string"
+          pressMode="char"
           buttonTitle={'Next'}
         />
       </View>
@@ -61,6 +74,51 @@ class AmountPage extends Component {
       this.props.onSubmit(this.state.amount);
     } catch (err) {
       this.setState({ error: true });
+    }
+  }
+
+  updateColumnValue(column, value) {
+    const text = this.state[column].toString();
+    let newText = null;
+
+    if (isNaN(value)) {
+      if (value === 'back') {
+        newText = text.slice(0, -1);
+      } else if (value === '.') {
+        newText = text + value;
+      } else {
+        newText = text + value;
+      }
+    } else {
+      newText = text + value;
+    }
+
+    return newText;
+  }
+
+  setTokenAmount(value) {
+    const amount = this.updateColumnValue('amount', value);
+
+    if (isValidAmount(amount)) {
+      const forex = TickerService.getForexTicker(this.props.token.symbol);
+      const forexAmount =
+        amount && forex
+          ? new BigNumber(amount).mul(forex.price).toNumber()
+          : '';
+      this.setState({ amount, forex: forexAmount });
+    }
+  }
+
+  setForexAmount(value) {
+    const forexAmount = this.updateColumnValue('forex', value);
+
+    if (isValidAmount(forexAmount)) {
+      const forex = TickerService.getForexTicker(this.props.token.symbol);
+      const tokenAmount =
+        forexAmount && forex
+          ? formatAmount(new BigNumber(forexAmount).div(forex.price))
+          : '';
+      this.setState({ amount: tokenAmount, forex: forexAmount });
     }
   }
 }

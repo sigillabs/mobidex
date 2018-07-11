@@ -11,6 +11,7 @@ export default class TokenAmount extends Component {
     const {
       label,
       amount,
+      icon,
       avatarProps,
       symbol,
       name,
@@ -29,26 +30,25 @@ export default class TokenAmount extends Component {
     } = more;
 
     return (
-      <TouchableOpacity onPress={onPress}>
-        <View style={[styles.container, containerStyle]}>
-          {label ? <MutedText>{label}</MutedText> : null}
-          <View style={[styles.wrapper, wrapperStyle]}>
-            <Avatar source={getImage(symbol)} {...avatarProps} />
-            <View style={[styles.amountContainer, amountContainerStyle]}>
-              <Text style={[amountStyle]}>
-                {format ? formatAmount(amount) : amount.toString()}
-              </Text>
-              {cursor ? <BlinkingCursor /> : null}
-            </View>
-            <Text style={[{ marginLeft: 10 }, symbolStyle]}>
-              {symbol.toUpperCase()}
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.container, containerStyle]}
+      >
+        {label ? <MutedText>{label}</MutedText> : null}
+        <View style={[styles.wrapper, wrapperStyle]}>
+          {icon ? icon : <Avatar source={getImage(symbol)} {...avatarProps} />}
+          <View style={[styles.amountContainer, amountContainerStyle]}>
+            <Text style={[amountStyle]}>
+              {format ? formatAmount(amount) : amount.toString()}
             </Text>
-            {name ? (
-              <MutedText style={[{ marginLeft: 10 }, nameStyle]}>
-                {name}
-              </MutedText>
-            ) : null}
+            {cursor ? <BlinkingCursor /> : null}
           </View>
+          <Text style={[styles.symbol, symbolStyle]}>
+            {symbol.toUpperCase()}
+          </Text>
+          {name ? (
+            <MutedText style={[styles.name, nameStyle]}>{name}</MutedText>
+          ) : null}
         </View>
       </TouchableOpacity>
     );
@@ -62,6 +62,8 @@ TokenAmount.propTypes = {
   name: PropTypes.string,
   format: PropTypes.bool,
   cursor: PropTypes.bool,
+  onPress: PropTypes.func,
+  icon: PropTypes.element,
   avatarProps: PropTypes.shape({
     small: PropTypes.bool,
     medium: PropTypes.bool,
@@ -74,8 +76,7 @@ TokenAmount.propTypes = {
   containerStyle: PropTypes.object,
   wrapperStyle: PropTypes.object,
   nameStyle: PropTypes.object,
-  symbolStyle: PropTypes.object,
-  onPress: PropTypes.func
+  symbolStyle: PropTypes.object
 };
 
 TokenAmount.defaultProps = {
@@ -89,17 +90,27 @@ TokenAmount.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 10 },
+  container: {
+    flex: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+    height: 60
+  },
   wrapper: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 10
   },
   amountContainer: {
-    width: 100,
     marginLeft: 10,
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start'
-  }
+  },
+  symbol: { flex: 0, marginLeft: 10 },
+  name: { flex: 0, marginLeft: 10 }
 });
