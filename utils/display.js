@@ -126,6 +126,9 @@ export function getImage(symbol) {
     case 'AUC':
       return require('../images/tokens/AUC.png');
 
+    case 'BAT':
+      return require('../images/tokens/BAT.png');
+
     case 'BAX':
       return require('../images/tokens/BAX.png');
 

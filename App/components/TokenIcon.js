@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
+import { colors } from '../../styles';
 import { getImage } from '../../utils';
 
 export default class TokenIcon extends Component {
@@ -20,6 +21,7 @@ export default class TokenIcon extends Component {
           rounded
           source={getImage(symbol)}
           containerStyle={[showName || showSymbol ? styles.padBottom : null]}
+          overlayContainerStyle={{ backgroundColor: styles.background }}
         />
         {showName ? (
           <Text style={[styles.small, styles.center]}>{name}</Text>
@@ -51,7 +53,11 @@ TokenIcon.defaultProps = {
 };
 
 const styles = {
-  container: { justifyContent: 'center', alignItems: 'center' },
+  container: {
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   center: {
     textAlign: 'center'
   },
