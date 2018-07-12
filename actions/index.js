@@ -17,5 +17,6 @@ export const setProducts = createAction(Actions.SET_PRODUCTS);
 export const setWallet = createAction(Actions.SET_WALLET);
 export const setTokens = createAction(Actions.SET_TOKENS);
 export const setTransactionHash = createAction(Actions.SET_TRANSACTION_HASH);
+export const toggleShowForex = createAction(Actions.TOGGLE_SHOW_FOREX);
 export const updateForexTicker = createAction(Actions.UPDATE_FOREX_TICKER);
 export const updateTokenTicker = createAction(Actions.UPDATE_TOKEN_TICKER);

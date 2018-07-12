@@ -7,10 +7,10 @@ import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
+import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import NavigationService from '../services/NavigationService';
 import * as WalletService from '../services/WalletService';
-import PinKeyboard from '../views/PinKeyboard';
 
 @reactMixin.decorate(TimerMixin)
 class UnlockWithPinScreen extends Component {

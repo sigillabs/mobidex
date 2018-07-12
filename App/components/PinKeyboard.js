@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
-import Button from '../components/Button';
 
 export default class PinKeyboard extends Component {
   render() {

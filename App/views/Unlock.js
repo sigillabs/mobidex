@@ -9,9 +9,9 @@ import { unlock } from '../../thunks';
 import Button from '../components/Button';
 import LongInput from '../components/LongInput';
 import BigCenter from '../components/BigCenter';
+import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import * as WalletService from '../services/WalletService';
-import PinKeyboard from '../views/PinKeyboard';
 
 @reactMixin.decorate(TimerMixin)
 class Unlock extends Component {

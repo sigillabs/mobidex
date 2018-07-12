@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
-import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
+import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as TickerService from '../../services/TickerService';
 
 class AmountPage extends Component {

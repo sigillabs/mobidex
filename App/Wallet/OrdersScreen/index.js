@@ -110,7 +110,6 @@ class OrdersScreen extends Component {
 
     this.state = {
       refreshing: true,
-      showForexPrices: false,
       showCancelling: false,
       showCancelled: false
     };

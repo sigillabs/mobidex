@@ -6,10 +6,10 @@ import { Text } from 'react-native-elements';
 import { colors } from '../../styles';
 import Button from '../components/Button';
 import MnemonicInput from '../components/MnemonicInput';
+import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import WizardNavigation from '../components/WizardNavigation';
 import * as WalletService from '../services/WalletService';
-import PinKeyboard from './PinKeyboard';
 
 class MnemonicPage extends Component {
   constructor(props) {

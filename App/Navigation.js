@@ -14,7 +14,7 @@ import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
 import CreateOrderHeader from './headers/CreateOrder';
 import SendTokensHeader from './headers/SendTokens';
-import BlankHeader from './headers/Blank';
+import ProductDetailsHeader from './headers/ProductDetails';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import PreviewOrdersScreen from './Main/PreviewOrdersScreen';
@@ -168,20 +168,31 @@ const ProductsNavigation = createStackNavigator(
 
           case 'Details':
             return (
-              <ProductsHeader
+              <ProductDetailsHeader
                 navigation={navigation}
-                product={navigation.state.params.product}
+                token={navigation.state.params.base}
                 showBackButton={true}
                 showForexToggleButton={true}
               />
             );
 
+          // case 'CreateOrder':
+          //   return (
+          //     <CreateOrderHeader
+          //       navigation={navigation}
+          //       token={navigation.state.params.product.base}
+          //       side={navigation.state.params.side}
+          //     />
+          //   );
+
+          case 'PreviewOrders':
           case 'CreateOrder':
             return (
-              <CreateOrderHeader
+              <ProductDetailsHeader
                 navigation={navigation}
                 token={navigation.state.params.product.base}
-                side={navigation.state.params.side}
+                showBackButton={true}
+                showForexToggleButton={true}
               />
             );
 

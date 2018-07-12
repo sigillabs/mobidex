@@ -4,15 +4,15 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { colors } from '../../styles';
 import { toggleShowForex } from '../../actions';
+import { colors } from '../../styles';
+import LogoTicker from '../views/LogoTicker';
 import NavigationService from '../services/NavigationService';
-import * as TokenService from '../services/TokenService';
 
-const DEFAULT_TITLE = 'Trade';
-
-class ProductsHeader extends Component {
+class ProductDetailsHeader extends Component {
   render() {
+    const { token } = this.props;
+
     return (
       <Header
         backgroundColor={colors.background}
@@ -27,10 +27,7 @@ class ProductsHeader extends Component {
             </TouchableOpacity>
           ) : null
         }
-        centerComponent={{
-          text: this.renderTitle(),
-          style: { color: 'black', fontSize: 18 }
-        }}
+        centerComponent={<LogoTicker token={token} />}
         rightComponent={
           this.props.showForexToggleButton ? (
             <TouchableOpacity
@@ -45,42 +42,12 @@ class ProductsHeader extends Component {
       />
     );
   }
-
-  renderTitle() {
-    if (this.props.title) {
-      return this.props.title;
-    }
-
-    if (this.props.product) {
-      const quoteToken = TokenService.getQuoteToken();
-      const tokenA = TokenService.findTokenByAddress(
-        this.props.product.tokenA.address
-      );
-      const tokenB = TokenService.findTokenByAddress(
-        this.props.product.tokenB.address
-      );
-
-      if (quoteToken && tokenA && tokenB) {
-        if (tokenA.address === quoteToken.address) {
-          return `Trade ${tokenB.name}`;
-        }
-
-        if (tokenB.address === quoteToken.address) {
-          return `Trade ${tokenA.name}`;
-        }
-      }
-    }
-
-    return DEFAULT_TITLE;
-  }
 }
 
-ProductsHeader.propTypes = {
+ProductDetailsHeader.propTypes = {
   showBackButton: PropTypes.bool,
   showForexToggleButton: PropTypes.bool,
-  title: PropTypes.string,
-  product: PropTypes.object,
-  settings: PropTypes.object,
+  token: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
@@ -90,4 +57,4 @@ export default connect(
     settings: state.settings
   }),
   dispatch => ({ dispatch })
-)(ProductsHeader);
+)(ProductDetailsHeader);

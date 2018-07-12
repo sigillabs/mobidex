@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const colors = {
+export const colors = {
   primary: 'black',
   secondary: '#8F0CE8',
   background: 'white',
@@ -23,8 +23,16 @@ const colors = {
   transparent: 'transparent'
 };
 
-const small = {
+export const small = {
   fontSize: 10
+};
+
+export const background = {
+  backgroundColor: colors.background
+};
+
+export const primary = {
+  backgroundColor: colors.background
 };
 
 export function getProfitLossColor(number) {
@@ -42,5 +50,3 @@ export function getProfitLossStyle(number) {
     color: getProfitLossColor(number)
   };
 }
-
-export { colors, small };

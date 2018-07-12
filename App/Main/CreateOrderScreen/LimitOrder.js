@@ -4,8 +4,8 @@ import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { isValidAmount } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
+import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import LogoTicker from '../../views/LogoTicker';
-import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import { createOrder } from '../../services/OrderService';
 import NavigationService from '../../services/NavigationService';
 
@@ -40,7 +40,6 @@ export default class CreateLimitOrder extends Component {
 
     return (
       <View style={{ width: '100%', height: '100%' }}>
-        <LogoTicker token={base} />
         <TokenAmount
           label={side === 'buy' ? 'Buying' : 'Selling'}
           symbol={base.symbol}

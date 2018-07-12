@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { loadOrders } from '../../../thunks';
 import { isValidAmount } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
+import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import LogoTicker from '../../views/LogoTicker';
-import TokenAmountKeyboard from '../../views/TokenAmountKeyboard';
 import NavigationService from '../../services/NavigationService';
 import { getFillableOrders } from '../../services/OrderService';
 
@@ -45,7 +45,6 @@ class FillOrders extends Component {
 
     return (
       <View style={{ width: '100%', height: '100%' }}>
-        <LogoTicker token={base} />
         <TokenAmount
           label={this.getTokenInputTitle()}
           symbol={base.symbol}

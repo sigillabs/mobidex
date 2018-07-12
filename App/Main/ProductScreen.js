@@ -191,8 +191,7 @@ class ProductScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: true,
-      showForexPrices: false
+      refreshing: true
     };
   }
 
@@ -202,7 +201,7 @@ class ProductScreen extends Component {
 
   render() {
     const { products } = this.props;
-    const ProductItem = this.props.navigation.getParam('showForexPrices')
+    const ProductItem = this.props.settings.showForexPrices
       ? ForexTokenItem
       : QuoteTokenItem;
 
@@ -273,7 +272,6 @@ class ProductScreen extends Component {
 
 ProductScreen.propTypes = {
   products: PropTypes.array.isRequired,
-  navigation: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
@@ -314,8 +312,8 @@ const styles = {
 export default connect(
   state => ({
     ...state.relayer,
-    ...state.settings,
     ...state.wallet,
+    settings: state.settings,
     ticker: state.ticker
   }),
   dispatch => ({ dispatch })

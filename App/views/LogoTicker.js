@@ -6,62 +6,43 @@ import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
 import {
   detailsFromTicker,
+  formatAmount,
   formatMoney,
   formatPercent,
   getImage
 } from '../../utils';
 import MutedText from '../components/MutedText';
 import Row from '../components/Row';
+import * as TickerService from '../services/TickerService';
 
 class LogoTicker extends Component {
   render() {
     const {
       avatarProps,
-      forexCurrency,
-      token: { decimals, symbol },
+      settings: { showForexPrices },
+      token: { symbol },
       ...more
     } = this.props;
-    const proceed =
-      this.props.ticker.forex[symbol] &&
-      this.props.ticker.forex[symbol][forexCurrency];
+    const ticker = showForexPrices
+      ? TickerService.getForexTicker(symbol)
+      : TickerService.getQuoteTicker(symbol);
 
-    if (!proceed) return null;
+    if (!ticker) return null;
 
-    const forexTicker = this.props.ticker.forex[symbol][forexCurrency];
-    const { changePercent } = detailsFromTicker(forexTicker);
+    const { changePercent } = detailsFromTicker(ticker);
     const { rowStyle, priceStyle, priceChangeStyle } = more;
 
     return (
-      <Row style={rowStyle}>
-        <View
-          style={[
-            {
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-              marginHorizontal: 5
-            }
-          ]}
-        >
+      <Row style={[style.container, rowStyle]}>
+        <View style={[]}>
           <Avatar source={getImage(symbol)} {...avatarProps || {}} />
         </View>
-        <View
-          style={[
-            {
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              marginHorizontal: 5
-            }
-          ]}
-        >
-          {forexTicker ? (
-            <Text style={[{ fontSize: 24 }, priceStyle]}>
-              {formatMoney(forexTicker.price)}
-            </Text>
-          ) : null}
+        <View style={style.avatarWrapper}>
+          <Text style={[{ fontSize: 24 }, priceStyle]}>
+            {showForexPrices
+              ? formatMoney(ticker.price)
+              : `${formatAmount(ticker.price)} ${symbol}`}
+          </Text>
           {changePercent ? (
             <MutedText
               style={[
@@ -80,6 +61,10 @@ class LogoTicker extends Component {
 }
 
 LogoTicker.propTypes = {
+  settings: PropTypes.object.isRequired,
+  token: PropTypes.shape({
+    symbol: PropTypes.string.isRequired
+  }).isRequired,
   avatarProps: PropTypes.shape({
     small: PropTypes.bool,
     medium: PropTypes.bool,
@@ -97,9 +82,24 @@ LogoTicker.defaultProps = {
   }
 };
 
+const style = {
+  container: {
+    minWidth: 150,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  avatarWrapper: {
+    flex: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginHorizontal: 5
+  }
+};
+
 export default connect(
   state => ({
-    ...state.settings,
+    settings: state.settings,
     ticker: state.ticker
   }),
   dispatch => ({ dispatch })

@@ -55,8 +55,6 @@ class ProductDetailsView extends Component {
 
     return (
       <View style={[styles.container]}>
-        <LogoTicker token={base} />
-        <Divider style={{ marginBottom: 5 }} />
         <PriceGraph
           interval={period}
           height={200}
@@ -271,7 +269,7 @@ class ProductDetailsScreen extends Component {
           />
         }
       >
-        {this.props.navigation.getParam('showForexPrices') ? (
+        {this.props.settings.showForexPrices ? (
           <ForexProductDetailsView
             base={base}
             quote={quote}
@@ -319,6 +317,9 @@ const styles = {
   }
 };
 
-export default connect(state => ({}), dispatch => ({ dispatch }))(
-  ProductDetailsScreen
-);
+export default connect(
+  state => ({
+    settings: state.settings
+  }),
+  dispatch => ({ dispatch })
+)(ProductDetailsScreen);

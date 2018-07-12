@@ -9,11 +9,15 @@ const initialState = {
   // network: 'mainnet',
   relayerEndpoint: BASE_URL,
   forexCurrency: 'USD',
-  quoteSymbol: 'WETH'
+  quoteSymbol: 'WETH',
+  showForexPrices: false
 };
 
 export default handleActions(
   {
+    [Actions.TOGGLE_SHOW_FOREX]: state => {
+      return { ...state, showForexPrices: !state.showForexPrices };
+    },
     [Actions.SET_FOREX_CURRENCY]: (state, action) => {
       return { ...state, forexCurrency: action.payload };
     },
