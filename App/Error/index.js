@@ -47,6 +47,13 @@ export default class ErrorScreen extends Component {
           minutes to update...
         </Text>
       );
+    } else if (message === 'INSUFFICIENT_TAKER_ALLOWANCE') {
+      return (
+        <Text style={styles.text}>
+          The order has already been filled or cancelled. Give our server 5 - 10
+          minutes to update...
+        </Text>
+      );
     } else {
       return <Text style={styles.text}>{message}</Text>;
     }

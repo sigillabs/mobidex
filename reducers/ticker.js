@@ -3,7 +3,6 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
-  watching: [],
   forex: {},
   token: {}
 };
@@ -21,9 +20,6 @@ function tickersToState(tickers) {
 
 export default handleActions(
   {
-    [Actions.ADD_TICKER_WATCHING]: (state, action) => {
-      return { ...state, watching: _.union(state.watching, action.payload) };
-    },
     [Actions.UPDATE_FOREX_TICKER]: (state, action) => {
       return {
         ...state,

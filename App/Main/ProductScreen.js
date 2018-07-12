@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import reactMixin from 'react-mixin';
 import {
   RefreshControl,
   TouchableOpacity,
@@ -8,8 +9,10 @@ import {
 } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import TimerMixin from 'react-timer-mixin';
 import {
-  loadProductsAndTokens,
+  loadProducts,
+  loadTokens,
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
@@ -97,7 +100,16 @@ class BaseQuoteTokenItem extends Component {
       quoteToken.symbol
     );
 
-    if (!tokenTicker || !tokenTicker.price) return null;
+    if (!tokenTicker || !tokenTicker.price) {
+      return (
+        <TokenItem
+          price={0}
+          change={0}
+          priceFormatter={v => `${formatAmount(v)} ${quoteToken.symbol}`}
+          {...this.props}
+        />
+      );
+    }
 
     const tokenDetails = detailsFromTicker(tokenTicker);
 
@@ -134,8 +146,21 @@ class BaseForexTokenItem extends Component {
       quoteToken.symbol
     );
 
-    if (!forexTicker || !forexTicker.price) return null;
-    if (!tokenTicker || !tokenTicker.price) return null;
+    if (
+      !forexTicker ||
+      !tokenTicker ||
+      !forexTicker.price ||
+      !tokenTicker.price
+    ) {
+      return (
+        <TokenItem
+          price={0}
+          change={0}
+          priceFormatter={formatMoney}
+          {...this.props}
+        />
+      );
+    }
 
     const forexDetails = detailsFromTicker(forexTicker);
     const tokenDetails = detailsFromTicker(tokenTicker);
@@ -160,6 +185,7 @@ const ForexTokenItem = connect(state => ({ ticker: state.ticker }))(
   BaseForexTokenItem
 );
 
+@reactMixin.decorate(TimerMixin)
 class ProductScreen extends Component {
   constructor(props) {
     super(props);
@@ -180,8 +206,10 @@ class ProductScreen extends Component {
       ? ForexTokenItem
       : QuoteTokenItem;
 
+    let subview = null;
+
     if (!products || !products.length) {
-      return (
+      subview = (
         <EmptyList
           wrapperStyle={{
             height: '100%',
@@ -192,17 +220,8 @@ class ProductScreen extends Component {
           <MutedText style={{ marginTop: 25 }}>Loading Products</MutedText>
         </EmptyList>
       );
-    }
-
-    return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={() => this.onRefresh()}
-          />
-        }
-      >
+    } else {
+      subview = (
         <View style={{ width: '100%', backgroundColor: 'white' }}>
           {products.map(({ tokenA, tokenB }, index) => {
             const fullTokenA = TokenService.findTokenByAddress(tokenA.address);
@@ -223,16 +242,32 @@ class ProductScreen extends Component {
             );
           })}
         </View>
+      );
+    }
+
+    return (
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={() => this.onRefresh()}
+          />
+        }
+      >
+        {subview}
       </ScrollView>
     );
   }
 
-  async onRefresh() {
+  onRefresh() {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadProductsAndTokens(true));
-    await this.props.dispatch(updateForexTickers());
-    await this.props.dispatch(updateTokenTickers());
-    this.setState({ refreshing: false });
+    this.requestAnimationFrame(async () => {
+      await this.props.dispatch(loadProducts());
+      await this.props.dispatch(loadTokens(true));
+      await this.props.dispatch(updateForexTickers());
+      await this.props.dispatch(updateTokenTickers());
+      this.setState({ refreshing: false });
+    });
   }
 }
 

@@ -6,7 +6,8 @@ import { Text } from 'react-native-elements';
 import { G, Line, Text as SVGText } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
 import { colors } from '../../styles';
-import { colorWithAlpha, formatMoney } from '../../utils';
+import { colorWithAlpha } from '../../utils';
+import MutedText from '../components/MutedText';
 
 class SVGHorizontalLine extends React.PureComponent {
   render() {
@@ -34,6 +35,11 @@ export default class PriceGraph extends React.PureComponent {
   render() {
     const { containerStyle, chartStyle, ...rest } = this.props;
     const { data } = rest;
+
+    if (!data || !data.length) {
+      return this.renderEmptyView();
+    }
+
     const min = parseFloat(
       (_.minBy(data, ({ price }) => parseFloat(price)) || { price: 0 }).price
     );
@@ -86,6 +92,27 @@ export default class PriceGraph extends React.PureComponent {
           <MaximumHorizontalLine />
           <MiddleHorizontalLine />
         </AreaChart>
+      </View>
+    );
+  }
+
+  renderEmptyView() {
+    const { containerStyle } = this.props;
+    return (
+      <View
+        style={[
+          {
+            flex: 1,
+            height: this.props.height,
+            padding: 0,
+            marginHorizontal: 10,
+            justifyContent: 'center',
+            alignItems: 'center'
+          },
+          containerStyle
+        ]}
+      >
+        <MutedText style={{ textAlign: 'center' }}>No price history.</MutedText>
       </View>
     );
   }

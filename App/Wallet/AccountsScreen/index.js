@@ -5,7 +5,6 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
 import {
   loadAssets,
-  loadProductsAndTokens,
   updateForexTickers,
   updateTokenTickers
 } from '../../../thunks';
@@ -92,9 +91,6 @@ class AccountsScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
-    if (!this.props.tokens.length) {
-      await this.props.dispatch(loadProductsAndTokens(true));
-    }
     await this.props.dispatch(loadAssets());
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());

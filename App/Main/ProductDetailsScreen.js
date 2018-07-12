@@ -129,12 +129,12 @@ class TokenProductDetailsView extends Component {
       {
         key: 'price',
         left: 'Price',
-        right: `${formatAmount(ticker.price)} ${quote.symbol}`
+        right: `${formatAmount(ticker.price || 0)} ${quote.symbol}`
       },
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: `${formatAmount(dayAverage)} ${quote.symbol}`
+        right: `${formatAmount(dayAverage || 0)} ${quote.symbol}`
       },
       {
         key: '24hrpricechange',
@@ -142,10 +142,10 @@ class TokenProductDetailsView extends Component {
         right:
           ticker.daymax === null
             ? `${changePrice < 0 ? '-' : ''}${formatAmount(
-                Math.abs(changePrice)
-              )} ${quote.symbol} (${formatPercent(changePercent)})`
+                Math.abs(changePrice || 0)
+              )} ${quote.symbol} (${formatPercent(changePercent || 0)})`
             : 'N/A',
-        rightStyle: getProfitLossStyle(changePercent)
+        rightStyle: getProfitLossStyle(changePercent || 0)
       },
       {
         key: '24hrmax',

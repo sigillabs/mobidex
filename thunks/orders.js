@@ -42,52 +42,57 @@ export function loadOrder(orderHash) {
   };
 }
 
-export function loadProductsAndTokens(force = false) {
+export function loadProducts() {
   return async (dispatch, getState) => {
-    let {
-      settings: { relayerEndpoint },
-      wallet: { web3 }
+    const {
+      settings: { relayerEndpoint }
     } = getState();
-    let client = new HttpClient(relayerEndpoint);
+    const client = new HttpClient(relayerEndpoint);
 
     try {
-      let pairs = await client.getTokenPairsAsync();
-      let tokensA = pairs.map(pair => pair.tokenA);
-      let tokensB = pairs.map(pair => pair.tokenB);
-      let extTokensA = await Promise.all(
-        tokensA
-          .map(token => getTokenByAddress(web3, token.address, force))
-          .filter(t => t)
-      );
-      let extTokensB = await Promise.all(
-        tokensB
-          .map(token => getTokenByAddress(web3, token.address, force))
-          .filter(t => t)
-      );
-      let fullTokensA = tokensA.map((token, index) => ({
-        ...token,
-        ...extTokensA[index]
-      }));
-      let fullTokensB = tokensB.map((token, index) => ({
-        ...token,
-        ...extTokensB[index]
-      }));
-      let lookupA = _.keyBy(fullTokensA, 'address');
-      let lookupB = _.keyBy(fullTokensB, 'address');
-      let tokens = _.unionBy(fullTokensA, fullTokensB, 'address');
-      dispatch(setTokens(tokens));
+      const pairs = await client.getTokenPairsAsync();
       dispatch(setProducts(pairs));
-      dispatch(
-        addTickerWatching(
-          pairs.map(({ tokenA, tokenB }) => ({
-            tokenA: lookupA[tokenA.address],
-            tokenB: lookupB[tokenB.address]
-          }))
-        )
-      );
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
+  };
+}
+
+export function loadTokens(force = false) {
+  return async (dispatch, getState) => {
+    const {
+      relayer: { products },
+      wallet: { web3 }
+    } = getState();
+
+    try {
+      const productsA = products.map(pair => pair.tokenA);
+      const productsB = products.map(pair => pair.tokenB);
+      const allTokens = _.unionBy(productsA, productsB, 'address');
+      const allExtendedTokens = await Promise.all(
+        allTokens.map(async token => {
+          const extendedToken = await getTokenByAddress(
+            web3,
+            token.address,
+            force
+          );
+          return {
+            ...token,
+            ...extendedToken
+          };
+        })
+      );
+      dispatch(setTokens(allExtendedTokens));
+    } catch (err) {
+      dispatch(gotoErrorScreen(err));
+    }
+  };
+}
+
+export function loadProductsAndTokens(force = false) {
+  return async dispatch => {
+    await dispatch(loadProducts());
+    await dispatch(loadTokens(force));
   };
 }
 

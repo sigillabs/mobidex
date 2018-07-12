@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { handleActions } from 'redux-actions';
-import ethUtil from 'ethereumjs-util';
 import * as Actions from '../constants/actions';
 
 const initialState = {

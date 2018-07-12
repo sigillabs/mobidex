@@ -6,7 +6,6 @@ export const addActiveTransactions = createAction(
 );
 export const addAssets = createAction(Actions.ADD_ASSETS);
 export const addOrders = createAction(Actions.ADD_ORDERS);
-export const addTickerWatching = createAction(Actions.ADD_TICKER_WATCHING);
 export const addTransactions = createAction(Actions.ADD_TRANSACTIONS);
 export const notProcessing = createAction(Actions.NOT_PROCESSING);
 export const processing = createAction(Actions.PROCESSING);
