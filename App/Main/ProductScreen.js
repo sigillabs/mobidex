@@ -125,8 +125,8 @@ class BaseQuoteTokenItem extends Component {
 }
 
 BaseQuoteTokenItem.propTypes = {
-  quoteToken: PropTypes.object.isRequired,
-  baseToken: PropTypes.object.isRequired
+  quoteToken: PropTypes.object,
+  baseToken: PropTypes.object
 };
 
 const QuoteTokenItem = connect(state => ({ ticker: state.ticker }))(

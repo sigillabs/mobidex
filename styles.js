@@ -35,6 +35,38 @@ export const primary = {
   backgroundColor: colors.background
 };
 
+export const row = {
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignItems: 'center'
+};
+
+export const flex0 = {
+  flex: 0
+};
+
+export const flex1 = {
+  flex: 1
+};
+
+export const padding0 = {
+  padding: 0,
+  paddingTop: 0,
+  paddingRight: 0,
+  paddingBottom: 0,
+  paddingLeft: 0
+};
+
+export const margin0 = {
+  margin: 0,
+  marginTop: 0,
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0
+};
+
+export const fluff0 = [padding0, margin0];
+
 export function getProfitLossColor(number) {
   if (number > 0) {
     return colors.green0;

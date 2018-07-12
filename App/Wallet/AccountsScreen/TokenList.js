@@ -92,7 +92,7 @@ class TokenList extends Component {
 
 TokenList.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
-  token: PropTypes.object.isRequired,
+  token: PropTypes.object,
   onPress: PropTypes.func.isRequired
 };
 

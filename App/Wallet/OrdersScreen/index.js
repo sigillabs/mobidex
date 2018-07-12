@@ -2,12 +2,11 @@ import ethUtil from 'ethereumjs-util';
 import React, { Component } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
-import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
-import { colors } from '../../../styles';
 import { loadOrders } from '../../../thunks';
 import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
+import CollapsibleButtonView from '../../components/CollapsibleButtonView';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
@@ -148,24 +147,14 @@ class OrdersScreen extends Component {
             <View style={{ width: '100%', backgroundColor: 'white' }}>
               {orders.map((order, index) => {
                 return (
-                  <Swipeout
+                  <CollapsibleButtonView
                     key={index}
-                    autoClose={true}
-                    style={{
-                      backgroundColor: 'transparent'
-                    }}
-                    right={[
-                      {
-                        backgroundColor: colors.yellow0,
-                        text: 'Cancel',
-                        type: 'delete',
-                        underlayColor: colors.yellow0,
-                        onPress: () => this.cancelOrder(order)
-                      }
-                    ]}
+                    buttonTitle={'Cancel'}
+                    buttonWidth={100}
+                    onPress={() => this.cancelOrder(order)}
                   >
                     <TokenOrder order={order} />
-                  </Swipeout>
+                  </CollapsibleButtonView>
                 );
               })}
             </View>

@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ListItem, Text } from 'react-native-elements';
+import { styleProp } from '../../types/props';
 import Row from './Row';
 
 export default class TwoColumnListItem extends Component {
@@ -84,26 +85,11 @@ export default class TwoColumnListItem extends Component {
 TwoColumnListItem.propTypes = {
   left: PropTypes.node.isRequired,
   leftHeader: PropTypes.string,
-  leftHeaderStyle: PropTypes.oneOf([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
-  leftStyle: PropTypes.oneOf([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
+  leftHeaderStyle: styleProp,
+  leftStyle: styleProp,
   right: PropTypes.node.isRequired,
   rightHeader: PropTypes.string,
-  rightHeaderStyle: PropTypes.oneOf([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
-  rightStyle: PropTypes.oneOf([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ]),
-  rowStyle: PropTypes.oneOf([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object)
-  ])
+  rightHeaderStyle: styleProp,
+  rightStyle: styleProp,
+  rowStyle: styleProp
 };
