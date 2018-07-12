@@ -173,7 +173,7 @@ export async function submitOrder(signedOrder) {
     signedOrder.makerTokenAmount,
     true
   );
-  await ensureTokenAllowance(
+  await checkAndSetTokenAllowance(
     signedOrder.makerTokenAddress,
     signedOrder.makerTokenAmount
   );
@@ -225,7 +225,7 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
   );
 
   await checkAndWrapEther(takerTokenAddresses[0], baseUnitAmount, true);
-  await ensureTokenAllowance(takerTokenAddresses[0], baseUnitAmount);
+  await checkAndSetTokenAllowance(takerTokenAddresses[0], baseUnitAmount);
 
   const txhash = await zeroEx.exchange.batchFillOrKillAsync(
     fillOrders,
@@ -276,7 +276,7 @@ export async function fillOrder(order, amount = null, side = 'buy') {
   }
 
   await checkAndWrapEther(order.takerTokenAddress, fillBaseUnitAmount, true);
-  await ensureTokenAllowance(order.takerTokenAddress, fillBaseUnitAmount);
+  await checkAndSetTokenAllowance(order.takerTokenAddress, fillBaseUnitAmount);
 
   const txhash = await zeroEx.exchange.fillOrderAsync(
     order,
@@ -333,14 +333,14 @@ export async function cancelOrder(order) {
   console.log('Receipt: ', receipt);
 }
 
-export async function ensureTokenAllowance(address, amount) {
+export async function checkAndSetTokenAllowance(address, amount) {
   const {
     wallet: { web3 }
   } = _store.getState();
 
   const allowance = await getTokenAllowance(web3, address);
   if (new BigNumber(amount).gt(allowance)) {
-    _store.dispatch(setTokenAllowance(address));
+    await _store.dispatch(setTokenAllowance(address));
   }
 }
 
