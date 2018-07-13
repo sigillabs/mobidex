@@ -116,9 +116,7 @@ export function sendTokens(token, to, amount) {
         wallet: { web3, address }
       } = getState();
       let zeroEx = await getZeroExClient(web3);
-      console.warn('here1');
       const txhash = await sendTokensUtil(web3, token, to, amount);
-      console.warn('here2');
       const activeTransaction = {
         id: txhash,
         type: 'SEND_TOKENS',

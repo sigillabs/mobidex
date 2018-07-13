@@ -164,10 +164,12 @@ class PreviewLimitOrder extends Component {
     } = this.props;
 
     this.setState({ showCreating: true });
+    this.props.navigation.setParams({ hideHeader: true });
 
     const signedOrder = await signOrder(order);
     if (!signedOrder) {
       this.setState({ showCreating: false });
+      this.props.navigation.setParams({ hideHeader: false });
       return;
     }
 
@@ -178,6 +180,7 @@ class PreviewLimitOrder extends Component {
       return;
     } finally {
       this.setState({ showCreating: false });
+      this.props.navigation.setParams({ hideHeader: false });
     }
 
     NavigationService.navigate('List');
@@ -188,6 +191,7 @@ PreviewLimitOrder.propTypes = {
   quoteSymbol: PropTypes.string.isRequired,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
+    setParams: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
         side: PropTypes.string.isRequired,

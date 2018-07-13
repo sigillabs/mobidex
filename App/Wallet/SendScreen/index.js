@@ -82,6 +82,7 @@ class SendTokensWizard extends Component {
     } = this.props;
 
     this.setState({ showSending: true });
+    this.props.navigation.setParams({ hideHeader: true });
 
     this.requestAnimationFrame(async () => {
       try {
@@ -100,6 +101,7 @@ class SendTokensWizard extends Component {
         return;
       } finally {
         this.setState({ showSending: false });
+        this.props.navigation.setParams({ hideHeader: false });
       }
     });
   }
@@ -111,6 +113,7 @@ export default connect(state => ({ ...state }), dispatch => ({ dispatch }))(
 
 SendTokensWizard.propTypes = {
   navigation: PropTypes.shape({
+    setParams: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.object.isRequired

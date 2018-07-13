@@ -270,11 +270,13 @@ class PreviewFillOrders extends Component {
     const fillAmount = new BigNumber(amount);
 
     this.setState({ showFilling: true });
+    this.props.navigation.setParams({ hideHeader: true });
 
     try {
       await fillOrders(orders, fillAmount, side);
     } catch (err) {
       this.setState({ showFilling: false });
+      this.props.navigation.setParams({ hideHeader: false });
       NavigationService.error(err);
       return;
     }
@@ -286,6 +288,7 @@ class PreviewFillOrders extends Component {
 PreviewFillOrders.propTypes = {
   dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
+    setParams: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
         side: PropTypes.string.isRequired,

@@ -84,6 +84,10 @@ const WalletNavigation = createStackNavigator(
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
       header: () => {
+        if (navigation.getParam('hideHeader')) {
+          return null;
+        }
+
         switch (navigation.state.routeName) {
           case 'History':
           case 'Orders':
@@ -156,6 +160,10 @@ const ProductsNavigation = createStackNavigator(
     headerMode: 'float',
     navigationOptions: ({ navigation }) => ({
       header: () => {
+        if (navigation.getParam('hideHeader')) {
+          return null;
+        }
+
         switch (navigation.state.routeName) {
           case 'List':
             return (
