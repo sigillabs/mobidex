@@ -159,6 +159,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
     compile project(':react-native-google-analytics-bridge')
     api (project(':react-native-push-notification')) {
         exclude group: "com.android.support", module: "support-v4"

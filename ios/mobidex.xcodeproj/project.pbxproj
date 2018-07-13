@@ -38,6 +38,7 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		301B13E220F87F2B00714D8F /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 301B13DB20F87F1200714D8F /* libRNDeviceInfo.a */; };
 		30437C8C20E5ABAE00720DD0 /* Entitlements.pinfo in Resources */ = {isa = PBXBuildFile; fileRef = 30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */; };
 		30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437CA920E5B6BE00720DD0 /* Device.swift */; };
 		304C60AD20F1D0C600C08882 /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 304C608920F1D0A900C08882 /* libRCTGoogleAnalyticsBridge.a */; };
@@ -209,6 +210,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
 			remoteInfo = "privatedata-tvOS";
+		};
+		301B13DA20F87F1200714D8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5891D81BA9A9FC002B4DB2;
+			remoteInfo = RNDeviceInfo;
+		};
+		301B13DC20F87F1200714D8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E72EC1401F7ABB5A0001BC90;
+			remoteInfo = "RNDeviceInfo-tvOS";
 		};
 		304C608820F1D0A900C08882 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -401,6 +416,7 @@
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */ = {isa = PBXFileReference; lastKnownFileType = text; name = Entitlements.pinfo; path = mobidex/Entitlements.pinfo; sourceTree = "<group>"; };
 		30437CA920E5B6BE00720DD0 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		304C607E20F1D0A900C08882 /* RCTGoogleAnalyticsBridge.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTGoogleAnalyticsBridge.xcodeproj; path = "../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/RCTGoogleAnalyticsBridge.xcodeproj"; sourceTree = "<group>"; };
@@ -448,6 +464,7 @@
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				301B13E220F87F2B00714D8F /* libRNDeviceInfo.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -614,6 +631,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		301B13B020F87F1100714D8F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				301B13DB20F87F1200714D8F /* libRNDeviceInfo.a */,
+				301B13DD20F87F1200714D8F /* libRNDeviceInfo-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		304C607F20F1D0A900C08882 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,6 +703,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */,
 				304C607E20F1D0A900C08882 /* RCTGoogleAnalyticsBridge.xcodeproj */,
 				3053033A20E97352004908AB /* RNVectorIcons.xcodeproj */,
 				309C4D7320DD761500B6EBB5 /* RNSVG.xcodeproj */,
@@ -934,6 +961,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 301B13B020F87F1100714D8F /* Products */;
+					ProjectRef = 301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */;
+				},
+				{
 					ProductGroup = 30EB9EF220DB83550088F4BF /* Products */;
 					ProjectRef = 01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */;
 				},
@@ -1088,6 +1119,20 @@
 			fileType = archive.ar;
 			path = "libprivatedata-tvOS.a";
 			remoteRef = 2DF0FFEC2056DD460020B375 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		301B13DB20F87F1200714D8F /* libRNDeviceInfo.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNDeviceInfo.a;
+			remoteRef = 301B13DA20F87F1200714D8F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		301B13DD20F87F1200714D8F /* libRNDeviceInfo-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNDeviceInfo-tvOS.a";
+			remoteRef = 301B13DC20F87F1200714D8F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		304C608920F1D0A900C08882 /* libRCTGoogleAnalyticsBridge.a */ = {

@@ -7,5 +7,4 @@ platform :ios, '10.0'
 target 'mobidex' do
   use_frameworks!
   pod 'web3swift', '~> 0.9.0'
-
 end

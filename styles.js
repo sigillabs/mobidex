@@ -49,6 +49,13 @@ export const bigtop = {
   alignItems: 'center'
 };
 
+export const bigbottom = {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
+  alignItems: 'center'
+};
+
 export const row = {
   flexDirection: 'row',
   justifyContent: 'flex-start',

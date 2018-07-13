@@ -36,6 +36,7 @@
         "react-native-animatable": "^1.2.4",
         "react-native-communications": "^2.2.1",
         "react-native-crypto": "^2.1.2",
+        "react-native-device-info": "^0.21.5",
         "react-native-drawer": "^2.5.0",
         "react-native-elements": "^1.0.0-beta5",
         "react-native-google-analytics-bridge": "^5.8.0",
