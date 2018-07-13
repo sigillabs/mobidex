@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import { Platform, TouchableHighlight, View } from 'react-native';
 import { Text } from 'react-native-elements';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
+import * as styles from '../../styles';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
 import * as WalletService from '../services/WalletService';
@@ -27,19 +29,24 @@ export default class UnlockWithFingerScreen extends Component {
     }
 
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <TouchableHighlight onPress={() => this.unlock()}>
+      <View style={styles.bigcenter}>
+        <TouchableHighlight
+          onPress={() => this.unlock()}
+          style={[styles.bigcenter, styles.flex1]}
+        >
           <View>
             <MaterialIcon name="fingerprint" color="black" size={100} />
             <Text>Press to unlock</Text>
           </View>
         </TouchableHighlight>
-        {this.state.error ? this.renderError() : <Text>Or</Text>}
-        <TouchableHighlight
-          onPress={() => NavigationService.navigate('UnlockWithPin')}
-        >
-          <Text>Unlock with pin</Text>
-        </TouchableHighlight>
+        <View style={[styles.bigtop, styles.flex1]}>
+          {this.state.error ? this.renderError() : <Text>Or</Text>}
+          <Button
+            onPress={() => NavigationService.navigate('UnlockWithPin')}
+            title={'Unlock with pin'}
+            icon={<Ionicons name="ios-keypad" color="white" size={20} />}
+          />
+        </View>
       </View>
     );
   }

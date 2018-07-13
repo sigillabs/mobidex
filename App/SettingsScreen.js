@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { DeviceInfo, ScrollView, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import Button from './components/Button';
 import MutedText from './components/MutedText';
 import NormalHeader from './headers/Normal';
 

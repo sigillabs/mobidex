@@ -35,6 +35,20 @@ export const primary = {
   backgroundColor: colors.background
 };
 
+export const bigcenter = {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center'
+};
+
+export const bigtop = {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'center'
+};
+
 export const row = {
   flexDirection: 'row',
   justifyContent: 'flex-start',
@@ -47,6 +61,10 @@ export const flex0 = {
 
 export const flex1 = {
   flex: 1
+};
+
+export const flex2 = {
+  flex: 2
 };
 
 export const padding0 = {
