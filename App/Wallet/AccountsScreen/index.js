@@ -77,7 +77,7 @@ class AccountsScreen extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh()}
+              onRefresh={() => this.onRefresh(true)}
             />
           }
         >
@@ -89,9 +89,9 @@ class AccountsScreen extends Component {
     );
   }
 
-  async onRefresh() {
+  async onRefresh(force = false) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAssets());
+    await this.props.dispatch(loadAssets(force));
     await this.props.dispatch(updateForexTickers());
     await this.props.dispatch(updateTokenTickers());
     this.setState({ refreshing: false });

@@ -1,5 +1,6 @@
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
+import ethUtil from 'ethereumjs-util';
 import { AsyncStorage } from 'react-native';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { getZeroExClient, getAccount, getNetworkId } from './ethereum';
@@ -230,7 +231,7 @@ export async function sendTokens(web3, { address, decimals }, to, amount) {
   return await zeroEx.token.transferAsync(
     address,
     account.toLowerCase(),
-    to.toLowerCase(),
+    `0x${ethUtil.stripHexPrefix(to)}`.toLowerCase(),
     value
   );
 }
