@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Divider } from 'react-native-elements';
 import { colors } from '../../styles';
 
 class Cell extends Component {

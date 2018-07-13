@@ -6,6 +6,7 @@ import { Text } from 'react-native-elements';
 import { colors } from '../../styles';
 import Button from '../components/Button';
 import MnemonicInput from '../components/MnemonicInput';
+import MutedText from '../components/MutedText';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import WizardNavigation from '../components/WizardNavigation';
@@ -35,10 +36,11 @@ class MnemonicPage extends Component {
           justifyContent: 'flex-start'
         }}
       >
+        <MutedText>Enter your 12 word seed phrase.</MutedText>
         <MnemonicInput
           onChange={words => this.setState({ mnemonic: words })}
           onSubmit={() => this.submit()}
-          containerStyle={{ flex: 0, height: 250 }}
+          containerStyle={{ flex: 0, height: 260, marginTop: 20 }}
         />
         {this.state.mnemonicError ? (
           <Text style={{ color: colors.error }}>
@@ -87,6 +89,15 @@ class PinPage extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, marginHorizontal: 50 }}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end'
+            }}
+          >
+            <MutedText>Provide a PIN to secure your wallet.</MutedText>
+          </View>
           <PinView
             value={this.state.pin}
             containerStyle={{

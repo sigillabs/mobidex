@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import { colors } from '../../styles';
 import Row from './Row';
@@ -10,7 +10,10 @@ class Cell extends Component {
   render() {
     const { containerStyle, onChange, word, ...rest } = this.props;
     return (
-      <View style={[styles.cell, containerStyle]}>
+      <TouchableOpacity
+        style={[styles.cell, containerStyle]}
+        onPress={() => this.input.focus()}
+      >
         <TextInputMask
           {...rest}
           refInput={input => (this.input = input)}
@@ -27,7 +30,7 @@ class Cell extends Component {
           }}
           underlineColorAndroid="white"
         />
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -63,8 +66,6 @@ export default class MnemonicInput extends Component {
       }
       this.setState({ words });
     }
-
-    // this.cells[0].focus();
   }
 
   render() {
