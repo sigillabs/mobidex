@@ -12,7 +12,7 @@ import UnlockWithFingerScreen from './Locked/UnlockWithFingerScreen';
 import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
 import NormalHeader from './headers/Normal';
 import ProductsHeader from './headers/Products';
-import CreateOrderHeader from './headers/CreateOrder';
+// import CreateOrderHeader from './headers/CreateOrder';
 import SendTokensHeader from './headers/SendTokens';
 import ProductDetailsHeader from './headers/ProductDetails';
 import ProductScreen from './Main/ProductScreen';
@@ -174,11 +174,13 @@ const ProductsNavigation = createStackNavigator(
               />
             );
 
+          case 'PreviewOrders':
+          case 'CreateOrder':
           case 'Details':
             return (
               <ProductDetailsHeader
                 navigation={navigation}
-                token={navigation.state.params.base}
+                token={navigation.state.params.product.base}
                 showBackButton={true}
                 showForexToggleButton={true}
               />
@@ -192,17 +194,6 @@ const ProductsNavigation = createStackNavigator(
           //       side={navigation.state.params.side}
           //     />
           //   );
-
-          case 'PreviewOrders':
-          case 'CreateOrder':
-            return (
-              <ProductDetailsHeader
-                navigation={navigation}
-                token={navigation.state.params.product.base}
-                showBackButton={true}
-                showForexToggleButton={true}
-              />
-            );
 
           default:
             return (

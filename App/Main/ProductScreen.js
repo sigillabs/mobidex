@@ -231,8 +231,10 @@ class ProductScreen extends Component {
                 key={`token-${index}`}
                 onPress={() =>
                   NavigationService.navigate('Details', {
-                    quote: fullTokenA,
-                    base: fullTokenB
+                    product: {
+                      quote: fullTokenA,
+                      base: fullTokenB
+                    }
                   })
                 }
               >

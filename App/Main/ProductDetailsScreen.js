@@ -255,7 +255,9 @@ class ProductDetailsScreen extends Component {
     const {
       navigation: {
         state: {
-          params: { base, quote }
+          params: {
+            product: { base, quote }
+          }
         }
       }
     } = this.props;
