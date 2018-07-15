@@ -133,16 +133,16 @@ class FillOrders extends Component {
     }
 
     const orders = await getFillableOrders(base.address, amount, side);
-    const baseAmount = ZeroEx.toBaseUnitAmount(
-      new BigNumber(amount || 0),
-      base.decimals
-    );
+    // const baseAmount = ZeroEx.toBaseUnitAmount(
+    //   new BigNumber(amount || 0),
+    //   base.decimals
+    // );
 
     if (orders.length > 0) {
       NavigationService.navigate('PreviewOrders', {
         type: 'fill',
         side,
-        amount: baseAmount.toString(),
+        amount: new BigNumber(amount || 0).toString(),
         product: { base, quote },
         orders
       });

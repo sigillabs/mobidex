@@ -240,15 +240,10 @@ class PreviewFillOrders extends Component {
     let subtotal = new BigNumber(amount).mul(priceAverage);
     let fee = new BigNumber(0).negated();
     let total = subtotal.add(fee);
-    let takerToken = base;
-
-    subtotal = ZeroEx.toUnitAmount(subtotal, takerToken.decimals);
-    total = ZeroEx.toUnitAmount(total, takerToken.decimals);
 
     if (side === 'buy') {
       subtotal = subtotal.negated();
       total = total.negated();
-      takerToken = quote;
     }
 
     return {
