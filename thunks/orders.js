@@ -1,12 +1,6 @@
 import { HttpClient } from '@0xproject/connect';
 import * as _ from 'lodash';
-import {
-  addOrders,
-  addTickerWatching,
-  setOrders,
-  setProducts,
-  setTokens
-} from '../actions';
+import { addOrders, setOrders, setProducts, setTokens } from '../actions';
 import { getTokenByAddress } from '../utils';
 import { gotoErrorScreen } from './navigation';
 

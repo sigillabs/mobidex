@@ -13,7 +13,6 @@ import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
 import { cancelOrder } from '../../services/OrderService';
-import Tabs from '../Tabs';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
 
@@ -134,7 +133,6 @@ class OrdersScreen extends Component {
 
     return (
       <PageRoot>
-        <Tabs index={1} />
         <ScrollView
           refreshControl={
             <RefreshControl

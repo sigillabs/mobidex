@@ -11,19 +11,19 @@ import ChooseUnlockMethodScreen from './Locked/ChooseUnlockMethodScreen';
 import UnlockWithFingerScreen from './Locked/UnlockWithFingerScreen';
 import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
 import NormalHeader from './headers/Normal';
+import OrdersHeader from './headers/Orders';
 import ProductsHeader from './headers/Products';
-// import CreateOrderHeader from './headers/CreateOrder';
 import SendTokensHeader from './headers/SendTokens';
 import ProductDetailsHeader from './headers/ProductDetails';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import PreviewOrdersScreen from './Main/PreviewOrdersScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
+import OrdersScreen from './Orders/OrdersScreen';
+import TransactionHistoryScreen from './Orders/TransactionHistoryScreen';
 import AccountsScreen from './Wallet/AccountsScreen';
-import OrdersScreen from './Wallet/OrdersScreen';
 import ReceiveScreen from './Wallet/ReceiveScreen';
 import SendScreen from './Wallet/SendScreen';
-import TransactionHistoryScreen from './Wallet/TransactionHistoryScreen';
 import UnwrapEtherScreen from './Wallet/UnwrapEtherScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
@@ -65,6 +65,50 @@ OnboardingNavigation.router = AnalyticsService.wrapRouter(
   OnboardingNavigation.router
 );
 
+const OrdersNavigation = createStackNavigator(
+  {
+    Orders: { screen: OrdersScreen },
+    History: { screen: TransactionHistoryScreen }
+  },
+  {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
+    initialRouteName: 'Orders',
+    lazy: true,
+    headerMode: 'float',
+    navigationOptions: ({ navigation }) => ({
+      header: () => {
+        if (navigation.getParam('hideHeader')) {
+          return null;
+        }
+
+        switch (navigation.state.routeName) {
+          case 'Orders':
+            return (
+              <OrdersHeader
+                navigation={navigation}
+                title="Active Orders"
+                showBackButton={false}
+              />
+            );
+
+          case 'History':
+          default:
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Transaction History"
+                showBackButton={true}
+              />
+            );
+        }
+      }
+    })
+  }
+);
+OrdersNavigation.router = AnalyticsService.wrapRouter(OrdersNavigation.router);
+
 const WalletNavigation = createStackNavigator(
   {
     Accounts: { screen: AccountsScreen },
@@ -89,8 +133,6 @@ const WalletNavigation = createStackNavigator(
         }
 
         switch (navigation.state.routeName) {
-          case 'History':
-          case 'Orders':
           case 'Accounts':
             return null;
 
@@ -186,15 +228,6 @@ const ProductsNavigation = createStackNavigator(
               />
             );
 
-          // case 'CreateOrder':
-          //   return (
-          //     <CreateOrderHeader
-          //       navigation={navigation}
-          //       token={navigation.state.params.product.base}
-          //       side={navigation.state.params.side}
-          //     />
-          //   );
-
           default:
             return (
               <NormalHeader
@@ -216,6 +249,7 @@ ProductsNavigation.router = AnalyticsService.wrapRouter(
 const MainTabsNavigator = createTabNavigator(
   {
     Products: { screen: ProductsNavigation },
+    Orders: { screen: OrdersNavigation },
     Wallet: { screen: WalletNavigation },
     Settings: { screen: SettingsScreen }
   },

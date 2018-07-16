@@ -10,7 +10,6 @@ import {
 } from '../../../thunks';
 import Row from '../../components/Row';
 import PageRoot from '../../components/PageRoot';
-import Tabs from '../Tabs';
 import TokenList from './TokenList';
 import TokenDetails from './TokenDetails';
 
@@ -71,7 +70,6 @@ class AccountsScreen extends Component {
 
     return (
       <PageRoot>
-        <Tabs index={0} />
         <ScrollView
           style={{ width: '100%' }}
           refreshControl={

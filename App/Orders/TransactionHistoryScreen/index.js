@@ -6,7 +6,6 @@ import { loadTransactions } from '../../../thunks';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
-import Tabs from '../Tabs';
 
 class TransactionHistoryScreen extends Component {
   constructor(props) {
@@ -27,7 +26,6 @@ class TransactionHistoryScreen extends Component {
       .concat(this.props.transactions);
     return (
       <PageRoot>
-        <Tabs index={2} />
         <ScrollView
           refreshControl={
             <RefreshControl
