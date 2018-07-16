@@ -14,6 +14,8 @@ export default class ZeroExError extends Component {
       case 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT':
       case 'ORDER_ALREADY_CANCELLED_OR_FILLED':
       case 'INSUFFICIENT_TAKER_ALLOWANCE':
+      case 'ORDER_FILL_AMOUNT_ZERO':
+      case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
         return true;
     }
 
@@ -23,6 +25,15 @@ export default class ZeroExError extends Component {
   render() {
     const { error } = this.props;
     switch (error.message) {
+      case 'ORDER_FILL_AMOUNT_ZERO':
+      case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
+        return (
+          <Text style={styles.text}>
+            Mobidex is trying to fill some old orders! Give it another shot in a
+            few minutes. Our servers could just be catching up.
+          </Text>
+        );
+
       case 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL':
         return (
           <Text style={styles.text}>
