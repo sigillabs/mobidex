@@ -179,7 +179,7 @@ class TokenProductDetailsView extends Component {
 class ForexProductDetailsView extends Component {
   render() {
     const { base, quote, periodIndex, periods } = this.props;
-    const ticker = TickerService.getForexTicker(quote.symbol);
+    const ticker = TickerService.getForexTicker(base.symbol);
 
     if (!ticker || !ticker.history) return null;
 

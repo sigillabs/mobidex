@@ -469,6 +469,7 @@ export async function getFillableOrders(base, amount, side = 'buy') {
 export async function getOrdersBatch(orders, amount = null, side = 'buy') {
   if (!orders) return null;
   if (orders.length === 0) return orders;
+
   let amountProperty;
   let tokenAddress;
 
@@ -485,27 +486,31 @@ export async function getOrdersBatch(orders, amount = null, side = 'buy') {
   }
 
   const token = await TokenService.findTokenByAddress(tokenAddress);
-  let amountBN = ZeroEx.toBaseUnitAmount(
+  const amountBN = ZeroEx.toBaseUnitAmount(
     new BigNumber(amount || 0),
     token.decimals
   );
   const ordersToFill = _.chain(orders)
     .map(o => {
       if (amount === null || amountBN.gt(o.takerTokenAmount)) {
-        amountBN = amountBN.sub(o[amountProperty]);
         return {
           signedOrder: o,
-          takerTokenFillAmount: new BigNumber(o.takerTokenAmount)
+          takerTokenFillAmount: new BigNumber(o.takerTokenAmount).sub(
+            o.filledTakerTokenAmount
+          )
         };
       } else {
         const ratio = amountBN.div(o[amountProperty]);
         return {
           signedOrder: o,
-          takerTokenFillAmount: ratio.mul(o.takerTokenAmount)
+          takerTokenFillAmount: ratio
+            .mul(o.takerTokenAmount)
+            .sub(o.filledTakerTokenAmount)
         };
       }
     })
     .filter(_.identity)
+    .filter(({ takerTokenFillAmount }) => !takerTokenFillAmount.eq(0))
     .value();
 
   return ordersToFill;

@@ -43,6 +43,9 @@ export function filterOrdersToBaseAmount(orders, amount, taker = false) {
       fillableTotal = fillableTotal.add(
         taker ? order.takerTokenAmount : order.makerTokenAmount
       );
+      fillableTotal = fillableTotal.sub(
+        taker ? order.filledTakerTokenAmount : order.filledMakerTokenAmount
+      );
 
       if (fillableTotal.gte(amount)) {
         break;

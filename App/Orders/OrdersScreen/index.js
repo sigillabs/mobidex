@@ -113,8 +113,8 @@ class OrdersScreen extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this.onRefresh();
+  componentDidMount() {
+    this.onRefresh();
   }
 
   render() {
@@ -137,7 +137,7 @@ class OrdersScreen extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh}
+              onRefresh={() => this.onRefresh()}
             />
           }
         >
