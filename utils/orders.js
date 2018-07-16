@@ -9,7 +9,9 @@ export function filterAndSortOrdersByTokens(
 ) {
   let ordersToFill = orders;
   ordersToFill = orders.filter(o => o.makerTokenAddress === makerTokenAddress);
-  ordersToFill = orders.filter(o => o.takerTokenAddress === takerTokenAddress);
+  ordersToFill = ordersToFill.filter(
+    o => o.takerTokenAddress === takerTokenAddress
+  );
   ordersToFill = _.sortBy(
     ordersToFill,
     ({ makerTokenAmount, takerTokenAmount }) => {

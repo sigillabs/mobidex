@@ -525,6 +525,7 @@ export async function getAveragePrice(orders, side = 'buy') {
     .map('makerTokenAddress')
     .uniq()
     .value();
+
   if (makerTokenAddresses.length > 1) {
     throw new Error('Orders contain different maker token addresses');
   }

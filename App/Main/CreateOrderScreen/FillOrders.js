@@ -110,6 +110,7 @@ class FillOrders extends Component {
       amount || new BigNumber(0).toString(),
       side
     );
+
     const priceAverage = await getAveragePrice(fillableOrders, side);
 
     this.setState({ priceAverage, fillableOrders });

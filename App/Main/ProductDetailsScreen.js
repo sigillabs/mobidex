@@ -138,7 +138,7 @@ class TokenProductDetailsView extends Component {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
         right:
-          ticker.daymax === null
+          ticker.daymax !== null
             ? `${changePrice < 0 ? '-' : ''}${formatAmount(
                 Math.abs(changePrice || 0)
               )} ${quote.symbol} (${formatPercent(changePercent || 0)})`
@@ -149,7 +149,7 @@ class TokenProductDetailsView extends Component {
         key: '24hrmax',
         left: '24 Hour Max',
         right:
-          ticker.daymax === null
+          ticker.daymax !== null
             ? `${formatAmount(ticker.daymax)} ${quote.symbol}`
             : 'N/A'
       },
@@ -157,7 +157,7 @@ class TokenProductDetailsView extends Component {
         key: '24hrmin',
         left: '24 Hour Min',
         right:
-          ticker.daymin === null
+          ticker.daymin !== null
             ? `${formatAmount(ticker.daymin)} ${quote.symbol}`
             : 'N/A'
       }
@@ -203,7 +203,7 @@ class ForexProductDetailsView extends Component {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
         right:
-          ticker.daymax === null
+          ticker.daymax !== null
             ? `${changePrice < 0 ? '-' : ''}${formatMoney(
                 Math.abs(changePrice)
               )} (${formatPercent(changePercent)})`
@@ -213,12 +213,12 @@ class ForexProductDetailsView extends Component {
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right: ticker.daymax === null ? formatMoney(ticker.daymax) : 'N/A'
+        right: ticker.daymax !== null ? formatMoney(ticker.daymax) : 'N/A'
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right: ticker.daymin === null ? formatMoney(ticker.daymin) : 'N/A'
+        right: ticker.daymin !== null ? formatMoney(ticker.daymin) : 'N/A'
       }
     ];
 
