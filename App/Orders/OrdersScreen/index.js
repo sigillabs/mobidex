@@ -8,6 +8,7 @@ import { loadOrders } from '../../../thunks';
 import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 import CollapsibleButtonView from '../../components/CollapsibleButtonView';
 import EmptyList from '../../components/EmptyList';
+import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
@@ -52,14 +53,6 @@ const TokenOrder = connect(
 
       const { makerToken, takerToken } = this.state;
       const { order } = this.props;
-      const left = formatAmountWithDecimals(
-        order.makerTokenAmount,
-        makerToken.decimals || 18
-      );
-      const right = formatAmountWithDecimals(
-        order.takerTokenAmount,
-        takerToken.decimals || 18
-      );
 
       return (
         <ListItem
@@ -68,20 +61,24 @@ const TokenOrder = connect(
           title={
             <View style={styles.itemContainer}>
               <Row>
-                <Text style={([styles.left, styles.large], { flex: 1 })}>
-                  {left} {makerToken.symbol}
-                </Text>
+                <FormattedTokenAmount
+                  amount={order.makerTokenAmount}
+                  symbol={makerToken.symbol}
+                  decimals={makerToken.decimals || 18}
+                  style={([styles.left, styles.large], { flex: 1 })}
+                />
                 <Icon name="swap" color="black" size={24} />
-                <Text
+                <FormattedTokenAmount
+                  amount={order.takerTokenAmount}
+                  symbol={takerToken.symbol}
+                  decimals={takerToken.decimals || 18}
                   style={[
                     styles.right,
                     styles.large,
                     styles.padLeft,
                     { flex: 1 }
                   ]}
-                >
-                  {right} {takerToken.symbol}
-                </Text>
+                />
               </Row>
             </View>
           }
