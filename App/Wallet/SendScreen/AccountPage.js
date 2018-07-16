@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { formatMoney } from '../../../utils';
+import { formatAmount, formatMoney } from '../../../utils';
 import AddressInput from '../../components/AddressInput';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
@@ -29,6 +29,14 @@ class AccountPage extends Component {
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
+        <TwoColumnListItem
+          left="Amount"
+          right={`${formatAmount(amount)} ${token.symbol}`}
+          style={{ marginBottom: 10, marginTop: 10 }}
+          leftStyle={{ flex: 1, color: 'black' }}
+          rightStyle={{ flex: 1, color: 'black' }}
+          rowStyle={{ flex: 0, width: '100%' }}
+        />
         {forexAmount ? (
           <TwoColumnListItem
             left="Amount"
