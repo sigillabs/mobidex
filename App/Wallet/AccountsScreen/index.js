@@ -14,13 +14,18 @@ import TokenList from './TokenList';
 import PortfolioDetails from './PortfolioDetails';
 import TokenDetails from './TokenDetails';
 
-class AccountsView extends Component {
+class AccountsScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      refreshing: false,
       token: 'ETH'
     };
+  }
+
+  async componentDidMount() {
+    await this.onRefresh();
   }
 
   render() {
@@ -34,54 +39,14 @@ class AccountsView extends Component {
     );
 
     return (
-      <View>
+      <PageRoot>
         <Row>
-          {this.state.token ? (
+          {token ? (
             <TokenDetails token={token} />
           ) : (
             <PortfolioDetails assets={this.props.assets} />
           )}
         </Row>
-        <Row>
-          <TokenList
-            token={token}
-            tokens={tokens}
-            onPress={token =>
-              this.setState({
-                token: this.state.token !== token.symbol ? token.symbol : null
-              })
-            }
-          />
-        </Row>
-      </View>
-    );
-  }
-}
-
-AccountsView.propTypes = {
-  assets: PropTypes.arrayOf(PropTypes.object).isRequired
-};
-
-class AccountsScreen extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      refreshing: false
-    };
-  }
-
-  async componentDidMount() {
-    await this.onRefresh();
-  }
-
-  render() {
-    if (!this.props.assets.length) {
-      return null;
-    }
-
-    return (
-      <PageRoot>
         <ScrollView
           style={{ width: '100%' }}
           refreshControl={
@@ -92,7 +57,18 @@ class AccountsScreen extends Component {
           }
         >
           {this.props.assets.length ? (
-            <AccountsView assets={this.props.assets} />
+            <Row>
+              <TokenList
+                token={token}
+                tokens={tokens}
+                onPress={token =>
+                  this.setState({
+                    token:
+                      this.state.token !== token.symbol ? token.symbol : null
+                  })
+                }
+              />
+            </Row>
           ) : null}
         </ScrollView>
       </PageRoot>
