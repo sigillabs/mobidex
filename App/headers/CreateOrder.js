@@ -5,6 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
+import NavigationService from '../services/NavigationService';
 
 class CreateOrderHeader extends Component {
   render() {
@@ -15,7 +16,7 @@ class CreateOrderHeader extends Component {
         leftComponent={
           <TouchableOpacity
             style={{ padding: 10 }}
-            onPress={() => this.props.navigation.goBack(null)}
+            onPress={() => NavigationService.goBack()}
           >
             <Icon name="arrow-back" color="black" size={15} />
           </TouchableOpacity>

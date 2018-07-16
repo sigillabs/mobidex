@@ -36,14 +36,17 @@ export function filterAndSortOrdersByTokensAndTakerAddress(
 export function filterOrdersToBaseAmount(orders, amount, taker = false) {
   const ordersToFill = [];
   let fillableTotal = new BigNumber(0);
-  for (const order of orders) {
-    ordersToFill.push(order);
-    fillableTotal = fillableTotal.add(
-      taker ? order.takerTokenAmount : order.makerTokenAmount
-    );
 
-    if (fillableTotal.gte(amount)) {
-      break;
+  if (fillableTotal.lt(amount)) {
+    for (const order of orders) {
+      ordersToFill.push(order);
+      fillableTotal = fillableTotal.add(
+        taker ? order.takerTokenAmount : order.makerTokenAmount
+      );
+
+      if (fillableTotal.gte(amount)) {
+        break;
+      }
     }
   }
 

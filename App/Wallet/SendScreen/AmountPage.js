@@ -1,14 +1,16 @@
 import BigNumber from 'bignumber.js';
+import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { connect } from 'react-redux';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as TickerService from '../../services/TickerService';
+import * as WalletService from '../../services/WalletService';
 
-class AmountPage extends Component {
+export default class AmountPage extends Component {
   constructor(props) {
     super(props);
 
@@ -22,10 +24,27 @@ class AmountPage extends Component {
 
   render() {
     const { token } = this.props;
+    const balance = WalletService.getBalanceByAddress(token.address);
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
         <TokenAmount
+          label={'Wallet Amount'}
+          symbol={token.symbol}
+          icon={<Entypo name="wallet" size={30} />}
+          containerStyle={{
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 0
+          }}
+          symbolStyle={{ marginRight: 10 }}
+          format={false}
+          cursor={false}
+          amount={formatAmount(balance ? balance : '0')}
+          onPress={() => this.setState({ focus: 'amount' })}
+        />
+        <TokenAmount
+          label={'Send Amount'}
           symbol={token.symbol}
           containerStyle={{
             marginTop: 10,
@@ -40,6 +59,7 @@ class AmountPage extends Component {
           onPress={() => this.setState({ focus: 'amount' })}
         />
         <TokenAmount
+          label={'Send Amount in Forex'}
           symbol={'USD'}
           icon={getForexIcon('USD', { size: 30, style: { marginLeft: 10 } })}
           containerStyle={{
@@ -127,11 +147,3 @@ AmountPage.propTypes = {
   token: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
-
-export default connect(
-  state => ({
-    settings: state.settings,
-    ticker: state.ticker
-  }),
-  dispatch => ({ dispatch })
-)(AmountPage);

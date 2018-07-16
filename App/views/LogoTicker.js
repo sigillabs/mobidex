@@ -18,6 +18,7 @@ import * as TickerService from '../services/TickerService';
 class LogoTicker extends Component {
   render() {
     const {
+      showChangePercent,
       avatarProps,
       settings: { showForexPrices },
       token: { symbol },
@@ -43,7 +44,7 @@ class LogoTicker extends Component {
               ? formatMoney(ticker.price)
               : `${formatAmount(ticker.price)} ${symbol}`}
           </Text>
-          {changePercent ? (
+          {changePercent && showChangePercent ? (
             <MutedText
               style={[
                 { fontSize: 14 },
@@ -70,7 +71,8 @@ LogoTicker.propTypes = {
     medium: PropTypes.bool,
     large: PropTypes.bool,
     xlarge: PropTypes.bool
-  })
+  }),
+  showChangePercent: PropTypes.bool
 };
 
 LogoTicker.defaultProps = {
@@ -79,7 +81,8 @@ LogoTicker.defaultProps = {
     rounded: true,
     activeOpacity: 0.7,
     overlayContainerStyle: { backgroundColor: 'transparent' }
-  }
+  },
+  showChangePercent: true
 };
 
 const style = {

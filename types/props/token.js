@@ -36,6 +36,6 @@ export const tokenProp = PropTypes.shape({
   name: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   decimals: PropTypes.number.isRequired,
-  allowance: BigNumber,
-  balance: BigNumber
+  allowance: PropTypes.instanceOf(BigNumber),
+  balance: PropTypes.instanceOf(BigNumber)
 });

@@ -1,12 +1,13 @@
+import { ZeroEx } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { colors, getProfitLossStyle } from '../../../styles';
-import { formatAmount, formatAmountWithDecimals } from '../../../utils';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
+import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import NavigationService from '../../services/NavigationService';
 import {
   convertZeroExOrderToLimitOrder,
@@ -51,47 +52,81 @@ class PreviewLimitOrder extends Component {
     if (!receipt) return NavigationService.goBack();
 
     const { subtotal, fee, total } = receipt;
-    const quoteBalance = getBalanceByAddress(quoteToken.address);
+    const funds = ZeroEx.toUnitAmount(
+      getBalanceByAddress(quoteToken.address),
+      quoteToken.decimals
+    );
+    const fundsAfterOrder = funds.sub(total);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
         <TwoColumnListItem
           left="Sub-Total"
-          right={formatAmount(subtotal.toNumber())}
+          right={
+            <FormattedTokenAmount
+              amount={subtotal}
+              symbol={quoteToken.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={false}
-          leftStyle={{
-            color: colors.primary,
-            height: 30
-          }}
-          rightStyle={{
-            color: colors.primary,
-            height: 30
-          }}
+          leftStyle={[styles.tokenAmountLeft]}
         />
         <TwoColumnListItem
           left="Fee"
-          right={formatAmount(fee.toNumber())}
+          right={
+            <FormattedTokenAmount
+              amount={fee}
+              symbol={quoteToken.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={false}
           leftStyle={{ color: colors.primary, height: 30 }}
-          rightStyle={{ color: colors.primary, height: 30 }}
         />
         <TwoColumnListItem
           left="Total"
-          leftStyle={{ height: 30 }}
-          right={formatAmount(total.toNumber())}
-          rightStyle={[getProfitLossStyle(total.toNumber()), { height: 30 }]}
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={total}
+              symbol={quoteToken.symbol}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(total.toNumber())
+              ]}
+            />
+          }
           rowStyle={{ marginTop: 10 }}
           topDivider={true}
           bottomDivider={true}
         />
         <TwoColumnListItem
           left="Funds Available"
-          leftStyle={{ height: 30 }}
-          right={`${formatAmountWithDecimals(
-            quoteBalance,
-            quoteToken.decimals
-          )} ${quoteToken.symbol}`}
-          rightStyle={{ height: 30 }}
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={funds}
+              symbol={quoteToken.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          rowStyle={{ marginTop: 10 }}
+          bottomDivider={true}
+        />
+        <TwoColumnListItem
+          left="Funds After Order"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={fundsAfterOrder}
+              symbol={quoteToken.symbol}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(total.toNumber())
+              ]}
+            />
+          }
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
         />
@@ -207,3 +242,16 @@ export default connect(
   }),
   dispatch => ({ dispatch })
 )(PreviewLimitOrder);
+
+const styles = {
+  tokenAmountLeft: {
+    color: colors.primary,
+    height: 30
+  },
+  tokenAmountRight: {
+    flex: 1,
+    textAlign: 'right',
+    height: 30,
+    color: colors.primary
+  }
+};

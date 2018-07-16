@@ -4,13 +4,18 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
+import * as styles from '../../../styles';
 import { loadOrders } from '../../../thunks';
 import { isValidAmount } from '../../../utils';
+import FormattedTokenAmount from '../../components/FormattedTokenAmount';
+import MutedText from '../../components/MutedText';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import LogoTicker from '../../views/LogoTicker';
 import NavigationService from '../../services/NavigationService';
-import { getFillableOrders } from '../../services/OrderService';
+import {
+  getAveragePrice,
+  getFillableOrders
+} from '../../services/OrderService';
 
 class FillOrders extends Component {
   constructor(props) {
@@ -18,7 +23,9 @@ class FillOrders extends Component {
 
     this.state = {
       amount: '',
-      amountError: false
+      amountError: false,
+      priceAverage: 0,
+      fillableOrders: []
     };
   }
 
@@ -31,7 +38,7 @@ class FillOrders extends Component {
       navigation: {
         state: {
           params: {
-            product: { base },
+            product: { base, quote },
             side
           }
         }
@@ -53,15 +60,59 @@ class FillOrders extends Component {
           cursor={true}
           cursorProps={{ style: { marginLeft: 2 } }}
           format={false}
+          right={
+            <FormattedTokenAmount
+              amount={this.state.priceAverage}
+              symbol={quote.symbol}
+            />
+          }
         />
         <TokenAmountKeyboard
           onChange={value => this.onSetAmount(value)}
           onSubmit={() => this.submit()}
           pressMode="char"
           buttonTitle={this.getButtonTitle()}
+          disableButton={this.state.fillableOrders.length === 0}
         />
+        {this.state.amount && this.state.fillableOrders.length === 0 ? (
+          <MutedText
+            style={[styles.flex1, styles.row, styles.center, styles.textcenter]}
+          >
+            If button is disabled, it means there are no orders to fill.
+          </MutedText>
+        ) : null}
       </View>
     );
+  }
+
+  async updateAveragePrice(amount = null) {
+    const {
+      navigation: {
+        state: {
+          params: {
+            product: { base },
+            side
+          }
+        }
+      }
+    } = this.props;
+
+    if (!amount) {
+      amount = this.state.amount;
+    }
+
+    if (!isValidAmount(amount)) {
+      return;
+    }
+
+    const fillableOrders = await getFillableOrders(
+      base.address,
+      amount || new BigNumber(0).toString(),
+      side
+    );
+    const priceAverage = await getAveragePrice(fillableOrders, side);
+
+    this.setState({ priceAverage, fillableOrders });
   }
 
   getTokenInputTitle() {
@@ -112,6 +163,8 @@ class FillOrders extends Component {
     } else {
       this.setState({ amountError: true });
     }
+
+    this.updateAveragePrice(newText);
   }
 
   async submit() {
@@ -133,10 +186,6 @@ class FillOrders extends Component {
     }
 
     const orders = await getFillableOrders(base.address, amount, side);
-    // const baseAmount = ZeroEx.toBaseUnitAmount(
-    //   new BigNumber(amount || 0),
-    //   base.decimals
-    // );
 
     if (orders.length > 0) {
       NavigationService.navigate('PreviewOrders', {

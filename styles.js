@@ -35,12 +35,22 @@ export const primary = {
   backgroundColor: colors.background
 };
 
-export const bigcenter = {
-  flex: 1,
-  flexDirection: 'column',
+export const textcenter = {
+  textAlign: 'center'
+};
+
+export const center = {
   justifyContent: 'center',
   alignItems: 'center'
 };
+
+export const bigcenter = [
+  {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  center
+];
 
 export const bigtop = {
   flex: 1,

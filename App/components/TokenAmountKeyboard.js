@@ -22,6 +22,7 @@ export default class TokenAmountKeyboard extends Component {
           onPress={() => this.onSubmit()}
           containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
           iconRight={this.props.buttonIconRight}
+          disabled={this.props.disableButton}
         />
       </View>
     );
@@ -41,9 +42,11 @@ TokenAmountKeyboard.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   buttonTitle: PropTypes.string.isRequired,
   buttonIcon: PropTypes.node,
-  buttonIconRight: PropTypes.bool
+  buttonIconRight: PropTypes.bool,
+  disableButton: PropTypes.bool
 };
 
 TokenAmountKeyboard.defaultProps = {
-  buttonTitle: 'Submit'
+  buttonTitle: 'Submit',
+  disableButton: false
 };

@@ -5,11 +5,11 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { getProfitLossStyle } from '../../../styles';
+import { colors, getProfitLossStyle } from '../../../styles';
 import { loadOrders } from '../../../thunks';
-import { formatAmount, formatAmountWithDecimals } from '../../../utils';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
+import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
 import {
@@ -30,13 +30,9 @@ class Order extends Component {
         checkmark={highlight}
         title={
           <Row style={[{ flex: 1 }]}>
-            <Text>
-              {formatAmount(amount)} {base.symbol}
-            </Text>
+            <FormattedTokenAmount amount={amount} symbol={base.symbol} />
             <Text> </Text>
-            <Text>
-              {formatAmount(price)} {quote.symbol}
-            </Text>
+            <FormattedTokenAmount amount={price} symbol={quote.symbol} />
           </Row>
         }
         bottomDivider
@@ -102,35 +98,63 @@ class PreviewFillOrders extends Component {
     } = this.props;
 
     const { priceAverage, subtotal, fee, total } = this.state.receipt;
+    const funds = ZeroEx.toUnitAmount(
+      getBalanceByAddress(quote.address),
+      quote.decimals
+    );
+    const fundsAfterOrder = funds.sub(total);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
         <TwoColumnListItem
           left="Average Price"
           leftStyle={{ height: 30 }}
-          right={formatAmount(priceAverage)}
-          rightStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={priceAverage}
+              symbol={quote.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={false}
         />
         <TwoColumnListItem
           left="Sub-Total"
           leftStyle={{ height: 30 }}
-          right={formatAmount(subtotal.toNumber())}
-          rightStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={subtotal}
+              symbol={quote.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={false}
         />
         <TwoColumnListItem
           left="Fee"
           leftStyle={{ height: 30 }}
-          right={formatAmount(fee.toNumber())}
-          rightStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={fee}
+              symbol={quote.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={false}
         />
         <TwoColumnListItem
           left="Total"
           leftStyle={{ height: 30 }}
-          right={formatAmount(total.toNumber())}
-          rightStyle={[getProfitLossStyle(total.toNumber()), { height: 30 }]}
+          right={
+            <FormattedTokenAmount
+              amount={total}
+              symbol={quote.symbol}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(total.toNumber())
+              ]}
+            />
+          }
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
           topDivider={true}
@@ -138,10 +162,31 @@ class PreviewFillOrders extends Component {
         <TwoColumnListItem
           left="Funds Available"
           leftStyle={{ height: 30 }}
-          right={`${formatAmountWithDecimals(
-            getBalanceByAddress(quote.address),
-            quote.decimals
-          )} ${quote.symbol}`}
+          right={
+            <FormattedTokenAmount
+              amount={funds}
+              symbol={quote.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          rightStyle={{ height: 30 }}
+          rowStyle={{ marginTop: 10 }}
+          bottomDivider={true}
+        />
+
+        <TwoColumnListItem
+          left="Funds After Filling Orders"
+          leftStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={fundsAfterOrder}
+              symbol={quote.symbol}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(total.toNumber())
+              ]}
+            />
+          }
           rightStyle={{ height: 30 }}
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
@@ -226,12 +271,7 @@ class PreviewFillOrders extends Component {
     const {
       navigation: {
         state: {
-          params: {
-            product: { quote, base },
-            orders,
-            side,
-            amount
-          }
+          params: { orders, side, amount }
         }
       }
     } = this.props;
@@ -302,3 +342,16 @@ PreviewFillOrders.propTypes = {
 export default connect(() => ({}), dispatch => ({ dispatch }))(
   PreviewFillOrders
 );
+
+const styles = {
+  tokenAmountLeft: {
+    color: colors.primary,
+    height: 30
+  },
+  tokenAmountRight: {
+    flex: 1,
+    textAlign: 'right',
+    height: 30,
+    color: colors.primary
+  }
+};

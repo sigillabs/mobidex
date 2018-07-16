@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { formatAmount, getImage } from '../../utils';
+import { formatAmount, formatSymbol, getImage } from '../../utils';
+import FormattedSymbol from './FormattedSymbol';
 import MutedText from './MutedText';
 import BlinkingCursor from './BlinkingCursor';
 
@@ -15,6 +16,7 @@ export default class TokenAmount extends Component {
       avatarProps,
       symbol,
       name,
+      right,
       format,
       cursor,
       onPress,
@@ -36,19 +38,22 @@ export default class TokenAmount extends Component {
       >
         {label ? <MutedText>{label}</MutedText> : null}
         <View style={[styles.wrapper, wrapperStyle]}>
-          {icon ? icon : <Avatar source={getImage(symbol)} {...avatarProps} />}
+          {icon ? (
+            icon
+          ) : (
+            <Avatar source={getImage(formatSymbol(symbol))} {...avatarProps} />
+          )}
           <View style={[styles.amountContainer, amountContainerStyle]}>
             <Text style={[amountStyle]}>
               {format ? formatAmount(amount) : amount.toString()}
             </Text>
             {cursor ? <BlinkingCursor /> : null}
           </View>
-          <Text style={[styles.symbol, symbolStyle]}>
-            {symbol.toUpperCase()}
-          </Text>
+          <FormattedSymbol name={symbol} style={[styles.symbol, symbolStyle]} />
           {name ? (
             <MutedText style={[styles.name, nameStyle]}>{name}</MutedText>
           ) : null}
+          {right ? right : null}
         </View>
       </TouchableOpacity>
     );
@@ -60,6 +65,7 @@ TokenAmount.propTypes = {
   amount: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
   name: PropTypes.string,
+  right: PropTypes.element,
   format: PropTypes.bool,
   cursor: PropTypes.bool,
   onPress: PropTypes.func,

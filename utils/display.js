@@ -7,6 +7,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false, EXPONENTIAL_AT: [-77, 77] });
 
+export function formatSymbol(symbol) {
+  if (!symbol) return symbol;
+  const _symbol = symbol.toUpperCase().trim();
+  return _symbol === 'WETH' ? 'ETH' : _symbol;
+}
+
 export function summarizeAddress(address) {
   if (!address) return address;
   if (typeof address !== 'string') return address;

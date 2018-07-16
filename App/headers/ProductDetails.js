@@ -27,7 +27,7 @@ class ProductDetailsHeader extends Component {
             </TouchableOpacity>
           ) : null
         }
-        centerComponent={<LogoTicker token={token} />}
+        centerComponent={<LogoTicker token={token} showChangePercent={false} />}
         rightComponent={
           this.props.showForexToggleButton ? (
             <TouchableOpacity

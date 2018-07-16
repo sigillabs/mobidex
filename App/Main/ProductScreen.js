@@ -11,6 +11,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import {
+  loadAssets,
   loadProducts,
   loadTokens,
   updateForexTickers,
@@ -269,6 +270,7 @@ class ProductScreen extends Component {
     this.requestAnimationFrame(async () => {
       await this.props.dispatch(loadProducts());
       await this.props.dispatch(loadTokens(true));
+      await this.props.dispatch(loadAssets());
       await this.props.dispatch(updateForexTickers());
       await this.props.dispatch(updateTokenTickers());
       this.setState({ refreshing: false });
