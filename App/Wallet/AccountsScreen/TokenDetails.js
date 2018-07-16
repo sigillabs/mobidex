@@ -5,36 +5,20 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { gotoSendScreen, gotoReceiveScreen } from '../../../thunks';
-import {
-  formatAmountWithDecimals,
-  summarizeAddress,
-  getImage
-} from '../../../utils';
+import { formatAmountWithDecimals, getImage } from '../../../utils';
 import Button from '../../components/Button';
 
 class TokenDetails extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showAddress: false
-    };
+  receive() {
+    this.props.dispatch(gotoReceiveScreen(this.props.token));
   }
 
-  receive = () => {
-    this.props.dispatch(gotoReceiveScreen(this.props.token));
-  };
-
-  send = () => {
+  send() {
     this.props.dispatch(gotoSendScreen(this.props.token));
-  };
-
-  toggleShowAddress = () => {
-    this.setState({ showAddress: !this.state.showAddress });
-  };
+  }
 
   render() {
-    let { token, address } = this.props;
+    let { token } = this.props;
     let { balance, decimals } = token;
 
     return (
@@ -52,13 +36,9 @@ class TokenDetails extends Component {
           rounded
           source={getImage(token.symbol)}
           activeOpacity={0.7}
-          onPress={this.toggleShowAddress}
         />
         <Text style={{ marginTop: 5 }}>
           {formatAmountWithDecimals(balance, decimals)}
-        </Text>
-        <Text style={{ marginTop: 5 }} onPress={this.toggleShowAddress}>
-          {this.state.showAddress ? address : summarizeAddress(address)}
         </Text>
 
         <View
@@ -76,7 +56,7 @@ class TokenDetails extends Component {
             icon={
               <MaterialCommunityIcons name="qrcode" color="white" size={18} />
             }
-            onPress={this.receive}
+            onPress={() => this.receive()}
           />
           <View style={{ width: 10 }} />
           <Button
@@ -84,7 +64,7 @@ class TokenDetails extends Component {
             title="Send"
             icon={<MaterialIcons name="send" color="white" size={18} />}
             iconRight={true}
-            onPress={this.send}
+            onPress={() => this.send()}
           />
         </View>
       </View>

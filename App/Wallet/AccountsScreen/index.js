@@ -18,37 +18,37 @@ class AccountsView extends Component {
     super(props);
 
     this.state = {
-      token: null
+      token: 'ETH'
     };
   }
 
   render() {
-    let ethToken = _.find(this.props.assets, { symbol: 'ETH' });
-    let filteredTokens = _.filter(
-      this.props.assets,
-      asset => asset.symbol !== 'ETH' && asset.symbol !== 'WETH'
+    const token = _.find(this.props.assets, { symbol: this.state.token });
+    const ethToken = _.find(this.props.assets, { symbol: 'ETH' });
+    const tokens = [ethToken].concat(
+      _.filter(this.props.assets, asset => asset.symbol !== 'WETH')
     );
 
     return (
       <View>
         <Row>
-          <TokenDetails token={this.state.token || ethToken} />
+          <TokenDetails token={token} />
         </Row>
         <Row>
           <TokenList
-            token={this.state.token}
-            tokens={filteredTokens}
-            onPress={token =>
-              this.state.token !== token
-                ? this.setState({ token })
-                : this.setState({ token: null })
-            }
+            token={token}
+            tokens={tokens}
+            onPress={token => this.setState({ token: token.symbol })}
           />
         </Row>
       </View>
     );
   }
 }
+
+AccountsView.propTypes = {
+  assets: PropTypes.arrayOf(PropTypes.object).isRequired
+};
 
 class AccountsScreen extends Component {
   constructor(props) {
