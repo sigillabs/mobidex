@@ -11,6 +11,7 @@ import {
 import Row from '../../components/Row';
 import PageRoot from '../../components/PageRoot';
 import TokenList from './TokenList';
+import PortfolioDetails from './PortfolioDetails';
 import TokenDetails from './TokenDetails';
 
 class AccountsView extends Component {
@@ -26,19 +27,30 @@ class AccountsView extends Component {
     const token = _.find(this.props.assets, { symbol: this.state.token });
     const ethToken = _.find(this.props.assets, { symbol: 'ETH' });
     const tokens = [ethToken].concat(
-      _.filter(this.props.assets, asset => asset.symbol !== 'WETH')
+      _.filter(
+        this.props.assets,
+        asset => asset.symbol !== 'WETH' && asset.symbol !== 'ETH'
+      )
     );
 
     return (
       <View>
         <Row>
-          <TokenDetails token={token} />
+          {this.state.token ? (
+            <TokenDetails token={token} />
+          ) : (
+            <PortfolioDetails assets={this.props.assets} />
+          )}
         </Row>
         <Row>
           <TokenList
             token={token}
             tokens={tokens}
-            onPress={token => this.setState({ token: token.symbol })}
+            onPress={token =>
+              this.setState({
+                token: this.state.token !== token.symbol ? token.symbol : null
+              })
+            }
           />
         </Row>
       </View>

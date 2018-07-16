@@ -280,6 +280,9 @@ const MainTabsNavigator = createTabNavigator(
           case 'Wallet':
             return <Ionicons name="md-card" size={25} color={tintColor} />;
 
+          case 'Orders':
+            return <Ionicons name="ios-book" size={25} color={tintColor} />;
+
           case 'Settings':
             return <Ionicons name="ios-settings" size={25} color={tintColor} />;
         }

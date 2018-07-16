@@ -19,7 +19,7 @@ class TokenDetails extends Component {
 
   render() {
     let { token } = this.props;
-    let { balance, decimals } = token;
+    let { balance, decimals, symbol } = token;
 
     return (
       <View
@@ -38,7 +38,7 @@ class TokenDetails extends Component {
           activeOpacity={0.7}
         />
         <Text style={{ marginTop: 5 }}>
-          {formatAmountWithDecimals(balance, decimals)}
+          {formatAmountWithDecimals(balance, decimals)} {symbol}
         </Text>
 
         <View
