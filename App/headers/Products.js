@@ -5,7 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import { toggleShowForex } from '../../actions';
+import ToggleForexButton from '../components/ToggleForexButton';
 import NavigationService from '../services/NavigationService';
 import * as TokenService from '../services/TokenService';
 
@@ -32,14 +32,7 @@ class ProductsHeader extends Component {
           style: { color: 'black', fontSize: 18 }
         }}
         rightComponent={
-          this.props.showForexToggleButton ? (
-            <TouchableOpacity
-              style={{ padding: 10 }}
-              onPress={() => this.props.dispatch(toggleShowForex())}
-            >
-              <Icon name="attach-money" color="black" size={15} />
-            </TouchableOpacity>
-          ) : null
+          this.props.showForexToggleButton ? <ToggleForexButton /> : null
         }
         outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
@@ -80,14 +73,12 @@ ProductsHeader.propTypes = {
   showForexToggleButton: PropTypes.bool,
   title: PropTypes.string,
   product: PropTypes.object,
-  settings: PropTypes.object,
   dispatch: PropTypes.func.isRequired
 };
 
 export default connect(
   state => ({
-    tokens: state.relayer.tokens,
-    settings: state.settings
+    tokens: state.relayer.tokens
   }),
   dispatch => ({ dispatch })
 )(ProductsHeader);

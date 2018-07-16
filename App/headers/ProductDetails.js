@@ -4,9 +4,9 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import { toggleShowForex } from '../../actions';
 import { colors } from '../../styles';
 import LogoTicker from '../views/LogoTicker';
+import ToggleForexButton from '../components/ToggleForexButton';
 import NavigationService from '../services/NavigationService';
 
 class ProductDetailsHeader extends Component {
@@ -29,14 +29,7 @@ class ProductDetailsHeader extends Component {
         }
         centerComponent={<LogoTicker token={token} showChangePercent={false} />}
         rightComponent={
-          this.props.showForexToggleButton ? (
-            <TouchableOpacity
-              style={{ padding: 10 }}
-              onPress={() => this.props.dispatch(toggleShowForex())}
-            >
-              <Icon name="attach-money" color="black" size={15} />
-            </TouchableOpacity>
-          ) : null
+          this.props.showForexToggleButton ? <ToggleForexButton /> : null
         }
         outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
@@ -53,8 +46,7 @@ ProductDetailsHeader.propTypes = {
 
 export default connect(
   state => ({
-    tokens: state.relayer.tokens,
-    settings: state.settings
+    tokens: state.relayer.tokens
   }),
   dispatch => ({ dispatch })
 )(ProductDetailsHeader);
