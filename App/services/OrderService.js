@@ -270,9 +270,26 @@ export async function fillOrder(order, amount = null, side = 'buy') {
       token.decimals
     )
       .div(orderAmount)
-      .mul(order.takerTokenAmount);
+      .mul(order.takerTokenAmount)
+      .sub(order.filledTakerTokenAmount);
+
+    // Rounding does not work
+    // Big hack
+    if (fillBaseUnitAmount.dp() > 0) {
+      fillBaseUnitAmount = new BigNumber(
+        fillBaseUnitAmount.toString().slice(0, -1 - fillBaseUnitAmount.dp())
+      );
+    }
   } else {
     fillBaseUnitAmount = order.takerTokenAmount;
+  }
+
+  const maxFillAmount = new BigNumber(order.takerTokenAmount).sub(
+    order.filledTakerTokenAmount
+  );
+
+  if (fillBaseUnitAmount.gt(maxFillAmount)) {
+    fillBaseUnitAmount = maxFillAmount;
   }
 
   await checkAndWrapEther(order.takerTokenAddress, fillBaseUnitAmount, true);
@@ -471,28 +488,42 @@ export async function getOrdersBatch(orders, amount = null, side = 'buy') {
   if (orders.length === 0) return orders;
 
   let amountProperty;
+  let filledProperty;
   let tokenAddress;
 
   switch (side) {
     case 'buy':
       tokenAddress = orders[0].makerTokenAddress;
       amountProperty = 'makerTokenAmount';
+      filledProperty = 'filledMakerTokenAmount';
       break;
 
     case 'sell':
       tokenAddress = orders[0].takerTokenAddress;
       amountProperty = 'takerTokenAmount';
+      filledProperty = 'filledTakerTokenAmount';
       break;
   }
 
   const token = await TokenService.findTokenByAddress(tokenAddress);
-  const amountBN = ZeroEx.toBaseUnitAmount(
+  let amountBN = ZeroEx.toBaseUnitAmount(
     new BigNumber(amount || 0),
     token.decimals
   );
   const ordersToFill = _.chain(orders)
     .map(o => {
-      if (amount === null || amountBN.gt(o.takerTokenAmount)) {
+      if (new BigNumber(o.filledTakerTokenAmount).gte(o.takerTokenAmount)) {
+        return null;
+      }
+
+      if (new BigNumber(o[filledProperty]).gte(o[amountProperty])) {
+        return null;
+      }
+
+      const fillable = new BigNumber(o[amountProperty]).sub(o[filledProperty]);
+
+      if (amount === null || amountBN.gt(fillable)) {
+        amountBN = amountBN.sub(fillable);
         return {
           signedOrder: o,
           takerTokenFillAmount: new BigNumber(o.takerTokenAmount).sub(
@@ -501,16 +532,30 @@ export async function getOrdersBatch(orders, amount = null, side = 'buy') {
         };
       } else {
         const ratio = amountBN.div(o[amountProperty]);
+        let fillAmount = ratio.mul(o.takerTokenAmount);
+
+        // Rounding does not work
+        // Big hack
+        if (fillAmount.dp() > 0) {
+          fillAmount = new BigNumber(
+            fillAmount.toString().slice(0, -1 - fillAmount.dp())
+          );
+        }
+
+        const maxFillAmount = new BigNumber(o.takerTokenAmount).sub(
+          o.filledTakerTokenAmount
+        );
+
         return {
           signedOrder: o,
-          takerTokenFillAmount: ratio
-            .mul(o.takerTokenAmount)
-            .sub(o.filledTakerTokenAmount)
+          takerTokenFillAmount: fillAmount.gt(maxFillAmount)
+            ? maxFillAmount
+            : fillAmount
         };
       }
     })
     .filter(_.identity)
-    .filter(({ takerTokenFillAmount }) => !takerTokenFillAmount.eq(0))
+    .filter(({ takerTokenFillAmount }) => !takerTokenFillAmount.lte(0))
     .value();
 
   return ordersToFill;

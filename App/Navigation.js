@@ -266,6 +266,8 @@ const MainTabsNavigator = createTabNavigator(
         switch (navigation.state.routeName) {
           case 'Products':
             return 'Trade';
+          case 'Settings':
+            return 'About';
           default:
             return navigation.state.routeName;
         }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import { Platform, TouchableHighlight, View } from 'react-native';
+import { Platform, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -30,17 +30,19 @@ export default class UnlockWithFingerScreen extends Component {
 
     return (
       <View style={styles.bigcenter}>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={() => this.unlock()}
-          style={[styles.bigcenter, styles.flex1]}
+          style={[styles.bigbottom, styles.flex1]}
         >
           <View>
             <MaterialIcon name="fingerprint" color="black" size={100} />
             <Text>Press to unlock</Text>
           </View>
-        </TouchableHighlight>
-        <View style={[styles.bigtop, styles.flex1]}>
+        </TouchableOpacity>
+        <View style={[styles.padding2, styles.flex0]}>
           {this.state.error ? this.renderError() : <Text>Or</Text>}
+        </View>
+        <View style={[styles.bigtop, styles.flex1]}>
           <Button
             onPress={() => NavigationService.navigate('UnlockWithPin')}
             title={'Unlock with pin'}

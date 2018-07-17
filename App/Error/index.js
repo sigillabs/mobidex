@@ -76,6 +76,7 @@ const styles = {
   text: {
     fontSize: 18,
     color: colors.primary,
-    paddingBottom: 10
+    paddingBottom: 10,
+    textAlign: 'center'
   }
 };

@@ -11,6 +11,7 @@ import {
   getImage
 } from '../../utils';
 import MutedText from '../components/MutedText';
+import SmallText from '../components/SmallText';
 import Row from '../components/Row';
 import * as TickerService from '../services/TickerService';
 
@@ -41,7 +42,8 @@ class LogoTicker extends Component {
           <Text style={[{ fontSize: 24 }, priceStyle]}>
             {showForexPrices
               ? formatMoney(ticker.price)
-              : `${formatAmount(ticker.price)} ${symbol}`}
+              : formatAmount(ticker.price)}
+            {!showForexPrices ? <SmallText>/{symbol}</SmallText> : null}
           </Text>
           {showChangePercent ? (
             <MutedText

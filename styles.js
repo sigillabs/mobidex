@@ -93,6 +93,22 @@ export const padding0 = {
   paddingLeft: 0
 };
 
+export const padding1 = {
+  padding: 5,
+  paddingTop: 5,
+  paddingRight: 5,
+  paddingBottom: 5,
+  paddingLeft: 5
+};
+
+export const padding2 = {
+  padding: padding1.padding * 2,
+  paddingTop: padding1.paddingTop * 2,
+  paddingRight: padding1.paddingRight * 2,
+  paddingBottom: padding1.paddingBottom * 2,
+  paddingLeft: padding1.paddingLeft * 2
+};
+
 export const margin0 = {
   margin: 0,
   marginTop: 0,

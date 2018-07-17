@@ -41,6 +41,18 @@ export function filterOrdersToBaseAmount(orders, amount, taker = false) {
 
   if (fillableTotal.lt(amount)) {
     for (const order of orders) {
+      if (
+        taker &&
+        new BigNumber(order.filledTakerTokenAmount).gte(order.takerTokenAmount)
+      ) {
+        continue;
+      }
+      if (
+        !taker &&
+        new BigNumber(order.filledMakerTokenAmount).gte(order.makerTokenAmount)
+      ) {
+        continue;
+      }
       ordersToFill.push(order);
       fillableTotal = fillableTotal.add(
         taker ? order.takerTokenAmount : order.makerTokenAmount
