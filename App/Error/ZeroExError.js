@@ -14,6 +14,7 @@ export default class ZeroExError extends Component {
       case 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT':
       case 'ORDER_ALREADY_CANCELLED_OR_FILLED':
       case 'INSUFFICIENT_TAKER_ALLOWANCE':
+      case 'INSUFFICIENT_TAKER_BALANCE':
       case 'ORDER_FILL_AMOUNT_ZERO':
       case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
         return true;
@@ -40,6 +41,7 @@ export default class ZeroExError extends Component {
             You are trying to withdraw too much Ether!
           </Text>
         );
+      case 'INSUFFICIENT_TAKER_BALANCE':
       case 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT':
         return (
           <Text style={styles.text}>
