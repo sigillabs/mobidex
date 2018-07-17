@@ -5,7 +5,6 @@ import { Avatar, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
 import {
-  detailsFromTicker,
   formatAmount,
   formatMoney,
   formatPercent,
@@ -30,7 +29,7 @@ class LogoTicker extends Component {
 
     if (!ticker) return null;
 
-    const { changePercent } = detailsFromTicker(ticker);
+    const changePercent = TickerService.get24HRChangePercent(ticker);
     const { rowStyle, priceStyle, priceChangeStyle } = more;
 
     return (
@@ -44,7 +43,7 @@ class LogoTicker extends Component {
               ? formatMoney(ticker.price)
               : `${formatAmount(ticker.price)} ${symbol}`}
           </Text>
-          {changePercent && showChangePercent ? (
+          {showChangePercent ? (
             <MutedText
               style={[
                 { fontSize: 14 },

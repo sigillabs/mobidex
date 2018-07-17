@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { StyleSheet } from 'react-native';
 
 export const colors = {
@@ -103,9 +104,10 @@ export const margin0 = {
 export const fluff0 = [padding0, margin0];
 
 export function getProfitLossColor(number) {
-  if (number > 0) {
+  number = new BigNumber(number);
+  if (number.gt(0)) {
     return colors.green0;
-  } else if (number < 0) {
+  } else if (number.lt(0)) {
     return colors.red0;
   } else {
     return colors.primary;

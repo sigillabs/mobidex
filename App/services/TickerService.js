@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 let _store;
 
 export function setStore(store) {
@@ -42,4 +44,73 @@ export function getForexTicker(tokenSymbol = null, forexSymbol = null) {
   if (!forex[tokenSymbol][forexSymbol]) return null;
 
   return forex[tokenSymbol][forexSymbol];
+}
+
+export function get24HRAverage(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.price) return new BigNumber(0);
+  if (!ticker.history) return new BigNumber(0);
+  if (!ticker.history.day) return new BigNumber(0);
+  if (!ticker.history.day.length) return new BigNumber(0);
+
+  const prices = ticker.history.day.map(({ price }) => new BigNumber(price));
+
+  return prices
+    .reduce((sum, price) => sum.add(price), new BigNumber(0))
+    .div(prices.length);
+}
+
+export function get24HRMin(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.daymin) return new BigNumber(0);
+
+  return new BigNumber(ticker.daymin);
+}
+
+export function get24HRMax(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.daymax) return new BigNumber(0);
+
+  return new BigNumber(ticker.daymax);
+}
+
+export function get24HRChange(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.price) return new BigNumber(0);
+  if (!ticker.history) return new BigNumber(0);
+  if (!ticker.history.day) return new BigNumber(0);
+  if (!ticker.history.day.length) return new BigNumber(0);
+
+  const start = new BigNumber(
+    ticker.history.day[ticker.history.day.length - 1].price
+  );
+  const end = new BigNumber(ticker.history.day[0].price);
+
+  return end.sub(start);
+}
+
+export function get24HRChangePercent(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.price) return new BigNumber(0);
+  if (!ticker.history) return new BigNumber(0);
+  if (!ticker.history.day) return new BigNumber(0);
+  if (!ticker.history.day.length) return new BigNumber(0);
+
+  const start = new BigNumber(
+    ticker.history.day[ticker.history.day.length - 1].price
+  );
+  const end = new BigNumber(ticker.history.day[0].price);
+
+  if (start.eq(0)) {
+    return new BigNumber(0);
+  }
+
+  return end.sub(start).div(start);
+}
+
+export function getCurrentPrice(ticker) {
+  if (!ticker) return new BigNumber(0);
+  if (!ticker.price) return new BigNumber(0);
+
+  return new BigNumber(ticker.price);
 }

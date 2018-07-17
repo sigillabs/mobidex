@@ -8,8 +8,6 @@ import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
 import { updateForexTickers, updateTokenTickers } from '../../thunks';
 import {
-  detailsFromTicker,
-  history as fetchHistory,
   formatAmount,
   formatMoney,
   formatPercent,
@@ -120,46 +118,40 @@ class TokenProductDetailsView extends Component {
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = ticker.history[period];
-    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
-      ticker
-    );
+    const price = TickerService.getCurrentPrice(ticker);
+    const average = TickerService.get24HRAverage(ticker);
+    const change = TickerService.get24HRChange(ticker);
+    const changePercent = TickerService.get24HRChangePercent(ticker);
+    const max = TickerService.get24HRMax(ticker);
+    const min = TickerService.get24HRMin(ticker);
     const infolist = [
       {
         key: 'price',
         left: 'Price',
-        right: `${formatAmount(ticker.price || 0)} ${quote.symbol}`
+        right: `${formatAmount(price)} ${quote.symbol}`
       },
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: `${formatAmount(dayAverage || 0)} ${quote.symbol}`
+        right: `${formatAmount(average)} ${quote.symbol}`
       },
       {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
-        right:
-          ticker.daymax !== null
-            ? `${changePrice < 0 ? '-' : ''}${formatAmount(
-                Math.abs(changePrice || 0)
-              )} ${quote.symbol} (${formatPercent(changePercent || 0)})`
-            : 'N/A',
-        rightStyle: getProfitLossStyle(changePercent || 0)
+        right: `${formatAmount(change)} ${quote.symbol} (${formatPercent(
+          changePercent.abs()
+        )})`,
+        rightStyle: getProfitLossStyle(changePercent)
       },
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right:
-          ticker.daymax !== null
-            ? `${formatAmount(ticker.daymax)} ${quote.symbol}`
-            : 'N/A'
+        right: `${formatAmount(max)} ${quote.symbol}`
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right:
-          ticker.daymin !== null
-            ? `${formatAmount(ticker.daymin)} ${quote.symbol}`
-            : 'N/A'
+        right: `${formatAmount(min)} ${quote.symbol}`
       }
     ];
 
@@ -185,40 +177,40 @@ class ForexProductDetailsView extends Component {
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = ticker.history[period];
-    const { changePrice, changePercent, dayAverage } = detailsFromTicker(
-      ticker
-    );
+    const price = TickerService.getCurrentPrice(ticker);
+    const average = TickerService.get24HRAverage(ticker);
+    const change = TickerService.get24HRChange(ticker);
+    const changePercent = TickerService.get24HRChangePercent(ticker);
+    const max = TickerService.get24HRMax(ticker);
+    const min = TickerService.get24HRMin(ticker);
     const infolist = [
       {
         key: 'price',
         left: 'Price',
-        right: formatMoney(ticker.price)
+        right: formatMoney(price)
       },
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: formatMoney(dayAverage)
+        right: formatMoney(average)
       },
       {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
-        right:
-          ticker.daymax !== null
-            ? `${changePrice < 0 ? '-' : ''}${formatMoney(
-                Math.abs(changePrice)
-              )} (${formatPercent(changePercent)})`
-            : 'N/A',
+        right: `${change.lt(0) ? '-' : ''}${formatMoney(
+          change.abs()
+        )} (${formatPercent(changePercent)})`,
         rightStyle: getProfitLossStyle(changePercent)
       },
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right: ticker.daymax !== null ? formatMoney(ticker.daymax) : 'N/A'
+        right: formatMoney(max)
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right: ticker.daymin !== null ? formatMoney(ticker.daymin) : 'N/A'
+        right: formatMoney(min)
       }
     ];
 
@@ -242,7 +234,7 @@ class ProductDetailsScreen extends Component {
     super(props);
 
     this.state = {
-      period: 2,
+      period: 1,
       refreshing: false
     };
   }

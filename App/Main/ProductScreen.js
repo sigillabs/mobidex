@@ -17,12 +17,7 @@ import {
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
-import {
-  detailsFromTicker,
-  formatAmount,
-  formatMoney,
-  formatPercent
-} from '../../utils';
+import { formatAmount, formatMoney, formatPercent } from '../../utils';
 import Col from '../components/Col';
 import Row from '../components/Row';
 import EmptyList from '../components/EmptyList';
@@ -114,12 +109,14 @@ class BaseQuoteTokenItem extends Component {
       );
     }
 
-    const tokenDetails = detailsFromTicker(tokenTicker);
-
     return (
       <TokenItem
-        price={Math.abs(tokenDetails.price)}
-        change={Math.abs(tokenDetails.changePercent)}
+        price={TickerService.getCurrentPrice(tokenTicker)
+          .abs()
+          .toNumber()}
+        change={TickerService.get24HRChangePercent(tokenTicker)
+          .abs()
+          .toNumber()}
         priceFormatter={v =>
           `${formatAmount(v)} ${'WETH' ? 'ETH' : quoteToken.symbol}`
         }
@@ -145,7 +142,7 @@ class BaseForexTokenItem extends Component {
     if (!quoteToken) return null;
     if (!baseToken) return null;
 
-    const forexTicker = TickerService.getForexTicker(quoteToken.symbol);
+    const forexTicker = TickerService.getForexTicker(baseToken.symbol);
     const tokenTicker = TickerService.getQuoteTicker(
       baseToken.symbol,
       quoteToken.symbol
@@ -167,13 +164,14 @@ class BaseForexTokenItem extends Component {
       );
     }
 
-    const forexDetails = detailsFromTicker(forexTicker);
-    const tokenDetails = detailsFromTicker(tokenTicker);
-
     return (
       <TokenItem
-        price={Math.abs(tokenDetails.price * forexDetails.price)}
-        change={Math.abs(tokenDetails.changePercent)}
+        price={TickerService.getCurrentPrice(forexTicker)
+          .abs()
+          .toNumber()}
+        change={TickerService.get24HRChangePercent(forexTicker)
+          .abs()
+          .toNumber()}
         priceFormatter={formatMoney}
         {...this.props}
       />

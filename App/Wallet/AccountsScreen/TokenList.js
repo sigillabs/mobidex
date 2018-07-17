@@ -1,22 +1,23 @@
 import { ZeroEx } from '0x.js';
-import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { colors } from '../../../styles';
-import { findTickerDetails, formatAmount, formatMoney } from '../../../utils';
+import { formatAmount, formatMoney } from '../../../utils';
 import TokenIcon from '../../components/TokenIcon';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
+import * as TickerService from '../../services/TickerService';
 
-class BaseTokenItem extends Component {
+class TokenItem extends Component {
   render() {
-    const { token, ticker, settings } = this.props;
+    const { token } = this.props;
     const { decimals, symbol } = token;
-    const { forexCurrency } = settings;
     const balance = ZeroEx.toUnitAmount(token.balance, decimals);
-    const forex = findTickerDetails(ticker.forex, symbol, forexCurrency);
+    const price = TickerService.getCurrentPrice(
+      TickerService.getForexTicker(symbol)
+    );
 
     return (
       <View
@@ -29,29 +30,18 @@ class BaseTokenItem extends Component {
         <Text>
           {formatAmount(balance)} {symbol}
         </Text>
-        {forex && forex.price ? (
-          <Text>({formatMoney(balance.mul(forex.price).toNumber())})</Text>
-        ) : null}
+        <Text>({formatMoney(balance.mul(price).toNumber())})</Text>
       </View>
     );
   }
 }
 
-BaseTokenItem.propTypes = {
+TokenItem.propTypes = {
   token: PropTypes.object.isRequired,
-  ticker: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired
 };
 
-const TokenItem = connect(
-  state => ({
-    settings: state.settings,
-    ticker: state.ticker
-  }),
-  dispatch => ({ dispatch })
-)(BaseTokenItem);
-
-class TokenList extends Component {
+export default class TokenList extends Component {
   render() {
     const { tokens } = this.props;
 
@@ -95,13 +85,6 @@ TokenList.propTypes = {
   token: PropTypes.object,
   onPress: PropTypes.func.isRequired
 };
-
-export default connect(
-  state => ({
-    ...state.settings
-  }),
-  dispatch => ({ dispatch })
-)(TokenList);
 
 const styles = {
   highlight: {
