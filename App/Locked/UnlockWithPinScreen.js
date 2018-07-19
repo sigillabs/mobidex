@@ -33,7 +33,6 @@ class UnlockWithPinScreen extends Component {
           <PinView
             value={this.state.pin}
             containerStyle={{
-              flex: 4,
               alignItems: 'flex-end',
               marginBottom: 20
             }}

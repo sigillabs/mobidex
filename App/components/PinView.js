@@ -2,31 +2,48 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../../styles';
 
 class Cell extends Component {
   render() {
-    return (
-      <View style={[styles.cell, this.props.containerStyle]}>
-        {this.props.filled ? (
-          <Text style={[styles.cellText, this.props.textStyle]}>*</Text>
-        ) : (
-          <Text style={[styles.cellText, this.props.textStyle]}> </Text>
-        )}
-      </View>
-    );
+    if (this.props.filled) {
+      return (
+        <FontAwesome
+          name="circle"
+          style={[styles.cell, this.props.style]}
+          size={this.props.size}
+          color={this.props.color}
+        />
+      );
+    } else {
+      return (
+        <FontAwesome
+          name="circle-o"
+          style={[styles.cell, this.props.style]}
+          size={this.props.size}
+          color={this.props.color}
+        />
+      );
+    }
   }
 }
 
 Cell.propTypes = {
   filled: PropTypes.bool,
-  containerStyle: PropTypes.object,
-  textStyle: PropTypes.object
+  size: PropTypes.number,
+  color: PropTypes.string,
+  style: PropTypes.object
+};
+
+Cell.defaultProps = {
+  size: 20,
+  color: colors.primary
 };
 
 export default class PinView extends Component {
   render() {
-    const { cellStyle, cellTextStyle, containerStyle, value } = this.props;
+    const { cellStyle, containerStyle, value } = this.props;
     let characters = (value || '').split('');
     if (characters.length < 6) {
       characters = characters.concat(
@@ -36,12 +53,7 @@ export default class PinView extends Component {
       characters = characters.slice(0, 6);
     }
     const cells = characters.map((c, i) => (
-      <Cell
-        key={i}
-        filled={Boolean(c)}
-        containerStyle={cellStyle}
-        textStyle={cellTextStyle}
-      />
+      <Cell key={i} filled={Boolean(c)} style={cellStyle} />
     ));
 
     return <View style={[styles.container, containerStyle]}>{cells}</View>;
@@ -51,7 +63,6 @@ export default class PinView extends Component {
 PinView.propTypes = {
   value: PropTypes.string,
   cellStyle: PropTypes.object,
-  cellTextStyle: PropTypes.object,
   containerStyle: PropTypes.object
 };
 
@@ -62,16 +73,7 @@ PinView.defaultProps = {
 const styles = {
   cell: {
     width: 20,
-    marginHorizontal: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey3
-  },
-  cellText: {
-    color: colors.grey3,
-    fontSize: 20,
-    textAlign: 'center'
+    marginHorizontal: 3
   },
   container: {
     flex: 1,
