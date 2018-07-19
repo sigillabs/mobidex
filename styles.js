@@ -45,6 +45,16 @@ export const center = {
   alignItems: 'center'
 };
 
+export const top = {
+  justifyContent: 'flex-start',
+  alignItems: 'center'
+};
+
+export const bottom = {
+  justifyContent: 'flex-end',
+  alignItems: 'center'
+};
+
 export const bigcenter = [
   {
     flex: 1,
@@ -53,19 +63,21 @@ export const bigcenter = [
   center
 ];
 
-export const bigtop = {
-  flex: 1,
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  alignItems: 'center'
-};
+export const bigtop = [
+  {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  top
+];
 
-export const bigbottom = {
-  flex: 1,
-  flexDirection: 'column',
-  justifyContent: 'flex-end',
-  alignItems: 'center'
-};
+export const bigbottom = [
+  {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  bottom
+];
 
 export const row = {
   flexDirection: 'row',

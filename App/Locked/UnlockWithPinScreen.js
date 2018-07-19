@@ -5,6 +5,7 @@ import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
+import * as styles from '../../styles';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
 import PinKeyboard from '../components/PinKeyboard';
@@ -26,21 +27,23 @@ class UnlockWithPinScreen extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, marginHorizontal: 50 }}>
+        <View
+          style={[styles.bigcenter, { marginHorizontal: 50, marginBottom: 30 }]}
+        >
           <PinView
             value={this.state.pin}
             containerStyle={{
               flex: 4,
               alignItems: 'flex-end',
-              marginBottom: 50
+              marginBottom: 20
             }}
           />
           {this.state.pinError ? (
-            <Text style={{ color: 'red', flex: 1 }}>
-              Wrong or poorly formatted pin. Pins must be 6 characters long.
+            <Text style={[styles.top, { color: 'red' }]}>
+              Pin incorrect. Try again.
             </Text>
           ) : (
-            <Text style={{ color: 'red', flex: 1 }}> </Text>
+            <Text style={[styles.top, { color: 'red' }]}> </Text>
           )}
         </View>
         <PinKeyboard
@@ -88,6 +91,7 @@ class UnlockWithPinScreen extends Component {
         return;
       }
 
+      this.setState({ pinError: false });
       NavigationService.navigate('Products');
     });
   }
