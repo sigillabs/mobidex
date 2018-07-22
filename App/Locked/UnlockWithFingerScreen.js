@@ -9,6 +9,7 @@ import TimerMixin from 'react-timer-mixin';
 import * as styles from '../../styles';
 import { unlock } from '../../thunks';
 import Button from '../components/Button';
+import MutedText from '../components/MutedText';
 import * as WalletService from '../services/WalletService';
 import NavigationService from '../services/NavigationService';
 
@@ -55,23 +56,21 @@ export default class UnlockWithFingerScreen extends Component {
 
   renderUnlocking() {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderWidth: 1
-        }}
-      >
+      <View style={styles.bigcenter}>
         <MaterialIcon name="fingerprint" color="green" size={100} />
         <Text>Start scanning your fingerprint</Text>
+        <Button
+          onPress={() => this.cancel()}
+          title={'Cancel'}
+          icon={<MaterialIcon name="cancel" color="white" size={20} />}
+        />
       </View>
     );
   }
 
   renderError() {
     return (
-      <View>
+      <View style={[styles.padding3]}>
         <Text>
           Could not unlock with touch identification. Try unlocking with your
           pin code.
@@ -94,5 +93,10 @@ export default class UnlockWithFingerScreen extends Component {
 
       NavigationService.navigate('Products');
     });
+  }
+
+  cancel() {
+    WalletService.cancelFingerPrintUnlock();
+    this.setState({ showUnlocking: false });
   }
 }

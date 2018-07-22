@@ -66,6 +66,12 @@ public class PasscodeManager extends BaseActivityEventListener {
         return supportsFingerPrint && hasEnrolled && hasLockScreen;
     }
 
+    void cancelFingerPrintAuthentication() {
+        if (fingerprintCancelSignal != null) {
+            fingerprintCancelSignal.cancel();
+        }
+    }
+
     void savePasscode(String passcode, SavePasscodeCallback callback) {
         if (!supportsFingerPrintAuthentication()) {
             callback.invoke(null, false);
@@ -142,20 +148,19 @@ public class PasscodeManager extends BaseActivityEventListener {
                     new FingerprintManager.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationError(int errorCode, CharSequence errString) {
-                            Log.d("PasscodeManager", "error");
+                            fingerprintCancelSignal = null;
                             callback.invoke(new Exception("Authentication error (" + errorCode + "): " + errString), null);
                         }
 
                         @Override
                         public void onAuthenticationFailed() {
-                            Log.d("PasscodeManager", "failed");
+                            fingerprintCancelSignal = null;
                             callback.invoke(new Exception("Authentication failed"), null);
                         }
 
                         @Override
                         public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-                            Log.d("PasscodeManager", "start");
-
+                            fingerprintCancelSignal = null;
                             try {
                                 callback.invoke(null, new String(result.getCryptoObject().getCipher().doFinal(bytes)));
                             } catch (Exception e) {
@@ -164,7 +169,6 @@ public class PasscodeManager extends BaseActivityEventListener {
                             }
                         }
                     }, null);
-            Log.w("PasscodeManager", "after authenticate");
         } catch (UserNotAuthenticatedException e) {
             // 30 seconds of window after authenticating to initialize cipher.
             // See https://medium.com/overmorrow/authentication-sucks-bad-security-too-345ed20463d4

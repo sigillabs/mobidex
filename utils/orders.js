@@ -19,7 +19,7 @@ export function filterAndSortOrdersByTokens(
     }
   );
 
-  return ordersToFill;
+  return ordersToFill.reverse();
 }
 
 export function filterAndSortOrdersByTokensAndTakerAddress(

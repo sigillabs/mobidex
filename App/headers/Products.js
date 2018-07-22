@@ -5,6 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
+import FakeHeaderButton from '../components/FakeHeaderButton';
 import ToggleForexButton from '../components/ToggleForexButton';
 import NavigationService from '../services/NavigationService';
 import * as TokenService from '../services/TokenService';
@@ -25,7 +26,9 @@ class ProductsHeader extends Component {
             >
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
-          ) : null
+          ) : (
+            <FakeHeaderButton />
+          )
         }
         centerComponent={{
           text: this.renderTitle(),

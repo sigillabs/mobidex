@@ -102,7 +102,8 @@ class PreviewFillOrders extends Component {
       getBalanceByAddress(quote.address),
       quote.decimals
     );
-    const fundsAfterOrder = funds.sub(total);
+    const fundsAfterOrder =
+      side === 'buy' ? funds.sub(total.abs()) : funds.add(total.abs());
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -183,7 +184,7 @@ class PreviewFillOrders extends Component {
               symbol={quote.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
+                getProfitLossStyle(fundsAfterOrder.toNumber())
               ]}
             />
           }

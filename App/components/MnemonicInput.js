@@ -49,28 +49,11 @@ export default class MnemonicInput extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      words: _.times(12, _.constant(''))
-    };
-
     this.cells = [];
   }
 
-  componentDidMount() {
-    if (this.props.defaultValue) {
-      let words = this.props.defaultValue.split(' ');
-      if (words.length < 12) {
-        words = words.concat(_.times(12 - words.length, _.constant('')));
-      } else if (words.length > 12) {
-        words = words.slice(0, 12);
-      }
-      this.setState({ words });
-    }
-  }
-
   render() {
-    const { cellStyle, containerStyle } = this.props;
-    const { words } = this.state;
+    const { words, cellStyle, containerStyle } = this.props;
     const cells = words.map((w, i) => (
       <Cell
         key={`cell-${i}`}
@@ -96,25 +79,22 @@ export default class MnemonicInput extends Component {
   }
 
   changeWord(index, value) {
-    const words = this.state.words.slice();
+    const words = this.props.words.slice();
     words[index] = value;
-    this.setState({ words });
-
-    if (this.props.onChange) this.props.onChange(words.join(' ').toLowerCase());
+    this.props.onChange(words.map(word => word.trim().toLowerCase()));
   }
 
   submit() {
-    const words = this.state.words.slice();
-    if (this.props.onSubmit) this.props.onSubmit(words.join(' ').toLowerCase());
+    this.props.onSubmit();
   }
 }
 
 MnemonicInput.propTypes = {
-  defaultValue: PropTypes.string,
-  cellStyle: PropTypes.object,
-  containerStyle: PropTypes.object,
+  words: PropTypes.arrayOf(PropTypes.string).isRequired,
   onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  cellStyle: PropTypes.object,
+  containerStyle: PropTypes.object
 };
 
 const styles = {

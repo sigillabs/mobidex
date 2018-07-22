@@ -115,9 +115,7 @@ const WalletNavigation = createStackNavigator(
     Receive: { screen: ReceiveScreen },
     Send: { screen: SendScreen },
     Wrap: { screen: WrapEtherScreen },
-    Unwrap: { screen: UnwrapEtherScreen },
-    Orders: { screen: OrdersScreen },
-    History: { screen: TransactionHistoryScreen }
+    Unwrap: { screen: UnwrapEtherScreen }
   },
   {
     cardStyle: {

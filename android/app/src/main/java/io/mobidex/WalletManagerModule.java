@@ -72,6 +72,12 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void cancelFingerPrintAuthentication(final Callback cb) {
+        passcodeManager.cancelFingerPrintAuthentication();
+        cb.invoke(null, null);
+    }
+
+    @ReactMethod
     public void doesWalletExist(Callback cb) {
         File walletFile = getWalletFile();
         cb.invoke(null, walletFile != null && walletFile.exists());

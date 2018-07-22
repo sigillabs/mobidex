@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
+import FakeHeaderButton from '../components/FakeHeaderButton';
 import NavigationService from '../services/NavigationService';
 
 export default class OrdersHeader extends Component {
@@ -20,7 +21,9 @@ export default class OrdersHeader extends Component {
             >
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
-          ) : null
+          ) : (
+            <FakeHeaderButton />
+          )
         }
         centerComponent={{
           text: this.props.title,

@@ -58,229 +58,7 @@ class WalletManager: NSObject {
     }
     return (keystoreManager.walletForAddress(addresses[0]) as! web3swift.BIP32Keystore)
   }
-  
-//  func saveKey(encryptedKey: Data, prefix: String) throws -> Void {
-//    let directory = getKeystoreDirectory()
-//    let path = getKeystorePath()
-//    let url = URL(fileURLWithPath: path)
-//    let params = KeystoreParamsBIP32(encryptedKey: encryptedKey, id: UUID().uuidString.lowercased(), version: 1, path: prefix)
-//    let data = try! JSONEncoder().encode(params)
-//    try! FileManager.default.removeItem(atPath: directory)
-//    try! FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true, attributes: nil)
-//    try! data.write(to: url)
-//  }
-//
-//  func loadKey() throws -> Data? {
-//    guard let data = FileManager.default.contents(atPath: getKeystorePath()) else {
-//      return nil
-//    }
-//    guard let params = try? JSONDecoder().decode(KeystoreParamsBIP32.self, from: data) else {
-//      return nil
-//    }
-//
-//    return params.encryptedKey
-//  }
-  
-//  func findLocalPrivateKey(password: String?, callback: @escaping ((SecKey?) -> Void)) -> Void {
-//    let context = LAContext()
-//    context.localizedFallbackTitle = "";
-//
-//    var policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
-//
-//    print(password)
-//    if password != nil {
-//      print("set credentials")
-//      policy = LAPolicy.deviceOwnerAuthentication
-//      context.setCredential(password!.data(using: .utf8), type: LACredentialType.applicationPassword)
-//
-//      let query: [String: Any] = [kSecClass as String: kSecClassKey,
-//                                  kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
-//                                  kSecReturnRef as String: true,
-//                                  kSecAttrLabel as String: "io.mobidex.app.key".data(using: .utf8)!,
-//                                  kSecMatchLimit as String: kSecMatchLimitOne,
-//                                  kSecUseAuthenticationUISkip as String: true//,
-//        //                                      kSecUseOperationPrompt as String: "Unlock your mobidex wallet",
-//      ]
-//      var item: CFTypeRef?
-//      guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess else {
-//        print("could not find match")
-//        callback(nil)
-//        return
-//      }
-//      guard item != nil else {
-//        print("could not find match")
-//        callback(nil)
-//        return
-//      }
-//      callback(item as! SecKey)
-//      return
-//    } else {
-//      context.evaluatePolicy(policy, localizedReason: "Unlock your wallet") { success, error in
-//        if success {
-//          DispatchQueue.main.async { [unowned self] in
-//            let query: [String: Any] = [kSecClass as String: kSecClassKey,
-//                                        kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
-//                                        kSecReturnRef as String: true,
-//                                        kSecAttrLabel as String: "io.mobidex.app.key".data(using: .utf8)!,
-//                                        kSecMatchLimit as String: kSecMatchLimitOne,
-//                                        kSecUseAuthenticationUISkip as String: true//,
-//                                        //                                      kSecUseOperationPrompt as String: "Unlock your mobidex wallet",
-//            ]
-//            var item: CFTypeRef?
-//            guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess else {
-//              print("could not find match")
-//              callback(nil)
-//              return
-//            }
-//            guard item != nil else {
-//              print("could not find match")
-//              callback(nil)
-//              return
-//            }
-//            callback(item as! SecKey)
-//            return
-//          }
-//        } else {
-//          callback(nil)
-//          return
-//        }
-//      }
-//    }
-//
-//    context.evaluatePolicy(policy, localizedReason: "Unlock your wallet") { success, error in
-//      if success {
-//        DispatchQueue.main.async { [unowned self] in
-//          let query: [String: Any] = [kSecClass as String: kSecClassKey,
-//                                      kSecAttrKeyClass as String: kSecAttrKeyClassPrivate,
-//                                      kSecReturnRef as String: true,
-//                                      kSecAttrLabel as String: "io.mobidex.app.key".data(using: .utf8)!,
-//                                      kSecMatchLimit as String: kSecMatchLimitOne,
-////                                      kSecUseOperationPrompt as String: "Unlock your mobidex wallet",
-//                                      kSecUseAuthenticationUISkip as String: true]
-//          var item: CFTypeRef?
-//          guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess else {
-//            print("could not find match")
-//            callback(nil)
-//            return
-//          }
-//          guard item != nil else {
-//            print("could not find match")
-//            callback(nil)
-//            return
-//          }
-//          callback(item as! SecKey)
-//          return
-//        }
-//      } else {
-//        callback(nil)
-//        return
-//      }
-//    }
-//  }
-//  @available(iOS 10.0, *)
-//  func generateLocalKeys(password: String) throws -> (SecKey?, SecKey?) {
-//    let context = LAContext()
-//    context.localizedFallbackTitle = "";
-//    context.setCredential(password.data(using: .utf8), type: LACredentialType.applicationPassword)
-//
-//    let access =
-//      SecAccessControlCreateWithFlags(kCFAllocatorDefault,
-//                                      kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-//                                      [.privateKeyUsage, .userPresence],
-////                                      [.privateKeyUsage, .userPresence, .applicationPassword],
-////                                      .privateKeyUsage,
-//                                      nil)!
-//    let privateKeyParams: [String: Any] = [
-//      kSecAttrLabel as String: "io.mobidex.app.key".data(using: .utf8)!,
-//      kSecAttrAccessControl as String: access,
-//      kSecAttrIsPermanent as String: true
-//    ]
-//    var attributes: [String: Any] = [
-//      kSecAttrKeyType as String: attrKeyTypeEllipticCurve,
-//      kSecAttrKeySizeInBits as String: 256,
-//      kSecPrivateKeyAttrs as String: privateKeyParams
-//    ]
-//    if Device.hasSecureEnclave {
-//      attributes[kSecAttrTokenID as String] = kSecAttrTokenIDSecureEnclave
-//    }
-//
-//    var publicKey, privateKey: SecKey?, error: Unmanaged<CFError>?
-//    privateKey = SecKeyCreateRandomKey(attributes as CFDictionary, &error)
-//    guard privateKey != nil else {
-//      throw error!.takeRetainedValue() as Error
-//    }
-//    publicKey = SecKeyCopyPublicKey(privateKey!)
-//
-//    return (privateKey, publicKey)
-//  }
-//
-//  func generateAccount(_ mnemonic: String) -> ( web3swift.HDNode, String )? {
-//    var prefix = web3swift.HDNode.defaultPathMetamaskPrefix
-//    var newIndex = UInt32(0)
-//    var seed = web3swift.BIP39.seedFromMmemonics(mnemonic, password: "", language: web3swift.BIP39Language.english)!
-//    defer{ Data.zero(&seed) }
-//
-//    guard let prefixNode = HDNode(seed: seed)?.derive(path: prefix, derivePrivateKey: true) else {
-//      return nil
-//    }
-//    guard let newNode = prefixNode.derive(index: newIndex, derivePrivateKey: true, hardened: false) else {
-//      return nil
-//    }
-//
-//    var newPath:String
-//    if newNode.isHardened {
-//      newPath = prefix + "/" + String(newNode.index % HDNode.hardenedIndexPrefix) + "'"
-//    } else {
-//      newPath = prefix + "/" + String(newNode.index)
-//    }
-//
-//    return ( newNode, newPath )
-//  }
-  
-//  @available(iOS 10.0, *)
-//  func encryptKey(publicKey: SecKey, key: Data) throws -> Data? {
-//    var error: Unmanaged<CFError>?
-//    guard let cipherText = SecKeyCreateEncryptedData(publicKey,
-//                                               .eciesEncryptionStandardX963SHA256AESGCM,
-//                                               key as CFData,
-//                                               &error) as Data? else {
-//                                                  throw error!.takeRetainedValue() as Error
-//    }
-//
-//    return cipherText as Data
-//  }
-//
-//  @available(iOS 10.0, *)
-//  func decryptKey(privateKey: SecKey, encryptedKey: Data) -> Data? {
-//    var error: Unmanaged<CFError>?
-//    print(privateKey)
-//    guard let data = SecKeyCreateDecryptedData(privateKey,
-//                                               .eciesEncryptionStandardX963SHA256AESGCM,
-//                                               encryptedKey as CFData,
-//                                               &error) else {
-//                                                return nil
-//    }
-//
-//    return data as Data
-//  }
-//  @objc(importWalletByMnemonics:password:callback:) func importWalletByMnemonics(mnemonic: String, password: String, callback: RCTResponseSenderBlock) -> Void {
-//    guard let (node, path) = generateAccount(mnemonic) else {
-//      callback([NSNull(), NSNull()])
-//      return;
-//    }
-//
-//    if node.privateKey == nil {
-//      callback([NSNull(), NSNull()])
-//      return;
-//    }
-//
-//    let (_, publicKey) = try! generateLocalKeys(password: password)
-//    let encryptedKey = try! encryptKey(publicKey: publicKey!, key: node.privateKey!)
-//    try! saveKey(encryptedKey: encryptedKey!, prefix: path)
-//    callback([NSNull(), node.privateKey!.toHexString()])
-//  }
 
-  
   func getPasscodeFromKeychain(callback: @escaping (Error?, String?) -> Void) -> Void {
     let context = LAContext()
     let policy = LAPolicy.deviceOwnerAuthenticationWithBiometrics
@@ -315,7 +93,6 @@ class WalletManager: NSObject {
             callback(WalletManagerError(message: "Data in keychain is bad."), nil)
             return
         }
-        print("fetch4")
         callback(nil, password)
       } else {
         callback(nil, nil)
@@ -362,6 +139,11 @@ class WalletManager: NSObject {
     } else {
       callback([NSNull(), false])
     }
+  }
+  
+  @objc(cancelFingerPrintAuthentication:) func cancelFingerPrintAuthentication(callback: RCTResponseSenderBlock) -> Void {
+    // Not Supported in iOS
+    callback([NSNull(), NSNull()])
   }
   
   @objc(doesWalletExist:) func doesWalletExist(callback: RCTResponseSenderBlock) -> Void {

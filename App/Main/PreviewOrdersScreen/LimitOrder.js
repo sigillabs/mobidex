@@ -42,6 +42,14 @@ class PreviewLimitOrder extends Component {
   }
 
   render() {
+    const {
+      navigation: {
+        state: {
+          params: { side }
+        }
+      }
+    } = this.props;
+
     if (this.state.showCreating) {
       return <Loading text={'Creating limit order'} />;
     }
@@ -56,7 +64,8 @@ class PreviewLimitOrder extends Component {
       getBalanceByAddress(quoteToken.address),
       quoteToken.decimals
     );
-    const fundsAfterOrder = funds.sub(total);
+    const fundsAfterOrder =
+      side === 'buy' ? funds.sub(total.abs()) : funds.add(total.abs());
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -123,7 +132,7 @@ class PreviewLimitOrder extends Component {
               symbol={quoteToken.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
+                getProfitLossStyle(fundsAfterOrder.toNumber())
               ]}
             />
           }

@@ -1,7 +1,8 @@
+import * as _ from 'lodash';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import { View } from 'react-native';
+import { Clipboard, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors } from '../../styles';
 import Button from '../components/Button';
@@ -9,6 +10,7 @@ import MnemonicInput from '../components/MnemonicInput';
 import MutedText from '../components/MutedText';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
+import Row from '../components/Row';
 import WizardNavigation from '../components/WizardNavigation';
 import * as WalletService from '../services/WalletService';
 
@@ -17,13 +19,8 @@ class MnemonicPage extends Component {
     super(props);
 
     this.state = {
-      mnemonic: '',
       mnemonicError: false
     };
-  }
-
-  componentDidMount() {
-    this.setState({ mnemonic: this.props.defaultMnemonic });
   }
 
   render() {
@@ -38,7 +35,8 @@ class MnemonicPage extends Component {
       >
         <MutedText>Enter your 12 word seed phrase.</MutedText>
         <MnemonicInput
-          onChange={words => this.setState({ mnemonic: words })}
+          words={this.props.mnemonic}
+          onChange={this.props.onChange}
           onSubmit={() => this.submit()}
           containerStyle={{ flex: 0, height: 260, marginTop: 20 }}
         />
@@ -49,29 +47,46 @@ class MnemonicPage extends Component {
         ) : (
           <Text style={{ color: colors.error }}> </Text>
         )}
-        <Button large title="Next" onPress={() => this.submit()} />
+        <Row>
+          <Button
+            large
+            title="Paste"
+            onPress={() => this.paste()}
+            disabled={this.validate(this.props.mnemonic)}
+          />
+          <Button
+            large
+            title="Next"
+            onPress={() => this.submit()}
+            disabled={!this.validate(this.props.mnemonic)}
+          />
+        </Row>
       </View>
     );
   }
 
+  validate(mnemonic) {
+    return (
+      mnemonic &&
+      mnemonic.length === 12 &&
+      mnemonic.reduce((all, word) => all && Boolean(word), true)
+    );
+  }
+
+  async paste() {
+    const mnemonic = await Clipboard.getString();
+    if (this.validate(mnemonic.split(/\s+/))) {
+      this.props.onChange(mnemonic.split(/\s+/));
+    }
+  }
+
   submit() {
-    if (!this.state.mnemonic) {
+    if (!this.validate(this.props.mnemonic)) {
       this.setState({ mnemonicError: true });
       return;
     }
 
-    const mnemonicArray = this.state.mnemonic.split(/\s+/);
-
-    if (mnemonicArray.length !== 12) {
-      this.setState({ mnemonicError: true });
-      return;
-    }
-
-    const formattedMnemonic = mnemonicArray.join(' ');
-
-    if (this.props.onSubmit) {
-      this.props.onSubmit(formattedMnemonic);
-    }
+    this.props.onSubmit();
   }
 }
 
@@ -165,7 +180,7 @@ export default class ImportMnemonicWizard extends Component {
     super(props);
 
     this.state = {
-      mnemonic: '',
+      mnemonic: _.times(12, _.constant('')),
       pin: '',
       page: 0
     };
@@ -176,8 +191,9 @@ export default class ImportMnemonicWizard extends Component {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         {this.state.page === 0 ? (
           <MnemonicPage
-            defaultMnemonic={this.state.mnemonic}
-            onSubmit={mnemonic => this.submitMnemonic(mnemonic)}
+            mnemonic={this.state.mnemonic}
+            onChange={mnemonic => this.onChangeMnemonic(mnemonic)}
+            onSubmit={mnemonic => this.submitMnemonic()}
           />
         ) : null}
         {this.state.page === 1 ? (
@@ -187,8 +203,12 @@ export default class ImportMnemonicWizard extends Component {
     );
   }
 
-  submitMnemonic(mnemonic) {
-    this.setState({ mnemonic, page: 1 });
+  onChangeMnemonic(mnemonic) {
+    this.setState({ mnemonic });
+  }
+
+  submitMnemonic() {
+    this.setState({ page: 1 });
   }
 
   submitPin(pin) {
@@ -201,7 +221,7 @@ export default class ImportMnemonicWizard extends Component {
     this.requestAnimationFrame(async () => {
       try {
         const web3 = await WalletService.importMnemonics(
-          this.state.mnemonic,
+          this.state.mnemonic.join(' '),
           this.state.pin
         );
         if (this.props.onSubmit) await this.props.onSubmit(web3);

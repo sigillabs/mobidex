@@ -47,6 +47,15 @@ export async function supportsFingerPrintUnlock() {
   );
 }
 
+export async function cancelFingerPrintUnlock() {
+  return await new Promise((resolve, reject) =>
+    WalletManager.cancelFingerPrintAuthentication((err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    })
+  );
+}
+
 export async function isLocked() {
   return await new Promise((resolve, reject) =>
     WalletManager.doesWalletExist((err, data) => {
