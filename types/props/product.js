@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
-import { addressProp } from './token';
+import { addressProp } from './address';
 
 export const productProp = PropTypes.shape({
   address: addressProp.isRequired,

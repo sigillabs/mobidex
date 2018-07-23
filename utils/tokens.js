@@ -7,24 +7,6 @@ import { getZeroExClient, getAccount, getNetworkId } from './ethereum';
 
 const TokenABI = require('../abi/Token.json');
 
-export async function getBalance(web3, address = null) {
-  let account = await getAccount(web3);
-  return await new Promise((resolve, reject) => {
-    web3.eth.getBalance(
-      address
-        ? address.toString().toLowerCase()
-        : account.toString().toLowerCase(),
-      (err, balance) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(balance);
-        }
-      }
-    );
-  });
-}
-
 export async function getTokenBalance(web3, address) {
   let zeroEx = await getZeroExClient(web3);
   let account = await getAccount(web3);

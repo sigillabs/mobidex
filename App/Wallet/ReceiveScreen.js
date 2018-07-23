@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Clipboard, Share, View } from 'react-native';
+import { Clipboard, Share, TouchableOpacity, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import ethUtil from 'ethereumjs-util';
+import * as styles from '../../styles';
 import Button from '../components/Button';
-import Row from '../components/Row';
 
 class ReceiveScreen extends Component {
   render() {
@@ -27,23 +27,19 @@ class ReceiveScreen extends Component {
       >
         <Avatar size="xlarge" source={{ uri }} />
         <Text h4>Address</Text>
-        <Text style={{ fontSize: 13 }}>{this.props.address}</Text>
-        <Row>
-          <Button
-            large
-            icon={<MaterialIcons name="send" size={20} color="white" />}
-            onPress={() => this.share()}
-            title="Share Address"
-            style={{ marginTop: 10 }}
-          />
-          <Button
-            large
-            icon={<MaterialIcons name="content-copy" size={20} color="white" />}
-            onPress={() => this.copy()}
-            title="Copy Address"
-            style={{ marginTop: 10 }}
-          />
-        </Row>
+        <TouchableOpacity onPress={() => this.copy()} style={styles.row}>
+          <Text style={{ fontSize: 13, marginRight: 5 }}>
+            {this.props.address}
+          </Text>
+          <MaterialIcons name="content-copy" size={20} />
+        </TouchableOpacity>
+        <Button
+          large
+          icon={<MaterialIcons name="send" size={20} color="white" />}
+          onPress={() => this.share()}
+          title="Share Address"
+          style={{ marginTop: 10 }}
+        />
       </View>
     );
   }

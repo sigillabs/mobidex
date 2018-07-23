@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { gotoEtherScan } from '../../../thunks';
+import { transactionProp } from '../../../types/props';
 import { formatAmount } from '../../../utils';
 import TransactionItem from './TransactionItem';
 import CancelledItem from './CancelledItem';
@@ -199,6 +200,11 @@ class TransactionsList extends Component {
     );
   }
 }
+
+TransactionsList.propTypes = {
+  active: PropTypes.arrayOf(transactionProp),
+  transactions: PropTypes.arrayOf(transactionProp)
+};
 
 export default connect(
   state => ({ ...state.device.layout, ...state.settings }),

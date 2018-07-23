@@ -1,5 +1,23 @@
 import { ZeroEx } from '0x.js';
 
+export async function getBalance(web3, address = null) {
+  let account = await getAccount(web3);
+  return await new Promise((resolve, reject) => {
+    web3.eth.getBalance(
+      address
+        ? address.toString().toLowerCase()
+        : account.toString().toLowerCase(),
+      (err, balance) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(balance);
+        }
+      }
+    );
+  });
+}
+
 export function getURLFromNetwork(network) {
   switch (network) {
     case 'mainnet':

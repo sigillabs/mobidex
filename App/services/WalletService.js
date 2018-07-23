@@ -18,6 +18,7 @@
 // // publish to network
 // if (opts.publishTransaction) self.publishTransaction = opts.publishTransaction
 
+import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import EthTx from 'ethereumjs-tx';
 import ethUtil from 'ethereumjs-util';
@@ -27,7 +28,7 @@ import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { setWallet } from '../../actions';
-import { getURLFromNetwork } from '../../utils';
+import { getBalance, getURLFromNetwork } from '../../utils';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -139,6 +140,7 @@ export async function importMnemonics(mnemonics, password) {
 }
 
 export function getAssetByAddress(address) {
+  if (!address) return null;
   const {
     wallet: { assets }
   } = _store.getState();
@@ -153,27 +155,32 @@ export function getAssetBySymbol(symbol) {
 }
 
 export function getBalanceByAddress(address) {
+  if (!address) return getFullEthereumBalance();
   const asset = getAssetByAddress(address);
   if (!asset) return new BigNumber(0);
-  if (asset.symbol === 'WETH' || asset.symbol === 'ETH')
-    return getEthereumBalance();
-  return new BigNumber(asset.balance);
+  return ZeroEx.toUnitAmount(new BigNumber(asset.balance), asset.decimals);
 }
 
 export function getBalanceBySymbol(symbol) {
-  if (symbol === 'WETH' || symbol === 'ETH') return getEthereumBalance();
+  if (symbol === 'WETH' || symbol === 'ETH') return getFullEthereumBalance();
   const asset = getAssetBySymbol(symbol);
   if (!asset) return new BigNumber(0);
-  return new BigNumber(asset.balance);
+  return ZeroEx.toUnitAmount(new BigNumber(asset.balance), asset.decimals);
 }
 
-export function getEthereumBalance() {
+export async function getEthereumBalance() {
+  if (!_web3) return new BigNumber(0);
+  const balance = await getBalance(_web3);
+  return ZeroEx.toUnitAmount(balance, 18);
+}
+
+export function getFullEthereumBalance() {
   const asset1 = getAssetBySymbol('ETH');
   const asset2 = getAssetBySymbol('WETH');
   let sum = new BigNumber(0);
   if (asset1) sum = sum.add(asset1.balance);
   if (asset2) sum = sum.add(asset2.balance);
-  return sum;
+  return ZeroEx.toUnitAmount(sum, 18);
 }
 
 export function getDecimalsByAddress(address) {
