@@ -159,8 +159,17 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-device-info')
-    compile project(':react-native-google-analytics-bridge')
+    compile project(':react-native-exception-handler')
+    compile project(':react-native-restart')
+    api (project(':react-native-device-info')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    api (project(':react-native-google-analytics-bridge')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    api (project(':react-native-exception-handler')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
     api (project(':react-native-push-notification')) {
         exclude group: "com.android.support", module: "support-v4"
     }

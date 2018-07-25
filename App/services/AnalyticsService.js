@@ -9,11 +9,15 @@ GoogleAnalyticsSettings.setDryRun(false);
 let _tracker = new GoogleAnalyticsTracker('UA-112618673-2');
 
 export function trackScreen(name) {
-  _tracker.trackScreenView(name);
+  if (!__DEV__) {
+    _tracker.trackScreenView(name);
+  }
 }
 
 export function trackEvent(category, action, values = null) {
-  _tracker.trackEvent(category, action, values);
+  if (!__DEV__) {
+    _tracker.trackEvent(category, action, values);
+  }
 }
 
 export function wrapRouter(router) {
