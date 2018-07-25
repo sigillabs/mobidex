@@ -24,7 +24,7 @@ export default class AmountPage extends Component {
 
   render() {
     const { token } = this.props;
-    const balance = WalletService.getBalanceByAddress(token.address);
+    const balance = WalletService.getAdjustedBalanceByAddress(token.address);
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>

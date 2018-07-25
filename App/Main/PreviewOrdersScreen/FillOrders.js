@@ -17,7 +17,7 @@ import {
   fillOrders,
   getAveragePrice
 } from '../../services/OrderService';
-import { getBalanceByAddress } from '../../services/WalletService';
+import { getAdjustedBalanceByAddress } from '../../services/WalletService';
 import Loading from './Loading';
 
 class Order extends Component {
@@ -98,12 +98,8 @@ class PreviewFillOrders extends Component {
     } = this.props;
 
     const { priceAverage, subtotal, fee, total } = this.state.receipt;
-    const funds = ZeroEx.toUnitAmount(
-      getBalanceByAddress(quote.address),
-      quote.decimals
-    );
-    const fundsAfterOrder =
-      side === 'buy' ? funds.sub(total.abs()) : funds.add(total.abs());
+    const funds = getAdjustedBalanceByAddress(quote.address);
+    const fundsAfterOrder = funds.add(total);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -184,7 +180,7 @@ class PreviewFillOrders extends Component {
               symbol={quote.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(fundsAfterOrder.toNumber())
+                getProfitLossStyle(total.toNumber())
               ]}
             />
           }

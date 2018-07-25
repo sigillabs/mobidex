@@ -1,4 +1,3 @@
-import { ZeroEx } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
@@ -15,7 +14,7 @@ import {
   submitOrder
 } from '../../services/OrderService';
 import { getQuoteToken } from '../../services/TokenService';
-import { getBalanceByAddress } from '../../services/WalletService';
+import { getAdjustedBalanceByAddress } from '../../services/WalletService';
 import Loading from './Loading';
 
 class PreviewLimitOrder extends Component {
@@ -42,14 +41,6 @@ class PreviewLimitOrder extends Component {
   }
 
   render() {
-    const {
-      navigation: {
-        state: {
-          params: { side }
-        }
-      }
-    } = this.props;
-
     if (this.state.showCreating) {
       return <Loading text={'Creating limit order'} />;
     }
@@ -60,12 +51,8 @@ class PreviewLimitOrder extends Component {
     if (!receipt) return NavigationService.goBack();
 
     const { subtotal, fee, total } = receipt;
-    const funds = ZeroEx.toUnitAmount(
-      getBalanceByAddress(quoteToken.address),
-      quoteToken.decimals
-    );
-    const fundsAfterOrder =
-      side === 'buy' ? funds.sub(total.abs()) : funds.add(total.abs());
+    const funds = getAdjustedBalanceByAddress(quoteToken.address);
+    const fundsAfterOrder = funds.add(total);
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -132,7 +119,7 @@ class PreviewLimitOrder extends Component {
               symbol={quoteToken.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(fundsAfterOrder.toNumber())
+                getProfitLossStyle(total.toNumber())
               ]}
             />
           }

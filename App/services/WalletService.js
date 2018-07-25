@@ -155,32 +155,34 @@ export function getAssetBySymbol(symbol) {
 }
 
 export function getBalanceByAddress(address) {
-  if (!address) return getFullEthereumBalance();
+  if (!address) return getBalanceBySymbol('ETH');
   const asset = getAssetByAddress(address);
   if (!asset) return new BigNumber(0);
   return ZeroEx.toUnitAmount(new BigNumber(asset.balance), asset.decimals);
 }
 
 export function getBalanceBySymbol(symbol) {
-  if (symbol === 'WETH' || symbol === 'ETH') return getFullEthereumBalance();
   const asset = getAssetBySymbol(symbol);
   if (!asset) return new BigNumber(0);
   return ZeroEx.toUnitAmount(new BigNumber(asset.balance), asset.decimals);
 }
 
-export async function getEthereumBalance() {
-  if (!_web3) return new BigNumber(0);
-  const balance = await getBalance(_web3);
-  return ZeroEx.toUnitAmount(balance, 18);
+export function getAdjustedBalanceByAddress(address) {
+  if (!address) return getFullEthereumBalance();
+  const asset = getAssetByAddress(address);
+  if (!asset) return new BigNumber(0);
+  if (asset.symbol === 'ETH' || asset.symbol === 'WETH')
+    return getFullEthereumBalance();
+  return getBalanceByAddress(address);
+}
+
+export function getAdjustedBalanceBySymbol(symbol) {
+  if (symbol === 'WETH' || symbol === 'ETH') return getFullEthereumBalance();
+  return getBalanceBySymbol(symbol);
 }
 
 export function getFullEthereumBalance() {
-  const asset1 = getAssetBySymbol('ETH');
-  const asset2 = getAssetBySymbol('WETH');
-  let sum = new BigNumber(0);
-  if (asset1) sum = sum.add(asset1.balance);
-  if (asset2) sum = sum.add(asset2.balance);
-  return ZeroEx.toUnitAmount(sum, 18);
+  return getBalanceBySymbol('ETH').add(getBalanceBySymbol('WETH'));
 }
 
 export function getDecimalsByAddress(address) {

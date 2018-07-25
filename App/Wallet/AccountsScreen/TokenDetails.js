@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Avatar, Text } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { gotoSendScreen, gotoReceiveScreen } from '../../../thunks';
-import { formatAmountWithDecimals, getImage } from '../../../utils';
+import { getImage } from '../../../utils';
 import Button from '../../components/Button';
+import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
 
 class TokenDetails extends Component {
   receive() {
@@ -18,8 +19,8 @@ class TokenDetails extends Component {
   }
 
   render() {
-    let { token } = this.props;
-    let { balance, decimals, symbol } = token;
+    const { token } = this.props;
+    const { symbol } = token;
 
     return (
       <View
@@ -37,9 +38,10 @@ class TokenDetails extends Component {
           source={getImage(token.symbol)}
           activeOpacity={0.7}
         />
-        <Text style={{ marginTop: 5 }}>
-          {formatAmountWithDecimals(balance, decimals)} {symbol}
-        </Text>
+        <FormattedAdjustedTokenBalance
+          symbol={symbol}
+          style={{ marginTop: 5 }}
+        />
 
         <View
           style={{
