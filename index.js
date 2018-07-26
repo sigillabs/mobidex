@@ -22,22 +22,44 @@ AppRegistry.registerComponent('mobidex', () => App);
 
 setJSExceptionHandler((error, isFatal) => {
   if (isFatal) {
-    Alert.alert(
-      'Unexpected error occurred',
-      `Error: ${error.name} ${error.message}. We will need to restart the app.`,
-      [
-        {
-          text: 'Restart',
-          onPress: () => RNRestart.Restart()
-        }
-      ],
-      { cancelable: false }
-    );
+    if (error) {
+      Alert.alert(
+        'Unexpected error occurred',
+        `Error: ${error.name} ${
+          error.message
+        }. We will need to restart the app.`,
+        [
+          {
+            text: 'Restart',
+            onPress: () => RNRestart.Restart()
+          }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      Alert.alert(
+        'Unexpected error occurred',
+        'We will need to restart the app.',
+        [
+          {
+            text: 'Restart',
+            onPress: () => RNRestart.Restart()
+          }
+        ],
+        { cancelable: false }
+      );
+    }
   }
 
-  AnalyticsService.trackEvent(isFatal ? 'crash' : 'error', 'report', {
-    error: `${error.name} ${error.message}`
-  });
+  if (error) {
+    AnalyticsService.trackEvent(isFatal ? 'crash' : 'error', 'report', {
+      error: `${error.name} ${error.message}`
+    });
+  } else {
+    AnalyticsService.trackEvent(isFatal ? 'crash' : 'error', 'report', {
+      error: 'Unknown error'
+    });
+  }
 }, true);
 
 setNativeExceptionHandler(exceptionString => {
