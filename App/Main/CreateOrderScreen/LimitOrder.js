@@ -1,15 +1,12 @@
-import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Entypo from 'react-native-vector-icons/Entypo';
-import { formatAmount, isValidAmount } from '../../../utils';
+import { isValidAmount } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import { createOrder } from '../../services/OrderService';
 import NavigationService from '../../services/NavigationService';
-import * as WalletService from '../../services/WalletService';
 
 export default class CreateLimitOrder extends Component {
   constructor(props) {

@@ -4,19 +4,15 @@ import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { addActiveTransactions } from '../../actions';
-import {
-  gotoErrorScreen,
-  setTokenAllowance,
-  submitOrder as _submitOrder
-} from '../../thunks';
+import { gotoErrorScreen, submitOrder as _submitOrder } from '../../thunks';
 import {
   getAccount,
   getOrdersToFill,
-  getTokenAllowance,
   getZeroExClient,
   getZeroExContractAddress
 } from '../../utils';
 import * as TokenService from './TokenService';
+import * as WalletService from './WalletService';
 
 let _store;
 
@@ -168,12 +164,12 @@ export async function signOrder(order) {
 }
 
 export async function submitOrder(signedOrder) {
-  await checkAndWrapEther(
+  await WalletService.checkAndWrapEther(
     signedOrder.makerTokenAddress,
     signedOrder.makerTokenAmount,
     true
   );
-  await checkAndSetTokenAllowance(
+  await WalletService.checkAndSetTokenAllowance(
     signedOrder.makerTokenAddress,
     signedOrder.makerTokenAmount
   );
@@ -224,8 +220,15 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
     new BigNumber(0)
   );
 
-  await checkAndWrapEther(takerTokenAddresses[0], baseUnitAmount, true);
-  await checkAndSetTokenAllowance(takerTokenAddresses[0], baseUnitAmount);
+  await WalletService.checkAndWrapEther(
+    takerTokenAddresses[0],
+    baseUnitAmount,
+    true
+  );
+  await WalletService.checkAndSetTokenAllowance(
+    takerTokenAddresses[0],
+    baseUnitAmount
+  );
 
   const txhash = await zeroEx.exchange.batchFillOrKillAsync(
     fillOrders,
@@ -292,8 +295,15 @@ export async function fillOrder(order, amount = null, side = 'buy') {
     fillBaseUnitAmount = maxFillAmount;
   }
 
-  await checkAndWrapEther(order.takerTokenAddress, fillBaseUnitAmount, true);
-  await checkAndSetTokenAllowance(order.takerTokenAddress, fillBaseUnitAmount);
+  await WalletService.checkAndWrapEther(
+    order.takerTokenAddress,
+    fillBaseUnitAmount,
+    true
+  );
+  await WalletService.checkAndSetTokenAllowance(
+    order.takerTokenAddress,
+    fillBaseUnitAmount
+  );
 
   const txhash = await zeroEx.exchange.fillOrderAsync(
     order,
@@ -323,7 +333,7 @@ export async function cancelOrder(order) {
   }
 
   try {
-    await checkAndUnwrapEther(
+    await WalletService.checkAndUnwrapEther(
       order.makerTokenAddress,
       order.makerTokenAmount,
       true
@@ -348,91 +358,6 @@ export async function cancelOrder(order) {
   _store.dispatch(addActiveTransactions([activeTransaction]));
   const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
   console.log('Receipt: ', receipt);
-}
-
-export async function checkAndSetTokenAllowance(address, amount) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-
-  const allowance = await getTokenAllowance(web3, address);
-  if (new BigNumber(amount).gt(allowance)) {
-    await _store.dispatch(setTokenAllowance(address));
-  }
-}
-
-export async function checkAndWrapEther(address, amount, wei = false) {
-  const weth = await TokenService.getWETHToken();
-
-  if (address === weth.address) {
-    await wrapEther(amount, wei);
-  }
-}
-
-export async function wrapEther(amount, wei = false) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-  const { address, decimals } = await TokenService.getWETHToken();
-  const zeroEx = await getZeroExClient(web3);
-  const account = await getAccount(web3);
-  const value = wei
-    ? new BigNumber(amount)
-    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-  const txhash = await zeroEx.etherToken.depositAsync(
-    address,
-    value,
-    account.toLowerCase()
-  );
-
-  if (txhash) {
-    const activeTransaction = {
-      id: txhash,
-      type: 'WRAP_ETHER',
-      address,
-      amount
-    };
-    _store.dispatch(addActiveTransactions([activeTransaction]));
-    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-    console.log('Receipt: ', receipt);
-  }
-}
-
-export async function checkAndUnwrapEther(address, amount, wei = false) {
-  const weth = await TokenService.getWETHToken();
-
-  if (address === weth.address) {
-    await unwrapEther(amount, wei);
-  }
-}
-
-export async function unwrapEther(amount, wei = false) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-  const zeroEx = await getZeroExClient(web3);
-  const account = await getAccount(web3);
-  const { address, decimals } = await TokenService.getWETHToken();
-  const value = wei
-    ? new BigNumber(amount)
-    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-  const txhash = await zeroEx.etherToken.withdrawAsync(
-    address,
-    value,
-    account.toLowerCase()
-  );
-
-  if (txhash) {
-    const activeTransaction = {
-      id: txhash,
-      type: 'UNWRAP_ETHER',
-      address,
-      amount
-    };
-    _store.dispatch(addActiveTransactions([activeTransaction]));
-    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-    console.log('Receipt: ', receipt);
-  }
 }
 
 export async function getFillableOrders(base, amount, side = 'buy') {

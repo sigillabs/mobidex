@@ -24,7 +24,6 @@ import TransactionHistoryScreen from './Orders/TransactionHistoryScreen';
 import AccountsScreen from './Wallet/AccountsScreen';
 import ReceiveScreen from './Wallet/ReceiveScreen';
 import SendScreen from './Wallet/SendScreen';
-import UnwrapEtherScreen from './Wallet/UnwrapEtherScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
 import ImportFirstAccount from './Onboarding/ImportAccountScreen';
@@ -114,8 +113,7 @@ const WalletNavigation = createStackNavigator(
     Accounts: { screen: AccountsScreen },
     Receive: { screen: ReceiveScreen },
     Send: { screen: SendScreen },
-    Wrap: { screen: WrapEtherScreen },
-    Unwrap: { screen: UnwrapEtherScreen }
+    Wrap: { screen: WrapEtherScreen }
   },
   {
     cardStyle: {

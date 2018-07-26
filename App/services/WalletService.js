@@ -27,8 +27,15 @@ import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
-import { setWallet } from '../../actions';
-import { getBalance, getURLFromNetwork } from '../../utils';
+import { addActiveTransactions, setWallet } from '../../actions';
+import { setTokenAllowance } from '../../thunks';
+import {
+  getAccount,
+  getTokenAllowance,
+  getURLFromNetwork,
+  getZeroExClient
+} from '../../utils';
+import * as TokenService from './TokenService';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -195,4 +202,89 @@ export function getDecimalsBySymbol(symbol) {
   const asset = getAssetBySymbol(symbol);
   if (!asset) return 0;
   return asset.decimals;
+}
+
+export async function checkAndWrapEther(address, amount, wei = false) {
+  const weth = await TokenService.getWETHToken();
+
+  if (address === weth.address) {
+    await wrapEther(amount, wei);
+  }
+}
+
+export async function wrapEther(amount, wei = false) {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+  const { address, decimals } = await TokenService.getWETHToken();
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const value = wei
+    ? new BigNumber(amount)
+    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  const txhash = await zeroEx.etherToken.depositAsync(
+    address,
+    value,
+    account.toLowerCase()
+  );
+
+  if (txhash) {
+    const activeTransaction = {
+      id: txhash,
+      type: 'WRAP_ETHER',
+      address,
+      amount
+    };
+    _store.dispatch(addActiveTransactions([activeTransaction]));
+    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    console.log('Receipt: ', receipt);
+  }
+}
+
+export async function checkAndUnwrapEther(address, amount, wei = false) {
+  const weth = await TokenService.getWETHToken();
+
+  if (address === weth.address) {
+    await unwrapEther(amount, wei);
+  }
+}
+
+export async function unwrapEther(amount, wei = false) {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+  const zeroEx = await getZeroExClient(web3);
+  const account = await getAccount(web3);
+  const { address, decimals } = await TokenService.getWETHToken();
+  const value = wei
+    ? new BigNumber(amount)
+    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+  const txhash = await zeroEx.etherToken.withdrawAsync(
+    address,
+    value,
+    account.toLowerCase()
+  );
+
+  if (txhash) {
+    const activeTransaction = {
+      id: txhash,
+      type: 'UNWRAP_ETHER',
+      address,
+      amount
+    };
+    _store.dispatch(addActiveTransactions([activeTransaction]));
+    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
+    console.log('Receipt: ', receipt);
+  }
+}
+
+export async function checkAndSetTokenAllowance(address, amount) {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+
+  const allowance = await getTokenAllowance(web3, address);
+  if (new BigNumber(amount).gt(allowance)) {
+    await _store.dispatch(setTokenAllowance(address));
+  }
 }

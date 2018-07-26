@@ -4,18 +4,32 @@ import { Avatar } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { gotoSendScreen, gotoReceiveScreen } from '../../../thunks';
 import { getImage } from '../../../utils';
 import Button from '../../components/Button';
 import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
+import Padding from '../../components/Padding';
+import NavigationService from '../../services/NavigationService';
 
 class TokenDetails extends Component {
   receive() {
-    this.props.dispatch(gotoReceiveScreen(this.props.token));
+    const { token } = this.props;
+    NavigationService.navigate('Receive', {
+      token
+    });
   }
 
   send() {
-    this.props.dispatch(gotoSendScreen(this.props.token));
+    const { token } = this.props;
+    NavigationService.navigate('Send', {
+      token
+    });
+  }
+
+  wrap() {
+    const { token } = this.props;
+    NavigationService.navigate('Wrap', {
+      token
+    });
   }
 
   render() {
@@ -60,7 +74,9 @@ class TokenDetails extends Component {
             }
             onPress={() => this.receive()}
           />
-          <View style={{ width: 10 }} />
+          {symbol === 'ETH' ? (
+            <Button large title="Wrap" onPress={() => this.wrap()} />
+          ) : null}
           <Button
             large
             title="Send"
