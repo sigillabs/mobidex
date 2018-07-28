@@ -1,6 +1,6 @@
 import 'node-libs-react-native/globals';
 import { EventEmitter } from 'events';
-import { Alert, AppRegistry, YellowBox } from 'react-native';
+import { Alert, AppRegistry, I18nManager, YellowBox } from 'react-native';
 import {
   setJSExceptionHandler,
   setNativeExceptionHandler
@@ -8,6 +8,12 @@ import {
 import RNRestart from 'react-native-restart';
 import App from './App';
 import * as AnalyticsService from './App/services/AnalyticsService';
+
+try {
+  I18nManager.allowRTL(false);
+} catch (e) {
+  console.log(e);
+}
 
 YellowBox.ignoreWarnings([
   'Class RCTCxxModule',
