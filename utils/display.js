@@ -26,6 +26,10 @@ export function summarizeAddress(address) {
   return `0x${start}...${end}`;
 }
 
+export function formatTimestamp(timestamp) {
+  return moment.unix(timestamp).format('MMMM Do YYYY, h:mm:ss a');
+}
+
 export function formatAmountWithDecimals(amount, decimals) {
   if (amount === null) return formatAmount(0);
   if (!decimals) return formatAmount(amount);
@@ -38,16 +42,19 @@ export function formatAmount(amount) {
   return amountBN.toFixed(4);
 }
 
-export function formatTimestamp(timestamp) {
-  return moment.unix(timestamp).format('MMMM Do YYYY, h:mm:ss a');
-}
-
 export function formatMoney(n) {
   return '$' + zeroDecimalPad(Math.floor(n * 100) / 100, 2).toString();
 }
 
 export function formatPercent(n) {
   return (Math.round(n * 10000) / 100).toString() + '%';
+}
+
+export function isDecimalOverflow(amount, decimals = 4) {
+  if (amount === null) return false;
+  const stringAmount = new BigNumber(amount).toString();
+  if (stringAmount.indexOf('.') === -1) return false;
+  return stringAmount.length - stringAmount.indexOf('.') > decimals + 1;
 }
 
 export function zeroDecimalPad(n, d) {
@@ -540,4 +547,22 @@ export function getImage(symbol) {
     default:
       return require('../images/tokens/WETH.png');
   }
+}
+
+export function processVirtualKeyboardCharacter(character, string) {
+  let text = null;
+
+  if (isNaN(character)) {
+    if (character === 'back') {
+      text = string.slice(0, -1);
+    } else if (character === '.') {
+      text = string + character;
+    } else {
+      text = string;
+    }
+  } else {
+    text = string + character;
+  }
+
+  return text;
 }

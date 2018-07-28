@@ -4,7 +4,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
+import {
+  formatAmount,
+  getForexIcon,
+  isValidAmount,
+  processVirtualKeyboardCharacter
+} from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as TickerService from '../../services/TickerService';
@@ -98,26 +103,17 @@ export default class AmountPage extends Component {
   }
 
   updateColumnValue(column, value) {
-    const text = this.state[column].toString();
-    let newText = null;
-
-    if (isNaN(value)) {
-      if (value === 'back') {
-        newText = text.slice(0, -1);
-      } else if (value === '.') {
-        newText = text + value;
-      } else {
-        newText = text + value;
-      }
-    } else {
-      newText = text + value;
-    }
-
-    return newText;
+    return processVirtualKeyboardCharacter(
+      value,
+      this.state[column].toString()
+    );
   }
 
   setTokenAmount(value) {
-    const amount = this.updateColumnValue('amount', value);
+    const amount = processVirtualKeyboardCharacter(
+      value,
+      this.state.amount.toString()
+    );
 
     if (isValidAmount(amount)) {
       const forex = TickerService.getForexTicker(this.props.token.symbol);
@@ -130,7 +126,10 @@ export default class AmountPage extends Component {
   }
 
   setForexAmount(value) {
-    const forexAmount = this.updateColumnValue('forex', value);
+    const forexAmount = processVirtualKeyboardCharacter(
+      value,
+      this.state.forex.toString()
+    );
 
     if (isValidAmount(forexAmount)) {
       const forex = TickerService.getForexTicker(this.props.token.symbol);

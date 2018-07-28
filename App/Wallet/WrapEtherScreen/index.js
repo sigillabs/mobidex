@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Slider, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { isValidAmount } from '../../../types/props';
+import * as styles from '../../../styles';
+import {
+  formatAmount,
+  isDecimalOverflow,
+  isValidAmount,
+  processVirtualKeyboardCharacter
+} from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as WalletService from '../../services/WalletService';
@@ -44,9 +50,6 @@ export default class WrapEtherScreen extends Component {
       return <Unwrapping />;
     }
 
-    const eth = WalletService.getBalanceBySymbol('ETH');
-    const weth = WalletService.getBalanceBySymbol('WETH');
-
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <TokenAmount
@@ -56,17 +59,18 @@ export default class WrapEtherScreen extends Component {
           format={true}
           cursor={true}
           cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.amount.toString()}
+          amount={new BigNumber(this.state.amount || 0)}
         />
         <Slider
           step={0.0001}
           minimumValue={0}
-          maximumValue={eth.add(weth).toNumber()}
-          value={weth.toNumber()}
-          onValueChange={value => this.onSetAmountValue(value)}
+          maximumValue={this.getTotalEthereum().toNumber()}
+          value={new BigNumber(this.state.amount || 0).toNumber()}
+          onValueChange={value => this.setAmount(value)}
+          style={[styles.mv0, styles.mh2]}
         />
         <TokenAmountKeyboard
-          onChange={c => this.onSetAmount(c)}
+          onChange={c => this.onSetAmountKeyboard(c)}
           onSubmit={() => this.submit()}
           pressMode="char"
           buttonTitle="Wrap/Unwrap"
@@ -76,39 +80,46 @@ export default class WrapEtherScreen extends Component {
     );
   }
 
-  onSetAmountValue(value) {
-    this.setState({
-      amount: value.toString()
-    });
+  getTotalEthereum() {
+    const eth = WalletService.getBalanceBySymbol('ETH');
+    const weth = WalletService.getBalanceBySymbol('WETH');
+    return eth.add(weth);
   }
 
-  onSetAmount(value) {
-    const text = this.state.amount.toString();
-    let newText = null;
-
-    if (isNaN(value)) {
-      if (value === 'back') {
-        newText = text.slice(0, -1);
-      } else if (value === '.') {
-        newText = text + value;
-      } else {
-        newText = text + value;
-      }
-    } else {
-      newText = text + value;
+  setAmount(amount) {
+    if (this.getTotalEthereum().lt(amount)) {
+      amount = this.getTotalEthereum().toString();
     }
-
-    if (isValidAmount(newText)) {
-      this.setState({ amount: newText, amountError: false });
+    if (isValidAmount(amount)) {
+      if (isDecimalOverflow(amount)) {
+        this.setState({
+          amount: formatAmount(amount).toString(),
+          amountError: false
+        });
+      } else {
+        this.setState({
+          amount: amount,
+          amountError: false
+        });
+      }
     } else {
       this.setState({ amountError: true });
     }
   }
 
+  onSetAmountKeyboard(value) {
+    const text = processVirtualKeyboardCharacter(
+      value,
+      this.state.amount.toString()
+    );
+
+    this.setAmount(text);
+  }
+
   async wrap() {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    const wrapAmount = new BigNumber(amount).sub(weth);
+    const wrapAmount = new BigNumber(amount || 0).sub(weth);
 
     this.setState({ wrapping: true });
     this.props.navigation.setParams({ hideHeader: true });
@@ -128,7 +139,7 @@ export default class WrapEtherScreen extends Component {
   async unwrap() {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    const unwrapAmount = weth.sub(amount);
+    const unwrapAmount = weth.sub(amount || 0);
 
     this.setState({ unwrapping: true });
     this.props.navigation.setParams({ hideHeader: true });
@@ -150,9 +161,9 @@ export default class WrapEtherScreen extends Component {
     const weth = WalletService.getBalanceBySymbol('WETH');
 
     let err = null;
-    if (weth.gt(amount)) {
+    if (weth.gt(amount || 0)) {
       err = await this.unwrap();
-    } else if (weth.lt(amount)) {
+    } else if (weth.lt(amount || 0)) {
       err = await this.wrap();
     } else {
       NavigationService.navigate('Accounts');

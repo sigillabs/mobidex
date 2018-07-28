@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { isValidAmount } from '../../../utils';
+import { isValidAmount, processVirtualKeyboardCharacter } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import { createOrder } from '../../services/OrderService';
@@ -107,23 +107,13 @@ export default class CreateLimitOrder extends Component {
 
   onSetValue(column, value) {
     const errorColumn = `${column}Error`;
-    const text = this.state[column].toString();
-    let newText = null;
+    const text = processVirtualKeyboardCharacter(
+      value,
+      this.state[column].toString()
+    );
 
-    if (isNaN(value)) {
-      if (value === 'back') {
-        newText = text.slice(0, -1);
-      } else if (value === '.') {
-        newText = text + value;
-      } else {
-        newText = text + value;
-      }
-    } else {
-      newText = text + value;
-    }
-
-    if (isValidAmount(newText)) {
-      this.setState({ [column]: newText, [errorColumn]: false });
+    if (isValidAmount(text)) {
+      this.setState({ [column]: text, [errorColumn]: false });
     } else {
       this.setState({ [errorColumn]: true });
     }

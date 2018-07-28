@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import * as styles from '../../../styles';
 import { loadOrders } from '../../../thunks';
-import { isValidAmount } from '../../../utils';
+import { isValidAmount, processVirtualKeyboardCharacter } from '../../../utils';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import MutedText from '../../components/MutedText';
 import TokenAmount from '../../components/TokenAmount';
@@ -144,28 +144,18 @@ class FillOrders extends Component {
   }
 
   onSetAmount(value) {
-    const text = this.state.amount.toString();
-    let newText = null;
+    const text = processVirtualKeyboardCharacter(
+      value,
+      this.state.amount.toString()
+    );
 
-    if (isNaN(value)) {
-      if (value === 'back') {
-        newText = text.slice(0, -1);
-      } else if (value === '.') {
-        newText = text + value;
-      } else {
-        newText = text + value;
-      }
-    } else {
-      newText = text + value;
-    }
-
-    if (isValidAmount(newText)) {
-      this.setState({ amount: newText, amountError: false });
+    if (isValidAmount(text)) {
+      this.setState({ amount: text, amountError: false });
     } else {
       this.setState({ amountError: true });
     }
 
-    this.updateAveragePrice(newText);
+    this.updateAveragePrice(text);
   }
 
   async submit() {
