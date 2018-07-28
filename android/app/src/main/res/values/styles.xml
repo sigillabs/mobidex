@@ -3,6 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/background</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="android:layoutDirection">ltr</item>
     </style>
 
 </resources>
