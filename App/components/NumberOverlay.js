@@ -24,19 +24,21 @@ NumberOverlay.propTypes = {
 
 const styles = {
   overlay: {
-    position: 'absolute'
+    position: 'absolute',
+    left: -5
   },
   circle: {
-    backgroundColor: colors.background,
+    backgroundColor: colors.yellow0,
     borderColor: colors.yellow0,
     borderWidth: 1,
-    borderRadius: 5,
-    height: 10,
-    width: 10
+    borderRadius: 8,
+    height: 15,
+    width: 15
   },
   text: {
-    color: colors.yellow0,
-    fontSize: 8,
-    textAlign: 'center'
+    color: colors.background,
+    fontSize: 10,
+    textAlign: 'center',
+    padding: 1
   }
 };
