@@ -1,7 +1,7 @@
 import { HttpClient } from '@0xproject/connect';
 import * as _ from 'lodash';
 import { addOrders, setOrders, setProducts, setTokens } from '../actions';
-import { getTokenByAddress } from '../utils';
+import { cache, getTokenByAddress } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
 export function loadOrders() {
@@ -36,15 +36,22 @@ export function loadOrder(orderHash) {
   };
 }
 
-export function loadProducts() {
+export function loadProducts(force = false) {
   return async (dispatch, getState) => {
     const {
       settings: { relayerEndpoint }
     } = getState();
-    const client = new HttpClient(relayerEndpoint);
 
     try {
-      const pairs = await client.getTokenPairsAsync();
+      const pairs = await cache(
+        'products',
+        async () => {
+          const client = new HttpClient(relayerEndpoint);
+          const pairs = await client.getTokenPairsAsync();
+          return pairs;
+        },
+        force ? 0 : 24 * 60 * 60
+      );
       dispatch(setProducts(pairs));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
@@ -60,23 +67,30 @@ export function loadTokens(force = false) {
     } = getState();
 
     try {
-      const productsA = products.map(pair => pair.tokenA);
-      const productsB = products.map(pair => pair.tokenB);
-      const allTokens = _.unionBy(productsA, productsB, 'address');
-      const allExtendedTokens = await Promise.all(
-        allTokens.map(async token => {
-          const extendedToken = await getTokenByAddress(
-            web3,
-            token.address,
-            force
+      const tokens = await cache(
+        'tokens',
+        async () => {
+          const productsA = products.map(pair => pair.tokenA);
+          const productsB = products.map(pair => pair.tokenB);
+          const allTokens = _.unionBy(productsA, productsB, 'address');
+          const allExtendedTokens = await Promise.all(
+            allTokens.map(async token => {
+              const extendedToken = await getTokenByAddress(
+                web3,
+                token.address,
+                force
+              );
+              return {
+                ...token,
+                ...extendedToken
+              };
+            })
           );
-          return {
-            ...token,
-            ...extendedToken
-          };
-        })
+          return allExtendedTokens;
+        },
+        force ? 0 : 24 * 60 * 60
       );
-      dispatch(setTokens(allExtendedTokens));
+      dispatch(setTokens(tokens));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }

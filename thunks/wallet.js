@@ -11,6 +11,21 @@ import {
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
 
+export function updateActiveTransactionCache() {
+  return async (dispatch, getState) => {
+    const {
+      wallet: { activeTransactions }
+    } = getState();
+    await cache(
+      'transactions:active',
+      async () => {
+        return activeTransactions;
+      },
+      0
+    );
+  };
+}
+
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
     let {
@@ -36,7 +51,7 @@ export function loadAssets(force = false) {
         });
         return extendedTokens;
       },
-      force ? 0 : 60
+      force ? 0 : 10 * 60
     );
 
     assets = assets.map(({ balance, ...token }) => ({
@@ -48,64 +63,87 @@ export function loadAssets(force = false) {
   };
 }
 
-export function loadTransactions() {
+export function loadTransactions(force = false) {
   return async (dispatch, getState) => {
     let {
       wallet: { address },
       settings: { network }
     } = getState();
     try {
-      let options = {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      };
-      let promises = [
-        fetch(
-          `https://mobidex.io/inf0x/${network}/fills?maker=${address}`,
-          options
-        ),
-        fetch(
-          `https://mobidex.io/inf0x/${network}/fills?taker=${address}`,
-          options
-        ),
-        fetch(
-          `https://mobidex.io/inf0x/${network}/cancels?maker=${address}`,
-          options
-        ),
-        fetch(
-          `https://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
-          options
-        )
-      ];
-      let [makerFills, takerFills, makerCancels] = await Promise.all(promises);
-      let makerFillsJSON = await makerFills.json();
-      let takerFillsJSON = await takerFills.json();
-      let makerCancelsJSON = await makerCancels.json();
-      let filltxs = makerFillsJSON
-        .map(log => ({
-          ...log,
-          id: log.transactionHash,
-          status: 'FILLED'
-        }))
-        .concat(
-          takerFillsJSON.map(log => ({
+      let transactions = await cache(
+        'transactions',
+        async () => {
+          let options = {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            }
+          };
+          let promises = [
+            fetch(
+              `https://mobidex.io/inf0x/${network}/fills?maker=${address}`,
+              options
+            ),
+            fetch(
+              `https://mobidex.io/inf0x/${network}/fills?taker=${address}`,
+              options
+            ),
+            fetch(
+              `https://mobidex.io/inf0x/${network}/cancels?maker=${address}`,
+              options
+            ),
+            fetch(
+              `https://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
+              options
+            )
+          ];
+          let [makerFills, takerFills, makerCancels] = await Promise.all(
+            promises
+          );
+          let makerFillsJSON = await makerFills.json();
+          let takerFillsJSON = await takerFills.json();
+          let makerCancelsJSON = await makerCancels.json();
+          let filltxs = makerFillsJSON
+            .map(log => ({
+              ...log,
+              id: log.transactionHash,
+              status: 'FILLED'
+            }))
+            .concat(
+              takerFillsJSON.map(log => ({
+                ...log,
+                id: log.transactionHash,
+                status: 'FILLED'
+              }))
+            );
+          let canceltxs = makerCancelsJSON.map(log => ({
             ...log,
             id: log.transactionHash,
-            status: 'FILLED'
-          }))
-        );
-      let canceltxs = makerCancelsJSON.map(log => ({
-        ...log,
-        id: log.transactionHash,
-        status: 'CANCELLED'
-      }));
+            status: 'CANCELLED'
+          }));
 
-      dispatch(addTransactions(filltxs.concat(canceltxs)));
+          return filltxs.concat(canceltxs);
+        },
+        force ? 0 : 10 * 60
+      );
+      dispatch(addTransactions(transactions));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
+  };
+}
+
+export function loadActiveTransactions() {
+  return async dispatch => {
+    let transactions = await cache(
+      'transactions:active',
+      async () => {
+        return [];
+      },
+      60 * 60 * 24 * 7
+    );
+    dispatch(addActiveTransactions(transactions));
+    dispatch(updateActiveTransactionCache());
   };
 }
 
@@ -126,8 +164,7 @@ export function sendTokens(token, to, amount) {
         token
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      dispatch(updateActiveTransactionCache());
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -150,8 +187,7 @@ export function sendEther(to, amount) {
         amount
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      dispatch(updateActiveTransactionCache());
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -177,8 +213,7 @@ export function setTokenAllowance(address) {
         amount: 'UNLIMITED'
       };
       dispatch(addActiveTransactions([activeTransaction]));
-      const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-      console.log('Receipt: ', receipt);
+      dispatch(updateActiveTransactionCache());
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }

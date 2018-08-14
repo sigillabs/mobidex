@@ -25,7 +25,7 @@ class AccountsScreen extends Component {
   }
 
   async componentDidMount() {
-    await this.onRefresh();
+    await this.onRefresh(false);
   }
 
   render() {
@@ -52,7 +52,7 @@ class AccountsScreen extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh(true)}
+              onRefresh={() => this.onRefresh()}
             />
           }
         >
@@ -75,11 +75,11 @@ class AccountsScreen extends Component {
     );
   }
 
-  async onRefresh(force = false) {
+  async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAssets(force));
-    await this.props.dispatch(updateForexTickers());
-    await this.props.dispatch(updateTokenTickers());
+    await this.props.dispatch(loadAssets(reload));
+    await this.props.dispatch(updateForexTickers(reload));
+    await this.props.dispatch(updateTokenTickers(reload));
     this.setState({ refreshing: false });
   }
 }

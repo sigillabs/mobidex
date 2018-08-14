@@ -46,6 +46,14 @@ export default handleActions(
       }
       return { ...state, activeTransactions };
     },
+    [Actions.REMOVE_ACTIVE_TRANSACTIONS]: (state, action) => {
+      const txs = action.payload;
+      const activeTransactions = state.activeTransactions.slice();
+      for (const tx of txs) {
+        _.remove(activeTransactions, atx => atx.id == tx.id);
+      }
+      return { ...state, activeTransactions };
+    },
     [Actions.SET_WALLET]: (state, action) => {
       let { address, web3 } = action.payload;
       if (address && web3) {

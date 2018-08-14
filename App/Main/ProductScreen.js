@@ -11,6 +11,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import {
+  loadActiveTransactions,
   loadAssets,
   loadProducts,
   loadTokens,
@@ -198,8 +199,8 @@ class ProductScreen extends Component {
     };
   }
 
-  UNSAFE_componentWillMount() {
-    this.onRefresh();
+  componentDidMount() {
+    this.onRefresh(false);
   }
 
   render() {
@@ -263,14 +264,15 @@ class ProductScreen extends Component {
     );
   }
 
-  onRefresh() {
+  onRefresh(reload = true) {
     this.setState({ refreshing: true });
     this.requestAnimationFrame(async () => {
-      await this.props.dispatch(loadProducts());
-      await this.props.dispatch(loadTokens(true));
-      await this.props.dispatch(loadAssets());
-      await this.props.dispatch(updateForexTickers());
-      await this.props.dispatch(updateTokenTickers());
+      await this.props.dispatch(loadProducts(reload));
+      await this.props.dispatch(loadTokens(reload));
+      await this.props.dispatch(loadAssets(reload));
+      await this.props.dispatch(updateForexTickers(reload));
+      await this.props.dispatch(updateTokenTickers(reload));
+      await this.props.dispatch(loadActiveTransactions());
       this.setState({ refreshing: false });
     });
   }

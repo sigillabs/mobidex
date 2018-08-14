@@ -4,7 +4,11 @@ import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { addActiveTransactions } from '../../actions';
-import { gotoErrorScreen, submitOrder as _submitOrder } from '../../thunks';
+import {
+  gotoErrorScreen,
+  submitOrder as _submitOrder,
+  updateActiveTransactionCache
+} from '../../thunks';
 import {
   getAccount,
   getOrdersToFill,
@@ -241,8 +245,7 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
     amount: amount
   };
   _store.dispatch(addActiveTransactions([activeTransaction]));
-  const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-  console.log('Receipt: ', receipt);
+  _store.dispatch(updateActiveTransactionCache());
 }
 
 export async function fillOrder(order, amount = null, side = 'buy') {
@@ -313,13 +316,12 @@ export async function fillOrder(order, amount = null, side = 'buy') {
     { shouldValidate: true }
   );
   const activeTransaction = {
+    ...order,
     id: txhash,
-    type: 'FILL',
-    ...order
+    type: 'FILL'
   };
   _store.dispatch(addActiveTransactions([activeTransaction]));
-  const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-  console.log('Receipt: ', receipt);
+  _store.dispatch(updateActiveTransactionCache());
 }
 
 export async function cancelOrder(order) {
@@ -351,13 +353,12 @@ export async function cancelOrder(order) {
   );
 
   const activeTransaction = {
+    ...order,
     id: txhash,
-    type: 'CANCEL',
-    ...order
+    type: 'CANCEL'
   };
   _store.dispatch(addActiveTransactions([activeTransaction]));
-  const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-  console.log('Receipt: ', receipt);
+  _store.dispatch(updateActiveTransactionCache());
 }
 
 export async function getFillableOrders(base, amount, side = 'buy') {

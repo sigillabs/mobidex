@@ -239,8 +239,8 @@ class ProductDetailsScreen extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this.onRefresh();
+  componentDidMount() {
+    this.onRefresh(false);
   }
 
   render() {
@@ -259,7 +259,7 @@ class ProductDetailsScreen extends Component {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh.bind(this)}
+            onRefresh={() => this.onRefresh()}
           />
         }
       >
@@ -282,12 +282,12 @@ class ProductDetailsScreen extends Component {
     );
   }
 
-  onRefresh = async () => {
+  async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(updateForexTickers());
-    await this.props.dispatch(updateTokenTickers());
+    await this.props.dispatch(updateForexTickers(reload));
+    await this.props.dispatch(updateTokenTickers(reload));
     this.setState({ refreshing: false });
-  };
+  }
 }
 
 const styles = {

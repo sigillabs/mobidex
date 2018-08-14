@@ -8,6 +8,10 @@ import { setStore as setStoreForOrderService } from './services/OrderService';
 import { setStore as setStoreForProductService } from './services/ProductService';
 import { setStore as setStoreForTickerService } from './services/TickerService';
 import { setStore as setStoreForTokenService } from './services/TokenService';
+import {
+  setStore as setStoreForTransactionWatcherService,
+  start as startTransactionWatcherService
+} from './services/TransactionWatcherService';
 import { setStore as setStoreForWalletService } from './services/WalletService';
 
 const store = configureStore();
@@ -17,7 +21,10 @@ setStoreForOrderService(store);
 setStoreForProductService(store);
 setStoreForTickerService(store);
 setStoreForTokenService(store);
+setStoreForTransactionWatcherService(store);
 setStoreForWalletService(store);
+
+startTransactionWatcherService();
 
 export default class App extends Component {
   render() {

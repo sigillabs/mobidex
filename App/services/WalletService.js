@@ -28,7 +28,7 @@ import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { addActiveTransactions, setWallet } from '../../actions';
-import { setTokenAllowance } from '../../thunks';
+import { setTokenAllowance, updateActiveTransactionCache } from '../../thunks';
 import {
   getAccount,
   getTokenAllowance,
@@ -236,8 +236,7 @@ export async function wrapEther(amount, wei = false) {
       amount
     };
     _store.dispatch(addActiveTransactions([activeTransaction]));
-    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-    console.log('Receipt: ', receipt);
+    _store.dispatch(updateActiveTransactionCache());
   }
 }
 
@@ -273,8 +272,7 @@ export async function unwrapEther(amount, wei = false) {
       amount
     };
     _store.dispatch(addActiveTransactions([activeTransaction]));
-    const receipt = await zeroEx.awaitTransactionMinedAsync(txhash);
-    console.log('Receipt: ', receipt);
+    _store.dispatch(updateActiveTransactionCache());
   }
 }
 

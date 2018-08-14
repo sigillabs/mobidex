@@ -17,7 +17,7 @@ class TransactionHistoryScreen extends Component {
   }
 
   componentDidMount() {
-    this.onRefresh();
+    this.onRefresh(false);
   }
 
   render() {
@@ -51,9 +51,9 @@ class TransactionHistoryScreen extends Component {
     );
   }
 
-  async onRefresh() {
+  async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadTransactions());
+    await this.props.dispatch(loadTransactions(reload));
     this.setState({ refreshing: false });
   }
 }
