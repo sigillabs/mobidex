@@ -30,6 +30,7 @@ import ImportFirstAccount from './Onboarding/ImportAccountScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
+import ActiveTransactionsOverlay from './views/ActiveTransactionsOverlay';
 import * as AnalyticsService from './services/AnalyticsService';
 
 const LockedNavigation = createSwitchNavigator(
@@ -276,7 +277,11 @@ const MainTabsNavigator = createTabNavigator(
             );
 
           case 'Wallet':
-            return <Ionicons name="md-card" size={25} color={tintColor} />;
+            return (
+              <ActiveTransactionsOverlay>
+                <Ionicons name="md-card" size={25} color={tintColor} />
+              </ActiveTransactionsOverlay>
+            );
 
           case 'Orders':
             return <Ionicons name="ios-book" size={25} color={tintColor} />;
