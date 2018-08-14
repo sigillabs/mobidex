@@ -31,6 +31,7 @@ import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
 import ActiveTransactionsOverlay from './views/ActiveTransactionsOverlay';
+import ActiveOrdersOverlay from './views/ActiveOrdersOverlay';
 import * as AnalyticsService from './services/AnalyticsService';
 
 const LockedNavigation = createSwitchNavigator(
@@ -284,7 +285,11 @@ const MainTabsNavigator = createTabNavigator(
             );
 
           case 'Orders':
-            return <Ionicons name="ios-book" size={25} color={tintColor} />;
+            return (
+              <ActiveOrdersOverlay>
+                <Ionicons name="ios-book" size={25} color={tintColor} />
+              </ActiveOrdersOverlay>
+            );
 
           case 'Settings':
             return <Ionicons name="ios-settings" size={25} color={tintColor} />;
