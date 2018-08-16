@@ -13,7 +13,7 @@ class TransactionItem extends Component {
 
     switch (action) {
       case 'FILL':
-      case 'CANCEL':
+      case 'CANCELLED':
         return this.renderFillOrCancel();
 
       case 'SEND_ETHER':

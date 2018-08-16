@@ -16,8 +16,16 @@ class CancelledItem extends Component {
 
   async componentDidMount() {
     let [makerToken, takerToken] = await Promise.all([
-      getTokenByAddress(this.props.web3, this.props.transaction.makerToken),
-      getTokenByAddress(this.props.web3, this.props.transaction.takerToken)
+      getTokenByAddress(
+        this.props.web3,
+        this.props.transaction.makerToken ||
+          this.props.transaction.makerTokenAddress
+      ),
+      getTokenByAddress(
+        this.props.web3,
+        this.props.transaction.takerToken ||
+          this.props.transaction.takerTokenAddress
+      )
     ]);
     this.setState({
       makerToken,
@@ -35,24 +43,26 @@ class CancelledItem extends Component {
       id,
       cancelledMakerTokenAmount,
       cancelledTakerTokenAmount,
+      makerTokenAmount,
+      takerTokenAmount,
       timestamp
     } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
 
     return (
       <TransactionItem
-        action="CANCEL"
+        action="CANCELLED"
         label={'Cancelled'}
         source={{
           amount: formatAmountWithDecimals(
-            cancelledMakerTokenAmount,
+            cancelledMakerTokenAmount || makerTokenAmount,
             makerToken.decimals
           ),
           symbol: makerToken.symbol
         }}
         destination={{
           amount: formatAmountWithDecimals(
-            cancelledTakerTokenAmount,
+            cancelledTakerTokenAmount || takerTokenAmount,
             takerToken.decimals
           ),
           symbol: takerToken.symbol

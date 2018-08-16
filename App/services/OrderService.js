@@ -355,7 +355,7 @@ export async function cancelOrder(order) {
   const activeTransaction = {
     ...order,
     id: txhash,
-    type: 'CANCEL'
+    type: 'CANCELLED'
   };
   _store.dispatch(addActiveTransactions([activeTransaction]));
   _store.dispatch(updateActiveTransactionCache());

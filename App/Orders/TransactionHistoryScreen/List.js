@@ -30,165 +30,158 @@ class TransactionsList extends Component {
     // });
 
     const activeItems = this.props.active.map((tx, index) => {
-      if (tx.status) {
-        switch (tx.status) {
-          case 'FILLED':
-            return (
-              <TouchableOpacity key={`active-${index}`}>
-                <FilledItem transaction={tx} />
-              </TouchableOpacity>
-            );
+      const txtype = tx.status || tx.type;
+      switch (txtype) {
+        case 'FILLED':
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <FilledItem transaction={tx} />
+            </TouchableOpacity>
+          );
 
-          case 'CANCELLED':
-            return (
-              <TouchableOpacity key={`active-${index}`}>
-                <CancelledItem transaction={tx} />
-              </TouchableOpacity>
-            );
-        }
-      } else if (tx.type) {
-        switch (tx.type) {
-          case 'SEND_ETHER':
-            return (
-              <TouchableOpacity key={`active-${index}`}>
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  source={{
-                    address: tx.address,
-                    amount: formatAmount(tx.amount),
-                    symbol: 'ETH'
-                  }}
-                  destination={{
-                    address: tx.to,
-                    amount: formatAmount(tx.amount),
-                    symbol: 'ETH'
-                  }}
-                />
-              </TouchableOpacity>
-            );
+        case 'CANCELLED':
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <CancelledItem transaction={tx} />
+            </TouchableOpacity>
+          );
 
-          case 'SEND_TOKENS':
-            return (
-              <TouchableOpacity key={`active-${index}`}>
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  source={{
-                    address: tx.address,
-                    amount: formatAmount(tx.amount),
-                    symbol: tx.token.symbol
-                  }}
-                  destination={{
-                    address: tx.to,
-                    amount: formatAmount(tx.amount),
-                    symbol: tx.token.symbol
-                  }}
-                />
-              </TouchableOpacity>
-            );
+        case 'SEND_ETHER':
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                source={{
+                  address: tx.address,
+                  amount: formatAmount(tx.amount),
+                  symbol: 'ETH'
+                }}
+                destination={{
+                  address: tx.to,
+                  amount: formatAmount(tx.amount),
+                  symbol: 'ETH'
+                }}
+              />
+            </TouchableOpacity>
+          );
 
-          default:
-            return (
-              <TouchableOpacity key={`active-${index}`}>
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  address={tx.address}
-                  amount={formatAmount(tx.amount)}
-                />
-              </TouchableOpacity>
-            );
-        }
+        case 'SEND_TOKENS':
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                source={{
+                  address: tx.address,
+                  amount: formatAmount(tx.amount),
+                  symbol: tx.token.symbol
+                }}
+                destination={{
+                  address: tx.to,
+                  amount: formatAmount(tx.amount),
+                  symbol: tx.token.symbol
+                }}
+              />
+            </TouchableOpacity>
+          );
+
+        default:
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                address={tx.address}
+                amount={formatAmount(tx.amount)}
+              />
+            </TouchableOpacity>
+          );
       }
     });
 
     const items = this.props.transactions.map((tx, index) => {
-      if (tx.status) {
-        switch (tx.status) {
-          case 'FILLED':
-            return (
-              <TouchableOpacity
-                key={`tx-${index}`}
-                onPress={() => this.props.dispatch(gotoEtherScan(tx))}
-              >
-                <FilledItem transaction={tx} />
-              </TouchableOpacity>
-            );
+      const txtype = tx.status || tx.type;
+      switch (txtype) {
+        case 'FILLED':
+          return (
+            <TouchableOpacity
+              key={`tx-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <FilledItem transaction={tx} />
+            </TouchableOpacity>
+          );
 
-          case 'CANCELLED':
-            return (
-              <TouchableOpacity
-                key={`tx-${index}`}
-                onPress={() => this.props.dispatch(gotoEtherScan(tx))}
-              >
-                <CancelledItem transaction={tx} />
-              </TouchableOpacity>
-            );
-        }
-      } else if (tx.type) {
-        switch (tx.type) {
-          case 'SEND_ETHER':
-            return (
-              <TouchableOpacity
-                key={`tx-${index}`}
-                onPress={() => this.props.dispatch(gotoEtherScan(tx))}
-              >
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  source={{
-                    address: tx.address,
-                    amount: formatAmount(tx.amount),
-                    symbol: 'ETH'
-                  }}
-                  destination={{
-                    address: tx.to,
-                    amount: tx.amount,
-                    symbol: 'ETH'
-                  }}
-                />
-              </TouchableOpacity>
-            );
+        case 'CANCELLED':
+          return (
+            <TouchableOpacity
+              key={`tx-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <CancelledItem transaction={tx} />
+            </TouchableOpacity>
+          );
+        case 'SEND_ETHER':
+          return (
+            <TouchableOpacity
+              key={`tx-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                source={{
+                  address: tx.address,
+                  amount: formatAmount(tx.amount),
+                  symbol: 'ETH'
+                }}
+                destination={{
+                  address: tx.to,
+                  amount: tx.amount,
+                  symbol: 'ETH'
+                }}
+              />
+            </TouchableOpacity>
+          );
 
-          case 'SEND_TOKENS':
-            return (
-              <TouchableOpacity
-                key={`tx-${index}`}
-                onPress={() => this.props.dispatch(gotoEtherScan(tx))}
-              >
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  source={{
-                    address: tx.address,
-                    amount: formatAmount(tx.amount),
-                    symbol: tx.token.symbol
-                  }}
-                  destination={{
-                    address: tx.to,
-                    amount: formatAmount(tx.amount),
-                    symbol: tx.token.symbol
-                  }}
-                />
-              </TouchableOpacity>
-            );
+        case 'SEND_TOKENS':
+          return (
+            <TouchableOpacity
+              key={`tx-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                source={{
+                  address: tx.address,
+                  amount: formatAmount(tx.amount),
+                  symbol: tx.token.symbol
+                }}
+                destination={{
+                  address: tx.to,
+                  amount: formatAmount(tx.amount),
+                  symbol: tx.token.symbol
+                }}
+              />
+            </TouchableOpacity>
+          );
 
-          default:
-            return (
-              <TouchableOpacity
-                key={`tx-${index}`}
-                onPress={() => this.props.dispatch(gotoEtherScan(tx))}
-              >
-                <TransactionItem
-                  action={tx.type}
-                  label={LABEL_LOOKUP[tx.type]}
-                  address={tx.address}
-                  amount={formatAmount(tx.amount)}
-                />
-              </TouchableOpacity>
-            );
-        }
+        default:
+          return (
+            <TouchableOpacity
+              key={`tx-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                address={tx.address}
+                amount={formatAmount(tx.amount)}
+              />
+            </TouchableOpacity>
+          );
       }
     });
 
