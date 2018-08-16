@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import { InteractionManager, View } from 'react-native';
+import { InteractionManager, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { sendEther, sendTokens } from '../../../thunks';
 import AmountPage from './AmountPage';
@@ -37,13 +37,11 @@ class SendTokensWizard extends Component {
     }
 
     return (
-      <View
+      <ScrollView
         style={{
           width: '100%',
           height: '100%',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
+          flex: 1
         }}
       >
         {this.state.page === 0 ? (
@@ -59,7 +57,7 @@ class SendTokensWizard extends Component {
             onSubmit={address => this.submitAddress(address)}
           />
         ) : null}
-      </View>
+      </ScrollView>
     );
   }
 
