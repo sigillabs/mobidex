@@ -9,9 +9,17 @@ export default class NumberOverlay extends Component {
     return (
       <View>
         <View>{this.props.children}</View>
-        <View style={[styles.overlay, styles.circle]}>
-          <Text style={[styles.text]}>{this.props.value}</Text>
-        </View>
+        {!this.props.hideOnZero || this.props.value > 0 ? (
+          <View
+            style={[
+              styles.overlay,
+              styles.circle,
+              this.props.orientation === 'right' ? styles.right : styles.left
+            ]}
+          >
+            <Text style={[styles.text]}>{this.props.value}</Text>
+          </View>
+        ) : null}
       </View>
     );
   }
@@ -19,13 +27,19 @@ export default class NumberOverlay extends Component {
 
 NumberOverlay.propTypes = {
   children: PropTypes.any,
-  value: PropTypes.number.isRequired
+  value: PropTypes.number.isRequired,
+  orientation: PropTypes.string.isRequired,
+  hideOnZero: PropTypes.bool.isRequired
+};
+
+NumberOverlay.defaultProps = {
+  orientation: 'left',
+  hideOnZero: true
 };
 
 const styles = {
   overlay: {
-    position: 'absolute',
-    left: -5
+    position: 'absolute'
   },
   circle: {
     backgroundColor: colors.yellow0,
@@ -40,5 +54,11 @@ const styles = {
     fontSize: 10,
     textAlign: 'center',
     padding: 1
+  },
+  left: {
+    left: -10
+  },
+  right: {
+    right: -10
   }
 };

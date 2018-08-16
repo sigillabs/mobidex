@@ -278,17 +278,15 @@ const MainTabsNavigator = createTabNavigator(
             );
 
           case 'Wallet':
-            return (
-              <ActiveTransactionsOverlay>
-                <Ionicons name="md-card" size={25} color={tintColor} />
-              </ActiveTransactionsOverlay>
-            );
+            return <Ionicons name="md-card" size={25} color={tintColor} />;
 
           case 'Orders':
             return (
-              <ActiveOrdersOverlay>
-                <Ionicons name="ios-book" size={25} color={tintColor} />
-              </ActiveOrdersOverlay>
+              <ActiveTransactionsOverlay orientation="right">
+                <ActiveOrdersOverlay>
+                  <Ionicons name="ios-book" size={25} color={tintColor} />
+                </ActiveOrdersOverlay>
+              </ActiveTransactionsOverlay>
             );
 
           case 'Settings':
