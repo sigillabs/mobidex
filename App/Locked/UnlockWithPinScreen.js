@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
@@ -82,7 +82,7 @@ class UnlockWithPinScreen extends Component {
       return;
     }
 
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       try {
         await WalletService.unlock(this.state.pin.slice(0, 6));
       } catch (err) {

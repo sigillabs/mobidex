@@ -1,6 +1,22 @@
+import { HttpClient } from '@0xproject/connect';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
+
+export async function getTokenPairs(options = { relayerEndpoint: null }) {
+  let client = new HttpClient(options.relayerEndpoint);
+  return await client.getTokenPairsAsync();
+}
+
+export async function getOrders(options = { relayerEndpoint: null }) {
+  let client = new HttpClient(options.relayerEndpoint);
+  return await client.getOrdersAsync();
+}
+
+export async function getOrder(hash, options = { relayerEndpoint: null }) {
+  let client = new HttpClient(options.relayerEndpoint);
+  return await client.getOrderAsync(hash);
+}
 
 export function filterAndSortOrdersByTokens(
   orders,

@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import {
+  InteractionManager,
+  Platform,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Text } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -81,7 +86,7 @@ export default class UnlockWithFingerScreen extends Component {
 
   unlock() {
     this.setState({ showUnlocking: Platform.OS === 'android' });
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       try {
         await WalletService.unlock();
       } catch (err) {

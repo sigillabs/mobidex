@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { addActiveTransactions, addAssets, addTransactions } from '../actions';
 import {
+  asyncTimingWrapper,
   cache,
   getAccount,
   getBalance,
@@ -10,6 +11,8 @@ import {
   sendEther as sendEtherUtil
 } from '../utils';
 import { gotoErrorScreen } from './navigation';
+
+const getTokenBalanceWithTiming = asyncTimingWrapper(getTokenBalance);
 
 export function updateActiveTransactionCache() {
   return async (dispatch, getState) => {
@@ -36,7 +39,7 @@ export function loadAssets(force = false) {
       'assets',
       async () => {
         let balances = await Promise.all(
-          tokens.map(({ address }) => getTokenBalance(web3, address))
+          tokens.map(({ address }) => getTokenBalanceWithTiming(web3, address))
         );
         let extendedTokens = tokens.map((token, index) => ({
           ...token,

@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
-import ToggleForexButton from '../components/ToggleForexButton';
+import ToggleForexButton from '../views/ToggleForexButton';
 import NavigationService from '../services/NavigationService';
 import * as TokenService from '../services/TokenService';
 

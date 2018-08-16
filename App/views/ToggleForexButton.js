@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { toggleShowForex } from '../../actions';
-import FormattedSymbol from './FormattedSymbol';
+import FormattedSymbol from '../components/FormattedSymbol';
 
 class ToggleForexButton extends Component {
   render() {

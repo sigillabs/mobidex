@@ -1,18 +1,27 @@
 import { HttpClient } from '@0xproject/connect';
 import * as _ from 'lodash';
 import { addOrders, setOrders, setProducts, setTokens } from '../actions';
-import { cache, getTokenByAddress } from '../utils';
+import {
+  asyncTimingWrapper,
+  cache,
+  getOrder,
+  getOrders,
+  getTokenByAddress,
+  getTokenPairs
+} from '../utils';
 import { gotoErrorScreen } from './navigation';
+
+const getTokenByAddressWithTiming = asyncTimingWrapper(getTokenByAddress);
+const getOrderWithTiming = asyncTimingWrapper(getOrder);
+const getOrdersWithTiming = asyncTimingWrapper(getOrders);
+const getTokenPairsWithTiming = asyncTimingWrapper(getTokenPairs);
 
 export function loadOrders() {
   return async (dispatch, getState) => {
-    let {
-      settings: { relayerEndpoint }
-    } = getState();
-    let client = new HttpClient(relayerEndpoint);
+    let { settings } = getState();
 
     try {
-      dispatch(setOrders(await client.getOrdersAsync()));
+      dispatch(setOrders(await getOrdersWithTiming(settings)));
       return true;
     } catch (err) {
       dispatch(gotoErrorScreen(err));
@@ -23,13 +32,10 @@ export function loadOrders() {
 
 export function loadOrder(orderHash) {
   return async (dispatch, getState) => {
-    let {
-      settings: { relayerEndpoint }
-    } = getState();
-    let client = new HttpClient(relayerEndpoint);
+    let { settings } = getState();
 
     try {
-      dispatch(addOrders([await client.getOrderAsync(orderHash)]));
+      dispatch(setOrders([await getOrderWithTiming(orderHash, settings)]));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -38,16 +44,13 @@ export function loadOrder(orderHash) {
 
 export function loadProducts(force = false) {
   return async (dispatch, getState) => {
-    const {
-      settings: { relayerEndpoint }
-    } = getState();
+    const { settings } = getState();
 
     try {
       const pairs = await cache(
         'products',
         async () => {
-          const client = new HttpClient(relayerEndpoint);
-          const pairs = await client.getTokenPairsAsync();
+          const pairs = await getTokenPairsWithTiming(settings);
           return pairs;
         },
         force ? 0 : 24 * 60 * 60
@@ -75,7 +78,7 @@ export function loadTokens(force = false) {
           const allTokens = _.unionBy(productsA, productsB, 'address');
           const allExtendedTokens = await Promise.all(
             allTokens.map(async token => {
-              const extendedToken = await getTokenByAddress(
+              const extendedToken = await getTokenByAddressWithTiming(
                 web3,
                 token.address,
                 force

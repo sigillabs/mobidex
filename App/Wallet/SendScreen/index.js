@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import { sendEther, sendTokens } from '../../../thunks';
 import AmountPage from './AmountPage';
@@ -84,7 +84,7 @@ class SendTokensWizard extends Component {
     this.setState({ showSending: true });
     this.props.navigation.setParams({ hideHeader: true });
 
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       try {
         if (token.address === null) {
           await this.props.dispatch(

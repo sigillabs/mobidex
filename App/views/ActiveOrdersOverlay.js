@@ -1,3 +1,4 @@
+import ethUtil from 'ethereumjs-util';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -7,7 +8,8 @@ export class ActiveOrdersOverlay extends Component {
   render() {
     const orders = this.props.orders.filter(
       order =>
-        order.maker === this.props.address || order.taker === this.props.address
+        ethUtil.stripHexPrefix(order.maker) ===
+        ethUtil.stripHexPrefix(this.props.address)
     );
     return <NumberOverlay {...this.props} value={orders.length} />;
   }

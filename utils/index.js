@@ -4,5 +4,6 @@ export * from './display';
 export * from './ethereum';
 export * from './inf0x';
 export * from './orders';
+export * from './timing';
 export * from './tokens';
 export * from './wallet';

@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import { Clipboard, View } from 'react-native';
+import { Clipboard, InteractionManager, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors } from '../../styles';
 import Button from '../components/Button';
@@ -218,7 +218,7 @@ export default class ImportMnemonicWizard extends Component {
   }
 
   submit() {
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       try {
         const web3 = await WalletService.importMnemonics(
           this.state.mnemonic.join(' '),

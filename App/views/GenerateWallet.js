@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
@@ -32,7 +32,7 @@ class GenerateWallet extends Component {
       return;
     }
 
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       await this.props.dispatch(generateWallet(this.state.password));
 
       if (this.props.onFinish) await this.props.onFinish();

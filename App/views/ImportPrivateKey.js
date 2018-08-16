@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+import { InteractionManager } from 'react-native';
 import { Input, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -98,7 +99,7 @@ class ImportPrivateKey extends Component {
       return;
     }
 
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       try {
         await this.props.dispatch(
           importPrivateKey(this.state.privateKey, this.state.password)

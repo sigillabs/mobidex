@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import {
+  InteractionManager,
   RefreshControl,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
@@ -13,6 +14,7 @@ import TimerMixin from 'react-timer-mixin';
 import {
   loadActiveTransactions,
   loadAssets,
+  loadOrders,
   loadProducts,
   loadTokens,
   updateForexTickers,
@@ -266,13 +268,14 @@ class ProductScreen extends Component {
 
   onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    this.requestAnimationFrame(async () => {
+    InteractionManager.runAfterInteractions(async () => {
       await this.props.dispatch(loadProducts(reload));
       await this.props.dispatch(loadTokens(reload));
       await this.props.dispatch(loadAssets(reload));
-      await this.props.dispatch(updateForexTickers(reload));
-      await this.props.dispatch(updateTokenTickers(reload));
-      await this.props.dispatch(loadActiveTransactions());
+      this.props.dispatch(updateForexTickers(reload));
+      this.props.dispatch(updateTokenTickers(reload));
+      this.props.dispatch(loadActiveTransactions());
+      this.props.dispatch(loadOrders());
       this.setState({ refreshing: false });
     });
   }
