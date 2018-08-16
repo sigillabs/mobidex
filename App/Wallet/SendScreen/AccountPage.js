@@ -59,6 +59,7 @@ class AccountPage extends Component {
           icon={<Icon name="check" size={24} color="white" />}
           title={'Send'}
           style={{ width: '100%' }}
+          disabled={!/^(0x)?[a-fA-F0-9]{40}$/.test(this.state.address)}
         />
       </View>
     );

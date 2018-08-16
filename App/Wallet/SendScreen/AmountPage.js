@@ -88,6 +88,7 @@ export default class AmountPage extends Component {
           onSubmit={() => this.submit()}
           pressMode="char"
           buttonTitle={'Next'}
+          disabled={new BigNumber(this.state.amount || 0).lte(0)}
         />
       </View>
     );
