@@ -231,7 +231,7 @@ export async function wrapEther(amount, wei = false) {
   if (txhash) {
     const activeTransaction = {
       id: txhash,
-      type: 'WRAP_ETHER',
+      type: 'DEPOSITED',
       address,
       amount
     };
@@ -267,7 +267,7 @@ export async function unwrapEther(amount, wei = false) {
   if (txhash) {
     const activeTransaction = {
       id: txhash,
-      type: 'UNWRAP_ETHER',
+      type: 'WITHDRAWAL',
       address,
       amount
     };

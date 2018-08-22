@@ -20,9 +20,37 @@ class TransactionItem extends Component {
       case 'SEND_TOKENS':
         return this.renderSend();
 
+      case 'DEPOSITED':
+      case 'WITHDRAWAL':
+        return this.renderDepositOrWithdrawal();
+
       default:
         return this.renderDefault();
     }
+  }
+
+  renderDepositOrWithdrawal() {
+    const { label, source, timestamp } = this.props;
+
+    return (
+      <ListItem
+        title={
+          <Row>
+            <Text>{label}</Text>
+            <Text> </Text>
+            <Text>{source ? source.sender : null}</Text>
+            <Text> </Text>
+            <Text>{source ? source.amount : null}</Text>
+            <Text> </Text>
+            <Text>ETH</Text>
+          </Row>
+        }
+        subtitle={
+          timestamp ? <MutedText>{formatTimestamp(timestamp)}</MutedText> : null
+        }
+        borderBottom
+      />
+    );
   }
 
   renderFillOrCancel() {

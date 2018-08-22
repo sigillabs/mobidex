@@ -50,13 +50,15 @@ class ProductDetailListItem extends Component {
 class ProductDetailsView extends Component {
   render() {
     const { base, quote, period, infolist, history } = this.props;
+    const data = history.slice();
+    data.reverse();
 
     return (
       <View style={[styles.container]}>
         <PriceGraph
           interval={period}
           height={200}
-          data={history}
+          data={data}
           label={'Last 30 Days'}
           formatAmount={this.props.formatAmount}
         />

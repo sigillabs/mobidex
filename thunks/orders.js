@@ -48,7 +48,7 @@ export function loadProducts(force = false) {
 
     try {
       const pairs = await cache(
-        'products',
+        `products:${settings.network}`,
         async () => {
           const pairs = await getTokenPairsWithTiming(settings);
           return pairs;
@@ -57,6 +57,7 @@ export function loadProducts(force = false) {
       );
       dispatch(setProducts(pairs));
     } catch (err) {
+      console.warn(err);
       dispatch(gotoErrorScreen(err));
     }
   };
@@ -65,13 +66,14 @@ export function loadProducts(force = false) {
 export function loadTokens(force = false) {
   return async (dispatch, getState) => {
     const {
+      settings,
       relayer: { products },
       wallet: { web3 }
     } = getState();
 
     try {
       const tokens = await cache(
-        'tokens',
+        `tokens:${settings.network}`,
         async () => {
           const productsA = products.map(pair => pair.tokenA);
           const productsB = products.map(pair => pair.tokenB);

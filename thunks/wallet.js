@@ -17,10 +17,11 @@ const getTokenBalanceWithTiming = asyncTimingWrapper(getTokenBalance);
 export function updateActiveTransactionCache() {
   return async (dispatch, getState) => {
     const {
+      settings,
       wallet: { activeTransactions }
     } = getState();
     await cache(
-      'transactions:active',
+      `transactions:${settings.network}:active`,
       async () => {
         return activeTransactions;
       },
@@ -31,12 +32,13 @@ export function updateActiveTransactionCache() {
 
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
-    let {
+    const {
+      settings,
       wallet: { web3, address },
       relayer: { tokens }
     } = getState();
     let assets = await cache(
-      'assets',
+      `assets:${settings.network}`,
       async () => {
         let balances = await Promise.all(
           tokens.map(({ address }) => getTokenBalanceWithTiming(web3, address))
@@ -74,7 +76,7 @@ export function loadTransactions(force = false) {
     } = getState();
     try {
       let transactions = await cache(
-        'transactions',
+        `transactions:${network}`,
         async () => {
           let options = {
             headers: {
@@ -96,17 +98,27 @@ export function loadTransactions(force = false) {
               options
             ),
             fetch(
-              `https://mobidex.io/inf0x/${network}/cancels?taker=${address}`,
+              `https://mobidex.io/inf0x/${network}/deposits?sender=${address}`,
+              options
+            ),
+            fetch(
+              `https://mobidex.io/inf0x/${network}/withdrawals?sender=${address}`,
               options
             )
           ];
-          let [makerFills, takerFills, makerCancels] = await Promise.all(
-            promises
-          );
-          let makerFillsJSON = await makerFills.json();
-          let takerFillsJSON = await takerFills.json();
-          let makerCancelsJSON = await makerCancels.json();
-          let filltxs = makerFillsJSON
+          const [
+            makerFills,
+            takerFills,
+            makerCancels,
+            deposits,
+            withdrawals
+          ] = await Promise.all(promises);
+          const makerFillsJSON = await makerFills.json();
+          const takerFillsJSON = await takerFills.json();
+          const makerCancelsJSON = await makerCancels.json();
+          const depositsJSON = await deposits.json();
+          const withdrawalsJSON = await withdrawals.json();
+          const filltxs = makerFillsJSON
             .map(log => ({
               ...log,
               id: log.transactionHash,
@@ -119,13 +131,26 @@ export function loadTransactions(force = false) {
                 status: 'FILLED'
               }))
             );
-          let canceltxs = makerCancelsJSON.map(log => ({
+          const canceltxs = makerCancelsJSON.map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'CANCELLED'
           }));
+          const depositstxs = depositsJSON.map(log => ({
+            ...log,
+            id: log.transactionHash,
+            status: 'DEPOSITED'
+          }));
+          const withdrawalstxs = withdrawalsJSON.map(log => ({
+            ...log,
+            id: log.transactionHash,
+            status: 'WITHDRAWAL'
+          }));
 
-          return filltxs.concat(canceltxs);
+          return filltxs
+            .concat(canceltxs)
+            .concat(depositstxs)
+            .concat(withdrawalstxs);
         },
         force ? 0 : 10 * 60
       );
@@ -137,9 +162,10 @@ export function loadTransactions(force = false) {
 }
 
 export function loadActiveTransactions() {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { settings } = getState();
     let transactions = await cache(
-      'transactions:active',
+      `transactions:${settings.network}:active`,
       async () => {
         return [];
       },

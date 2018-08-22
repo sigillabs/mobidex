@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "0x.js": "^0.30.0",
-        "@0xproject/connect": "^0.5.1",
+        "@0xproject/connect": "^0.6.17",
         "babel-plugin-transform-remove-console": "^6.9.0",
         "bignumber.js": "^5.0.0",
         "coinmarketcap-api": "^1.0.2",

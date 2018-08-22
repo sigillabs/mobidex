@@ -202,6 +202,11 @@ class WalletManager: NSObject {
           return;
       }
       
+      guard password != nil else {
+          callback([NSNull(), NSNull()])
+          return;
+      }
+      
       do {
         let privateKey = try store.UNSAFE_getPrivateKeyData(password: password!, account: addresses[0])
         callback([NSNull(), privateKey.toHexString()])

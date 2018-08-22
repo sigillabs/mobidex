@@ -24,6 +24,7 @@ class TransactionHistoryScreen extends Component {
     const allTransactions = []
       .concat(this.props.activeTransactions)
       .concat(this.props.transactions);
+
     return (
       <PageRoot>
         <ScrollView

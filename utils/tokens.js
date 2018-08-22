@@ -4,8 +4,10 @@ import ethUtil from 'ethereumjs-util';
 import { AsyncStorage } from 'react-native';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { getZeroExClient, getAccount, getNetworkId } from './ethereum';
+import { hex2a } from './display';
 
 const TokenABI = require('../abi/Token.json');
+const BytesTokenABI = require('../abi/BytesToken.json');
 
 export async function getTokenBalance(web3, address) {
   let zeroEx = await getZeroExClient(web3);
@@ -49,6 +51,20 @@ export async function getTokenByAddress(web3, address, force = false) {
     },
     options: null
   }).Token;
+  let bytesContract = ContractDefinitionLoader({
+    web3,
+    contractDefinitions: {
+      Token: {
+        ...BytesTokenABI,
+        networks: {
+          [networkId]: {
+            address
+          }
+        }
+      }
+    },
+    options: null
+  }).Token;
 
   let name = null;
   let symbol = null;
@@ -57,8 +73,17 @@ export async function getTokenByAddress(web3, address, force = false) {
   try {
     name = await new Promise((resolve, reject) => {
       contract.name.call((err, data) => {
-        if (err) return reject(err);
-        else return resolve(data);
+        if (err) {
+          bytesContract.name.call((err, data) => {
+            if (err) return reject(err);
+            else
+              return resolve(
+                hex2a(data)
+                  .trim()
+                  .substring(1)
+              );
+          });
+        } else return resolve(data);
       });
     });
   } catch (err) {
@@ -69,8 +94,17 @@ export async function getTokenByAddress(web3, address, force = false) {
   try {
     symbol = await new Promise((resolve, reject) => {
       contract.symbol.call((err, data) => {
-        if (err) return reject(err);
-        else return resolve(data);
+        if (err) {
+          bytesContract.symbol.call((err, data) => {
+            if (err) return reject(err);
+            else
+              return resolve(
+                hex2a(data)
+                  .trim()
+                  .substring(1)
+              );
+          });
+        } else return resolve(data);
       });
     });
   } catch (err) {
