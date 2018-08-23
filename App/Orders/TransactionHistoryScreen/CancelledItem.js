@@ -51,7 +51,7 @@ class CancelledItem extends Component {
 
     return (
       <TransactionItem
-        action="CANCELLED"
+        action="CANCEL"
         label={'Cancelled'}
         source={{
           amount: formatAmountWithDecimals(

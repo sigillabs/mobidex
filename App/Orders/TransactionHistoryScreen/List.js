@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { gotoEtherScan } from '../../../thunks';
 import { transactionProp } from '../../../types/props';
 import { formatAmount, formatAmountWithDecimals } from '../../../utils';
+import * as TokenService from '../../services/TokenService';
 import TransactionItem from './TransactionItem';
 import CancelledItem from './CancelledItem';
 import FilledItem from './FilledItem';
@@ -15,8 +16,9 @@ const LABEL_LOOKUP = {
   CANCEL: 'Cancel',
   SEND_ETHER: 'Send',
   SEND_TOKENS: 'Send',
-  DEPOSITED: 'Wrapped',
-  WITHDRAWAL: 'Unwrapped'
+  DEPOSIT: 'Wrapped',
+  WITHDRAWAL: 'Unwrapped',
+  APPROVAL: 'Approved'
 };
 
 class TransactionsList extends Component {
@@ -30,16 +32,41 @@ class TransactionsList extends Component {
     // });
 
     const activeItems = this.props.active.map((tx, index) => {
-      const txtype = tx.status || tx.type;
+      const token = tx.address
+        ? TokenService.findTokenByAddress(tx.address)
+        : null;
+      let txtype = tx.status || tx.type;
+
+      if (txtype === 'DEPOSITED') txtype = 'DEPOSIT';
+      else if (txtype === 'FILLED') txtype = 'FILL';
+
       switch (txtype) {
-        case 'DEPOSITED':
+        case 'APPROVAL':
+          return (
+            <TouchableOpacity key={`active-${index}`}>
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                destination={{
+                  address: tx.spender,
+                  amount:
+                    tx.amount === 'UNLIMITED'
+                      ? 'UNLIMITED'
+                      : formatAmount(tx.amount),
+                  symbol: token ? token.symbol : 'Token'
+                }}
+                timestamp={tx.timestamp}
+              />
+            </TouchableOpacity>
+          );
+
+        case 'DEPOSIT':
           return (
             <TouchableOpacity key={`active-${index}`}>
               <TransactionItem
                 action={txtype}
                 label={LABEL_LOOKUP[txtype]}
                 source={{
-                  address: tx.sender,
                   amount: formatAmountWithDecimals(tx.amount, 18),
                   symbol: 'ETH'
                 }}
@@ -55,7 +82,6 @@ class TransactionsList extends Component {
                 action={txtype}
                 label={LABEL_LOOKUP[txtype]}
                 source={{
-                  address: tx.sender,
                   amount: formatAmountWithDecimals(tx.amount, 18),
                   symbol: 'ETH'
                 }}
@@ -64,14 +90,14 @@ class TransactionsList extends Component {
             </TouchableOpacity>
           );
 
-        case 'FILLED':
+        case 'FILL':
           return (
             <TouchableOpacity key={`active-${index}`}>
               <FilledItem transaction={tx} />
             </TouchableOpacity>
           );
 
-        case 'CANCELLED':
+        case 'CANCEL':
           return (
             <TouchableOpacity key={`active-${index}`}>
               <CancelledItem transaction={tx} />
@@ -134,10 +160,38 @@ class TransactionsList extends Component {
 
     const items = this.props.transactions.map((tx, index) => {
       const txtype = tx.status || tx.type;
+      const token = tx.address
+        ? TokenService.findTokenByAddress(tx.address)
+        : null;
       switch (txtype) {
-        case 'DEPOSITED':
+        case 'APPROVAL':
           return (
-            <TouchableOpacity key={`active-${index}`}>
+            <TouchableOpacity
+              key={`active-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
+              <TransactionItem
+                action={txtype}
+                label={LABEL_LOOKUP[txtype]}
+                destination={{
+                  address: tx.spender,
+                  amount:
+                    tx.amount === 'UNLIMITED'
+                      ? 'UNLIMITED'
+                      : formatAmount(tx.amount),
+                  symbol: token ? token.symbol : 'Token'
+                }}
+                timestamp={tx.timestamp}
+              />
+            </TouchableOpacity>
+          );
+
+        case 'DEPOSIT':
+          return (
+            <TouchableOpacity
+              key={`active-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
               <TransactionItem
                 action={txtype}
                 label={LABEL_LOOKUP[txtype]}
@@ -153,7 +207,10 @@ class TransactionsList extends Component {
 
         case 'WITHDRAWAL':
           return (
-            <TouchableOpacity key={`active-${index}`}>
+            <TouchableOpacity
+              key={`active-${index}`}
+              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+            >
               <TransactionItem
                 action={txtype}
                 label={LABEL_LOOKUP[txtype]}
@@ -167,7 +224,7 @@ class TransactionsList extends Component {
             </TouchableOpacity>
           );
 
-        case 'FILLED':
+        case 'FILL':
           return (
             <TouchableOpacity
               key={`tx-${index}`}
@@ -177,7 +234,7 @@ class TransactionsList extends Component {
             </TouchableOpacity>
           );
 
-        case 'CANCELLED':
+        case 'CANCEL':
           return (
             <TouchableOpacity
               key={`tx-${index}`}
@@ -186,6 +243,7 @@ class TransactionsList extends Component {
               <CancelledItem transaction={tx} />
             </TouchableOpacity>
           );
+
         case 'SEND_ETHER':
           return (
             <TouchableOpacity

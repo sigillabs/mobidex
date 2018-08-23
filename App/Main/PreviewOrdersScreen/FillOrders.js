@@ -1,4 +1,3 @@
-import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';

@@ -13,20 +13,45 @@ class TransactionItem extends Component {
 
     switch (action) {
       case 'FILL':
-      case 'CANCELLED':
+      case 'CANCEL':
         return this.renderFillOrCancel();
 
       case 'SEND_ETHER':
       case 'SEND_TOKENS':
         return this.renderSend();
 
-      case 'DEPOSITED':
+      case 'DEPOSIT':
       case 'WITHDRAWAL':
         return this.renderDepositOrWithdrawal();
+
+      case 'APPROVAL':
+        return this.renderApproval();
 
       default:
         return this.renderDefault();
     }
+  }
+
+  renderApproval() {
+    const { label, destination, timestamp } = this.props;
+
+    return (
+      <ListItem
+        title={
+          <Row>
+            <Text>{label}</Text>
+            <Text> </Text>
+            <Text>{destination ? destination.symbol : null}</Text>
+            <Text> </Text>
+            <Text>{destination ? destination.amount : null}</Text>
+          </Row>
+        }
+        subtitle={
+          timestamp ? <MutedText>{formatTimestamp(timestamp)}</MutedText> : null
+        }
+        borderBottom
+      />
+    );
   }
 
   renderDepositOrWithdrawal() {
@@ -37,8 +62,6 @@ class TransactionItem extends Component {
         title={
           <Row>
             <Text>{label}</Text>
-            <Text> </Text>
-            <Text>{source ? source.sender : null}</Text>
             <Text> </Text>
             <Text>{source ? source.amount : null}</Text>
             <Text> </Text>

@@ -8,7 +8,9 @@ const initialState = {
   relayerEndpoint: BASE_URL,
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
-  showForexPrices: false
+  showForexPrices: false,
+  gasPrice: '3000000000',
+  maxGas: '7982764'
 };
 
 export default handleActions(

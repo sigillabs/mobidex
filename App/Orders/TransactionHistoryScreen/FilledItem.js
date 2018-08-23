@@ -1,43 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { formatAmountWithDecimals } from '../../../utils';
+import * as TokenService from '../../services/TokenService';
 import TransactionItem from './TransactionItem';
-import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 
 class FilledItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      makerToken: null,
-      takerToken: null,
-      ready: false
-    };
-  }
-
-  async componentDidMount() {
-    let [makerToken, takerToken] = await Promise.all([
-      getTokenByAddress(this.props.web3, this.props.transaction.makerToken),
-      getTokenByAddress(this.props.web3, this.props.transaction.takerToken)
-    ]);
-    this.setState({
-      makerToken,
-      takerToken,
-      ready: true
-    });
-  }
-
   render() {
-    if (!this.state.ready) {
-      return null;
-    }
-
     let {
       id,
       filledMakerTokenAmount,
       filledTakerTokenAmount,
       timestamp
     } = this.props.transaction;
-    let { makerToken, takerToken } = this.state;
+    let makerToken = TokenService.findTokenByAddress(
+      this.props.transaction.makerToken ||
+        this.props.transaction.makerTokenAddress
+    );
+    let takerToken = TokenService.findTokenByAddress(
+      this.props.transaction.takerToken ||
+        this.props.transaction.takerTokenAddress
+    );
 
     if (!makerToken)
       makerToken = {

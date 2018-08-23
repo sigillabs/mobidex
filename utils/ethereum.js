@@ -52,6 +52,18 @@ export async function getAccount(web3) {
   });
 }
 
+export async function getTransactionCount(web3, address) {
+  return await new Promise((resolve, reject) => {
+    web3.eth.getTransactionCount(address, (err, count) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(count);
+      }
+    });
+  });
+}
+
 export async function getZeroExClient(web3) {
   return new ZeroEx(web3.currentProvider, {
     networkId: await getNetworkId(web3)
@@ -66,4 +78,23 @@ export async function getZeroExContractAddress(web3) {
 export async function getZeroExTokens(web3) {
   let zeroEx = await getZeroExClient(web3);
   return await zeroEx.tokenRegistry.getTokensAsync();
+}
+
+export async function estimateGas(web3, account, to, data) {
+  return new Promise((resolve, reject) => {
+    web3.eth.estimateGas(
+      {
+        from: account,
+        to,
+        data
+      },
+      (err, result) => {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(result);
+        }
+      }
+    );
+  });
 }

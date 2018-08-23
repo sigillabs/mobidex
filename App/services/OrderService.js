@@ -6,6 +6,7 @@ import moment from 'moment';
 import { addActiveTransactions } from '../../actions';
 import {
   gotoErrorScreen,
+  pushActiveServerTransactions,
   submitOrder as _submitOrder,
   updateActiveTransactionCache
 } from '../../thunks';
@@ -17,6 +18,7 @@ import {
 } from '../../utils';
 import * as TokenService from './TokenService';
 import * as WalletService from './WalletService';
+import * as ZeroExService from './ZeroExService';
 
 let _store;
 
@@ -171,26 +173,24 @@ export async function submitOrder(signedOrder) {
   await WalletService.checkAndWrapEther(
     signedOrder.makerTokenAddress,
     signedOrder.makerTokenAmount,
-    true
+    { wei: true, batch: true }
   );
   await WalletService.checkAndSetTokenAllowance(
     signedOrder.makerTokenAddress,
-    signedOrder.makerTokenAmount
+    signedOrder.makerTokenAmount,
+    { wei: true, batch: true }
   );
   _store.dispatch(_submitOrder(signedOrder));
+  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function fillOrders(orders, amount = null, side = 'buy') {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-
   if (!orders || orders.length === 0) {
     return;
   }
 
   if (orders.length === 1) {
-    return fillOrder(orders[0], amount, side);
+    return await fillOrder(orders[0], amount, side);
   }
 
   const makerTokenAddresses = _.chain(orders)
@@ -215,11 +215,9 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
     throw new Error('Need at least 1 order');
   }
 
-  const zeroEx = await getZeroExClient(web3);
-  const account = await getAccount(web3);
-  const fillOrders = await getOrdersBatch(orders, amount, side);
+  const orderRequests = await getOrdersBatch(orders, amount, side);
   const baseUnitAmount = _.reduce(
-    fillOrders,
+    orderRequests,
     (a, o) => a.add(o.takerTokenFillAmount),
     new BigNumber(0)
   );
@@ -227,33 +225,22 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
   await WalletService.checkAndWrapEther(
     takerTokenAddresses[0],
     baseUnitAmount,
-    true
+    { wei: true, batch: true }
   );
   await WalletService.checkAndSetTokenAllowance(
     takerTokenAddresses[0],
-    baseUnitAmount
+    baseUnitAmount,
+    { wei: true, batch: true }
   );
+  await ZeroExService.batchFillOrKill(orderRequests, amount, {
+    wei: true,
+    batch: true
+  });
 
-  const txhash = await zeroEx.exchange.batchFillOrKillAsync(
-    fillOrders,
-    account.toLowerCase(),
-    { shouldValidate: true }
-  );
-  const activeTransaction = {
-    id: txhash,
-    type: 'BATCH_FILL',
-    amount: amount
-  };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function fillOrder(order, amount = null, side = 'buy') {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-  const zeroEx = await getZeroExClient(web3);
-  const account = await getAccount(web3);
   let orderAmount;
   let fillBaseUnitAmount;
   let token;
@@ -301,27 +288,19 @@ export async function fillOrder(order, amount = null, side = 'buy') {
   await WalletService.checkAndWrapEther(
     order.takerTokenAddress,
     fillBaseUnitAmount,
-    true
+    { wei: true, batch: true }
   );
   await WalletService.checkAndSetTokenAllowance(
     order.takerTokenAddress,
-    fillBaseUnitAmount
-  );
-
-  const txhash = await zeroEx.exchange.fillOrderAsync(
-    order,
     fillBaseUnitAmount,
-    true,
-    account.toLowerCase(),
-    { shouldValidate: true }
+    { wei: true, batch: true }
   );
-  const activeTransaction = {
-    ...order,
-    id: txhash,
-    type: 'FILL'
-  };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await ZeroExService.fillOrder(order, fillBaseUnitAmount, amount, {
+    wei: true,
+    batch: true
+  });
+
+  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function cancelOrder(order) {
@@ -355,7 +334,7 @@ export async function cancelOrder(order) {
   const activeTransaction = {
     ...order,
     id: txhash,
-    type: 'CANCELLED'
+    type: 'CANCEL'
   };
   _store.dispatch(addActiveTransactions([activeTransaction]));
   _store.dispatch(updateActiveTransactionCache());

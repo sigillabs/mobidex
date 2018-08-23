@@ -1,12 +1,16 @@
 import BigNumber from 'bignumber.js';
-import { addActiveTransactions, addAssets, addTransactions } from '../actions';
+import {
+  addActiveTransactions,
+  addActiveServerTransactions,
+  addAssets,
+  addTransactions
+} from '../actions';
 import {
   asyncTimingWrapper,
   cache,
-  getAccount,
+  createActiveServerTransactions,
   getBalance,
   getTokenBalance,
-  getZeroExClient,
   sendTokens as sendTokensUtil,
   sendEther as sendEtherUtil
 } from '../utils';
@@ -24,6 +28,22 @@ export function updateActiveTransactionCache() {
       `transactions:${settings.network}:active`,
       async () => {
         return activeTransactions;
+      },
+      0
+    );
+  };
+}
+
+export function updateActiveServerTransactionCache() {
+  return async (dispatch, getState) => {
+    const {
+      settings,
+      wallet: { activeServerTransactions }
+    } = getState();
+    await cache(
+      `server-transactions:${settings.network}:active`,
+      async () => {
+        return activeServerTransactions;
       },
       0
     );
@@ -104,6 +124,10 @@ export function loadTransactions(force = false) {
             fetch(
               `https://mobidex.io/inf0x/${network}/withdrawals?sender=${address}`,
               options
+            ),
+            fetch(
+              `https://mobidex.io/inf0x/${network}/approvals?owner=${address}`,
+              options
             )
           ];
           const [
@@ -111,46 +135,56 @@ export function loadTransactions(force = false) {
             takerFills,
             makerCancels,
             deposits,
-            withdrawals
+            withdrawals,
+            approvals
           ] = await Promise.all(promises);
           const makerFillsJSON = await makerFills.json();
           const takerFillsJSON = await takerFills.json();
           const makerCancelsJSON = await makerCancels.json();
           const depositsJSON = await deposits.json();
           const withdrawalsJSON = await withdrawals.json();
+          const approvalsJSON = await approvals.json();
           const filltxs = makerFillsJSON
             .map(log => ({
               ...log,
               id: log.transactionHash,
-              status: 'FILLED'
+              status: 'FILL'
             }))
             .concat(
               takerFillsJSON.map(log => ({
                 ...log,
                 id: log.transactionHash,
-                status: 'FILLED'
+                status: 'FILL'
               }))
             );
           const canceltxs = makerCancelsJSON.map(log => ({
             ...log,
             id: log.transactionHash,
-            status: 'CANCELLED'
+            status: 'CANCEL'
           }));
           const depositstxs = depositsJSON.map(log => ({
             ...log,
             id: log.transactionHash,
-            status: 'DEPOSITED'
+            status: 'DEPOSIT'
           }));
           const withdrawalstxs = withdrawalsJSON.map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'WITHDRAWAL'
           }));
+          const approvalstxs = approvalsJSON.map(log => ({
+            ...log,
+            id: log.transactionHash,
+            type: 'APPROVAL',
+            amount: 'UNLIMITED',
+            address: log.address
+          }));
 
           return filltxs
             .concat(canceltxs)
             .concat(depositstxs)
-            .concat(withdrawalstxs);
+            .concat(withdrawalstxs)
+            .concat(approvalstxs);
         },
         force ? 0 : 10 * 60
       );
@@ -176,13 +210,29 @@ export function loadActiveTransactions() {
   };
 }
 
+export function loadActiveServerTransactions() {
+  return async (dispatch, getState) => {
+    const { settings } = getState();
+    let transactions = await cache(
+      `server-transactions:${settings.network}:active`,
+      async () => {
+        return [];
+      },
+      60 * 60 * 24 * 7
+    );
+    dispatch(addActiveServerTransactions(transactions));
+    dispatch(updateActiveServerTransactionCache());
+
+    dispatch(pushActiveServerTransactions());
+  };
+}
+
 export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
     try {
       const {
         wallet: { web3, address }
       } = getState();
-      let zeroEx = await getZeroExClient(web3);
       const txhash = await sendTokensUtil(web3, token, to, amount);
       const activeTransaction = {
         id: txhash,
@@ -206,7 +256,6 @@ export function sendEther(to, amount) {
       const {
         wallet: { web3, address }
       } = getState();
-      let zeroEx = await getZeroExClient(web3);
       const txhash = await sendEtherUtil(web3, to, amount);
       const activeTransaction = {
         id: txhash,
@@ -223,26 +272,19 @@ export function sendEther(to, amount) {
   };
 }
 
-export function setTokenAllowance(address) {
+export function pushActiveServerTransactions() {
   return async (dispatch, getState) => {
     try {
       const {
-        wallet: { web3 }
+        wallet: { activeServerTransactions }
       } = getState();
-      const zeroEx = await getZeroExClient(web3);
-      const account = await getAccount(web3, address);
-      const txhash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(
-        address,
-        account
-      );
-      const activeTransaction = {
-        id: txhash,
-        type: 'ALLOWANCE',
-        token: address,
-        amount: 'UNLIMITED'
-      };
-      dispatch(addActiveTransactions([activeTransaction]));
-      dispatch(updateActiveTransactionCache());
+      const queued = activeServerTransactions.filter(astx => !astx.id);
+      const data = queued.map(astx => astx.data);
+      data.reverse(); // Transactions are unioned with new data first.
+      const response = await createActiveServerTransactions(data);
+      const updated = queued.map(astx => ({ ...astx, id: response.id }));
+      dispatch(addActiveServerTransactions(updated));
+      dispatch(updateActiveServerTransactionCache());
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
