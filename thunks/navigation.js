@@ -15,7 +15,7 @@ export function gotoEtherScan(txaddr) {
         return await Linking.openURL(`https://kovan.etherscan.io/tx/${txaddr}`);
 
       default:
-        return await Linking.openURL(`https://etherscan.io/txs/${txaddr}`);
+        return await Linking.openURL(`https://etherscan.io/tx/${txaddr}`);
     }
   };
 }
