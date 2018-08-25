@@ -124,10 +124,25 @@ export async function unlock(password = null) {
     });
 
     _web3 = new Web3(engine);
+
+    // Extra hacked on methods
     _web3.signTransaction = function(tx) {
       let ethTx = new EthTx(tx);
       ethTx.sign(privateKeyBuffer);
       return `0x${ethTx.serialize().toString('hex')}`;
+    };
+
+    _web3.incrementNonce = function() {
+      const account = `0x${address.toLowerCase()}`;
+      const nonceProviders = this.currentProvider._providers.filter(provider =>
+        Boolean(provider.nonceCache)
+      );
+      if (nonceProviders.length === 1) {
+        const nonceProvider = nonceProviders[0];
+        if (nonceProvider.nonceCache[account] !== undefined) {
+          nonceProvider.nonceCache[account]++;
+        }
+      }
     };
 
     await _store.dispatch(setWallet({ web3: _web3, address }));

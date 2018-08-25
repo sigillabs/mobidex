@@ -22,6 +22,7 @@ const WETH_ABI = require('../../abi/WETH9.json');
 const EXCHANGE_ABI = require('../../abi/Exchange_v1.json');
 
 let _store;
+let _extra_nonce = 0;
 
 async function getTokenContract(address) {
   const {
@@ -95,7 +96,7 @@ export async function setUnlimitedProxyAllowance(
   options = { batch: false }
 ) {
   const {
-    wallet: { activeServerTransactions, web3 },
+    wallet: { web3 },
     settings: { gasPrice, maxGas }
   } = _store.getState();
   const zeroEx = await getZeroExClient(web3);
@@ -103,8 +104,6 @@ export async function setUnlimitedProxyAllowance(
 
   if (options.batch) {
     const transactionCount = await getTransactionCount(web3, account);
-    const extraTransactions = activeServerTransactions.filter(astx => !astx.id)
-      .length;
     const contract = await getTokenContract(address);
     const data = contract.approve.getData(
       zeroEx.proxy.getContractAddress(),
@@ -113,9 +112,9 @@ export async function setUnlimitedProxyAllowance(
     const to = `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`;
     // const gas = await estimateGas(web3, account, to, data);
     const tx = {
-      nonce: `0x${new BigNumber(transactionCount + extraTransactions).toString(
-        16
-      )}`,
+      nonce: `0x${new BigNumber(
+        (transactionCount + _extra_nonce++) % 0x100
+      ).toString(16)}`,
       from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       to,
       data,
@@ -149,7 +148,7 @@ export async function setUnlimitedProxyAllowance(
 
 export async function deposit(address, amount, options = { batch: false }) {
   const {
-    wallet: { activeServerTransactions, web3 },
+    wallet: { web3 },
     settings: { gasPrice, maxGas }
   } = _store.getState();
   const zeroEx = await getZeroExClient(web3);
@@ -157,16 +156,14 @@ export async function deposit(address, amount, options = { batch: false }) {
 
   if (options.batch) {
     const transactionCount = await getTransactionCount(web3, account);
-    const extraTransactions = activeServerTransactions.filter(astx => !astx.id)
-      .length;
     const contract = await getWETHContract(address);
     const data = contract.deposit.getData();
     const to = `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`;
     // const gas = await estimateGas(web3, account, to, data);
     const tx = {
-      nonce: `0x${new BigNumber(transactionCount + extraTransactions).toString(
-        16
-      )}`,
+      nonce: `0x${new BigNumber(
+        (transactionCount + _extra_nonce++) % 0x100
+      ).toString(16)}`,
       from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       to,
       value: `0x${new BigNumber(amount).toString(16)}`,
@@ -202,7 +199,7 @@ export async function deposit(address, amount, options = { batch: false }) {
 
 export async function withdraw(address, amount, options = { batch: false }) {
   const {
-    wallet: { activeServerTransactions, web3 },
+    wallet: { web3 },
     settings: { gasPrice, maxGas }
   } = _store.getState();
   const zeroEx = await getZeroExClient(web3);
@@ -210,16 +207,14 @@ export async function withdraw(address, amount, options = { batch: false }) {
 
   if (options.batch) {
     const transactionCount = await getTransactionCount(web3, account);
-    const extraTransactions = activeServerTransactions.filter(astx => !astx.id)
-      .length;
     const contract = await getWETHContract(address);
     const data = contract.withdraw.getData(new BigNumber(amount));
     const to = `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`;
     // const gas = await estimateGas(web3, account, to, data);
     const tx = {
-      nonce: `0x${new BigNumber(transactionCount + extraTransactions).toString(
-        16
-      )}`,
+      nonce: `0x${new BigNumber(
+        (transactionCount + _extra_nonce++) % 0x100
+      ).toString(16)}`,
       from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       to,
       data,
@@ -259,7 +254,7 @@ export async function fillOrder(
   options = { batch: false }
 ) {
   const {
-    wallet: { activeServerTransactions, web3 },
+    wallet: { web3 },
     settings: { gasPrice, maxGas }
   } = _store.getState();
   const zeroEx = await getZeroExClient(web3);
@@ -267,8 +262,6 @@ export async function fillOrder(
 
   if (options.batch) {
     const transactionCount = await getTransactionCount(web3, account);
-    const extraTransactions = activeServerTransactions.filter(astx => !astx.id)
-      .length;
     const address = zeroEx.exchange.getContractAddress();
 
     const addresses = [
@@ -302,9 +295,9 @@ export async function fillOrder(
     const to = `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`;
     // const gas = await estimateGas(web3, account, to, data);
     const tx = {
-      nonce: `0x${new BigNumber(transactionCount + extraTransactions).toString(
-        16
-      )}`,
+      nonce: `0x${new BigNumber(
+        (transactionCount + _extra_nonce++) % 0x100
+      ).toString(16)}`,
       from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       to,
       data,
@@ -346,7 +339,7 @@ export async function batchFillOrKill(
   options = { batch: false }
 ) {
   const {
-    wallet: { activeServerTransactions, web3 },
+    wallet: { web3 },
     settings: { gasPrice, maxGas }
   } = _store.getState();
   const zeroEx = await getZeroExClient(web3);
@@ -354,8 +347,6 @@ export async function batchFillOrKill(
 
   if (options.batch) {
     const transactionCount = await getTransactionCount(web3, account);
-    const extraTransactions = activeServerTransactions.filter(astx => !astx.id)
-      .length;
     const address = zeroEx.exchange.getContractAddress();
 
     const addresses = [];
@@ -399,9 +390,9 @@ export async function batchFillOrKill(
     const to = `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`;
     // const gas = await estimateGas(web3, account, to, data);
     const tx = {
-      nonce: `0x${new BigNumber(transactionCount + extraTransactions).toString(
-        16
-      )}`,
+      nonce: `0x${new BigNumber(
+        (transactionCount + _extra_nonce++) % 0x100
+      ).toString(16)}`,
       from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       to,
       data,
