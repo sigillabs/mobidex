@@ -13,7 +13,6 @@ import {
 import {
   getAccount,
   getOrdersToFill,
-  getZeroExClient,
   getZeroExContractAddress
 } from '../../utils';
 import * as TokenService from './TokenService';
@@ -145,7 +144,7 @@ export async function signOrder(order) {
       wallet: { web3 }
     } = _store.getState();
 
-    const zeroEx = await getZeroExClient(web3);
+    const zeroEx = await ZeroExService.getZeroExClient(web3);
     const account = await getAccount(web3);
 
     if (!order.salt) order.salt = ZeroEx.generatePseudoRandomSalt();
@@ -225,16 +224,16 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
   await WalletService.checkAndWrapEther(
     takerTokenAddresses[0],
     baseUnitAmount,
-    { wei: true, batch: true }
+    { wei: true, batch: false }
   );
   await WalletService.checkAndSetTokenAllowance(
     takerTokenAddresses[0],
     baseUnitAmount,
-    { wei: true, batch: true }
+    { wei: true, batch: false }
   );
   await ZeroExService.batchFillOrKill(orderRequests, amount, {
     wei: true,
-    batch: true
+    batch: false
   });
 
   _store.dispatch(pushActiveServerTransactions());
@@ -263,8 +262,8 @@ export async function fillOrder(order, amount = null, side = 'buy') {
       token.decimals
     )
       .div(orderAmount)
-      .mul(order.takerTokenAmount)
-      .sub(order.filledTakerTokenAmount);
+      .mul(order.takerTokenAmount);
+    // .sub(order.filledTakerTokenAmount);
 
     // Rounding does not work
     // Big hack
@@ -288,16 +287,16 @@ export async function fillOrder(order, amount = null, side = 'buy') {
   await WalletService.checkAndWrapEther(
     order.takerTokenAddress,
     fillBaseUnitAmount,
-    { wei: true, batch: true }
+    { wei: true, batch: false }
   );
   await WalletService.checkAndSetTokenAllowance(
     order.takerTokenAddress,
     fillBaseUnitAmount,
-    { wei: true, batch: true }
+    { wei: true, batch: false }
   );
   await ZeroExService.fillOrder(order, fillBaseUnitAmount, amount, {
     wei: true,
-    batch: true
+    batch: false
   });
 
   _store.dispatch(pushActiveServerTransactions());
@@ -307,7 +306,7 @@ export async function cancelOrder(order) {
   const {
     wallet: { web3, address }
   } = _store.getState();
-  const zeroEx = await getZeroExClient(web3);
+  const zeroEx = await ZeroExService.getZeroExClient(web3);
 
   if (ethUtil.stripHexPrefix(order.maker) !== ethUtil.stripHexPrefix(address)) {
     throw new Error('Cannot cancel order that is not yours');
@@ -317,7 +316,7 @@ export async function cancelOrder(order) {
     await WalletService.checkAndUnwrapEther(
       order.makerTokenAddress,
       order.makerTokenAmount,
-      true
+      { wei: true, batch: false }
     );
   } catch (err) {
     console.warn(err);
