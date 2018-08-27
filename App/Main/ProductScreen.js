@@ -13,7 +13,6 @@ import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import {
   loadActiveTransactions,
-  loadActiveServerTransactions,
   loadAssets,
   loadOrders,
   loadProducts,
@@ -276,7 +275,6 @@ class ProductScreen extends Component {
       this.props.dispatch(updateForexTickers(reload));
       this.props.dispatch(updateTokenTickers(reload));
       this.props.dispatch(loadActiveTransactions());
-      this.props.dispatch(loadActiveServerTransactions());
       this.props.dispatch(loadOrders());
       this.setState({ refreshing: false });
     });

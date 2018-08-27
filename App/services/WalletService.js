@@ -28,7 +28,9 @@ import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { setWallet } from '../../actions';
-import { getTokenAllowance, getURLFromNetwork } from '../../utils';
+import EthereumClient from '../../clients/ethereum';
+import TokenClient from '../../clients/token';
+import { getURLFromNetwork } from '../../utils';
 import * as TokenService from './TokenService';
 import * as ZeroExService from './ZeroExService';
 
@@ -277,12 +279,14 @@ export async function checkAndSetTokenAllowance(
   const {
     wallet: { web3 }
   } = _store.getState();
+  const ethereumClient = new EthereumClient(web3);
+  const tokenClient = new TokenClient(ethereumClient, address);
   const { decimals } = TokenService.findTokenByAddress(address);
   const amt = options.wei
     ? new BigNumber(amount)
     : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
 
-  const allowance = await getTokenAllowance(web3, address);
+  const allowance = await tokenClient.getAllowance();
   if (new BigNumber(amt).gt(allowance)) {
     await ZeroExService.setUnlimitedProxyAllowance(address, options);
   }

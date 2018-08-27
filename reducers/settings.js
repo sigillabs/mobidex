@@ -1,18 +1,16 @@
 import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
-const BASE_URL = 'https://mobidex.io/relayer/v0';
-
 const initialState = {
   network: 'mainnet',
-  relayerEndpoint: BASE_URL,
+  relayerEndpoint: 'https://mobidex.io/relayer/v0',
+  inf0xEndpoint: 'https://mobidex.io/inf0x',
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   showForexPrices: false,
   // gasPrice: '3000000000',
   gasPrice: '4000000000',
-  maxGas: '520000',
-  inf0xBaseURL: 'https://mobidex.io/inf0x'
+  maxGas: '520000'
 };
 
 export default handleActions(

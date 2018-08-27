@@ -1,12 +1,14 @@
 import { stringify } from 'qs';
-import { fetchWithTiming } from '../utils/timing';
+import { cache, time } from '../decorators/cls';
 
 export default class Inf0xClient {
-  constructor(baseUrl, options = { network: null }) {
-    this.baseUrl = baseUrl;
+  constructor(endpoint, options = { network: null }) {
+    this.endpoint = endpoint;
     this.network = options.network;
   }
 
+  @time
+  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5 * 1000)
   async getForexPrices(symbol, quote = 'USD', sample = 'DAY', n = 7) {
     const qs = stringify({
       quote,
@@ -15,16 +17,16 @@ export default class Inf0xClient {
       n
     });
 
-    const json = fetchWithTiming(
-      'Forex Prices',
-      `https://mobidex.io/inf0x/forex/history?${qs}`
-    );
+    const response = await fetch(`${this.endpoint}?${qs}`);
+    const json = await response.json();
 
     // console.debug('Forex Prices', `https://mobidex.io/inf0x/forex/history?${qs}`);
     // console.debug('Forex Prices', json);
     return json;
   }
 
+  @time
+  @cache('inf0x:forex:prices:{}:{}:{}', 5 * 1000)
   async getForexTicker(products = [], symbols = [], quote = 'USD') {
     const qs = stringify({
       product: products,
@@ -32,10 +34,10 @@ export default class Inf0xClient {
       quote
     });
 
-    const json = fetchWithTiming(
-      'Forex Ticker',
-      `https://mobidex.io/inf0x/${this.network}/forex/ticker?${qs}`
+    const response = await fetch(
+      `${this.endpoint}/${this.network}/forex/ticker?${qs}`
     );
+    const json = await response.json();
 
     // console.debug(
     //   'Forex Ticker',
@@ -45,6 +47,8 @@ export default class Inf0xClient {
     return json;
   }
 
+  @time
+  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5 * 1000)
   async getTokenPrices(symbol, quote = 'WETH', sample = 'DAY', n = 7) {
     const qs = stringify({
       quote,
@@ -52,10 +56,11 @@ export default class Inf0xClient {
       sample,
       n
     });
-    const json = fetchWithTiming(
-      'Token Prices',
-      `https://mobidex.io/inf0x/${this.network}/token/history?${qs}`
+
+    const response = await fetch(
+      `${this.endpoint}/${this.network}/token/history?${qs}`
     );
+    const json = await response.json();
 
     // console.debug(
     //   'Token Prices',
@@ -65,16 +70,20 @@ export default class Inf0xClient {
     return json;
   }
 
+  @time
+  @cache('inf0x:forex:prices:{}:{}:{}', 5 * 1000)
   async getTokenTicker(products = [], symbols = [], quote = 'WETH') {
     const qs = stringify({
       product: products,
       symbol: symbols,
       quote
     });
-    const json = fetchWithTiming(
-      'Token Ticker',
-      `https://mobidex.io/inf0x/${this.network}/tokens/ticker?${qs}`
+
+    const response = await fetch(
+      `${this.endpoint}/${this.network}/tokens/ticker?${qs}`
     );
+    const json = await response.json();
+
     // console.debug(
     //   'Token Ticker',
     //   `https://mobidex.io/inf0x/${network}/tokens/ticker?${qs}`

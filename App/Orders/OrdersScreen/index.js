@@ -1,11 +1,10 @@
 import ethUtil from 'ethereumjs-util';
 import React, { Component } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { loadOrders } from '../../../thunks';
-import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
 import CollapsibleButtonView from '../../components/CollapsibleButtonView';
 import EmptyList from '../../components/EmptyList';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -13,7 +12,8 @@ import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
 import NavigationService from '../../services/NavigationService';
-import { cancelOrder } from '../../services/OrderService';
+import * as OrderService from '../../services/OrderService';
+import * as TokenService from '../../services/TokenService';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
 
@@ -36,10 +36,12 @@ const TokenOrder = connect(
     }
 
     async componentDidMount() {
-      let [makerToken, takerToken] = await Promise.all([
-        getTokenByAddress(this.props.web3, this.props.order.makerTokenAddress),
-        getTokenByAddress(this.props.web3, this.props.order.takerTokenAddress)
-      ]);
+      const makerToken = TokenService.findTokenByAddress(
+        this.props.order.makerTokenAddress
+      );
+      const takerToken = TokenService.findTokenByAddress(
+        this.props.order.takerTokenAddress
+      );
 
       this.setState({
         makerToken,
@@ -185,7 +187,7 @@ class OrdersScreen extends Component {
   async cancelOrder(order) {
     this.setState({ showCancelling: true });
     try {
-      await cancelOrder(order);
+      await OrderService.cancelOrder(order);
     } catch (error) {
       NavigationService.error(error);
       return;

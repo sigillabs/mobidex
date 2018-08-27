@@ -1,16 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { addActiveTransactions, addAssets, addTransactions } from '../actions';
-import {
-  asyncTimingWrapper,
-  cache,
-  getBalance,
-  getTokenBalance,
-  sendTokens as sendTokensUtil,
-  sendEther as sendEtherUtil
-} from '../utils';
+import EthereumClient from '../clients/ethereum';
+import TokenClient from '../clients/token';
+import { cache } from '../utils';
 import { gotoErrorScreen } from './navigation';
-
-const getTokenBalanceWithTiming = asyncTimingWrapper(getTokenBalance);
 
 export function updateActiveTransactionCache() {
   return async (dispatch, getState) => {
@@ -31,33 +24,29 @@ export function updateActiveTransactionCache() {
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
     const {
-      settings,
-      wallet: { web3, address },
+      wallet: { web3 },
       relayer: { tokens }
     } = getState();
-    let assets = await cache(
-      `assets:${settings.network}`,
-      async () => {
-        let balances = await Promise.all(
-          tokens.map(({ address }) => getTokenBalanceWithTiming(web3, address))
-        );
-        let extendedTokens = tokens.map((token, index) => ({
-          ...token,
-          balance: balances[index]
-        }));
-        extendedTokens.push({
-          address: null,
-          symbol: 'ETH',
-          name: 'Ether',
-          decimals: 18,
-          balance: await getBalance(web3, address)
-        });
-        return extendedTokens;
-      },
-      force ? 0 : 10 * 60
+    const ethereumClient = new EthereumClient(web3);
+    const balances = await Promise.all(
+      tokens.map(({ address }) => {
+        const tokenClient = new TokenClient(ethereumClient, address, force);
+        const balance = tokenClient.getBalance();
+        return balance;
+      })
     );
-
-    assets = assets.map(({ balance, ...token }) => ({
+    const extendedTokens = tokens.map((token, index) => ({
+      ...token,
+      balance: balances[index]
+    }));
+    extendedTokens.push({
+      address: null,
+      symbol: 'ETH',
+      name: 'Ether',
+      decimals: 18,
+      balance: await new EthereumClient(web3).getBalance()
+    });
+    const assets = extendedTokens.map(({ balance, ...token }) => ({
       ...token,
       balance: new BigNumber(balance)
     }));
@@ -194,7 +183,9 @@ export function sendTokens(token, to, amount) {
       const {
         wallet: { web3, address }
       } = getState();
-      const txhash = await sendTokensUtil(web3, token, to, amount);
+      const ethereumClient = new EthereumClient(web3);
+      const tokenClient = new TokenClient(ethereumClient, token.address);
+      const txhash = await tokenClient.send(web3, token, to, amount);
       const activeTransaction = {
         id: txhash,
         type: 'SEND_TOKENS',
@@ -217,7 +208,8 @@ export function sendEther(to, amount) {
       const {
         wallet: { web3, address }
       } = getState();
-      const txhash = await sendEtherUtil(web3, to, amount);
+      const ethereumClient = new EthereumClient(web3);
+      const txhash = await ethereumClient.send(to, amount);
       const activeTransaction = {
         id: txhash,
         type: 'SEND_ETHER',

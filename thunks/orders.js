@@ -1,27 +1,21 @@
 import { HttpClient } from '@0xproject/connect';
 import * as _ from 'lodash';
 import { addOrders, setOrders, setProducts, setTokens } from '../actions';
-import {
-  asyncTimingWrapper,
-  cache,
-  getOrder,
-  getOrders,
-  getTokenByAddress,
-  getTokenPairs
-} from '../utils';
+import EthereumClient from '../clients/ethereum';
+import RelayerClient from '../clients/relayer';
+import TokenClient from '../clients/token';
 import { gotoErrorScreen } from './navigation';
-
-const getTokenByAddressWithTiming = asyncTimingWrapper(getTokenByAddress);
-const getOrderWithTiming = asyncTimingWrapper(getOrder);
-const getOrdersWithTiming = asyncTimingWrapper(getOrders);
-const getTokenPairsWithTiming = asyncTimingWrapper(getTokenPairs);
 
 export function loadOrders() {
   return async (dispatch, getState) => {
-    let { settings } = getState();
+    let {
+      settings: { network, relayerEndpoint }
+    } = getState();
 
     try {
-      dispatch(setOrders(await getOrdersWithTiming(settings)));
+      const client = new RelayerClient(relayerEndpoint, { network });
+      const orders = await client.getOrders();
+      dispatch(setOrders(orders));
       return true;
     } catch (err) {
       dispatch(gotoErrorScreen(err));
@@ -32,10 +26,14 @@ export function loadOrders() {
 
 export function loadOrder(orderHash) {
   return async (dispatch, getState) => {
-    let { settings } = getState();
+    let {
+      settings: { network, relayerEndpoint }
+    } = getState();
 
     try {
-      dispatch(setOrders([await getOrderWithTiming(orderHash, settings)]));
+      const client = new RelayerClient(relayerEndpoint, { network });
+      const order = await client.getOrder(orderHash);
+      dispatch(setOrders([order]));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
@@ -44,17 +42,13 @@ export function loadOrder(orderHash) {
 
 export function loadProducts(force = false) {
   return async (dispatch, getState) => {
-    const { settings } = getState();
+    const {
+      settings: { network, relayerEndpoint }
+    } = getState();
 
     try {
-      const pairs = await cache(
-        `products:${settings.network}`,
-        async () => {
-          const pairs = await getTokenPairsWithTiming(settings);
-          return pairs;
-        },
-        force ? 0 : 24 * 60 * 60
-      );
+      const client = new RelayerClient(relayerEndpoint, { network });
+      const pairs = await client.getTokenPairs(force);
       dispatch(setProducts(pairs));
     } catch (err) {
       console.warn(err);
@@ -66,46 +60,36 @@ export function loadProducts(force = false) {
 export function loadTokens(force = false) {
   return async (dispatch, getState) => {
     const {
-      settings,
       relayer: { products },
       wallet: { web3 }
     } = getState();
 
     try {
-      const tokens = await cache(
-        `tokens:${settings.network}`,
-        async () => {
-          const productsA = products.map(pair => pair.tokenA);
-          const productsB = products.map(pair => pair.tokenB);
-          const allTokens = _.unionBy(productsA, productsB, 'address');
-          const allExtendedTokens = await Promise.all(
-            allTokens.map(async token => {
-              const extendedToken = await getTokenByAddressWithTiming(
-                web3,
-                token.address,
-                force
-              );
-              return {
-                ...token,
-                ...extendedToken
-              };
-            })
-          );
-          return allExtendedTokens;
-        },
-        force ? 0 : 24 * 60 * 60
+      const ethereumClient = new EthereumClient(web3);
+      const productsA = products.map(pair => pair.tokenA);
+      const productsB = products.map(pair => pair.tokenB);
+      const allTokens = _.unionBy(productsA, productsB, 'address');
+      const allExtendedTokens = await Promise.all(
+        allTokens.map(async token => {
+          const tokenClient = new TokenClient(ethereumClient, token.address);
+          const extendedToken = await tokenClient.get(force);
+          return {
+            ...token,
+            ...extendedToken
+          };
+        })
       );
-      dispatch(setTokens(tokens));
+      dispatch(setTokens(allExtendedTokens));
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
   };
 }
 
-export function loadProductsAndTokens(force = false) {
+export function loadProductsAndTokens() {
   return async dispatch => {
     await dispatch(loadProducts());
-    await dispatch(loadTokens(force));
+    await dispatch(loadTokens());
   };
 }
 

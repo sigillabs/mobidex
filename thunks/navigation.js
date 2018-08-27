@@ -2,14 +2,15 @@ import { Linking } from 'react-native';
 import { setError } from '../actions';
 import NavigationService from '../App/services/NavigationService';
 import * as WalletService from '../App/services/WalletService';
-import { getNetworkId } from '../utils';
+import EthereumClient from '../clients/ethereum';
 
 export function gotoEtherScan(txaddr) {
   return async (dispatch, getState) => {
-    let {
+    const {
       wallet: { web3 }
     } = getState();
-    let networkId = await getNetworkId(web3);
+    const ethereumClient = new EthereumClient(web3);
+    const networkId = await ethereumClient.getNetworkId();
     switch (networkId) {
       case 42:
         return await Linking.openURL(`https://kovan.etherscan.io/tx/${txaddr}`);

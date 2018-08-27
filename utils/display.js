@@ -7,6 +7,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false, EXPONENTIAL_AT: [-77, 77] });
 
+String.prototype.format = function() {
+  var i = 0,
+    args = arguments;
+  return this.replace(/{}/g, function() {
+    return typeof args[i] != 'undefined' ? args[i++] : '';
+  });
+};
+
 export function hex2a(hexx) {
   var hex = hexx.toString(); //force conversion
   var str = '';
@@ -573,4 +581,8 @@ export function processVirtualKeyboardCharacter(character, string) {
   }
 
   return text;
+}
+
+export function isValidAmount(amount) {
+  return /^\d*(\.\d*)?$/.test(amount);
 }

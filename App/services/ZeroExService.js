@@ -1,10 +1,10 @@
-import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { addActiveTransactions } from '../../actions';
+import EthereumClient from '../../clients/ethereum';
+import ZeroExClient from '../../clients/0x';
 import { updateActiveTransactionCache } from '../../thunks';
-import { getAccount, getNetworkId } from '../../utils';
 
 const TOKEN_ABI = require('../../abi/Token.json');
 const WETH_ABI = require('../../abi/WETH9.json');
@@ -20,7 +20,8 @@ async function getTokenContract(address) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const networkId = await getNetworkId(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const networkId = await ethereumClient.getNetworkId();
   return ContractDefinitionLoader({
     web3,
     contractDefinitions: {
@@ -41,7 +42,8 @@ async function getWETHContract(address) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const networkId = await getNetworkId(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const networkId = await ethereumClient.getNetworkId();
   return ContractDefinitionLoader({
     web3,
     contractDefinitions: {
@@ -62,7 +64,8 @@ async function getExchangeV1Contract(address) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const networkId = await getNetworkId(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const networkId = await ethereumClient.getNetworkId();
   return ContractDefinitionLoader({
     web3,
     contractDefinitions: {
@@ -83,23 +86,14 @@ export function setStore(store) {
   _store = store;
 }
 
-export async function getZeroExClient() {
-  const {
-    wallet: { web3 },
-    settings: { gasPrice }
-  } = _store.getState();
-  return new ZeroEx(web3.currentProvider, {
-    gasPrice,
-    networkId: await getNetworkId(web3)
-  });
-}
-
 export async function setUnlimitedProxyAllowance(address) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const zeroEx = await getZeroExClient();
-  const account = await getAccount(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
+  const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(
     address,
     account
@@ -118,8 +112,10 @@ export async function deposit(address, amount) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const zeroEx = await getZeroExClient();
-  const account = await getAccount(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
+  const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.etherToken.depositAsync(
     address,
     new BigNumber(amount),
@@ -139,8 +135,10 @@ export async function withdraw(address, amount) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const zeroEx = await getZeroExClient();
-  const account = await getAccount(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
+  const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.etherToken.withdrawAsync(
     address,
     new BigNumber(amount),
@@ -160,8 +158,10 @@ export async function fillOrder(order, fillBaseUnitAmount, amount) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const zeroEx = await getZeroExClient();
-  const account = await getAccount(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
+  const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.exchange.fillOrderAsync(
     order,
     fillBaseUnitAmount,
@@ -183,8 +183,10 @@ export async function batchFillOrKill(orderRequests, amount) {
   const {
     wallet: { web3 }
   } = _store.getState();
-  const zeroEx = await getZeroExClient();
-  const account = await getAccount(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
+  const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.exchange.batchFillOrKillAsync(
     orderRequests,
     `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,

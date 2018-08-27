@@ -5,12 +5,13 @@ import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { addActiveTransactions } from '../../actions';
+import EthereumClient from '../../clients/ethereum';
+import ZeroExClient from '../../clients/0x';
 import {
   gotoErrorScreen,
   submitOrder as _submitOrder,
   updateActiveTransactionCache
 } from '../../thunks';
-import { getAccount, getZeroExContractAddress } from '../../utils';
 import * as TokenService from './TokenService';
 import * as WalletService from './WalletService';
 import * as ZeroExService from './ZeroExService';
@@ -222,6 +223,8 @@ export async function createOrder(limitOrder) {
   const {
     wallet: { address, web3 }
   } = _store.getState();
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
   return {
     ...convertLimitOrderToZeroExOrder(limitOrder),
     maker: `0x${address.toLowerCase()}`,
@@ -231,7 +234,7 @@ export async function createOrder(limitOrder) {
     expirationUnixTimestampSec: new BigNumber(moment().unix() + 60 * 60 * 24),
     feeRecipient: ZeroEx.NULL_ADDRESS,
     salt: ZeroEx.generatePseudoRandomSalt(),
-    exchangeContractAddress: await getZeroExContractAddress(web3)
+    exchangeContractAddress: await zeroExClient.getZeroExContractAddress()
   };
 }
 
@@ -241,8 +244,10 @@ export async function signOrder(order) {
       wallet: { web3 }
     } = _store.getState();
 
-    const zeroEx = await ZeroExService.getZeroExClient(web3);
-    const account = await getAccount(web3);
+    const ethereumClient = new EthereumClient(web3);
+    const zeroExClient = new ZeroExClient(ethereumClient);
+    const zeroEx = await zeroExClient.getZeroExClient();
+    const account = await ethereumClient.getAccount();
 
     if (!order.salt) order.salt = ZeroEx.generatePseudoRandomSalt();
 
@@ -398,7 +403,9 @@ export async function cancelOrder(order) {
   const {
     wallet: { web3, address }
   } = _store.getState();
-  const zeroEx = await ZeroExService.getZeroExClient(web3);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const zeroEx = await zeroExClient.getZeroExClient();
 
   if (ethUtil.stripHexPrefix(order.maker) !== ethUtil.stripHexPrefix(address)) {
     throw new Error('Cannot cancel order that is not yours');

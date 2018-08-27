@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransactionItem from './TransactionItem';
-import { formatAmountWithDecimals, getTokenByAddress } from '../../../utils';
+import { formatAmountWithDecimals } from '../../../utils';
+import * as TokenService from '../../services/TokenService';
 
 class CancelledItem extends Component {
   constructor(props) {
@@ -15,18 +16,14 @@ class CancelledItem extends Component {
   }
 
   async componentDidMount() {
-    let [makerToken, takerToken] = await Promise.all([
-      getTokenByAddress(
-        this.props.web3,
-        this.props.transaction.makerToken ||
-          this.props.transaction.makerTokenAddress
-      ),
-      getTokenByAddress(
-        this.props.web3,
-        this.props.transaction.takerToken ||
-          this.props.transaction.takerTokenAddress
-      )
-    ]);
+    const makerToken = TokenService.findTokenByAddress(
+      this.props.transaction.makerToken ||
+        this.props.transaction.makerTokenAddress
+    );
+    const takerToken = TokenService.findTokenByAddress(
+      this.props.transaction.takerToken ||
+        this.props.transaction.takerTokenAddress
+    );
     this.setState({
       makerToken,
       takerToken,
