@@ -7,7 +7,6 @@ import moment from 'moment';
 import { addActiveTransactions } from '../../actions';
 import {
   gotoErrorScreen,
-  pushActiveServerTransactions,
   submitOrder as _submitOrder,
   updateActiveTransactionCache
 } from '../../thunks';
@@ -278,7 +277,6 @@ export async function submitOrder(signedOrder) {
     { wei: true, batch: true }
   );
   _store.dispatch(_submitOrder(signedOrder));
-  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function fillOrders(orders, amount = null, side = 'buy') {
@@ -333,8 +331,6 @@ export async function fillOrders(orders, amount = null, side = 'buy') {
     wei: true,
     batch: false
   });
-
-  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function fillOrder(order, amount = null, side = 'buy') {
@@ -396,8 +392,6 @@ export async function fillOrder(order, amount = null, side = 'buy') {
     wei: true,
     batch: false
   });
-
-  _store.dispatch(pushActiveServerTransactions());
 }
 
 export async function cancelOrder(order) {

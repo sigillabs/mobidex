@@ -7,7 +7,6 @@ const initialState = {
   address: null,
   assets: [],
   activeTransactions: [],
-  activeServerTransactions: [],
   transactions: [],
   processing: false
 };
@@ -47,19 +46,6 @@ export default handleActions(
       }
       return { ...state, activeTransactions };
     },
-    [Actions.ADD_ACTIVE_SERVER_TRANSACTIONS]: (state, action) => {
-      const activeServerTransactions = _.unionBy(
-        action.payload,
-        state.activeServerTransactions,
-        'data'
-      );
-      for (const tx of state.transactions) {
-        _.remove(activeServerTransactions, atx => {
-          atx.data === tx.data;
-        });
-      }
-      return { ...state, activeServerTransactions };
-    },
     [Actions.REMOVE_ACTIVE_TRANSACTIONS]: (state, action) => {
       const txs = action.payload;
       const activeTransactions = state.activeTransactions.slice();
@@ -67,14 +53,6 @@ export default handleActions(
         _.remove(activeTransactions, atx => atx.id == tx.id);
       }
       return { ...state, activeTransactions };
-    },
-    [Actions.REMOVE_ACTIVE_SERVER_TRANSACTIONS]: (state, action) => {
-      const txs = action.payload;
-      const activeServerTransactions = state.activeServerTransactions.slice();
-      for (const tx of txs) {
-        _.remove(activeServerTransactions, atx => atx.data == tx.data);
-      }
-      return { ...state, activeServerTransactions };
     },
     [Actions.SET_WALLET]: (state, action) => {
       let { address, web3 } = action.payload;

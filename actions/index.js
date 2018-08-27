@@ -4,9 +4,6 @@ import * as Actions from '../constants/actions';
 export const addActiveTransactions = createAction(
   Actions.ADD_ACTIVE_TRANSACTIONS
 );
-export const addActiveServerTransactions = createAction(
-  Actions.ADD_ACTIVE_SERVER_TRANSACTIONS
-);
 export const addAssets = createAction(Actions.ADD_ASSETS);
 export const addOrders = createAction(Actions.ADD_ORDERS);
 export const addTransactions = createAction(Actions.ADD_TRANSACTIONS);
@@ -14,9 +11,6 @@ export const notProcessing = createAction(Actions.NOT_PROCESSING);
 export const processing = createAction(Actions.PROCESSING);
 export const removeActiveTransactions = createAction(
   Actions.REMOVE_ACTIVE_TRANSACTIONS
-);
-export const removeActiveServerTransactions = createAction(
-  Actions.REMOVE_ACTIVE_SERVER_TRANSACTIONS
 );
 export const setError = createAction(Actions.SET_ERROR);
 export const setForexCurrency = createAction(Actions.SET_FOREX_CURRENCY);

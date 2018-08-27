@@ -12,10 +12,6 @@ import {
   setStore as setStoreForTransactionWatcherService,
   start as startTransactionWatcherService
 } from './services/TransactionWatcherService';
-// import {
-//   setStore as setStoreForServerTransactionWatcherService,
-//   start as startServerTransactionWatcherService
-// } from './services/ServerTransactionWatcherService';
 import { setStore as setStoreForWalletService } from './services/WalletService';
 import { setStore as setStoreForZeroExService } from './services/ZeroExService';
 
@@ -24,14 +20,12 @@ const store = configureStore();
 setStoreForNavigationService(store);
 setStoreForOrderService(store);
 setStoreForProductService(store);
-// setStoreForServerTransactionWatcherService(store);
 setStoreForTickerService(store);
 setStoreForTokenService(store);
 setStoreForTransactionWatcherService(store);
 setStoreForWalletService(store);
 setStoreForZeroExService(store);
 
-// startServerTransactionWatcherService();
 startTransactionWatcherService();
 
 export default class App extends Component {

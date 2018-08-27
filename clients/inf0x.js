@@ -1,5 +1,5 @@
 import { stringify } from 'qs';
-import { fetchWithTiming } from './timing';
+import { fetchWithTiming } from '../utils/timing';
 
 export default class Inf0xClient {
   constructor(baseUrl, options = { network: null }) {

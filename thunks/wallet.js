@@ -1,14 +1,8 @@
 import BigNumber from 'bignumber.js';
-import {
-  addActiveTransactions,
-  addActiveServerTransactions,
-  addAssets,
-  addTransactions
-} from '../actions';
+import { addActiveTransactions, addAssets, addTransactions } from '../actions';
 import {
   asyncTimingWrapper,
   cache,
-  createActiveServerTransactions,
   getBalance,
   getTokenBalance,
   sendTokens as sendTokensUtil,
@@ -28,22 +22,6 @@ export function updateActiveTransactionCache() {
       `transactions:${settings.network}:active`,
       async () => {
         return activeTransactions;
-      },
-      0
-    );
-  };
-}
-
-export function updateActiveServerTransactionCache() {
-  return async (dispatch, getState) => {
-    const {
-      settings,
-      wallet: { activeServerTransactions }
-    } = getState();
-    await cache(
-      `server-transactions:${settings.network}:active`,
-      async () => {
-        return activeServerTransactions;
       },
       0
     );
@@ -210,23 +188,6 @@ export function loadActiveTransactions() {
   };
 }
 
-export function loadActiveServerTransactions() {
-  return async (dispatch, getState) => {
-    const { settings } = getState();
-    let transactions = await cache(
-      `server-transactions:${settings.network}:active`,
-      async () => {
-        return [];
-      },
-      60 * 60 * 24 * 7
-    );
-    dispatch(addActiveServerTransactions(transactions));
-    dispatch(updateActiveServerTransactionCache());
-
-    dispatch(pushActiveServerTransactions());
-  };
-}
-
 export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
     try {
@@ -266,25 +227,6 @@ export function sendEther(to, amount) {
       };
       dispatch(addActiveTransactions([activeTransaction]));
       dispatch(updateActiveTransactionCache());
-    } catch (err) {
-      dispatch(gotoErrorScreen(err));
-    }
-  };
-}
-
-export function pushActiveServerTransactions() {
-  return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { activeServerTransactions }
-      } = getState();
-      const queued = activeServerTransactions.filter(astx => !astx.id);
-      const data = queued.map(astx => astx.data);
-      data.reverse(); // Transactions are unioned with new data first.
-      const response = await createActiveServerTransactions(data);
-      const updated = queued.map(astx => ({ ...astx, id: response.id }));
-      dispatch(addActiveServerTransactions(updated));
-      dispatch(updateActiveServerTransactionCache());
     } catch (err) {
       dispatch(gotoErrorScreen(err));
     }
