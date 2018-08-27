@@ -3,7 +3,6 @@ export * from './crypto';
 export * from './display';
 export * from './ethereum';
 export * from './inf0x';
-export * from './orders';
 export * from './relayer';
 export * from './timing';
 export * from './tokens';
