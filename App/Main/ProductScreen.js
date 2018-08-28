@@ -11,24 +11,31 @@ import {
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
+import NavigationService from '../../services/NavigationService';
+import * as TickerService from '../../services/TickerService';
+import * as TokenService from '../../services/TokenService';
 import {
   loadActiveTransactions,
   loadAssets,
+  loadOrderbooks,
   loadOrders,
   loadProducts,
   loadTokens,
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
-import { formatAmount, formatMoney, formatPercent } from '../../utils';
+import {
+  formatAmount,
+  formatMoney,
+  formatPercent,
+  formatProduct
+} from '../../utils';
 import Col from '../components/Col';
 import Row from '../components/Row';
 import EmptyList from '../components/EmptyList';
 import MutedText from '../components/MutedText';
 import TokenIcon from '../components/TokenIcon';
-import NavigationService from '../../services/NavigationService';
-import * as TickerService from '../../services/TickerService';
-import * as TokenService from '../../services/TokenService';
+import OrderbookPrice from '../views/OrderbookPrice';
 
 class TokenItem extends Component {
   render() {
@@ -56,7 +63,7 @@ class TokenItem extends Component {
                   change >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {`${priceFormatter(price)}`}
+                {priceFormatter(price)}
               </Text>
               <MutedText>Price</MutedText>
             </Col>
@@ -67,7 +74,7 @@ class TokenItem extends Component {
                   change >= 0 ? styles.profit : styles.loss
                 ]}
               >
-                {`${formatPercent(change)}`}
+                {formatPercent(change)}
               </Text>
               <MutedText>24 Hour Change</MutedText>
             </Col>
@@ -120,9 +127,13 @@ class BaseQuoteTokenItem extends Component {
         change={TickerService.get24HRChangePercent(tokenTicker)
           .abs()
           .toNumber()}
-        priceFormatter={v =>
-          `${formatAmount(v)} ${'WETH' ? 'ETH' : quoteToken.symbol}`
-        }
+        priceFormatter={v => (
+          <OrderbookPrice
+            product={formatProduct(baseToken.symbol, quoteToken.symbol)}
+            default={v}
+            side={'sell'}
+          />
+        )}
         {...this.props}
       />
     );
@@ -276,6 +287,7 @@ class ProductScreen extends Component {
       this.props.dispatch(updateTokenTickers(reload));
       this.props.dispatch(loadActiveTransactions());
       this.props.dispatch(loadOrders());
+      this.props.dispatch(loadOrderbooks());
       this.setState({ refreshing: false });
     });
   }

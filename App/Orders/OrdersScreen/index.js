@@ -1,10 +1,11 @@
 import ethUtil from 'ethereumjs-util';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
-import { loadOrders } from '../../../thunks';
+import { cancelOrder, loadOrders } from '../../../thunks';
 import CollapsibleButtonView from '../../components/CollapsibleButtonView';
 import EmptyList from '../../components/EmptyList';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -12,7 +13,6 @@ import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
 import NavigationService from '../../../services/NavigationService';
-import * as OrderService from '../../../services/OrderService';
 import * as TokenService from '../../../services/TokenService';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
@@ -25,36 +25,23 @@ const TokenOrder = connect(
   dispatch => ({ dispatch })
 )(
   class BaseTokenOrder extends Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        makerToken: null,
-        takerToken: null,
-        ready: false
+    static get propTypes() {
+      return {
+        order: PropTypes.object.isRequired
       };
     }
 
-    async componentDidMount() {
-      const makerToken = TokenService.findTokenByAddress(
-        this.props.order.makerTokenAddress
-      );
-      const takerToken = TokenService.findTokenByAddress(
-        this.props.order.takerTokenAddress
-      );
-
-      this.setState({
-        makerToken,
-        takerToken,
-        ready: true
-      });
-    }
-
     render() {
-      if (!this.state.ready) return null;
-
-      const { makerToken, takerToken } = this.state;
       const { order } = this.props;
+
+      if (!order) return null;
+
+      const { makerTokenAddress, takerTokenAddress } = order;
+      const makerToken = TokenService.findTokenByAddress(makerTokenAddress);
+      const takerToken = TokenService.findTokenByAddress(takerTokenAddress);
+
+      if (!makerToken) return null;
+      if (!takerToken) return null;
 
       return (
         <ListItem
@@ -187,7 +174,7 @@ class OrdersScreen extends Component {
   async cancelOrder(order) {
     this.setState({ showCancelling: true });
     try {
-      await OrderService.cancelOrder(order);
+      await this.props.dispatch(cancelOrder(order));
     } catch (error) {
       NavigationService.error(error);
       return;
@@ -200,7 +187,7 @@ class OrdersScreen extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadOrders());
+    await this.props.dispatch(loadOrders(true));
     this.setState({ refreshing: false });
   }
 }

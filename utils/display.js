@@ -23,6 +23,10 @@ export function hex2a(hexx) {
   return str;
 }
 
+export function formatProduct(baseTokenSymbol, quoteTokenSymbol) {
+  return `${baseTokenSymbol}-${quoteTokenSymbol}`;
+}
+
 export function formatSymbol(symbol) {
   if (!symbol) return symbol;
   const _symbol = symbol.toUpperCase().trim();

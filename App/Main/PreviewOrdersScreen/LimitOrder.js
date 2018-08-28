@@ -4,14 +4,14 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { colors, getProfitLossStyle } from '../../../styles';
+import { submitOrder } from '../../../thunks';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import NavigationService from '../../../services/NavigationService';
 import {
   convertZeroExOrderToLimitOrder,
-  signOrder,
-  submitOrder
+  signOrder
 } from '../../../services/OrderService';
 import { getQuoteToken } from '../../../services/TokenService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
@@ -205,7 +205,7 @@ class PreviewLimitOrder extends Component {
     }
 
     try {
-      await submitOrder(signedOrder);
+      await this.props.dispatch(submitOrder(signedOrder));
     } catch (error) {
       NavigationService.error(error);
       return;
@@ -220,6 +220,7 @@ class PreviewLimitOrder extends Component {
 
 PreviewLimitOrder.propTypes = {
   quoteSymbol: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired,
     setParams: PropTypes.func.isRequired,

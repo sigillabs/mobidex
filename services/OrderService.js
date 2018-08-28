@@ -1,25 +1,101 @@
-import { HttpClient } from '@0xproject/connect';
 import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
-import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import moment from 'moment';
-import { addActiveTransactions } from '../actions';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
-import {
-  gotoErrorScreen,
-  submitOrder as _submitOrder,
-  updateActiveTransactionCache
-} from '../thunks';
+import { formatProduct } from '../utils';
+import NavigationService from './NavigationService';
 import * as TokenService from './TokenService';
-import * as WalletService from './WalletService';
-import * as ZeroExService from './ZeroExService';
 
 let _store;
 
 export function setStore(store) {
   _store = store;
+}
+
+export function getOrderbook(baseToken, quoteToken = null) {
+  const {
+    relayer: { orderbooks }
+  } = _store.getState();
+
+  if (!quoteToken) {
+    quoteToken = TokenService.getQuoteToken();
+  } else if (typeof quoteToken === 'string') {
+    quoteToken = TokenService.findTokenByAddress(quoteToken);
+  }
+
+  if (typeof baseToken === 'string') {
+    baseToken = TokenService.findTokenByAddress(baseToken);
+  }
+
+  if (!baseToken || !quoteToken) {
+    return null;
+  }
+
+  const product = formatProduct(baseToken.symbol, quoteToken.symbol);
+
+  return orderbooks[product];
+}
+
+export function getOrderPrice(order) {
+  const makerToken = TokenService.findTokenByAddress(order.makerTokenAddress);
+  const takerToken = TokenService.findTokenByAddress(order.takerTokenAddress);
+  const quoteToken = TokenService.getQuoteToken();
+
+  if (!makerToken) return null;
+  if (!takerToken) return null;
+
+  const makerTokenUnitAmount = ZeroEx.toUnitAmount(
+    new BigNumber(order.makerTokenAmount),
+    makerToken.decimals
+  );
+  const takerTokenUnitAmount = ZeroEx.toUnitAmount(
+    new BigNumber(order.takerTokenAmount),
+    takerToken.decimals
+  );
+
+  if (quoteToken.address === makerToken.address) {
+    return makerTokenUnitAmount.div(takerTokenUnitAmount);
+  } else if (quoteToken.address === takerToken.address) {
+    return takerTokenUnitAmount.div(makerTokenUnitAmount);
+  } else {
+    return null;
+  }
+}
+
+export function getAveragePrice(orders) {
+  if (orders.length === 0) {
+    return 0;
+  }
+
+  const makerTokenAddresses = _.chain(orders)
+    .map('makerTokenAddress')
+    .uniq()
+    .value();
+
+  if (makerTokenAddresses.length > 1) {
+    throw new Error('Orders contain different maker token addresses');
+  }
+  if (makerTokenAddresses.length < 1) {
+    throw new Error('Need at least 1 order');
+  }
+
+  const takerTokenAddresses = _.chain(orders)
+    .map('takerTokenAddress')
+    .uniq()
+    .value();
+  if (takerTokenAddresses.length > 1) {
+    throw new Error('Orders contain different taker token addresses');
+  }
+  if (takerTokenAddresses.length < 1) {
+    throw new Error('Need at least 1 order');
+  }
+
+  return orders
+    .map(o => getOrderPrice(o))
+    .reduce((acc, price) => acc.add(price))
+    .div(orders.length);
 }
 
 export function convertLimitOrderToZeroExOrder(limitOrder) {
@@ -71,13 +147,14 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
   return order;
 }
 
-export function convertZeroExOrderToLimitOrder(order, side = 'buy') {
+export function convertZeroExOrderToLimitOrder(order) {
   const {
     relayer: { tokens }
   } = _store.getState();
 
   const makerToken = _.find(tokens, { address: order.makerTokenAddress });
   const takerToken = _.find(tokens, { address: order.takerTokenAddress });
+  const quoteToken = TokenService.getQuoteToken();
 
   if (!makerToken) return null;
   if (!takerToken) return null;
@@ -96,127 +173,120 @@ export function convertZeroExOrderToLimitOrder(order, side = 'buy') {
     quoteAddress: null,
     price: null,
     amount: null,
-    side
+    side: null
   };
 
-  switch (side) {
-    case 'buy':
-      limitOrder.baseAddress = order.takerTokenAddress;
-      limitOrder.quoteAddress = order.makerTokenAddress;
-      limitOrder.price = makerTokenUnitAmount.div(takerTokenUnitAmount);
-      limitOrder.amount = takerTokenUnitAmount;
-      return limitOrder;
+  if (quoteToken.address === makerToken.address) {
+    limitOrder.baseAddress = order.takerTokenAddress;
+    limitOrder.quoteAddress = order.makerTokenAddress;
+    limitOrder.price = makerTokenUnitAmount.div(takerTokenUnitAmount);
+    limitOrder.amount = takerTokenUnitAmount;
+    limitOrder.side = 'buy';
+    return limitOrder;
+  } else if (quoteToken.address === takerToken.address) {
+    limitOrder.baseAddress = order.takerTokenAddress;
+    limitOrder.quoteAddress = order.makerTokenAddress;
+    limitOrder.price = takerTokenUnitAmount.div(makerTokenUnitAmount);
+    limitOrder.amount = makerTokenUnitAmount;
+    limitOrder.side = 'sell';
+    return limitOrder;
+  } else {
+    return null;
+  }
+}
 
-    case 'sell':
-      limitOrder.baseAddress = order.takerTokenAddress;
-      limitOrder.quoteAddress = order.makerTokenAddress;
-      limitOrder.price = takerTokenUnitAmount.div(makerTokenUnitAmount);
-      limitOrder.amount = makerTokenUnitAmount;
-      return limitOrder;
+export function convertZeroExOrderToOrderRequest(order, amount = null) {
+  if (!order) return null;
+  if (new BigNumber(order.filledTakerTokenAmount).gte(order.takerTokenAmount)) {
+    return null;
   }
 
-  return null;
-}
+  const quoteToken = TokenService.getQuoteToken();
+  let amountProperty;
+  let filledProperty;
+  let tokenAddress;
 
-export async function getTokenPairs(options = { relayerEndpoint: null }) {
-  let client = new HttpClient(options.relayerEndpoint);
-  return await client.getTokenPairsAsync();
-}
+  if (quoteToken.address === order.makerTokenAddress) {
+    tokenAddress = order.takerTokenAddress;
+    amountProperty = 'takerTokenAmount';
+    filledProperty = 'filledTakerTokenAmount';
+  } else if (quoteToken.address === order.takerTokenAddress) {
+    tokenAddress = order.makerTokenAddress;
+    amountProperty = 'makerTokenAmount';
+    filledProperty = 'filledMakerTokenAmount';
+  } else {
+    throw new Error('Quote token not in order.');
+  }
 
-export async function getOrders(options = { relayerEndpoint: null }) {
-  let client = new HttpClient(options.relayerEndpoint);
-  return await client.getOrdersAsync();
-}
+  if (new BigNumber(order[filledProperty]).gte(order[amountProperty])) {
+    return null;
+  }
 
-export async function getOrder(hash, options = { relayerEndpoint: null }) {
-  let client = new HttpClient(options.relayerEndpoint);
-  return await client.getOrderAsync(hash);
-}
-
-export function filterAndSortOrdersByTokens(
-  orders,
-  makerTokenAddress,
-  takerTokenAddress
-) {
-  let ordersToFill = orders;
-  ordersToFill = orders.filter(o => o.makerTokenAddress === makerTokenAddress);
-  ordersToFill = ordersToFill.filter(
-    o => o.takerTokenAddress === takerTokenAddress
+  const baseToken = TokenService.findTokenByAddress(tokenAddress);
+  const fillable = new BigNumber(order[amountProperty]).sub(
+    order[filledProperty]
   );
-  ordersToFill = _.sortBy(
-    ordersToFill,
-    ({ makerTokenAmount, takerTokenAmount }) => {
-      return new BigNumber(takerTokenAmount).div(makerTokenAmount).toNumber();
+  const amountBN = ZeroEx.toBaseUnitAmount(
+    new BigNumber(amount || 0),
+    baseToken.decimals
+  );
+
+  if (amount === null || amountBN.gt(fillable)) {
+    return {
+      signedOrder: order,
+      takerTokenFillAmount: new BigNumber(order.takerTokenAmount).sub(
+        order.filledTakerTokenAmount
+      )
+    };
+  } else {
+    const ratio = amountBN.div(order[amountProperty]);
+    let fillAmount = ratio.mul(order.takerTokenAmount);
+
+    // Rounding does not work
+    // Big hack
+    if (fillAmount.dp() > 0) {
+      fillAmount = new BigNumber(
+        fillAmount.toString().slice(0, -1 - fillAmount.dp())
+      );
     }
-  );
 
-  return ordersToFill.reverse();
+    const maxFillAmount = new BigNumber(order.takerTokenAmount).sub(
+      order.filledTakerTokenAmount
+    );
+    const takerTokenFillAmount = fillAmount.gt(maxFillAmount)
+      ? maxFillAmount
+      : fillAmount;
+
+    if (takerTokenFillAmount.lte(0)) {
+      return null;
+    }
+
+    return {
+      signedOrder: order,
+      takerTokenFillAmount
+    };
+  }
 }
 
-export function filterAndSortOrdersByTokensAndTakerAddress(
-  orders,
-  makerTokenAddress,
-  takerTokenAddress,
-  taker = ZeroEx.NULL_ADDRESS
-) {
-  return filterAndSortOrdersByTokens(
-    orders,
-    makerTokenAddress,
-    takerTokenAddress
-  ).filter(o => o.taker === taker);
-}
+export function convertZeroExOrdersToOrderRequests(orders, amount = null) {
+  if (!orders) return null;
+  if (!orders.length) return [];
 
-export function filterOrdersToBaseAmount(orders, amount, taker = false) {
-  const ordersToFill = [];
-  let fillableTotal = new BigNumber(0);
-
-  if (fillableTotal.lt(amount)) {
+  if (amount === null || amount === undefined) {
+    return orders.map(o => convertZeroExOrderToOrderRequest(o, null));
+  } else {
+    const orderRequests = [];
+    let amountBN = new BigNumber(amount);
     for (const order of orders) {
-      if (
-        taker &&
-        new BigNumber(order.filledTakerTokenAmount).gte(order.takerTokenAmount)
-      ) {
-        continue;
-      }
-      if (
-        !taker &&
-        new BigNumber(order.filledMakerTokenAmount).gte(order.makerTokenAmount)
-      ) {
-        continue;
-      }
-      ordersToFill.push(order);
-      fillableTotal = fillableTotal.add(
-        taker ? order.takerTokenAmount : order.makerTokenAmount
-      );
-      fillableTotal = fillableTotal.sub(
-        taker ? order.filledTakerTokenAmount : order.filledMakerTokenAmount
-      );
-
-      if (fillableTotal.gte(amount)) {
+      const orderRequest = convertZeroExOrderToOrderRequest(order, amount);
+      if (orderRequest === null) {
         break;
       }
+      orderRequests.push(orderRequest);
+      amountBN = amountBN.sub(orderRequest.takerTokenFillAmount);
     }
+    return orderRequests;
   }
-
-  return ordersToFill;
-}
-
-export function getOrdersToFill(
-  orders,
-  makerTokenAddress,
-  takerTokenAddress,
-  amount,
-  taker = false
-) {
-  return filterOrdersToBaseAmount(
-    filterAndSortOrdersByTokensAndTakerAddress(
-      orders,
-      makerTokenAddress,
-      takerTokenAddress
-    ),
-    amount,
-    taker
-  );
 }
 
 export async function createOrder(limitOrder) {
@@ -252,8 +322,7 @@ export async function signOrder(order) {
     if (!order.salt) order.salt = ZeroEx.generatePseudoRandomSalt();
 
     const hash = ZeroEx.getOrderHashHex(order);
-    // Halting at signature -- seems like a performance issue.
-    // Actually a network request issue.
+    // Halting at signature -- seems like a performance or network issue.
     const ecSignature = await zeroEx.signOrderHashAsync(
       hash,
       account.toLowerCase()
@@ -265,367 +334,7 @@ export async function signOrder(order) {
       ecSignature
     };
   } catch (err) {
-    _store.dispatch(gotoErrorScreen(err));
+    NavigationService.error(err);
     return null;
   }
-}
-
-export async function submitOrder(signedOrder) {
-  await WalletService.checkAndWrapEther(
-    signedOrder.makerTokenAddress,
-    signedOrder.makerTokenAmount,
-    { wei: true, batch: true }
-  );
-  await WalletService.checkAndSetTokenAllowance(
-    signedOrder.makerTokenAddress,
-    signedOrder.makerTokenAmount,
-    { wei: true, batch: true }
-  );
-  _store.dispatch(_submitOrder(signedOrder));
-}
-
-export async function fillOrders(orders, amount = null, side = 'buy') {
-  if (!orders || orders.length === 0) {
-    return;
-  }
-
-  if (orders.length === 1) {
-    return await fillOrder(orders[0], amount, side);
-  }
-
-  const makerTokenAddresses = _.chain(orders)
-    .map('makerTokenAddress')
-    .uniq()
-    .value();
-  if (makerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different maker token addresses');
-  }
-  if (makerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
-  }
-
-  const takerTokenAddresses = _.chain(orders)
-    .map('takerTokenAddress')
-    .uniq()
-    .value();
-  if (takerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different taker token addresses');
-  }
-  if (takerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
-  }
-
-  const orderRequests = await getOrdersBatch(orders, amount, side);
-  const baseUnitAmount = _.reduce(
-    orderRequests,
-    (a, o) => a.add(o.takerTokenFillAmount),
-    new BigNumber(0)
-  );
-
-  await WalletService.checkAndWrapEther(
-    takerTokenAddresses[0],
-    baseUnitAmount,
-    { wei: true, batch: false }
-  );
-  await WalletService.checkAndSetTokenAllowance(
-    takerTokenAddresses[0],
-    baseUnitAmount,
-    { wei: true, batch: false }
-  );
-  await ZeroExService.batchFillOrKill(orderRequests, amount, {
-    wei: true,
-    batch: false
-  });
-}
-
-export async function fillOrder(order, amount = null, side = 'buy') {
-  let orderAmount;
-  let fillBaseUnitAmount;
-  let token;
-
-  switch (side) {
-    case 'buy':
-      orderAmount = order.makerTokenAmount;
-      token = await TokenService.findTokenByAddress(order.makerTokenAddress);
-      break;
-
-    case 'sell':
-      orderAmount = order.takerTokenAmount;
-      token = await TokenService.findTokenByAddress(order.takerTokenAddress);
-      break;
-  }
-
-  if (amount) {
-    fillBaseUnitAmount = ZeroEx.toBaseUnitAmount(
-      new BigNumber(amount),
-      token.decimals
-    )
-      .div(orderAmount)
-      .mul(order.takerTokenAmount);
-    // .sub(order.filledTakerTokenAmount);
-
-    // Rounding does not work
-    // Big hack
-    if (fillBaseUnitAmount.dp() > 0) {
-      fillBaseUnitAmount = new BigNumber(
-        fillBaseUnitAmount.toString().slice(0, -1 - fillBaseUnitAmount.dp())
-      );
-    }
-  } else {
-    fillBaseUnitAmount = order.takerTokenAmount;
-  }
-
-  const maxFillAmount = new BigNumber(order.takerTokenAmount).sub(
-    order.filledTakerTokenAmount
-  );
-
-  if (fillBaseUnitAmount.gt(maxFillAmount)) {
-    fillBaseUnitAmount = maxFillAmount;
-  }
-
-  await WalletService.checkAndWrapEther(
-    order.takerTokenAddress,
-    fillBaseUnitAmount,
-    { wei: true, batch: false }
-  );
-  await WalletService.checkAndSetTokenAllowance(
-    order.takerTokenAddress,
-    fillBaseUnitAmount,
-    { wei: true, batch: false }
-  );
-  await ZeroExService.fillOrder(order, fillBaseUnitAmount, amount, {
-    wei: true,
-    batch: false
-  });
-}
-
-export async function cancelOrder(order) {
-  const {
-    wallet: { web3, address }
-  } = _store.getState();
-  const ethereumClient = new EthereumClient(web3);
-  const zeroExClient = new ZeroExClient(ethereumClient);
-  const zeroEx = await zeroExClient.getZeroExClient();
-
-  if (ethUtil.stripHexPrefix(order.maker) !== ethUtil.stripHexPrefix(address)) {
-    throw new Error('Cannot cancel order that is not yours');
-  }
-
-  try {
-    await WalletService.checkAndUnwrapEther(
-      order.makerTokenAddress,
-      order.makerTokenAmount,
-      { wei: true, batch: false }
-    );
-  } catch (err) {
-    console.warn(err);
-    if (err.message !== 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL') {
-      throw err;
-    }
-  }
-
-  const txhash = await zeroEx.exchange.cancelOrderAsync(
-    order,
-    new BigNumber(order.makerTokenAmount)
-  );
-
-  const activeTransaction = {
-    ...order,
-    id: txhash,
-    type: 'CANCEL'
-  };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
-}
-
-export async function getFillableOrders(base, amount, side = 'buy') {
-  if (side !== 'buy' && side !== 'sell') {
-    return null;
-  }
-
-  const {
-    relayer: { orders }
-  } = _store.getState();
-  const quote = await TokenService.getQuoteToken();
-
-  if (typeof base === 'string') {
-    base = await TokenService.findTokenByAddress(base);
-  }
-
-  let makerToken;
-  let takerToken;
-  let taker;
-
-  switch (side) {
-    case 'buy':
-      makerToken = base;
-      takerToken = quote;
-      taker = false;
-      break;
-
-    case 'sell':
-      makerToken = quote;
-      takerToken = base;
-      taker = true;
-      break;
-  }
-
-  const baseUnitAmount = ZeroEx.toBaseUnitAmount(
-    new BigNumber(amount),
-    base.decimals
-  );
-
-  const fillableOrders = getOrdersToFill(
-    orders,
-    makerToken.address,
-    takerToken.address,
-    baseUnitAmount,
-    taker
-  );
-
-  return fillableOrders;
-}
-
-export async function getOrdersBatch(orders, amount = null, side = 'buy') {
-  if (!orders) return null;
-  if (orders.length === 0) return orders;
-
-  let amountProperty;
-  let filledProperty;
-  let tokenAddress;
-
-  switch (side) {
-    case 'buy':
-      tokenAddress = orders[0].makerTokenAddress;
-      amountProperty = 'makerTokenAmount';
-      filledProperty = 'filledMakerTokenAmount';
-      break;
-
-    case 'sell':
-      tokenAddress = orders[0].takerTokenAddress;
-      amountProperty = 'takerTokenAmount';
-      filledProperty = 'filledTakerTokenAmount';
-      break;
-  }
-
-  const token = await TokenService.findTokenByAddress(tokenAddress);
-  let amountBN = ZeroEx.toBaseUnitAmount(
-    new BigNumber(amount || 0),
-    token.decimals
-  );
-  const ordersToFill = _.chain(orders)
-    .map(o => {
-      if (new BigNumber(o.filledTakerTokenAmount).gte(o.takerTokenAmount)) {
-        return null;
-      }
-
-      if (new BigNumber(o[filledProperty]).gte(o[amountProperty])) {
-        return null;
-      }
-
-      const fillable = new BigNumber(o[amountProperty]).sub(o[filledProperty]);
-
-      if (amount === null || amountBN.gt(fillable)) {
-        amountBN = amountBN.sub(fillable);
-        return {
-          signedOrder: o,
-          takerTokenFillAmount: new BigNumber(o.takerTokenAmount).sub(
-            o.filledTakerTokenAmount
-          )
-        };
-      } else {
-        const ratio = amountBN.div(o[amountProperty]);
-        let fillAmount = ratio.mul(o.takerTokenAmount);
-
-        // Rounding does not work
-        // Big hack
-        if (fillAmount.dp() > 0) {
-          fillAmount = new BigNumber(
-            fillAmount.toString().slice(0, -1 - fillAmount.dp())
-          );
-        }
-
-        const maxFillAmount = new BigNumber(o.takerTokenAmount).sub(
-          o.filledTakerTokenAmount
-        );
-
-        return {
-          signedOrder: o,
-          takerTokenFillAmount: fillAmount.gt(maxFillAmount)
-            ? maxFillAmount
-            : fillAmount
-        };
-      }
-    })
-    .filter(_.identity)
-    .filter(({ takerTokenFillAmount }) => !takerTokenFillAmount.lte(0))
-    .value();
-
-  return ordersToFill;
-}
-
-export async function getAveragePrice(orders, side = 'buy') {
-  if (orders.length === 0) {
-    return 0;
-  }
-
-  const makerTokenAddresses = _.chain(orders)
-    .map('makerTokenAddress')
-    .uniq()
-    .value();
-
-  if (makerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different maker token addresses');
-  }
-  if (makerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
-  }
-
-  const takerTokenAddresses = _.chain(orders)
-    .map('takerTokenAddress')
-    .uniq()
-    .value();
-  if (takerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different taker token addresses');
-  }
-  if (takerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
-  }
-
-  const makerToken = await TokenService.findTokenByAddress(
-    makerTokenAddresses[0]
-  );
-  const takerToken = await TokenService.findTokenByAddress(
-    takerTokenAddresses[0]
-  );
-
-  let average = null;
-
-  switch (side) {
-    case 'buy':
-      average = orders.reduce(
-        (s, o) =>
-          s.add(
-            ZeroEx.toUnitAmount(o.takerTokenAmount, takerToken.decimals)
-              .div(ZeroEx.toUnitAmount(o.makerTokenAmount, makerToken.decimals))
-              .div(orders.length)
-          ),
-        new BigNumber(0)
-      );
-      break;
-
-    case 'sell':
-      average = orders.reduce(
-        (s, o) =>
-          s.add(
-            ZeroEx.toUnitAmount(o.makerTokenAmount, makerToken.decimals)
-              .div(ZeroEx.toUnitAmount(o.takerTokenAmount, takerToken.decimals))
-              .div(orders.length)
-          ),
-        new BigNumber(0)
-      );
-      break;
-  }
-
-  return average.toNumber();
 }

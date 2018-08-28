@@ -28,11 +28,7 @@ import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { setWallet } from '../actions';
-import EthereumClient from '../clients/ethereum';
-import TokenClient from '../clients/token';
 import { getURLFromNetwork } from '../utils';
-import * as TokenService from './TokenService';
-import * as ZeroExService from './ZeroExService';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -219,75 +215,4 @@ export function getDecimalsBySymbol(symbol) {
   const asset = getAssetBySymbol(symbol);
   if (!asset) return 0;
   return asset.decimals;
-}
-
-export async function checkAndWrapEther(
-  address,
-  amount,
-  options = { wei: false, batch: false }
-) {
-  const weth = await TokenService.getWETHToken();
-
-  if (address === weth.address) {
-    return await wrapEther(amount, options);
-  } else {
-    return null;
-  }
-}
-
-export async function wrapEther(
-  amount,
-  options = { wei: false, batch: false }
-) {
-  const { address, decimals } = await TokenService.getWETHToken();
-  const value = options.wei
-    ? new BigNumber(amount)
-    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-
-  return ZeroExService.deposit(address, value, options);
-}
-
-export async function checkAndUnwrapEther(
-  address,
-  amount,
-  options = { wei: false, batch: false }
-) {
-  const weth = await TokenService.getWETHToken();
-
-  if (address === weth.address) {
-    await unwrapEther(amount, options);
-  }
-}
-
-export async function unwrapEther(
-  amount,
-  options = { wei: false, batch: false }
-) {
-  const { address, decimals } = await TokenService.getWETHToken();
-  const value = options.wei
-    ? new BigNumber(amount)
-    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-
-  return ZeroExService.withdraw(address, value, options);
-}
-
-export async function checkAndSetTokenAllowance(
-  address,
-  amount,
-  options = { wei: false, batch: false }
-) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-  const ethereumClient = new EthereumClient(web3);
-  const tokenClient = new TokenClient(ethereumClient, address);
-  const { decimals } = TokenService.findTokenByAddress(address);
-  const amt = options.wei
-    ? new BigNumber(amount)
-    : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-
-  const allowance = await tokenClient.getAllowance();
-  if (new BigNumber(amt).gt(allowance)) {
-    await ZeroExService.setUnlimitedProxyAllowance(address, options);
-  }
 }

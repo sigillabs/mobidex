@@ -220,7 +220,8 @@ const ProductsNavigation = createStackNavigator(
             return (
               <ProductDetailsHeader
                 navigation={navigation}
-                token={navigation.state.params.product.base}
+                base={navigation.state.params.product.base}
+                quote={navigation.state.params.product.quote}
                 showBackButton={true}
                 showForexToggleButton={true}
               />

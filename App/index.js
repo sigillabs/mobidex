@@ -9,9 +9,9 @@ import { setStore as setStoreForProductService } from '../services/ProductServic
 import { setStore as setStoreForTickerService } from '../services/TickerService';
 import { setStore as setStoreForTokenService } from '../services/TokenService';
 import {
-  setStore as setStoreForTransactionWatcherService,
-  start as startTransactionWatcherService
-} from '../services/TransactionWatcherService';
+  ActiveTransactionWatchdog,
+  TransactionService
+} from '../services/TransactionService';
 import { setStore as setStoreForWalletService } from '../services/WalletService';
 import { setStore as setStoreForZeroExService } from '../services/ZeroExService';
 
@@ -22,11 +22,11 @@ setStoreForOrderService(store);
 setStoreForProductService(store);
 setStoreForTickerService(store);
 setStoreForTokenService(store);
-setStoreForTransactionWatcherService(store);
 setStoreForWalletService(store);
 setStoreForZeroExService(store);
 
-startTransactionWatcherService();
+new TransactionService(store);
+new ActiveTransactionWatchdog(store).start();
 
 export default class App extends Component {
   render() {

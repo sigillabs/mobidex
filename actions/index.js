@@ -15,6 +15,7 @@ export const removeActiveTransactions = createAction(
 export const setError = createAction(Actions.SET_ERROR);
 export const setForexCurrency = createAction(Actions.SET_FOREX_CURRENCY);
 export const setNetwork = createAction(Actions.SET_NETWORK);
+export const setOrderbook = createAction(Actions.SET_ORDERBOOK);
 export const setOrders = createAction(Actions.SET_ORDERS);
 export const setProducts = createAction(Actions.SET_PRODUCTS);
 export const setTokens = createAction(Actions.SET_TOKENS);

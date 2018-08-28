@@ -8,54 +8,51 @@ import {
   formatAmount,
   formatMoney,
   formatPercent,
+  formatProduct,
   getImage
 } from '../../utils';
 import MutedText from '../components/MutedText';
 import SmallText from '../components/SmallText';
 import Row from '../components/Row';
 import * as TickerService from '../../services/TickerService';
+import OrderbookPrice from './OrderbookPrice';
+import OrderbookForexPrice from './OrderbookForexPrice';
 
 class LogoTicker extends Component {
   render() {
     const {
-      showChangePercent,
       avatarProps,
-      settings: { showForexPrices },
-      token: { symbol },
-      ...more
+      showForexPrices,
+      base,
+      quote,
+      rowStyle,
+      priceStyle
     } = this.props;
-    const ticker = showForexPrices
-      ? TickerService.getForexTicker(symbol)
-      : TickerService.getQuoteTicker(symbol);
+    const ticker = TickerService.getForexTicker(base.symbol);
 
-    if (!ticker) return null;
-
-    const changePercent = TickerService.get24HRChangePercent(ticker);
-    const { rowStyle, priceStyle, priceChangeStyle } = more;
+    if (showForexPrices && !ticker) return null;
 
     return (
       <Row style={[style.container, rowStyle]}>
         <View style={[]}>
-          <Avatar source={getImage(symbol)} {...avatarProps || {}} />
+          <Avatar source={getImage(base.symbol)} {...avatarProps || {}} />
         </View>
         <View style={style.avatarWrapper}>
-          <Text style={[{ fontSize: 24 }, priceStyle]}>
-            {showForexPrices
-              ? formatMoney(ticker.price)
-              : formatAmount(ticker.price)}
-            {!showForexPrices ? <SmallText>/{symbol}</SmallText> : null}
-          </Text>
-          {showChangePercent ? (
-            <MutedText
-              style={[
-                { fontSize: 14 },
-                getProfitLossStyle(changePercent),
-                priceChangeStyle
-              ]}
-            >
-              {formatPercent(changePercent)}
-            </MutedText>
-          ) : null}
+          {showForexPrices ? (
+            <OrderbookForexPrice
+              style={[{ fontSize: 24 }, priceStyle]}
+              product={formatProduct(base.symbol, quote.symbol)}
+              default={0}
+              side={'sell'}
+            />
+          ) : (
+            <OrderbookPrice
+              style={[{ fontSize: 24 }, priceStyle]}
+              product={formatProduct(base.symbol, quote.symbol)}
+              default={0}
+              side={'sell'}
+            />
+          )}
         </View>
       </Row>
     );
@@ -63,8 +60,11 @@ class LogoTicker extends Component {
 }
 
 LogoTicker.propTypes = {
-  settings: PropTypes.object.isRequired,
-  token: PropTypes.shape({
+  showForexPrices: PropTypes.bool.isRequired,
+  base: PropTypes.shape({
+    symbol: PropTypes.string.isRequired
+  }).isRequired,
+  quote: PropTypes.shape({
     symbol: PropTypes.string.isRequired
   }).isRequired,
   avatarProps: PropTypes.shape({
@@ -73,7 +73,8 @@ LogoTicker.propTypes = {
     large: PropTypes.bool,
     xlarge: PropTypes.bool
   }),
-  showChangePercent: PropTypes.bool
+  rowStyle: PropTypes.object,
+  priceStyle: PropTypes.object
 };
 
 LogoTicker.defaultProps = {
@@ -82,8 +83,7 @@ LogoTicker.defaultProps = {
     rounded: true,
     activeOpacity: 0.7,
     overlayContainerStyle: { backgroundColor: 'transparent' }
-  },
-  showChangePercent: true
+  }
 };
 
 const style = {
@@ -103,8 +103,8 @@ const style = {
 
 export default connect(
   state => ({
-    settings: state.settings,
-    ticker: state.ticker
+    ticker: state.ticker,
+    showForexPrices: state.settings.showForexPrices
   }),
   dispatch => ({ dispatch })
 )(LogoTicker);

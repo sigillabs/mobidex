@@ -1,27 +1,29 @@
-import * as _ from 'lodash';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import { Card, Header, ListItem, Text } from 'react-native-elements';
+import { ListItem, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
-import { updateForexTickers, updateTokenTickers } from '../../thunks';
+import {
+  loadOrderbooks,
+  updateForexTickers,
+  updateTokenTickers
+} from '../../thunks';
 import {
   formatAmount,
   formatMoney,
   formatPercent,
-  getPriceChangeFromTicker
+  formatProduct
 } from '../../utils';
 import Button from '../components/Button';
-import ButtonGroup from '../components/ButtonGroup';
 import Divider from '../components/Divider';
 import Padding from '../components/Padding';
 import Row from '../components/Row';
 import NavigationService from '../../services/NavigationService';
 import * as TickerService from '../../services/TickerService';
-import * as TokenService from '../../services/TokenService';
-import LogoTicker from '../views/LogoTicker';
+import OrderbookPrice from '../views/OrderbookPrice';
+import OrderbookForexPrice from '../views/OrderbookForexPrice';
 import PriceGraph from '../views/PriceGraph';
 
 class ProductDetailListItem extends Component {
@@ -46,6 +48,13 @@ class ProductDetailListItem extends Component {
     );
   }
 }
+
+ProductDetailListItem.propTypes = {
+  left: PropTypes.any,
+  right: PropTypes.any,
+  leftStyle: PropTypes.object,
+  rightStyle: PropTypes.object
+};
 
 class ProductDetailsView extends Component {
   render() {
@@ -111,16 +120,30 @@ class ProductDetailsView extends Component {
   }
 }
 
+ProductDetailsView.propTypes = {
+  base: PropTypes.object,
+  quote: PropTypes.object,
+  period: PropTypes.string,
+  infolist: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string,
+      left: PropTypes.string,
+      right: PropTypes.string
+    })
+  ),
+  history: PropTypes.array,
+  formatAmount: PropTypes.func
+};
+
 class TokenProductDetailsView extends Component {
   render() {
-    const { base, quote, periodIndex, periods } = this.props;
+    const { base, quote, periodIndex } = this.props;
     const ticker = TickerService.getQuoteTicker(base.symbol, quote.symbol);
 
     if (!ticker || !ticker.history) return null;
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = ticker.history[period];
-    const price = TickerService.getCurrentPrice(ticker);
     const average = TickerService.get24HRAverage(ticker);
     const change = TickerService.get24HRChange(ticker);
     const changePercent = TickerService.get24HRChangePercent(ticker);
@@ -128,9 +151,26 @@ class TokenProductDetailsView extends Component {
     const min = TickerService.get24HRMin(ticker);
     const infolist = [
       {
-        key: 'price',
-        left: 'Price',
-        right: `${formatAmount(price)} ${quote.symbol}`
+        key: 'bid',
+        left: 'Highest Bid',
+        right: (
+          <OrderbookPrice
+            product={formatProduct(base.symbol, quote.symbol)}
+            default={0}
+            side={'buy'}
+          />
+        )
+      },
+      {
+        key: 'ask',
+        left: 'Lowest Ask',
+        right: (
+          <OrderbookPrice
+            product={formatProduct(base.symbol, quote.symbol)}
+            default={0}
+            side={'sell'}
+          />
+        )
       },
       {
         key: '24hrprice',
@@ -170,16 +210,21 @@ class TokenProductDetailsView extends Component {
   }
 }
 
+TokenProductDetailsView.propTypes = {
+  base: PropTypes.object,
+  quote: PropTypes.object,
+  periodIndex: PropTypes.number
+};
+
 class ForexProductDetailsView extends Component {
   render() {
-    const { base, quote, periodIndex, periods } = this.props;
+    const { base, quote, periodIndex } = this.props;
     const ticker = TickerService.getForexTicker(base.symbol);
 
     if (!ticker || !ticker.history) return null;
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
     const history = ticker.history[period];
-    const price = TickerService.getCurrentPrice(ticker);
     const average = TickerService.get24HRAverage(ticker);
     const change = TickerService.get24HRChange(ticker);
     const changePercent = TickerService.get24HRChangePercent(ticker);
@@ -187,9 +232,26 @@ class ForexProductDetailsView extends Component {
     const min = TickerService.get24HRMin(ticker);
     const infolist = [
       {
-        key: 'price',
-        left: 'Price',
-        right: formatMoney(price)
+        key: 'bid',
+        left: 'Highest Bid',
+        right: (
+          <OrderbookForexPrice
+            product={formatProduct(base.symbol, quote.symbol)}
+            default={0}
+            side={'buy'}
+          />
+        )
+      },
+      {
+        key: 'ask',
+        left: 'Lowest Ask',
+        right: (
+          <OrderbookForexPrice
+            product={formatProduct(base.symbol, quote.symbol)}
+            default={0}
+            side={'sell'}
+          />
+        )
       },
       {
         key: '24hrprice',
@@ -229,6 +291,12 @@ class ForexProductDetailsView extends Component {
   }
 }
 
+ForexProductDetailsView.propTypes = {
+  base: PropTypes.object,
+  quote: PropTypes.object,
+  periodIndex: PropTypes.number
+};
+
 class ProductDetailsScreen extends Component {
   static periods = ['Day', 'Month', 'Year'];
 
@@ -265,7 +333,7 @@ class ProductDetailsScreen extends Component {
           />
         }
       >
-        {this.props.settings.showForexPrices ? (
+        {this.props.showForexPrices ? (
           <ForexProductDetailsView
             base={base}
             quote={quote}
@@ -288,9 +356,16 @@ class ProductDetailsScreen extends Component {
     this.setState({ refreshing: true });
     await this.props.dispatch(updateForexTickers(reload));
     await this.props.dispatch(updateTokenTickers(reload));
+    await this.props.dispatch(loadOrderbooks(reload));
     this.setState({ refreshing: false });
   }
 }
+
+ProductDetailsScreen.propTypes = {
+  navigation: PropTypes.any,
+  dispatch: PropTypes.func,
+  showForexPrices: PropTypes.bool
+};
 
 const styles = {
   container: {
@@ -315,7 +390,7 @@ const styles = {
 
 export default connect(
   state => ({
-    settings: state.settings
+    showForexPrices: state.settings.showForexPrices
   }),
   dispatch => ({ dispatch })
 )(ProductDetailsScreen);

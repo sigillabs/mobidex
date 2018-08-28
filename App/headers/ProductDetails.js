@@ -12,7 +12,7 @@ import NavigationService from '../../services/NavigationService';
 
 class ProductDetailsHeader extends Component {
   render() {
-    const { token } = this.props;
+    const { base, quote } = this.props;
 
     return (
       <Header
@@ -30,7 +30,7 @@ class ProductDetailsHeader extends Component {
             <FakeHeaderButton />
           )
         }
-        centerComponent={<LogoTicker token={token} showChangePercent={false} />}
+        centerComponent={<LogoTicker base={base} quote={quote} />}
         rightComponent={
           this.props.showForexToggleButton ? <ToggleForexButton /> : null
         }
@@ -43,7 +43,8 @@ class ProductDetailsHeader extends Component {
 ProductDetailsHeader.propTypes = {
   showBackButton: PropTypes.bool,
   showForexToggleButton: PropTypes.bool,
-  token: PropTypes.object.isRequired,
+  base: PropTypes.object.isRequired,
+  quote: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 };
 

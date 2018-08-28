@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { updateForexTicker, updateTokenTicker } from '../actions';
 import Inf0xClient from '../clients/inf0x';
-import { cache } from '../utils';
 
 export function updateForexTickers(force = false) {
   return async (dispatch, getState) => {

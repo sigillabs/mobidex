@@ -14,6 +14,7 @@ export default class RelayerClient {
   }
 
   @time
+  @cache('relayer:orders', 1000)
   async getOrders() {
     return await this.client.getOrdersAsync();
   }
@@ -21,5 +22,14 @@ export default class RelayerClient {
   @time
   async getOrder(hash) {
     return await this.client.getOrderAsync(hash);
+  }
+
+  @time
+  @cache('relayer:orderbook:{}:{}', 1000)
+  async getOrderbook(baseTokenAddress, quoteTokenAddress) {
+    return await this.client.getOrderbookAsync({
+      baseTokenAddress,
+      quoteTokenAddress
+    });
   }
 }

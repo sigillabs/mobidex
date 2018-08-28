@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
+  orderbooks: {},
   orders: [],
   products: [],
   tokens: []
@@ -14,6 +15,13 @@ export default handleActions(
       return {
         ...state,
         orders: _.unionBy(state.orders, action.payload, 'orderHash')
+      };
+    },
+    [Actions.SET_ORDERBOOK]: (state, action) => {
+      const [product, orderbook] = action.payload;
+      return {
+        ...state,
+        orderbooks: { ...state.orderbooks, [product]: orderbook }
       };
     },
     [Actions.SET_ORDERS]: (state, action) => {

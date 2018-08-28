@@ -1,25 +1,13 @@
+import { ZeroEx } from '0x.js';
 import BigNumber from 'bignumber.js';
 import { addActiveTransactions, addAssets, addTransactions } from '../actions';
 import EthereumClient from '../clients/ethereum';
 import TokenClient from '../clients/token';
+import NavigationService from '../services/NavigationService';
+import { TransactionService } from '../services/TransactionService';
+import * as TokenService from '../services/TokenService';
+import * as ZeroExService from '../services/ZeroExService';
 import { cache } from '../utils';
-import { gotoErrorScreen } from './navigation';
-
-export function updateActiveTransactionCache() {
-  return async (dispatch, getState) => {
-    const {
-      settings,
-      wallet: { activeTransactions }
-    } = getState();
-    await cache(
-      `transactions:${settings.network}:active`,
-      async () => {
-        return activeTransactions;
-      },
-      0
-    );
-  };
-}
 
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
@@ -157,23 +145,15 @@ export function loadTransactions(force = false) {
       );
       dispatch(addTransactions(transactions));
     } catch (err) {
-      dispatch(gotoErrorScreen(err));
+      NavigationService.error(err);
     }
   };
 }
 
 export function loadActiveTransactions() {
-  return async (dispatch, getState) => {
-    const { settings } = getState();
-    let transactions = await cache(
-      `transactions:${settings.network}:active`,
-      async () => {
-        return [];
-      },
-      60 * 60 * 24 * 7
-    );
+  return async dispatch => {
+    const transactions = await TransactionService.instance.getActiveTransactions();
     dispatch(addActiveTransactions(transactions));
-    dispatch(updateActiveTransactionCache());
   };
 }
 
@@ -194,10 +174,9 @@ export function sendTokens(token, to, amount) {
         amount,
         token
       };
-      dispatch(addActiveTransactions([activeTransaction]));
-      dispatch(updateActiveTransactionCache());
+      TransactionService.instance.addActiveTransaction(activeTransaction);
     } catch (err) {
-      dispatch(gotoErrorScreen(err));
+      NavigationService.error(err);
     }
   };
 }
@@ -217,10 +196,82 @@ export function sendEther(to, amount) {
         to,
         amount
       };
-      dispatch(addActiveTransactions([activeTransaction]));
-      dispatch(updateActiveTransactionCache());
+      TransactionService.instance.addActiveTransaction(activeTransaction);
     } catch (err) {
-      dispatch(gotoErrorScreen(err));
+      NavigationService.error(err);
+    }
+  };
+}
+
+export function wrapEther(amount, options = { wei: false, batch: false }) {
+  return async () => {
+    const { address, decimals } = await TokenService.getWETHToken();
+    const value = options.wei
+      ? new BigNumber(amount)
+      : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+
+    await ZeroExService.deposit(address, value, options);
+  };
+}
+
+export function checkAndWrapEther(
+  address,
+  amount,
+  options = { wei: false, batch: false }
+) {
+  return async () => {
+    const weth = await TokenService.getWETHToken();
+
+    if (address === weth.address) {
+      await wrapEther(amount, options);
+    }
+  };
+}
+
+export function unwrapEther(amount, options = { wei: false, batch: false }) {
+  return async () => {
+    const { address, decimals } = await TokenService.getWETHToken();
+    const value = options.wei
+      ? new BigNumber(amount)
+      : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+
+    await ZeroExService.withdraw(address, value, options);
+  };
+}
+
+export function checkAndUnwrapEther(
+  address,
+  amount,
+  options = { wei: false, batch: false }
+) {
+  return async () => {
+    const weth = await TokenService.getWETHToken();
+
+    if (address === weth.address) {
+      await unwrapEther(amount, options);
+    }
+  };
+}
+
+export function checkAndSetTokenAllowance(
+  address,
+  amount,
+  options = { wei: false, batch: false }
+) {
+  return async (dispatch, getState) => {
+    const {
+      wallet: { web3 }
+    } = getState();
+    const ethereumClient = new EthereumClient(web3);
+    const tokenClient = new TokenClient(ethereumClient, address);
+    const { decimals } = TokenService.findTokenByAddress(address);
+    const amt = options.wei
+      ? new BigNumber(amount)
+      : ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
+
+    const allowance = await tokenClient.getAllowance();
+    if (new BigNumber(amt).gt(allowance)) {
+      await ZeroExService.setUnlimitedProxyAllowance(address, options);
     }
   };
 }

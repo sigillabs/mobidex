@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
-import { addActiveTransactions } from '../actions';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
-import { updateActiveTransactionCache } from '../thunks';
+import { TransactionService } from './TransactionService';
 
 const TOKEN_ABI = require('../abi/Token.json');
 const WETH_ABI = require('../abi/WETH9.json');
@@ -95,8 +94,8 @@ export async function setUnlimitedProxyAllowance(address) {
   const zeroEx = await zeroExClient.getZeroExClient();
   const account = await ethereumClient.getAccount();
   const txhash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(
-    address,
-    account
+    `0x${ethUtil.stripHexPrefix(address.toString().toLowerCase())}`,
+    `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
   );
   const activeTransaction = {
     id: txhash,
@@ -104,8 +103,7 @@ export async function setUnlimitedProxyAllowance(address) {
     address,
     amount: 'UNLIMITED'
   };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await TransactionService.instance.addActiveTransaction(activeTransaction);
 }
 
 export async function deposit(address, amount) {
@@ -127,8 +125,7 @@ export async function deposit(address, amount) {
     address,
     amount
   };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await TransactionService.instance.addActiveTransaction(activeTransaction);
 }
 
 export async function withdraw(address, amount) {
@@ -150,8 +147,7 @@ export async function withdraw(address, amount) {
     address,
     amount
   };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await TransactionService.instance.addActiveTransaction(activeTransaction);
 }
 
 export async function fillOrder(order, fillBaseUnitAmount, amount) {
@@ -175,8 +171,7 @@ export async function fillOrder(order, fillBaseUnitAmount, amount) {
     type: 'FILL',
     amount
   };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await TransactionService.instance.addActiveTransaction(activeTransaction);
 }
 
 export async function batchFillOrKill(orderRequests, amount) {
@@ -197,6 +192,5 @@ export async function batchFillOrKill(orderRequests, amount) {
     type: 'BATCH_FILL',
     amount: amount
   };
-  _store.dispatch(addActiveTransactions([activeTransaction]));
-  _store.dispatch(updateActiveTransactionCache());
+  await TransactionService.instance.addActiveTransaction(activeTransaction);
 }

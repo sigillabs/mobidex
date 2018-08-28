@@ -2,8 +2,12 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Slider, View } from 'react-native';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as WalletService from '../../../services/WalletService';
+import NavigationService from '../../../services/NavigationService';
 import * as styles from '../../../styles';
+import { wrapEther, unwrapEther } from '../../../thunks';
 import {
   formatAmount,
   isDecimalOverflow,
@@ -12,12 +16,10 @@ import {
 } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import * as WalletService from '../../../services/WalletService';
-import NavigationService from '../../../services/NavigationService';
 import Wrapping from './Wrapping';
 import Unwrapping from './Unwrapping';
 
-export default class WrapEtherScreen extends Component {
+class WrapEtherScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -125,7 +127,7 @@ export default class WrapEtherScreen extends Component {
     this.props.navigation.setParams({ hideHeader: true });
 
     try {
-      await WalletService.wrapEther(wrapAmount);
+      await this.props.dispatch(wrapEther(wrapAmount));
     } catch (err) {
       return err;
     } finally {
@@ -145,7 +147,7 @@ export default class WrapEtherScreen extends Component {
     this.props.navigation.setParams({ hideHeader: true });
 
     try {
-      await WalletService.unwrapEther(unwrapAmount);
+      await this.props.dispatch(unwrapEther(unwrapAmount));
     } catch (err) {
       return err;
     } finally {
@@ -180,5 +182,10 @@ export default class WrapEtherScreen extends Component {
 }
 
 WrapEtherScreen.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   navigation: PropTypes.object
 };
+
+export default connect(state => ({}), dispatch => ({ dispatch }))(
+  WrapEtherScreen
+);
