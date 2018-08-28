@@ -11,11 +11,11 @@ import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import MutedText from '../../components/MutedText';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import NavigationService from '../../services/NavigationService';
+import NavigationService from '../../../services/NavigationService';
 import {
   getAveragePrice,
   getFillableOrders
-} from '../../services/OrderService';
+} from '../../../services/OrderService';
 
 class FillOrders extends Component {
   constructor(props) {

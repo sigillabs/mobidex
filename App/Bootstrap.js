@@ -3,8 +3,8 @@ import { AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { gotoOnboardingOrLocked } from '../thunks';
 import Navigator from './Navigation';
-import NavigationService from './services/NavigationService';
-import * as WalletService from './services/WalletService';
+import NavigationService from '../services/NavigationService';
+import * as WalletService from '../services/WalletService';
 
 class Bootstrap extends Component {
   componentDidMount() {

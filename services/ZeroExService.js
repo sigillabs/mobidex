@@ -1,14 +1,14 @@
 import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
-import { addActiveTransactions } from '../../actions';
-import EthereumClient from '../../clients/ethereum';
-import ZeroExClient from '../../clients/0x';
-import { updateActiveTransactionCache } from '../../thunks';
+import { addActiveTransactions } from '../actions';
+import EthereumClient from '../clients/ethereum';
+import ZeroExClient from '../clients/0x';
+import { updateActiveTransactionCache } from '../thunks';
 
-const TOKEN_ABI = require('../../abi/Token.json');
-const WETH_ABI = require('../../abi/WETH9.json');
-const EXCHANGE_ABI = require('../../abi/Exchange_v1.json');
+const TOKEN_ABI = require('../abi/Token.json');
+const WETH_ABI = require('../abi/WETH9.json');
+const EXCHANGE_ABI = require('../abi/Exchange_v1.json');
 
 let _store;
 

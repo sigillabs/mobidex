@@ -27,10 +27,10 @@ import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
-import { setWallet } from '../../actions';
-import EthereumClient from '../../clients/ethereum';
-import TokenClient from '../../clients/token';
-import { getURLFromNetwork } from '../../utils';
+import { setWallet } from '../actions';
+import EthereumClient from '../clients/ethereum';
+import TokenClient from '../clients/token';
+import { getURLFromNetwork } from '../utils';
 import * as TokenService from './TokenService';
 import * as ZeroExService from './ZeroExService';
 

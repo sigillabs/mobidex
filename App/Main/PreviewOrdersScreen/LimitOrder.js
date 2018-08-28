@@ -7,14 +7,14 @@ import { colors, getProfitLossStyle } from '../../../styles';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
-import NavigationService from '../../services/NavigationService';
+import NavigationService from '../../../services/NavigationService';
 import {
   convertZeroExOrderToLimitOrder,
   signOrder,
   submitOrder
-} from '../../services/OrderService';
-import { getQuoteToken } from '../../services/TokenService';
-import { getAdjustedBalanceByAddress } from '../../services/WalletService';
+} from '../../../services/OrderService';
+import { getQuoteToken } from '../../../services/TokenService';
+import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import Loading from './Loading';
 
 class PreviewLimitOrder extends Component {

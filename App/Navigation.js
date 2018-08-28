@@ -32,7 +32,7 @@ import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
 import ActiveTransactionsOverlay from './views/ActiveTransactionsOverlay';
 import ActiveOrdersOverlay from './views/ActiveOrdersOverlay';
-import * as AnalyticsService from './services/AnalyticsService';
+import * as AnalyticsService from '../services/AnalyticsService';
 
 const LockedNavigation = createSwitchNavigator(
   {

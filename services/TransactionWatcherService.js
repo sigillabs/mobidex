@@ -1,6 +1,6 @@
 import { InteractionManager } from 'react-native';
-import { removeActiveTransactions } from '../../actions';
-import { updateActiveTransactionCache } from '../../thunks';
+import { removeActiveTransactions } from '../actions';
+import { updateActiveTransactionCache } from '../thunks';
 
 const TIMEOUT = 5 * 1000;
 

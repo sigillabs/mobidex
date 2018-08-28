@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../services/TokenService';
+import * as TokenService from '../../../services/TokenService';
 import TransactionItem from './TransactionItem';
 
 class FilledItem extends Component {

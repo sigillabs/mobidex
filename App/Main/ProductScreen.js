@@ -26,9 +26,9 @@ import Row from '../components/Row';
 import EmptyList from '../components/EmptyList';
 import MutedText from '../components/MutedText';
 import TokenIcon from '../components/TokenIcon';
-import NavigationService from '../services/NavigationService';
-import * as TickerService from '../services/TickerService';
-import * as TokenService from '../services/TokenService';
+import NavigationService from '../../services/NavigationService';
+import * as TickerService from '../../services/TickerService';
+import * as TokenService from '../../services/TokenService';
 
 class TokenItem extends Component {
   render() {

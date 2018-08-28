@@ -13,7 +13,7 @@ import {
 import MutedText from '../components/MutedText';
 import SmallText from '../components/SmallText';
 import Row from '../components/Row';
-import * as TickerService from '../services/TickerService';
+import * as TickerService from '../../services/TickerService';
 
 class LogoTicker extends Component {
   render() {

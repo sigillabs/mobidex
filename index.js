@@ -7,7 +7,7 @@ import {
 } from 'react-native-exception-handler';
 import RNRestart from 'react-native-restart';
 import App from './App';
-import * as AnalyticsService from './App/services/AnalyticsService';
+import * as AnalyticsService from './services/AnalyticsService';
 
 try {
   I18nManager.allowRTL(false);

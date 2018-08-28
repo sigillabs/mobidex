@@ -8,7 +8,7 @@ import { formatAmount, formatMoney } from '../../../utils';
 import AddressInput from '../../components/AddressInput';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
-import * as TickerService from '../../services/TickerService';
+import * as TickerService from '../../../services/TickerService';
 
 class AccountPage extends Component {
   constructor(props) {

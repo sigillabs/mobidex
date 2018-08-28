@@ -1,7 +1,7 @@
 import { Linking } from 'react-native';
 import { setError } from '../actions';
-import NavigationService from '../App/services/NavigationService';
-import * as WalletService from '../App/services/WalletService';
+import NavigationService from '../services/NavigationService';
+import * as WalletService from '../services/WalletService';
 import EthereumClient from '../clients/ethereum';
 
 export function gotoEtherScan(txaddr) {

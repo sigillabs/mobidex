@@ -4,14 +4,14 @@ import BigNumber from 'bignumber.js';
 import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import moment from 'moment';
-import { addActiveTransactions } from '../../actions';
-import EthereumClient from '../../clients/ethereum';
-import ZeroExClient from '../../clients/0x';
+import { addActiveTransactions } from '../actions';
+import EthereumClient from '../clients/ethereum';
+import ZeroExClient from '../clients/0x';
 import {
   gotoErrorScreen,
   submitOrder as _submitOrder,
   updateActiveTransactionCache
-} from '../../thunks';
+} from '../thunks';
 import * as TokenService from './TokenService';
 import * as WalletService from './WalletService';
 import * as ZeroExService from './ZeroExService';

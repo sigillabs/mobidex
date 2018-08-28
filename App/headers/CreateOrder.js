@@ -5,7 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import { colors } from '../../styles';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 class CreateOrderHeader extends Component {
   render() {

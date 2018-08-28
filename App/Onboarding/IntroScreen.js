@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { colors } from '../../styles.js';
 import Button from '../components/Button';
 import Padding from '../components/Padding';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 class Intro extends Component {
   render() {

@@ -18,9 +18,9 @@ import ButtonGroup from '../components/ButtonGroup';
 import Divider from '../components/Divider';
 import Padding from '../components/Padding';
 import Row from '../components/Row';
-import NavigationService from '../services/NavigationService';
-import * as TickerService from '../services/TickerService';
-import * as TokenService from '../services/TokenService';
+import NavigationService from '../../services/NavigationService';
+import * as TickerService from '../../services/TickerService';
+import * as TokenService from '../../services/TokenService';
 import LogoTicker from '../views/LogoTicker';
 import PriceGraph from '../views/PriceGraph';
 

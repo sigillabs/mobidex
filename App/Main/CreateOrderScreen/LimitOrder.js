@@ -5,8 +5,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { isValidAmount, processVirtualKeyboardCharacter } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import { createOrder } from '../../services/OrderService';
-import NavigationService from '../../services/NavigationService';
+import { createOrder } from '../../../services/OrderService';
+import NavigationService from '../../../services/NavigationService';
 
 export default class CreateLimitOrder extends Component {
   constructor(props) {

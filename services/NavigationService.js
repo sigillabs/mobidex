@@ -1,7 +1,7 @@
 // Stolen from https://reactnavigation.org/docs/en/navigating-without-navigation-prop.html
 
 import { NavigationActions } from 'react-navigation';
-import { setError } from '../../actions';
+import { setError } from '../actions';
 
 let _navigator;
 let _store;

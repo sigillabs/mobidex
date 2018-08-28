@@ -12,8 +12,8 @@ import {
 } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import * as WalletService from '../../services/WalletService';
-import NavigationService from '../../services/NavigationService';
+import * as WalletService from '../../../services/WalletService';
+import NavigationService from '../../../services/NavigationService';
 import Wrapping from './Wrapping';
 import Unwrapping from './Unwrapping';
 

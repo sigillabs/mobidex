@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransactionItem from './TransactionItem';
 import { formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../services/TokenService';
+import * as TokenService from '../../../services/TokenService';
 
 class CancelledItem extends Component {
   constructor(props) {

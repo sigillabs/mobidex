@@ -7,8 +7,8 @@ import { formatMoney } from '../../../utils';
 import TokenIcon from '../../components/TokenIcon';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
-import * as TickerService from '../../services/TickerService';
-import * as WalletService from '../../services/WalletService';
+import * as TickerService from '../../../services/TickerService';
+import * as WalletService from '../../../services/WalletService';
 
 class TokenItem extends Component {
   render() {

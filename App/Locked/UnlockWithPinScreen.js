@@ -10,8 +10,8 @@ import { unlock } from '../../thunks';
 import Button from '../components/Button';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
-import NavigationService from '../services/NavigationService';
-import * as WalletService from '../services/WalletService';
+import NavigationService from '../../services/NavigationService';
+import * as WalletService from '../../services/WalletService';
 
 @reactMixin.decorate(TimerMixin)
 class UnlockWithPinScreen extends Component {

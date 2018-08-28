@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ImportMnemonicWizard from '../views/ImportMnemonicWizard';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 export default class ImportAccountScreen extends Component {
   constructor(props) {

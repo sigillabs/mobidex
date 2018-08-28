@@ -11,9 +11,9 @@ import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
-import NavigationService from '../../services/NavigationService';
-import * as OrderService from '../../services/OrderService';
-import * as TokenService from '../../services/TokenService';
+import NavigationService from '../../../services/NavigationService';
+import * as OrderService from '../../../services/OrderService';
+import * as TokenService from '../../../services/TokenService';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
 

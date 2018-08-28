@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import ToggleForexButton from '../views/ToggleForexButton';
-import NavigationService from '../services/NavigationService';
-import * as TokenService from '../services/TokenService';
+import NavigationService from '../../services/NavigationService';
+import * as TokenService from '../../services/TokenService';
 
 const DEFAULT_TITLE = 'Trade';
 

@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 export default class SendTokensHeader extends Component {
   render() {

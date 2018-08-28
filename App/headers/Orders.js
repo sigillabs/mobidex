@@ -5,7 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 export default class OrdersHeader extends Component {
   render() {

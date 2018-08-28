@@ -8,7 +8,7 @@ import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import LogoTicker from '../views/LogoTicker';
 import ToggleForexButton from '../views/ToggleForexButton';
-import NavigationService from '../services/NavigationService';
+import NavigationService from '../../services/NavigationService';
 
 class ProductDetailsHeader extends Component {
   render() {

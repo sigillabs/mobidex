@@ -10,13 +10,13 @@ import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import Row from '../../components/Row';
-import NavigationService from '../../services/NavigationService';
+import NavigationService from '../../../services/NavigationService';
 import {
   convertZeroExOrderToLimitOrder,
   fillOrders,
   getAveragePrice
-} from '../../services/OrderService';
-import { getAdjustedBalanceByAddress } from '../../services/WalletService';
+} from '../../../services/OrderService';
+import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import Loading from './Loading';
 
 class Order extends Component {

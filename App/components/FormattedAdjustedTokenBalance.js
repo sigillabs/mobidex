@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FormattedTokenAmount from './FormattedTokenAmount';
-import * as WalletService from '../services/WalletService';
+import * as WalletService from '../../services/WalletService';
 
 export default class FormattedAdjustedTokenBalance extends Component {
   render() {

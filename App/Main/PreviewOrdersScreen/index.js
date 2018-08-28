@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import NavigationService from '../../services/NavigationService';
+import NavigationService from '../../../services/NavigationService';
 import PageRoot from '../../components/PageRoot';
 import FillOrdersPreview from './FillOrders';
 import LimitOrderPreview from './LimitOrder';

@@ -12,7 +12,7 @@ import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import Row from '../components/Row';
 import WizardNavigation from '../components/WizardNavigation';
-import * as WalletService from '../services/WalletService';
+import * as WalletService from '../../services/WalletService';
 
 class MnemonicPage extends Component {
   constructor(props) {

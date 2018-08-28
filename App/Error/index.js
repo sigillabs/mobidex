@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Button from '../components/Button.js';
-import NavigationService from '../services/NavigationService.js';
+import NavigationService from '../../services/NavigationService.js';
 import { colors } from '../../styles';
 import RelayerError from './RelayerError';
 import ZeroExError from './ZeroExError';

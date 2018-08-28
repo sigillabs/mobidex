@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { gotoEtherScan } from '../../../thunks';
 import { transactionProp } from '../../../types/props';
 import { formatAmount, formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../services/TokenService';
+import * as TokenService from '../../../services/TokenService';
 import TransactionItem from './TransactionItem';
 import CancelledItem from './CancelledItem';
 import FilledItem from './FilledItem';

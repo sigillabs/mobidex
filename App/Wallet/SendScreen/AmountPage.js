@@ -12,8 +12,8 @@ import {
 } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
-import * as TickerService from '../../services/TickerService';
-import * as WalletService from '../../services/WalletService';
+import * as TickerService from '../../../services/TickerService';
+import * as WalletService from '../../../services/WalletService';
 
 export default class AmountPage extends Component {
   constructor(props) {
