@@ -106,3 +106,7 @@ See the for more details:
 #### iOS
 
 Keys are stored on disk and unlocked using a passcode. Passcode can be provided or unlocked using touch ID. Touch ID unlock is provided through the Keychain services and [LocalAuthentication](https://developer.apple.com/documentation/localauthentication/).
+
+#### Android
+
+Keys are stored on disk and unlocked using a passcode. Passcode can be provided or unlocked using touch ID. Touch ID unlock is provided through the [Keystore](https://developer.android.com/training/articles/keystore).
