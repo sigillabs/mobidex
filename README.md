@@ -110,3 +110,7 @@ Keys are stored on disk and unlocked using a passcode. Passcode can be provided 
 #### Android
 
 Keys are stored on disk and unlocked using a passcode. Passcode can be provided or unlocked using touch ID. Touch ID unlock is provided through the [Keystore](https://developer.android.com/training/articles/keystore).
+
+# License
+
+[AGPL](https://www.gnu.org/licenses/agpl.html)
