@@ -15,7 +15,7 @@ class Intro extends Component {
         style={{
           flex: 1,
           alignItems: 'center',
-          paddingTop: '35%',
+          paddingTop: '15%',
           paddingRight: 10,
           paddingBottom: 10,
           paddingLeft: 10,
@@ -42,7 +42,7 @@ class Intro extends Component {
         <Button
           large
           title="Let's Get Started"
-          onPress={() => NavigationService.navigate('ImportFirstAccount')}
+          onPress={() => NavigationService.navigate('ImportMnemonic')}
         />
       </View>
     );

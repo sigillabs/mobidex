@@ -6,7 +6,7 @@ import VirtualKeyboard from 'react-native-virtual-keyboard';
 export default class PinKeyboard extends Component {
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, width: '100%' }}>
         <VirtualKeyboard
           color="black"
           pressMode="char"

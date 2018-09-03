@@ -26,7 +26,9 @@ import ReceiveScreen from './Wallet/ReceiveScreen';
 import SendScreen from './Wallet/SendScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
-import ImportFirstAccount from './Onboarding/ImportAccountScreen';
+import ImportMnemonicScreen from './Onboarding/ImportAccount/ImportMnemonicScreen';
+import ImportPinScreen from './Onboarding/ImportAccount/ImportPinScreen';
+import PreviewMnemonicScreen from './Onboarding/ImportAccount/PreviewMnemonicScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
@@ -52,7 +54,9 @@ LockedNavigation.router = AnalyticsService.wrapRouter(LockedNavigation.router);
 const OnboardingNavigation = createStackNavigator(
   {
     Intro: { screen: IntroScreen },
-    ImportFirstAccount: { screen: ImportFirstAccount }
+    ImportMnemonic: { screen: ImportMnemonicScreen },
+    ImportPin: { screen: ImportPinScreen },
+    PreviewMnemonic: { screen: PreviewMnemonicScreen }
   },
   {
     cardStyle: {
