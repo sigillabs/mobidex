@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
-import NavigationService from '../../../services/NavigationService';
-import * as WalletService from '../../../services/WalletService';
-import MutedText from '../../components/MutedText';
-import PinKeyboard from '../../components/PinKeyboard';
-import PinView from '../../components/PinView';
+import NavigationService from '../../services/NavigationService';
+import * as WalletService from '../../services/WalletService';
+import MutedText from '../components/MutedText';
+import PinKeyboard from '../components/PinKeyboard';
+import PinView from '../components/PinView';
 
-export default class ImportPinScreen extends Component {
+export default class PinScreen extends Component {
   constructor(props) {
     super(props);
 

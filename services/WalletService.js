@@ -159,6 +159,15 @@ export async function importMnemonics(mnemonics, password) {
   return await unlock(password);
 }
 
+export async function generateMnemonics() {
+  return await new Promise((resolve, reject) => {
+    WalletManager.generateMnemonics((err, data) => {
+      if (err) return reject(reject);
+      resolve(data);
+    });
+  });
+}
+
 export function getAssetByAddress(address) {
   if (!address) return null;
   const {

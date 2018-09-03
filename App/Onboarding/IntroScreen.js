@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import { colors } from '../../styles.js';
 import Button from '../components/Button';
 import Padding from '../components/Padding';
+import Row from '../components/Row';
 import NavigationService from '../../services/NavigationService';
+import * as WalletService from '../../services/WalletService';
 
 class Intro extends Component {
   render() {
@@ -34,18 +36,37 @@ class Intro extends Component {
         <Text h4>Trade ERC-20 Tokens.</Text>
         <Padding size={20} />
         <Text h6>
-          To get started, Import your Meta Mask wallet using your seed words. It
-          is the 12-word mnemonic Meta Mask gives while you are generating a
-          wallet.
+          To get started, import or generate a wallet. It is the 12-word
+          mnemonic Meta Mask gives while you are generating a wallet.
         </Text>
         <Padding size={20} />
-        <Button
-          large
-          title="Let's Get Started"
-          onPress={() => NavigationService.navigate('ImportMnemonic')}
-        />
+        <Row>
+          <Button
+            large
+            title="Generate"
+            onPress={() => this.generateWallet()}
+          />
+          <Button
+            large
+            title="Import"
+            onPress={() => NavigationService.navigate('ImportMnemonic')}
+          />
+        </Row>
       </View>
     );
+  }
+
+  async generateWallet() {
+    try {
+      const mnemonic = await WalletService.generateMnemonics();
+      NavigationService.navigate('PreviewMnemonic', {
+        mnemonic: mnemonic.split(/\s+/),
+        generated: true
+      });
+    } catch (err) {
+      console.warn(err);
+      return;
+    }
   }
 }
 

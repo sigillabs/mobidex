@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Clipboard, InteractionManager, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import { colors } from '../../../styles';
-import NavigationService from '../../../services/NavigationService';
-import Button from '../../components/Button';
-import MnemonicWordInput from '../../components/MnemonicWordInput';
-import MutedText from '../../components/MutedText';
-import Row from '../../components/Row';
+import { colors } from '../../styles';
+import NavigationService from '../../services/NavigationService';
+import Button from '../components/Button';
+import MnemonicWordInput from '../components/MnemonicWordInput';
+import MutedText from '../components/MutedText';
+import Row from '../components/Row';
 
 export default class ImportMnemonicScreen extends Component {
   constructor(props) {
@@ -46,7 +46,6 @@ export default class ImportMnemonicScreen extends Component {
   }
 
   render() {
-    const mnemonic = (this.props.navigation.getParam('mnemonic') || []).slice();
     const page = this.props.navigation.getParam('page') || 0;
 
     return (
@@ -58,13 +57,9 @@ export default class ImportMnemonicScreen extends Component {
           marginTop: 20
         }}
       >
-        {page === 0 ? (
-          <MutedText>Enter your 12 word seed phrase.</MutedText>
-        ) : (
-          <MutedText>
-            Enter word {page + 1} in your 12 word seed phrase.
-          </MutedText>
-        )}
+        <MutedText>
+          Enter word {page + 1} of your 12 word seed phrase.
+        </MutedText>
         <MnemonicWordInput
           word={this.state.word}
           onChange={word => this.onChangeWord(word)}

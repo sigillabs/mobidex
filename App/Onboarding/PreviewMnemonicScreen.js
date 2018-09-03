@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
-import * as styles from '../../../styles';
-import NavigationService from '../../../services/NavigationService';
-import Button from '../../components/Button';
-import DisplayMnemonic from '../../components/DisplayMnemonic';
-import MutedText from '../../components/MutedText';
-import Row from '../../components/Row';
+import * as styles from '../../styles';
+import NavigationService from '../../services/NavigationService';
+import Button from '../components/Button';
+import DisplayMnemonic from '../components/DisplayMnemonic';
+import MutedText from '../components/MutedText';
+import Row from '../components/Row';
 
 export default class PreviewMnemonicScreen extends Component {
   constructor(props) {
@@ -23,7 +23,8 @@ export default class PreviewMnemonicScreen extends Component {
         getParam: PropTypes.func.isRequired,
         state: PropTypes.shape({
           params: PropTypes.shape({
-            mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired
+            mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
+            generated: PropTypes.bool
           }).isRequired
         }).isRequired
       }).isRequired
@@ -31,17 +32,20 @@ export default class PreviewMnemonicScreen extends Component {
   }
 
   render() {
+    const isGenerated = Boolean(this.props.navigation.getParam('generated'));
     const mnemonic = this.props.navigation.getParam('mnemonic').slice();
 
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <MutedText>Is your seed entered correctly?</MutedText>
+        {isGenerated ? <MutedText>Please write down your seed phrase</MutedText> : <MutedText>Is your seed entered correctly?</MutedText>}
         <DisplayMnemonic
           containerStyle={[styles.mv3, { flex: 0, height: 260 }]}
           mnemonic={mnemonic}
         />
         <Row>
-          <Button large title="Previous" onPress={() => this.previous()} />
+          {!isGenerated ? (
+            <Button large title="Previous" onPress={() => this.previous()} />
+          ) : null}
           <Button large title="Next" onPress={() => this.next()} />
         </Row>
       </View>

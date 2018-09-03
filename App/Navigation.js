@@ -26,9 +26,9 @@ import ReceiveScreen from './Wallet/ReceiveScreen';
 import SendScreen from './Wallet/SendScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
-import ImportMnemonicScreen from './Onboarding/ImportAccount/ImportMnemonicScreen';
-import ImportPinScreen from './Onboarding/ImportAccount/ImportPinScreen';
-import PreviewMnemonicScreen from './Onboarding/ImportAccount/PreviewMnemonicScreen';
+import ImportMnemonicScreen from './Onboarding/ImportMnemonicScreen';
+import PinScreen from './Onboarding/PinScreen';
+import PreviewMnemonicScreen from './Onboarding/PreviewMnemonicScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
@@ -55,7 +55,7 @@ const OnboardingNavigation = createStackNavigator(
   {
     Intro: { screen: IntroScreen },
     ImportMnemonic: { screen: ImportMnemonicScreen },
-    ImportPin: { screen: ImportPinScreen },
+    ImportPin: { screen: PinScreen },
     PreviewMnemonic: { screen: PreviewMnemonicScreen }
   },
   {
