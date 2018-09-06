@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
@@ -21,8 +21,8 @@ class AccountPage extends Component {
   }
 
   render() {
-    const { token, amount } = this.props;
-    const forex = TickerService.getForexTicker(token.symbol);
+    const { asset, amount } = this.props;
+    const forex = TickerService.getForexTicker(asset.symbol);
     const forexAmount = forex
       ? new BigNumber(amount).mul(forex.price).toNumber()
       : null;
@@ -31,7 +31,7 @@ class AccountPage extends Component {
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
         <TwoColumnListItem
           left="Amount"
-          right={`${formatAmount(amount)} ${token.symbol}`}
+          right={`${formatAmount(amount)} ${asset.symbol}`}
           style={{ marginBottom: 10, marginTop: 10 }}
           leftStyle={{ flex: 1, color: 'black' }}
           rightStyle={{ flex: 1, color: 'black' }}
@@ -75,7 +75,7 @@ class AccountPage extends Component {
 }
 
 AccountPage.propTypes = {
-  token: PropTypes.object.isRequired,
+  asset: PropTypes.object.isRequired,
   amount: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired
 };

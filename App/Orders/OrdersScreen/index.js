@@ -12,8 +12,8 @@ import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import MutedText from '../../components/MutedText';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
+import * as AssetService from '../../../services/AssetService';
 import NavigationService from '../../../services/NavigationService';
-import * as TokenService from '../../../services/TokenService';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
 
@@ -36,9 +36,9 @@ const TokenOrder = connect(
 
       if (!order) return null;
 
-      const { makerTokenAddress, takerTokenAddress } = order;
-      const makerToken = TokenService.findTokenByAddress(makerTokenAddress);
-      const takerToken = TokenService.findTokenByAddress(takerTokenAddress);
+      const { makerAssetData, takerAssetData } = order;
+      const makerToken = AssetService.findAssetByData(makerAssetData);
+      const takerToken = AssetService.findAssetByData(takerAssetData);
 
       if (!makerToken) return null;
       if (!takerToken) return null;
@@ -51,14 +51,14 @@ const TokenOrder = connect(
             <View style={styles.itemContainer}>
               <Row>
                 <FormattedTokenAmount
-                  amount={order.makerTokenAmount}
+                  amount={order.makerAssetAmount}
                   symbol={makerToken.symbol}
                   decimals={makerToken.decimals || 18}
                   style={([styles.left, styles.large], { flex: 1 })}
                 />
                 <Icon name="swap" color="black" size={24} />
                 <FormattedTokenAmount
-                  amount={order.takerTokenAmount}
+                  amount={order.takerAssetAmount}
                   symbol={takerToken.symbol}
                   decimals={takerToken.decimals || 18}
                   style={[
@@ -159,15 +159,10 @@ class OrdersScreen extends Component {
     let orders = this.props.orders
       .filter(
         o =>
-          ethUtil.stripHexPrefix(o.maker) ===
+          ethUtil.stripHexPrefix(o.makerAddress) ===
           ethUtil.stripHexPrefix(this.props.address)
       )
       .filter(o => o.status === 0);
-    if (params && params.token) {
-      orders = orders.filter(
-        o => o.maker_token_address === this.props.navigation.state.params.token
-      );
-    }
     return orders;
   }
 

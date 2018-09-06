@@ -11,8 +11,10 @@
         "build:ios:release": "echo 'You need to build an archive via XCode!'"
     },
     "dependencies": {
-        "0x.js": "^0.30.0",
-        "@0xproject/connect": "^0.6.17",
+        "0x.js": "^1.0.1",
+        "@0xproject/connect": "^2.0.0",
+        "@0xproject/order-utils": "^1.0.1",
+        "@0xproject/web3-wrapper": "^2.0.2",
         "babel-plugin-transform-remove-console": "^6.9.0",
         "bignumber.js": "^5.0.0",
         "coinmarketcap-api": "^1.0.2",
@@ -26,7 +28,7 @@
         "ethjs-signer": "^0.1.1",
         "lodash": "^4.17.4",
         "moment": "^2.20.1",
-        "node-libs-react-native": "github:abec/node-libs-react-native",
+        "node-libs-react-native": "github:generalpiston/node-libs-react-native",
         "obs-store": "^3.0.0",
         "prop-types": "^15.6.0",
         "qs": "^6.5.1",
@@ -65,8 +67,8 @@
         "regenerator": "^0.12.3",
         "underscore": "^1.8.3",
         "url": "~0.10.1",
-        "web3": "^0.20.4",
-        "web3-contracts-loader": "github:abec/web3-contracts-loader#729941574db1dcf45bda37623d12e0dee040a487",
+        "web3": "^1.0.0-beta.36",
+        "web3-contracts-loader": "github:generalpiston/web3-contracts-loader",
         "web3-provider-engine": "^13.6.5"
     },
     "devDependencies": {

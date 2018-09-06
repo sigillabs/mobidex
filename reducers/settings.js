@@ -2,9 +2,9 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
-  network: 'mainnet',
-  relayerEndpoint: 'https://mobidex.io/relayer/v0',
-  inf0xEndpoint: 'https://mobidex.io/inf0x',
+  network: 1,
+  relayerEndpoint: 'https://mobidex.io:8443/relayer/v2',
+  inf0xEndpoint: 'https://mobidex.io:8443/inf0x',
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   showForexPrices: false,

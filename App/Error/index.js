@@ -7,12 +7,18 @@ import Button from '../components/Button.js';
 import NavigationService from '../../services/NavigationService.js';
 import { colors } from '../../styles';
 import RelayerError from './RelayerError';
+import TokenError from './TokenError';
 import ZeroExError from './ZeroExError';
 
 export default class ErrorScreen extends Component {
   renderRelayerErrors() {
     const error = this.props.navigation.getParam('error');
     return <RelayerError error={error} />;
+  }
+
+  renderTokenError() {
+    const error = this.props.navigation.getParam('error');
+    return <TokenError error={error} />;
   }
 
   renderZeroEx() {
@@ -29,6 +35,8 @@ export default class ErrorScreen extends Component {
 
     if (RelayerError.test(error)) {
       return this.renderRelayerErrors();
+    } else if (TokenError.test(error)) {
+      return this.renderTokenError();
     } else if (ZeroExError.test(error)) {
       return this.renderZeroEx();
     } else {

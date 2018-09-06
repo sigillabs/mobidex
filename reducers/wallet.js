@@ -5,7 +5,8 @@ import * as Actions from '../constants/actions';
 const initialState = {
   web3: null,
   address: null,
-  assets: [],
+  balances: {},
+  allowances: {},
   activeTransactions: [],
   transactions: [],
   processing: false
@@ -13,10 +14,6 @@ const initialState = {
 
 export default handleActions(
   {
-    [Actions.ADD_ASSETS]: (state, action) => {
-      let assets = _.unionBy(action.payload, state.assets, 'address');
-      return { ...state, assets };
-    },
     [Actions.PROCESSING]: state => {
       return { ...state, processing: true };
     },
@@ -53,6 +50,18 @@ export default handleActions(
         _.remove(activeTransactions, atx => atx.id == tx.id);
       }
       return { ...state, activeTransactions };
+    },
+    [Actions.SET_ALLOWANCES]: (state, action) => {
+      return {
+        ...state,
+        allowances: { ...state.allowances, ...action.payload }
+      };
+    },
+    [Actions.SET_BALANCES]: (state, action) => {
+      return {
+        ...state,
+        balances: { ...state.balances, ...action.payload }
+      };
     },
     [Actions.SET_WALLET]: (state, action) => {
       let { address, web3 } = action.payload;

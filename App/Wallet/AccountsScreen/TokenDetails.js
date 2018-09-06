@@ -11,29 +11,29 @@ import NavigationService from '../../../services/NavigationService';
 
 class TokenDetails extends Component {
   receive() {
-    const { token } = this.props;
+    const { asset } = this.props;
     NavigationService.navigate('Receive', {
-      token
+      asset
     });
   }
 
   send() {
-    const { token } = this.props;
+    const { asset } = this.props;
     NavigationService.navigate('Send', {
-      token
+      asset
     });
   }
 
   wrap() {
-    const { token } = this.props;
+    const { asset } = this.props;
     NavigationService.navigate('Wrap', {
-      token
+      asset
     });
   }
 
   render() {
-    const { token } = this.props;
-    const { symbol } = token;
+    const { asset } = this.props;
+    const { symbol } = asset;
 
     return (
       <View
@@ -48,7 +48,7 @@ class TokenDetails extends Component {
         <Avatar
           size="large"
           rounded
-          source={getImage(token.symbol)}
+          source={getImage(asset.symbol)}
           activeOpacity={0.7}
         />
         <FormattedAdjustedTokenBalance

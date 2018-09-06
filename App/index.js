@@ -3,11 +3,11 @@ import { Provider } from 'react-redux';
 import configureStore from '../store';
 import Bootstrap from './Bootstrap';
 import Root from './components/Root';
+import { setStore as setStoreForAssetService } from '../services/AssetService';
 import { setStore as setStoreForNavigationService } from '../services/NavigationService';
 import { setStore as setStoreForOrderService } from '../services/OrderService';
 import { setStore as setStoreForProductService } from '../services/ProductService';
 import { setStore as setStoreForTickerService } from '../services/TickerService';
-import { setStore as setStoreForTokenService } from '../services/TokenService';
 import {
   ActiveTransactionWatchdog,
   TransactionService
@@ -17,11 +17,11 @@ import { setStore as setStoreForZeroExService } from '../services/ZeroExService'
 
 const store = configureStore();
 
+setStoreForAssetService(store);
 setStoreForNavigationService(store);
 setStoreForOrderService(store);
 setStoreForProductService(store);
 setStoreForTickerService(store);
-setStoreForTokenService(store);
 setStoreForWalletService(store);
 setStoreForZeroExService(store);
 

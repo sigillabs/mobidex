@@ -11,16 +11,17 @@ import {
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
+import * as AssetService from '../../services/AssetService';
 import NavigationService from '../../services/NavigationService';
 import * as TickerService from '../../services/TickerService';
-import * as TokenService from '../../services/TokenService';
 import {
   loadActiveTransactions,
+  loadAllowances,
   loadAssets,
+  loadBalances,
   loadOrderbooks,
   loadOrders,
   loadProducts,
-  loadTokens,
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
@@ -39,7 +40,7 @@ import OrderbookPrice from '../views/OrderbookPrice';
 
 class TokenItem extends Component {
   render() {
-    const { baseToken, quoteToken, price, change, priceFormatter } = this.props;
+    const { baseToken, price, change, priceFormatter } = this.props;
 
     return (
       <ListItem
@@ -206,6 +207,13 @@ const ForexTokenItem = connect(state => ({ ticker: state.ticker }))(
 
 @reactMixin.decorate(TimerMixin)
 class ProductScreen extends Component {
+  static propTypes = {
+    assets: PropTypes.array.isRequired,
+    products: PropTypes.array.isRequired,
+    showForexPrices: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -219,14 +227,14 @@ class ProductScreen extends Component {
   }
 
   render() {
-    const { products } = this.props;
-    const ProductItem = this.props.settings.showForexPrices
+    const { assets, products } = this.props;
+    const ProductItem = this.props.showForexPrices
       ? ForexTokenItem
       : QuoteTokenItem;
 
     let subview = null;
 
-    if (!products || !products.length) {
+    if (!products || !products.length || !assets || !assets.length) {
       subview = (
         <EmptyList
           wrapperStyle={{
@@ -241,9 +249,13 @@ class ProductScreen extends Component {
     } else {
       subview = (
         <View style={{ width: '100%', backgroundColor: 'white' }}>
-          {products.map(({ tokenA, tokenB }, index) => {
-            const fullTokenA = TokenService.findTokenByAddress(tokenA.address);
-            const fullTokenB = TokenService.findTokenByAddress(tokenB.address);
+          {products.map((product, index) => {
+            const fullTokenA = AssetService.findAssetByData(
+              product.assetDataA.assetData
+            );
+            const fullTokenB = AssetService.findAssetByData(
+              product.assetDataB.assetData
+            );
 
             return (
               <TouchableOpacity
@@ -283,8 +295,9 @@ class ProductScreen extends Component {
     this.setState({ refreshing: true });
     InteractionManager.runAfterInteractions(async () => {
       await this.props.dispatch(loadProducts(reload));
-      await this.props.dispatch(loadTokens(reload));
       await this.props.dispatch(loadAssets(reload));
+      await this.props.dispatch(loadAllowances(reload));
+      await this.props.dispatch(loadBalances(reload));
       this.props.dispatch(updateForexTickers(reload));
       this.props.dispatch(updateTokenTickers(reload));
       this.props.dispatch(loadActiveTransactions());
@@ -294,11 +307,6 @@ class ProductScreen extends Component {
     });
   }
 }
-
-ProductScreen.propTypes = {
-  products: PropTypes.array.isRequired,
-  dispatch: PropTypes.func.isRequired
-};
 
 const styles = {
   itemContainer: {
@@ -338,7 +346,7 @@ export default connect(
   state => ({
     ...state.relayer,
     ...state.wallet,
-    settings: state.settings,
+    ...state.settings,
     ticker: state.ticker
   }),
   dispatch => ({ dispatch })

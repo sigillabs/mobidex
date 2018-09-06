@@ -1,11 +1,9 @@
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import { BigNumber } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import moment from 'moment';
 import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-BigNumber.set({ DECIMAL_PLACES: 77, ERRORS: false, EXPONENTIAL_AT: [-77, 77] });
 
 String.prototype.format = function() {
   var i = 0,
@@ -53,11 +51,16 @@ export function formatTimestamp(timestamp) {
 export function formatAmountWithDecimals(amount, decimals) {
   if (amount === null) return formatAmount(0);
   if (!decimals) return formatAmount(amount);
-  return formatAmount(ZeroEx.toUnitAmount(new BigNumber(amount), decimals));
+  return formatAmount(
+    Web3Wrapper.toUnitAmount(new BigNumber(amount), decimals)
+  );
 }
 
 export function formatAmount(amount) {
   if (amount === null) amount = 0;
+  if (isDecimalOverflow(amount)) {
+    amount = reduceDecimalOverflow(amount);
+  }
   const amountBN = new BigNumber(amount);
   return amountBN.toFixed(4);
 }
@@ -72,9 +75,21 @@ export function formatPercent(n) {
 
 export function isDecimalOverflow(amount, decimals = 4) {
   if (amount === null) return false;
-  const stringAmount = new BigNumber(amount).toString();
-  if (stringAmount.indexOf('.') === -1) return false;
-  return stringAmount.length - stringAmount.indexOf('.') > decimals + 1;
+  try {
+    const stringAmount = new BigNumber(amount).toString();
+    if (stringAmount.indexOf('.') === -1) return false;
+    return stringAmount.length - stringAmount.indexOf('.') > decimals + 1;
+  } catch (err) {
+    return true;
+  }
+}
+
+export function reduceDecimalOverflow(amount, decimals = 4) {
+  if (amount === null) return false;
+  const stringAmount = amount.toString();
+  const index = stringAmount.indexOf('.');
+  if (index === -1) return stringAmount;
+  return stringAmount.substring(index, index + decimals + 1);
 }
 
 export function zeroDecimalPad(n, d) {

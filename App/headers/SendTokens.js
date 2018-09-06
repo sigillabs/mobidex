@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
@@ -31,7 +30,7 @@ export default class SendTokensHeader extends Component {
 
   renderTitle() {
     let symbol =
-      this.props.token.symbol === null ? 'ETH' : this.props.token.symbol;
+      this.props.asset.symbol === null ? 'ETH' : this.props.asset.symbol;
     if (symbol === 'WETH') symbol = 'ETH';
     return `Send ${symbol}`;
   }

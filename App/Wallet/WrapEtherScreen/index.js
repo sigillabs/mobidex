@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Slider, View } from 'react-native';
@@ -12,7 +12,8 @@ import {
   formatAmount,
   isDecimalOverflow,
   isValidAmount,
-  processVirtualKeyboardCharacter
+  processVirtualKeyboardCharacter,
+  reduceDecimalOverflow
 } from '../../../utils';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
@@ -89,6 +90,7 @@ class WrapEtherScreen extends Component {
   }
 
   setAmount(amount) {
+    amount = reduceDecimalOverflow(amount, 6);
     if (this.getTotalEthereum().lt(amount)) {
       amount = this.getTotalEthereum().toString();
     }

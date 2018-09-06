@@ -12,8 +12,8 @@ import * as WalletService from '../../../services/WalletService';
 
 class TokenItem extends Component {
   render() {
-    const { token } = this.props;
-    const { symbol } = token;
+    const { asset } = this.props;
+    const { symbol } = asset;
     const balance = WalletService.getAdjustedBalanceBySymbol(symbol);
     const price = TickerService.getCurrentPrice(
       TickerService.getForexTicker(symbol)
@@ -35,38 +35,38 @@ class TokenItem extends Component {
 }
 
 TokenItem.propTypes = {
-  token: PropTypes.object.isRequired,
+  asset: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired
 };
 
 export default class TokenList extends Component {
   render() {
-    const { tokens } = this.props;
+    const { assets } = this.props;
 
     return (
       <View style={{ width: '100%' }}>
-        {tokens.map((token, index) => (
+        {assets.map((asset, index) => (
           <TouchableOpacity
-            key={`token-${index}`}
-            onPress={() => this.props.onPress(token)}
+            key={`asset-${index}`}
+            onPress={() => this.props.onPress(asset)}
           >
             <TwoColumnListItem
               roundAvatar
               bottomDivider
               leftElement={
                 <TokenIcon
-                  token={token}
+                  token={asset}
                   style={{ flex: 0 }}
                   numberOfLines={1}
                   showSymbol={false}
                   showName={false}
                 />
               }
-              left={token.name}
-              right={<TokenItem token={token} />}
+              left={asset.name}
+              right={<TokenItem asset={asset} />}
               containerStyle={[
-                this.props.token &&
-                  this.props.token.address === token.address &&
+                this.props.asset &&
+                  this.props.asset.address === asset.address &&
                   styles.highlight
               ]}
               rightStyle={{ textAlign: 'right' }}
@@ -79,8 +79,8 @@ export default class TokenList extends Component {
 }
 
 TokenList.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
-  token: PropTypes.object,
+  assets: PropTypes.arrayOf(PropTypes.object).isRequired,
+  asset: PropTypes.object,
   onPress: PropTypes.func.isRequired
 };
 

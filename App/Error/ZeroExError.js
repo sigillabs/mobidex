@@ -10,8 +10,6 @@ export default class ZeroExError extends Component {
     if (!error.message) return false;
 
     switch (error.message) {
-      case 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL':
-      case 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT':
       case 'ORDER_ALREADY_CANCELLED_OR_FILLED':
       case 'INSUFFICIENT_TAKER_ALLOWANCE':
       case 'INSUFFICIENT_TAKER_BALANCE':
@@ -34,15 +32,7 @@ export default class ZeroExError extends Component {
             few minutes. Our servers could just be catching up.
           </Text>
         );
-
-      case 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL':
-        return (
-          <Text style={styles.text}>
-            You are trying to withdraw too much Ether!
-          </Text>
-        );
       case 'INSUFFICIENT_TAKER_BALANCE':
-      case 'INSUFFICIENT_ETH_BALANCE_FOR_DEPOSIT':
         return (
           <Text style={styles.text}>
             You do not have enough Ether for the transaction!

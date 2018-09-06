@@ -1,10 +1,11 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { InteractionManager, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
+import ZeroExClient from '../../../clients/0x';
 import { sendEther, sendTokens } from '../../../thunks';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
@@ -16,7 +17,7 @@ class SendTokensWizard extends Component {
     super(props);
 
     this.state = {
-      amount: new BigNumber(0),
+      amount: ZeroExClient.ZERO,
       address: '',
       page: 0,
       showSending: false
@@ -27,7 +28,7 @@ class SendTokensWizard extends Component {
     const {
       navigation: {
         state: {
-          params: { token }
+          params: { asset }
         }
       }
     } = this.props;
@@ -46,13 +47,13 @@ class SendTokensWizard extends Component {
       >
         {this.state.page === 0 ? (
           <AmountPage
-            token={token}
+            asset={asset}
             onSubmit={amount => this.submitAmount(amount)}
           />
         ) : null}
         {this.state.page === 1 ? (
           <AccountPage
-            token={token}
+            asset={asset}
             amount={this.state.amount}
             onSubmit={address => this.submitAddress(address)}
           />
@@ -74,7 +75,7 @@ class SendTokensWizard extends Component {
     const {
       navigation: {
         state: {
-          params: { token }
+          params: { asset }
         }
       }
     } = this.props;
@@ -84,13 +85,13 @@ class SendTokensWizard extends Component {
 
     InteractionManager.runAfterInteractions(async () => {
       try {
-        if (token.address === null) {
+        if (asset.address === null) {
           await this.props.dispatch(
             sendEther(address || this.state.address, this.state.amount)
           );
         } else {
           await this.props.dispatch(
-            sendTokens(token, address || this.state.address, this.state.amount)
+            sendTokens(asset, address || this.state.address, this.state.amount)
           );
         }
         this.props.navigation.goBack(null);
@@ -114,7 +115,7 @@ SendTokensWizard.propTypes = {
     setParams: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
-        token: PropTypes.object.isRequired
+        asset: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired

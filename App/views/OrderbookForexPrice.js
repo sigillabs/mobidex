@@ -1,9 +1,10 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ZeroExClient from '../../clients/0x';
+import * as AssetService from '../../services/AssetService';
 import * as OrderService from '../../services/OrderService';
-import * as TokenService from '../../services/TokenService';
 import * as TickerService from '../../services/TickerService';
 import FormattedForexAmount from '../components/FormattedForexAmount';
 
@@ -16,8 +17,8 @@ export class OrderbookForexPrice extends Component {
     }
 
     const [baseTokenSymbol, quoteTokenSymbol] = product.split('-');
-    const baseToken = TokenService.findTokenBySymbol(baseTokenSymbol);
-    const quoteToken = TokenService.findTokenBySymbol(quoteTokenSymbol);
+    const baseToken = AssetService.findAssetBySymbol(baseTokenSymbol);
+    const quoteToken = AssetService.findAssetBySymbol(quoteTokenSymbol);
     const forexTicker = TickerService.getForexTicker();
 
     if (!baseToken || !quoteToken || !forexTicker) {
@@ -35,7 +36,7 @@ export class OrderbookForexPrice extends Component {
         ? OrderService.getOrderPrice(
             side === 'buy' ? orderbook.bids[0] : orderbook.asks[0]
           )
-        : new BigNumber(0);
+        : ZeroExClient.ZERO;
 
     return (
       <FormattedForexAmount

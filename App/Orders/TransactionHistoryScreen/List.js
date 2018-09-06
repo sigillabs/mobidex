@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
@@ -6,7 +5,7 @@ import { connect } from 'react-redux';
 import { gotoEtherScan } from '../../../thunks';
 import { transactionProp } from '../../../types/props';
 import { formatAmount, formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../../services/TokenService';
+import * as AssetService from '../../../services/AssetService';
 import TransactionItem from './TransactionItem';
 import CancelledItem from './CancelledItem';
 import FilledItem from './FilledItem';
@@ -33,7 +32,7 @@ class TransactionsList extends Component {
 
     const activeItems = this.props.active.map((tx, index) => {
       const token = tx.address
-        ? TokenService.findTokenByAddress(tx.address)
+        ? AssetService.findAssetByAddress(tx.address)
         : null;
       let txtype = tx.status || tx.type;
 
@@ -161,7 +160,7 @@ class TransactionsList extends Component {
     const items = this.props.transactions.map((tx, index) => {
       const txtype = tx.status || tx.type;
       const token = tx.address
-        ? TokenService.findTokenByAddress(tx.address)
+        ? AssetService.findAssetByAddress(tx.address)
         : null;
       switch (txtype) {
         case 'APPROVAL':

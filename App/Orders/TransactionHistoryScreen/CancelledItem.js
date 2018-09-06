@@ -1,10 +1,22 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransactionItem from './TransactionItem';
 import { formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../../services/TokenService';
+import * as AssetService from '../../../services/AssetService';
 
 class CancelledItem extends Component {
+  static propTypes = {
+    transaction: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      makerAssetAmount: PropTypes.string,
+      takerAssetAmount: PropTypes.string,
+      timestamp: PropTypes.string,
+      makerAssetData: PropTypes.string,
+      takerAssetData: PropTypes.string
+    })
+  };
+
   constructor(props) {
     super(props);
 
@@ -16,13 +28,11 @@ class CancelledItem extends Component {
   }
 
   async componentDidMount() {
-    const makerToken = TokenService.findTokenByAddress(
-      this.props.transaction.makerToken ||
-        this.props.transaction.makerTokenAddress
+    const makerToken = AssetService.findAssetByData(
+      this.props.transaction.makerAssetData
     );
-    const takerToken = TokenService.findTokenByAddress(
-      this.props.transaction.takerToken ||
-        this.props.transaction.takerTokenAddress
+    const takerToken = AssetService.findAssetByData(
+      this.props.transaction.takerAssetData
     );
     this.setState({
       makerToken,
@@ -37,11 +47,8 @@ class CancelledItem extends Component {
     }
 
     let {
-      id,
-      cancelledMakerTokenAmount,
-      cancelledTakerTokenAmount,
-      makerTokenAmount,
-      takerTokenAmount,
+      makerAssetAmount,
+      takerAssetAmount,
       timestamp
     } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
@@ -52,14 +59,14 @@ class CancelledItem extends Component {
         label={'Cancelled'}
         source={{
           amount: formatAmountWithDecimals(
-            cancelledMakerTokenAmount || makerTokenAmount,
+            makerAssetAmount,
             makerToken.decimals
           ),
           symbol: makerToken.symbol
         }}
         destination={{
           amount: formatAmountWithDecimals(
-            cancelledTakerTokenAmount || takerTokenAmount,
+            takerAssetAmount,
             takerToken.decimals
           ),
           symbol: takerToken.symbol

@@ -1,4 +1,6 @@
-import { ZeroEx } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import { BigNumber } from '0x.js';
+import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { cache, time } from '../decorators/cls';
 import { hex2a } from '../utils';
@@ -53,57 +55,52 @@ export default class TokenClient {
     let decimals = null;
 
     try {
-      name = await new Promise((resolve, reject) => {
-        contract.name.call((err, data) => {
-          if (err) {
-            bytesContract.name.call((err, data) => {
-              if (err) return reject(err);
-              else
-                return resolve(
-                  hex2a(data)
-                    .trim()
-                    .substring(1)
-                );
-            });
-          } else return resolve(data);
-        });
-      });
+      name = await contract.methods.name().call();
     } catch (err) {
       console.warn('MOBIDEX: ', 'Could not fetch name', err);
+    }
+
+    if (!name) {
+      try {
+        name = await bytesContract.methods.name().call();
+        name = hex2a(name)
+          .trim()
+          .substring(1);
+      } catch (err) {
+        console.warn('MOBIDEX: ', 'Could not fetch name', err);
+      }
+    }
+
+    if (!name) {
       return null;
     }
 
     try {
-      symbol = await new Promise((resolve, reject) => {
-        contract.symbol.call((err, data) => {
-          if (err) {
-            bytesContract.symbol.call((err, data) => {
-              if (err) return reject(err);
-              else
-                return resolve(
-                  hex2a(data)
-                    .trim()
-                    .substring(1)
-                );
-            });
-          } else return resolve(data);
-        });
-      });
+      symbol = await contract.methods.symbol().call();
     } catch (err) {
       console.warn('MOBIDEX: ', 'Could not fetch symbol', err);
+    }
+
+    if (!symbol) {
+      try {
+        symbol = await bytesContract.methods.symbol().call();
+        symbol = hex2a(symbol)
+          .trim()
+          .substring(1);
+      } catch (err) {
+        console.warn('MOBIDEX: ', 'Could not fetch symbol', err);
+      }
+    }
+
+    if (!symbol) {
       return null;
     }
 
     try {
-      decimals = await new Promise((resolve, reject) => {
-        contract.decimals.call((err, data) => {
-          if (err) return reject(err);
-          else return resolve(parseInt(data));
-        });
-      });
+      decimals = await contract.methods.decimals().call();
+      decimals = parseInt(decimals);
     } catch (err) {
       console.warn('MOBIDEX: ', 'Could not fetch decimals', err);
-      return null;
     }
 
     let token = { address: this.address, name, symbol, decimals };
@@ -118,41 +115,57 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':balance';
-  }, 10)
+  }, 60)
   async getBalance() {
-    const zeroEx = await new ZeroExClient(
+    const contractWrappers = await new ZeroExClient(
       this.ethereumClient
-    ).getZeroExClient();
+    ).getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    return await zeroEx.token.getBalanceAsync(
-      this.address,
-      account.toString().toLowerCase()
+    const balance = await contractWrappers.erc20Token.getBalanceAsync(
+      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
     );
+    return balance;
   }
 
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':allowance';
-  }, 10)
+  }, 60)
   async getAllowance() {
-    const zeroEx = await new ZeroExClient(
+    const contractWrappers = await new ZeroExClient(
       this.ethereumClient
-    ).getZeroExClient();
+    ).getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    return await zeroEx.token.getProxyAllowanceAsync(this.address, account);
+    return await contractWrappers.erc20Token.getProxyAllowanceAsync(
+      `0x${ethUtil.stripHexPrefix(this.address.toString())}`,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    );
   }
 
   @time
-  async sendTokens(to, amount) {
-    const account = await this.ethereumClient.getAccount();
-    const zeroEx = await new ZeroExClient(
+  async setUnlimitedProxyAllowance() {
+    const contractWrappers = await new ZeroExClient(
       this.ethereumClient
-    ).getZeroExClient();
+    ).getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
+    return await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    );
+  }
+
+  @time
+  async send(to, amount) {
+    const contractWrappers = await new ZeroExClient(
+      this.ethereumClient
+    ).getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
     const { decimals } = await this.get();
-    const value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), decimals);
-    return await zeroEx.token.transferAsync(
-      this.address,
-      account.toLowerCase(),
+    const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), decimals);
+    return await contractWrappers.erc20Token.transferAsync(
+      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       `0x${ethUtil.stripHexPrefix(to)}`.toLowerCase(),
       value
     );

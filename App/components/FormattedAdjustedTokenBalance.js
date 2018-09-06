@@ -5,7 +5,7 @@ import * as WalletService from '../../services/WalletService';
 
 export default class FormattedAdjustedTokenBalance extends Component {
   render() {
-    const { symbol, ...rest } = this.props;
+    const { symbol, decimals, ...rest } = this.props;
     const balance = WalletService.getAdjustedBalanceBySymbol(symbol);
 
     return <FormattedTokenAmount amount={balance} symbol={symbol} {...rest} />;

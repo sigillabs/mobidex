@@ -1,5 +1,5 @@
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -42,7 +42,7 @@ class FillBids extends Component {
     }
 
     const result = [];
-    let amountInWEI = ZeroEx.toBaseUnitAmount(
+    let amountInWEI = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
       baseToken.decimals
     );
@@ -50,7 +50,7 @@ class FillBids extends Component {
     while (amountInWEI.gt(0) && orders.length > 0) {
       const order = orders.shift();
       result.push(order);
-      amountInWEI = amountInWEI.sub(order.takerTokenAmount);
+      amountInWEI = amountInWEI.sub(order.takerAssetAmount);
     }
 
     return result;

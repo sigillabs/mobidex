@@ -4,32 +4,65 @@ import { cache, time } from '../decorators/cls';
 export default class RelayerClient {
   constructor(relayerEndpoint, options = { network: null }) {
     this.relayerEndpoint = relayerEndpoint;
+    this.network = (options || {}).network;
     this.client = new HttpClient(this.relayerEndpoint);
   }
 
   @time
-  @cache('relayer:pairs', 60)
-  async getTokenPairs() {
-    return await this.client.getTokenPairsAsync();
+  @cache('relayer:v2:pairs', 60 * 1)
+  async getAssetPairs() {
+    const result = await this.client.getAssetPairsAsync({
+      networkId: this.network,
+      perPage: 1000
+    });
+    return result.records;
   }
 
   @time
-  @cache('relayer:orders', 1)
+  @cache('relayer:v2:orders', 1)
   async getOrders() {
-    return await this.client.getOrdersAsync();
+    const result = await this.client.getOrdersAsync({
+      networkId: this.network,
+      perPage: 1000
+    });
+    return result.records.map(record => record.order);
   }
 
   @time
   async getOrder(hash) {
-    return await this.client.getOrderAsync(hash);
+    const record = await this.client.getOrderAsync(hash, {
+      networkId: this.network
+    });
+    if (record) {
+      return record.order;
+    } else {
+      return null;
+    }
   }
 
   @time
-  @cache('relayer:orderbook:{}:{}', 1)
-  async getOrderbook(baseTokenAddress, quoteTokenAddress) {
-    return await this.client.getOrderbookAsync({
-      baseTokenAddress,
-      quoteTokenAddress
+  @cache('relayer:v2:orderbook:{}:{}:{}', 1)
+  async getOrderbook(baseAssetData, quoteAssetData) {
+    const result = await this.client.getOrderbookAsync(
+      {
+        baseAssetData,
+        quoteAssetData
+      },
+      {
+        networkId: this.network,
+        perPage: 1000
+      }
+    );
+    return {
+      asks: result.asks.records.map(record => record.order),
+      bids: result.bids.records.map(record => record.order)
+    };
+  }
+
+  @time
+  async submitOrder(order) {
+    return this.client.submitOrderAsync(order, {
+      networkId: this.network
     });
   }
 }

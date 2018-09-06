@@ -29,7 +29,7 @@ class ReceiveScreen extends Component {
         <Text h4>Address</Text>
         <TouchableOpacity onPress={() => this.copy()} style={styles.row}>
           <Text style={{ fontSize: 13, marginRight: 5 }}>
-            {this.props.address}
+            {`0x${ethUtil.stripHexPrefix(this.props.address.toString())}`}
           </Text>
           <MaterialIcons name="content-copy" size={20} />
         </TouchableOpacity>
@@ -45,13 +45,17 @@ class ReceiveScreen extends Component {
   }
 
   copy() {
-    Clipboard.setString(this.props.address.toString());
+    Clipboard.setString(
+      `0x${ethUtil.stripHexPrefix(this.props.address.toString())}`
+    );
   }
 
   share() {
     Share.share(
       {
-        message: `Here's My Address: ${this.props.address}`,
+        message: `Here's My Address: 0x${ethUtil.stripHexPrefix(
+          this.props.address.toString()
+        )}`,
         title: 'My Address'
       },
       {

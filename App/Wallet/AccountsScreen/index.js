@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import {
-  loadAssets,
+  loadAllowances,
+  loadBalances,
   updateForexTickers,
   updateTokenTickers
 } from '../../../thunks';
@@ -20,7 +21,7 @@ class AccountsScreen extends Component {
 
     this.state = {
       refreshing: false,
-      token: 'ETH'
+      asset: 'ETH'
     };
   }
 
@@ -29,9 +30,9 @@ class AccountsScreen extends Component {
   }
 
   render() {
-    const token = _.find(this.props.assets, { symbol: this.state.token });
+    const asset = _.find(this.props.assets, { symbol: this.state.asset });
     const ethToken = _.find(this.props.assets, { symbol: 'ETH' });
-    const tokens = [ethToken].concat(
+    const assets = [ethToken].concat(
       _.filter(
         this.props.assets,
         asset => asset.symbol !== 'WETH' && asset.symbol !== 'ETH'
@@ -41,8 +42,8 @@ class AccountsScreen extends Component {
     return (
       <PageRoot>
         <Row>
-          {token ? (
-            <TokenDetails token={token} />
+          {asset ? (
+            <TokenDetails asset={asset} />
           ) : (
             <PortfolioDetails assets={this.props.assets} />
           )}
@@ -59,12 +60,12 @@ class AccountsScreen extends Component {
           {this.props.assets.length ? (
             <Row>
               <TokenList
-                token={token}
-                tokens={tokens}
-                onPress={token =>
+                asset={asset}
+                assets={assets}
+                onPress={asset =>
                   this.setState({
-                    token:
-                      this.state.token !== token.symbol ? token.symbol : null
+                    asset:
+                      this.state.asset !== asset.symbol ? asset.symbol : null
                   })
                 }
               />
@@ -77,7 +78,8 @@ class AccountsScreen extends Component {
 
   async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAssets(reload));
+    await this.props.dispatch(loadAllowances(reload));
+    await this.props.dispatch(loadBalances(reload));
     await this.props.dispatch(updateForexTickers(reload));
     await this.props.dispatch(updateTokenTickers(reload));
     this.setState({ refreshing: false });
@@ -86,7 +88,6 @@ class AccountsScreen extends Component {
 
 AccountsScreen.propTypes = {
   assets: PropTypes.arrayOf(PropTypes.object).isRequired,
-  tokens: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired
 };
 

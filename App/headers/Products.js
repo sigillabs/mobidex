@@ -4,11 +4,11 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
+import * as AssetService from '../../services/AssetService';
+import NavigationService from '../../services/NavigationService';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import ToggleForexButton from '../views/ToggleForexButton';
-import NavigationService from '../../services/NavigationService';
-import * as TokenService from '../../services/TokenService';
 
 const DEFAULT_TITLE = 'Trade';
 
@@ -48,21 +48,21 @@ class ProductsHeader extends Component {
     }
 
     if (this.props.product) {
-      const quoteToken = TokenService.getQuoteToken();
-      const tokenA = TokenService.findTokenByAddress(
-        this.props.product.tokenA.address
+      const quoteToken = AssetService.getQuoteAsset();
+      const assetA = AssetService.findAssetByAddress(
+        this.props.product.assetDataA.address
       );
-      const tokenB = TokenService.findTokenByAddress(
-        this.props.product.tokenB.address
+      const tokenB = AssetService.findAssetByAddress(
+        this.props.product.assetDataB.address
       );
 
-      if (quoteToken && tokenA && tokenB) {
-        if (tokenA.address === quoteToken.address) {
+      if (quoteToken && assetA && tokenB) {
+        if (assetA.address === quoteToken.address) {
           return `Trade ${tokenB.name}`;
         }
 
         if (tokenB.address === quoteToken.address) {
-          return `Trade ${tokenA.name}`;
+          return `Trade ${assetA.name}`;
         }
       }
     }
@@ -81,7 +81,7 @@ ProductsHeader.propTypes = {
 
 export default connect(
   state => ({
-    tokens: state.relayer.tokens
+    assets: state.relayer.assets
   }),
   dispatch => ({ dispatch })
 )(ProductsHeader);

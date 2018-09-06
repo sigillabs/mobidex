@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-import * as _ from 'lodash';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
@@ -10,6 +9,8 @@ import {
   isValidAmount,
   processVirtualKeyboardCharacter
 } from '../../../utils';
+import MaxButton from '../../components/MaxButton';
+import Row from '../../components/Row';
 import TokenAmount from '../../components/TokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as TickerService from '../../../services/TickerService';
@@ -28,14 +29,14 @@ export default class AmountPage extends Component {
   }
 
   render() {
-    const { token } = this.props;
-    const balance = WalletService.getAdjustedBalanceByAddress(token.address);
+    const { asset } = this.props;
+    const balance = WalletService.getAdjustedBalanceByAddress(asset.address);
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
         <TokenAmount
           label={'Wallet Amount'}
-          symbol={token.symbol}
+          symbol={asset.symbol}
           icon={<Entypo name="wallet" size={30} />}
           containerStyle={{
             marginTop: 10,
@@ -48,21 +49,25 @@ export default class AmountPage extends Component {
           amount={formatAmount(balance ? balance : '0')}
           onPress={() => this.setState({ focus: 'amount' })}
         />
-        <TokenAmount
-          label={'Send Amount'}
-          symbol={token.symbol}
-          containerStyle={{
-            marginTop: 10,
-            marginBottom: 10,
-            padding: 0
-          }}
-          symbolStyle={{ marginRight: 10 }}
-          format={false}
-          cursor={this.state.focus === 'amount'}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.amount}
-          onPress={() => this.setState({ focus: 'amount' })}
-        />
+        <Row>
+          <TokenAmount
+            label={'Send Amount'}
+            symbol={asset.symbol}
+            containerStyle={{
+              flex: 1,
+              marginTop: 10,
+              marginBottom: 10,
+              padding: 0
+            }}
+            symbolStyle={{ marginRight: 10 }}
+            format={false}
+            cursor={this.state.focus === 'amount'}
+            cursorProps={{ style: { marginLeft: 2 } }}
+            amount={this.state.amount}
+            onPress={() => this.setState({ focus: 'amount' })}
+          />
+          <MaxButton onPress={() => this.setTokenAmount(balance.toString())} />
+        </Row>
         <TokenAmount
           label={'Send Amount in Forex'}
           symbol={'USD'}
@@ -82,8 +87,8 @@ export default class AmountPage extends Component {
         <TokenAmountKeyboard
           onChange={v =>
             this.state.focus === 'forex'
-              ? this.setForexAmount(v)
-              : this.setTokenAmount(v)
+              ? this.updateForexAmount(v)
+              : this.updateTokenAmount(v)
           }
           onSubmit={() => this.submit()}
           pressMode="char"
@@ -110,14 +115,9 @@ export default class AmountPage extends Component {
     );
   }
 
-  setTokenAmount(value) {
-    const amount = processVirtualKeyboardCharacter(
-      value,
-      this.state.amount.toString()
-    );
-
+  setTokenAmount(amount) {
     if (isValidAmount(amount)) {
-      const forex = TickerService.getForexTicker(this.props.token.symbol);
+      const forex = TickerService.getForexTicker(this.props.asset.symbol);
       const forexAmount =
         amount && forex
           ? new BigNumber(amount).mul(forex.price).toNumber()
@@ -126,14 +126,23 @@ export default class AmountPage extends Component {
     }
   }
 
-  setForexAmount(value) {
+  updateTokenAmount(value) {
+    const amount = processVirtualKeyboardCharacter(
+      value,
+      this.state.amount.toString()
+    );
+
+    this.setTokenAmount(amount);
+  }
+
+  updateForexAmount(value) {
     const forexAmount = processVirtualKeyboardCharacter(
       value,
       this.state.forex.toString()
     );
 
     if (isValidAmount(forexAmount)) {
-      const forex = TickerService.getForexTicker(this.props.token.symbol);
+      const forex = TickerService.getForexTicker(this.props.asset.symbol);
       const tokenAmount =
         forexAmount && forex
           ? formatAmount(new BigNumber(forexAmount).div(forex.price))
@@ -144,6 +153,6 @@ export default class AmountPage extends Component {
 }
 
 AmountPage.propTypes = {
-  token: PropTypes.object.isRequired,
+  asset: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired
 };

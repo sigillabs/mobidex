@@ -1,18 +1,19 @@
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import { formatMoney, getImage } from '../../../utils';
 import * as TickerService from '../../../services/TickerService';
+import * as WalletService from '../../../services/WalletService';
 
 export default class PortfolioDetails extends Component {
   render() {
     const { assets } = this.props;
     const balance = assets
+      .filter(asset => Boolean(asset))
       .map(a => ({
         ticker: TickerService.getForexTicker(a.symbol),
-        balance: ZeroEx.toUnitAmount(a.balance, a.decimals)
+        balance: WalletService.getBalanceByAddress(a.address)
       }))
       .filter(f => f.ticker && f.ticker.price)
       .map(f => ({

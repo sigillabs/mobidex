@@ -1,25 +1,32 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { formatAmountWithDecimals } from '../../../utils';
-import * as TokenService from '../../../services/TokenService';
+import * as AssetService from '../../../services/AssetService';
 import TransactionItem from './TransactionItem';
 
 class FilledItem extends Component {
+  static propTypes = {
+    transaction: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      makerAssetAmount: PropTypes.string,
+      takerAssetAmount: PropTypes.string,
+      timestamp: PropTypes.string,
+      makerAssetData: PropTypes.string,
+      takerAssetData: PropTypes.string
+    })
+  };
+
   render() {
     let {
-      id,
-      filledMakerTokenAmount,
-      filledTakerTokenAmount,
+      makerAssetAmount,
+      takerAssetAmount,
+      makerAssetData,
+      takerAssetData,
       timestamp
     } = this.props.transaction;
-    let makerToken = TokenService.findTokenByAddress(
-      this.props.transaction.makerToken ||
-        this.props.transaction.makerTokenAddress
-    );
-    let takerToken = TokenService.findTokenByAddress(
-      this.props.transaction.takerToken ||
-        this.props.transaction.takerTokenAddress
-    );
+    let makerToken = AssetService.findAssetByData(makerAssetData);
+    let takerToken = AssetService.findAssetByData(takerAssetData);
 
     if (!makerToken)
       makerToken = {
@@ -39,14 +46,14 @@ class FilledItem extends Component {
         label={'Filled'}
         source={{
           amount: formatAmountWithDecimals(
-            filledMakerTokenAmount,
+            makerAssetAmount,
             makerToken.decimals
           ),
           symbol: makerToken.symbol
         }}
         destination={{
           amount: formatAmountWithDecimals(
-            filledTakerTokenAmount,
+            takerAssetAmount,
             takerToken.decimals
           ),
           symbol: takerToken.symbol

@@ -151,7 +151,7 @@ const WalletNavigation = createStackNavigator(
             return (
               <SendTokensHeader
                 navigation={navigation}
-                token={navigation.state.params.token}
+                asset={navigation.state.params.asset}
               />
             );
 

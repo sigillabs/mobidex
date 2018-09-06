@@ -1,4 +1,5 @@
-import { ZeroEx } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import { BigNumber } from '0x.js';
 import { cache, time } from '../decorators/cls';
 
 export default class EthereumClient {
@@ -15,98 +16,51 @@ export default class EthereumClient {
   }
 
   @time
-  @cache('ethereum:balance', 10)
+  @cache('ethereum:balance', 60)
   async getBalance() {
-    let account = await this.getAccount();
-    return await new Promise((resolve, reject) => {
-      this.web3.eth.getBalance(
-        account.toString().toLowerCase(),
-        (err, balance) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(balance);
-          }
-        }
-      );
-    });
+    const account = await this.getAccount();
+    const balance = await this.web3.eth.getBalance(
+      account.toString().toLowerCase()
+    );
+    return new BigNumber(balance);
   }
 
   @time
   @cache('ethereum:network-id', 10)
   async getNetworkId() {
-    return await new Promise((resolve, reject) => {
-      this.web3.version.getNetwork((err, network) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(parseInt(network));
-        }
-      });
-    });
+    return await this.web3.eth.net.getId();
   }
 
   @time
   @cache('ethereum:account', 10)
   async getAccount() {
-    return await new Promise((resolve, reject) => {
-      this.web3.eth.getAccounts((err, accounts) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(accounts[0]);
-        }
-      });
-    });
+    const accounts = await this.web3.eth.getAccounts();
+    return accounts[0];
   }
 
   @time
   async getTransactionCount() {
     const account = await this.getAccount();
-    return await new Promise((resolve, reject) => {
-      this.web3.eth.getTransactionCount(account, (err, count) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(count);
-        }
-      });
-    });
+    return await this.web3.eth.getTransactionCount(account);
   }
 
   @time
   async estimateGas(to, data) {
     const account = await this.getAccount();
-    return new Promise((resolve, reject) => {
-      this.web3.eth.estimateGas(
-        {
-          from: account,
-          to,
-          data
-        },
-        (err, result) => {
-          if (err) {
-            return reject(err);
-          } else {
-            return resolve(result);
-          }
-        }
-      );
+    return await this.web3.eth.estimateGas({
+      from: account,
+      to,
+      data
     });
   }
 
   @time
   async send(to, amount) {
-    let sender = await this.ethereumClient.getAccount();
-    let value = ZeroEx.toBaseUnitAmount(new BigNumber(amount), 18).toString();
-    return await new Promise((resolve, reject) => {
-      this.web3.eth.sendTransaction({ from: sender, to, value }, function(
-        err,
-        transactionHash
-      ) {
-        if (err) return reject(err);
-        return resolve(transactionHash);
-      });
-    });
+    const sender = await this.ethereumClient.getAccount();
+    const value = Web3Wrapper.toBaseUnitAmount(
+      new BigNumber(amount),
+      18
+    ).toString();
+    return await this.web3.eth.sendTransaction({ from: sender, to, value });
   }
 }

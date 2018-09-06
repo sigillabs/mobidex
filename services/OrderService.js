@@ -1,12 +1,18 @@
-import { ZeroEx } from '0x.js';
-import BigNumber from 'bignumber.js';
+import { orderStateUtils } from '@0xproject/order-utils';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import {
+  assetDataUtils,
+  BigNumber,
+  generatePseudoRandomSalt,
+  orderHashUtils
+} from '0x.js';
 import * as _ from 'lodash';
 import moment from 'moment';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
 import { formatProduct } from '../utils';
+import * as AssetService from './AssetService';
 import NavigationService from './NavigationService';
-import * as TokenService from './TokenService';
 
 let _store;
 
@@ -20,13 +26,13 @@ export function getOrderbook(baseToken, quoteToken = null) {
   } = _store.getState();
 
   if (!quoteToken) {
-    quoteToken = TokenService.getQuoteToken();
+    quoteToken = AssetService.getQuoteAsset();
   } else if (typeof quoteToken === 'string') {
-    quoteToken = TokenService.findTokenByAddress(quoteToken);
+    quoteToken = AssetService.findAssetByAddress(quoteToken);
   }
 
   if (typeof baseToken === 'string') {
-    baseToken = TokenService.findTokenByAddress(baseToken);
+    baseToken = AssetService.findAssetByAddress(baseToken);
   }
 
   if (!baseToken || !quoteToken) {
@@ -39,19 +45,22 @@ export function getOrderbook(baseToken, quoteToken = null) {
 }
 
 export function getOrderPrice(order) {
-  const makerToken = TokenService.findTokenByAddress(order.makerTokenAddress);
-  const takerToken = TokenService.findTokenByAddress(order.takerTokenAddress);
-  const quoteToken = TokenService.getQuoteToken();
+  if (!order) return 0;
 
-  if (!makerToken) return null;
-  if (!takerToken) return null;
+  const makerToken = AssetService.findAssetByData(order.makerAssetData);
+  const takerToken = AssetService.findAssetByData(order.takerAssetData);
+  const quoteToken = AssetService.getQuoteAsset();
 
-  const makerTokenUnitAmount = ZeroEx.toUnitAmount(
-    new BigNumber(order.makerTokenAmount),
+  if (!makerToken) return 0;
+  if (!takerToken) return 0;
+  if (!quoteToken) return 0;
+
+  const makerTokenUnitAmount = Web3Wrapper.toUnitAmount(
+    new BigNumber(order.makerAssetAmount),
     makerToken.decimals
   );
-  const takerTokenUnitAmount = ZeroEx.toUnitAmount(
-    new BigNumber(order.takerTokenAmount),
+  const takerTokenUnitAmount = Web3Wrapper.toUnitAmount(
+    new BigNumber(order.takerAssetAmount),
     takerToken.decimals
   );
 
@@ -60,7 +69,7 @@ export function getOrderPrice(order) {
   } else if (quoteToken.address === takerToken.address) {
     return takerTokenUnitAmount.div(makerTokenUnitAmount);
   } else {
-    return null;
+    return 0;
   }
 }
 
@@ -100,44 +109,52 @@ export function getAveragePrice(orders) {
 
 export function convertLimitOrderToZeroExOrder(limitOrder) {
   const {
-    relayer: { tokens }
+    relayer: { assets }
   } = _store.getState();
 
-  const quoteToken = _.find(tokens, { address: limitOrder.quoteAddress });
-  const baseToken = _.find(tokens, { address: limitOrder.baseAddress });
+  const quoteToken = _.find(assets, { address: limitOrder.quoteAddress });
+  const baseToken = _.find(assets, { address: limitOrder.baseAddress });
 
   if (!quoteToken) return null;
   if (!baseToken) return null;
 
   let order = {
-    makerTokenAddress: null,
-    makerTokenAmount: null,
-    takerTokenAddress: null,
-    takerTokenAmount: null
+    makerAssetData: null,
+    makerAssetAmount: null,
+    takerAssetData: null,
+    takerAssetAmount: null
   };
 
   switch (limitOrder.side) {
     case 'buy':
-      order.makerTokenAddress = quoteToken.address;
-      order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
+      order.makerAssetData = assetDataUtils.encodeERC20AssetData(
+        quoteToken.address
+      );
+      order.makerAssetAmount = Web3Wrapper.toBaseUnitAmount(
         new BigNumber(limitOrder.price).mul(limitOrder.amount).abs(),
         quoteToken.decimals
       );
-      order.takerTokenAddress = baseToken.address;
-      order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
+      order.takerAssetData = assetDataUtils.encodeERC20AssetData(
+        baseToken.address
+      );
+      order.takerAssetAmount = Web3Wrapper.toBaseUnitAmount(
         new BigNumber(limitOrder.amount).abs(),
         baseToken.decimals
       );
       break;
 
     case 'sell':
-      order.makerTokenAddress = baseToken.address;
-      order.makerTokenAmount = ZeroEx.toBaseUnitAmount(
+      order.makerAssetData = assetDataUtils.encodeERC20AssetData(
+        baseToken.address
+      );
+      order.makerAssetAmount = Web3Wrapper.toBaseUnitAmount(
         new BigNumber(limitOrder.amount).abs(),
         baseToken.decimals
       );
-      order.takerTokenAddress = quoteToken.address;
-      order.takerTokenAmount = ZeroEx.toBaseUnitAmount(
+      order.takerAssetData = assetDataUtils.encodeERC20AssetData(
+        quoteToken.address
+      );
+      order.takerAssetAmount = Web3Wrapper.toBaseUnitAmount(
         new BigNumber(limitOrder.price).mul(limitOrder.amount).abs(),
         quoteToken.decimals
       );
@@ -149,22 +166,22 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
 
 export function convertZeroExOrderToLimitOrder(order) {
   const {
-    relayer: { tokens }
+    relayer: { assets }
   } = _store.getState();
 
-  const makerToken = _.find(tokens, { address: order.makerTokenAddress });
-  const takerToken = _.find(tokens, { address: order.takerTokenAddress });
-  const quoteToken = TokenService.getQuoteToken();
+  const makerToken = _.find(assets, { assetData: order.makerAssetData });
+  const takerToken = _.find(assets, { assetData: order.takerAssetData });
+  const quoteToken = AssetService.getQuoteAsset();
 
   if (!makerToken) return null;
   if (!takerToken) return null;
 
-  const makerTokenUnitAmount = ZeroEx.toUnitAmount(
-    new BigNumber(order.makerTokenAmount),
+  const makerTokenUnitAmount = Web3Wrapper.toUnitAmount(
+    new BigNumber(order.makerAssetAmount),
     makerToken.decimals
   );
-  const takerTokenUnitAmount = ZeroEx.toUnitAmount(
-    new BigNumber(order.takerTokenAmount),
+  const takerTokenUnitAmount = Web3Wrapper.toUnitAmount(
+    new BigNumber(order.takerAssetAmount),
     takerToken.decimals
   );
 
@@ -177,15 +194,23 @@ export function convertZeroExOrderToLimitOrder(order) {
   };
 
   if (quoteToken.address === makerToken.address) {
-    limitOrder.baseAddress = order.takerTokenAddress;
-    limitOrder.quoteAddress = order.makerTokenAddress;
+    limitOrder.baseAddress = assetDataUtils.decodeERC20AssetData(
+      order.takerAssetData
+    ).tokenAddress;
+    limitOrder.quoteAddress = assetDataUtils.decodeERC20AssetData(
+      order.makerAssetData
+    ).tokenAddress;
     limitOrder.price = makerTokenUnitAmount.div(takerTokenUnitAmount);
     limitOrder.amount = takerTokenUnitAmount;
     limitOrder.side = 'buy';
     return limitOrder;
   } else if (quoteToken.address === takerToken.address) {
-    limitOrder.baseAddress = order.takerTokenAddress;
-    limitOrder.quoteAddress = order.makerTokenAddress;
+    limitOrder.baseAddress = assetDataUtils.decodeERC20AssetData(
+      order.takerAssetData
+    ).tokenAddress;
+    limitOrder.quoteAddress = assetDataUtils.decodeERC20AssetData(
+      order.makerAssetData
+    ).tokenAddress;
     limitOrder.price = takerTokenUnitAmount.div(makerTokenUnitAmount);
     limitOrder.amount = makerTokenUnitAmount;
     limitOrder.side = 'sell';
@@ -195,98 +220,49 @@ export function convertZeroExOrderToLimitOrder(order) {
   }
 }
 
-export function convertZeroExOrderToOrderRequest(order, amount = null) {
-  if (!order) return null;
-  if (new BigNumber(order.filledTakerTokenAmount).gte(order.takerTokenAmount)) {
-    return null;
-  }
-
-  const quoteToken = TokenService.getQuoteToken();
-  let amountProperty;
-  let filledProperty;
-  let tokenAddress;
-
-  if (quoteToken.address === order.makerTokenAddress) {
-    tokenAddress = order.takerTokenAddress;
-    amountProperty = 'takerTokenAmount';
-    filledProperty = 'filledTakerTokenAmount';
-  } else if (quoteToken.address === order.takerTokenAddress) {
-    tokenAddress = order.makerTokenAddress;
-    amountProperty = 'makerTokenAmount';
-    filledProperty = 'filledMakerTokenAmount';
-  } else {
-    throw new Error('Quote token not in order.');
-  }
-
-  if (new BigNumber(order[filledProperty]).gte(order[amountProperty])) {
-    return null;
-  }
-
-  const baseToken = TokenService.findTokenByAddress(tokenAddress);
-  const fillable = new BigNumber(order[amountProperty]).sub(
-    order[filledProperty]
-  );
-  const amountBN = ZeroEx.toBaseUnitAmount(
-    new BigNumber(amount || 0),
-    baseToken.decimals
-  );
-
-  if (amount === null || amountBN.gt(fillable)) {
-    return {
-      signedOrder: order,
-      takerTokenFillAmount: new BigNumber(order.takerTokenAmount).sub(
-        order.filledTakerTokenAmount
-      )
-    };
-  } else {
-    const ratio = amountBN.div(order[amountProperty]);
-    let fillAmount = ratio.mul(order.takerTokenAmount);
-
-    // Rounding does not work
-    // Big hack
-    if (fillAmount.dp() > 0) {
-      fillAmount = new BigNumber(
-        fillAmount.toString().slice(0, -1 - fillAmount.dp())
-      );
-    }
-
-    const maxFillAmount = new BigNumber(order.takerTokenAmount).sub(
-      order.filledTakerTokenAmount
-    );
-    const takerTokenFillAmount = fillAmount.gt(maxFillAmount)
-      ? maxFillAmount
-      : fillAmount;
-
-    if (takerTokenFillAmount.lte(0)) {
-      return null;
-    }
-
-    return {
-      signedOrder: order,
-      takerTokenFillAmount
-    };
-  }
-}
-
-export function convertZeroExOrdersToOrderRequests(orders, amount = null) {
+export async function getFillableOrderAmounts(orders, amount = null) {
   if (!orders) return null;
   if (!orders.length) return [];
 
-  if (amount === null || amount === undefined) {
-    return orders.map(o => convertZeroExOrderToOrderRequest(o, null));
-  } else {
-    const orderRequests = [];
-    let amountBN = new BigNumber(amount);
-    for (const order of orders) {
-      const orderRequest = convertZeroExOrderToOrderRequest(order, amount);
-      if (orderRequest === null) {
-        break;
-      }
-      orderRequests.push(orderRequest);
-      amountBN = amountBN.sub(orderRequest.takerTokenFillAmount);
-    }
-    return orderRequests;
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+
+  const filled = await Promise.all(
+    orders.map(order =>
+      zeroExClient.getFilledTakerAmount(
+        orderHashUtils.getOrderHashHex(order),
+        false
+      )
+    )
+  );
+
+  const amounts = orders.map((order, index) =>
+    new BigNumber(order.takerAssetAmount).sub(filled[index])
+  );
+
+  if (amount === null) {
+    return amounts;
   }
+
+  let fillableAmount = new BigNumber(amount);
+  const fillableAmounts = [];
+
+  for (let i = 0; i < amounts.length; ++i) {
+    let amount = amounts[i];
+
+    if (fillableAmount.lt(amount)) {
+      fillableAmounts.push(fillableAmount);
+      break;
+    } else {
+      fillableAmounts.push(new BigNumber(amount));
+    }
+  }
+
+  return fillableAmounts;
 }
 
 export async function createOrder(limitOrder) {
@@ -297,14 +273,15 @@ export async function createOrder(limitOrder) {
   const zeroExClient = new ZeroExClient(ethereumClient);
   return {
     ...convertLimitOrderToZeroExOrder(limitOrder),
-    maker: `0x${address.toLowerCase()}`,
-    makerFee: new BigNumber(0),
-    taker: ZeroEx.NULL_ADDRESS,
-    takerFee: new BigNumber(0),
-    expirationUnixTimestampSec: new BigNumber(moment().unix() + 60 * 60 * 24),
-    feeRecipient: ZeroEx.NULL_ADDRESS,
-    salt: ZeroEx.generatePseudoRandomSalt(),
-    exchangeContractAddress: await zeroExClient.getZeroExContractAddress()
+    exchangeAddress: await zeroExClient.getExchangeContractAddress(),
+    expirationTimeSeconds: new BigNumber(moment().unix() + 60 * 60 * 24),
+    makerAddress: `0x${address.toLowerCase()}`,
+    makerFee: ZeroExClient.ZERO,
+    senderAddress: ZeroExClient.NULL_ADDRESS,
+    takerAddress: ZeroExClient.NULL_ADDRESS,
+    takerFee: ZeroExClient.ZERO,
+    feeRecipientAddress: ZeroExClient.NULL_ADDRESS,
+    salt: generatePseudoRandomSalt()
   };
 }
 
@@ -316,22 +293,17 @@ export async function signOrder(order) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient);
-    const zeroEx = await zeroExClient.getZeroExClient();
-    const account = await ethereumClient.getAccount();
 
-    if (!order.salt) order.salt = ZeroEx.generatePseudoRandomSalt();
+    if (!order.salt) order.salt = generatePseudoRandomSalt();
 
-    const hash = ZeroEx.getOrderHashHex(order);
+    const orderHash = orderHashUtils.getOrderHashHex(order);
     // Halting at signature -- seems like a performance or network issue.
-    const ecSignature = await zeroEx.signOrderHashAsync(
-      hash,
-      account.toLowerCase()
-    );
+    const signature = await zeroExClient.signOrderHash(orderHash);
 
     return {
       ...order,
-      orderHash: hash,
-      ecSignature
+      orderHash,
+      signature
     };
   } catch (err) {
     NavigationService.error(err);

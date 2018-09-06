@@ -6,11 +6,17 @@ const initialState = {
   orderbooks: {},
   orders: [],
   products: [],
-  tokens: []
+  assets: []
 };
 
 export default handleActions(
   {
+    [Actions.ADD_ASSETS]: (state, action) => {
+      return {
+        ...state,
+        assets: _.unionBy(state.assets, action.payload, 'assetData')
+      };
+    },
     [Actions.ADD_ORDERS]: (state, action) => {
       return {
         ...state,
@@ -29,9 +35,6 @@ export default handleActions(
     },
     [Actions.SET_PRODUCTS]: (state, action) => {
       return { ...state, products: action.payload };
-    },
-    [Actions.SET_TOKENS]: (state, action) => {
-      return { ...state, tokens: action.payload };
     }
   },
   initialState

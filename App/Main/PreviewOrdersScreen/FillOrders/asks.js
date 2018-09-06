@@ -1,6 +1,7 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ZeroExClient from '../../../../clients/0x';
 import * as OrderService from '../../../../services/OrderService';
 import BasePreviewFillOrders from './base';
 
@@ -24,7 +25,7 @@ export default class PreviewFillAsks extends Component {
   }
 
   getTotalFee() {
-    return new BigNumber(0);
+    return ZeroExClient.ZERO;
   }
 
   getSubtotal(baseToken, quoteToken, amount) {
