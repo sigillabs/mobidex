@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { getImage } from '../../../utils';
 import Button from '../../components/Button';
 import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
-import Padding from '../../components/Padding';
 import NavigationService from '../../../services/NavigationService';
 
 class TokenDetails extends Component {

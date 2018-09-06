@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import {
   loadAssets,

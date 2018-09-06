@@ -112,7 +112,9 @@ class BaseQuoteTokenItem extends Component {
           price={0}
           change={0}
           priceFormatter={v =>
-            `${formatAmount(v)} ${'WETH' ? 'ETH' : quoteToken.symbol}`
+            `${formatAmount(v)} ${
+              quoteToken.symbol === 'WETH' ? 'ETH' : quoteToken.symbol
+            }`
           }
           {...this.props}
         />
