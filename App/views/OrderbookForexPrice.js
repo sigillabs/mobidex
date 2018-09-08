@@ -30,9 +30,12 @@ export class OrderbookForexPrice extends Component {
       return <FormattedForexAmount {...this.props} amount={0} />;
     }
 
-    const price = OrderService.getOrderPrice(
-      side === 'buy' ? orderbook.bids[0] : orderbook.asks[0]
-    );
+    const price =
+      orderbook.bids.length > 0
+        ? OrderService.getOrderPrice(
+            side === 'buy' ? orderbook.bids[0] : orderbook.asks[0]
+          )
+        : new BigNumber(0);
 
     return (
       <FormattedForexAmount

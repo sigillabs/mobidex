@@ -15,7 +15,7 @@ export default class EthereumClient {
   }
 
   @time
-  @cache('ethereum:balance', 10 * 1000)
+  @cache('ethereum:balance', 10)
   async getBalance() {
     let account = await this.getAccount();
     return await new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ export default class EthereumClient {
   }
 
   @time
-  @cache('ethereum:network-id', 10 * 1000)
+  @cache('ethereum:network-id', 10)
   async getNetworkId() {
     return await new Promise((resolve, reject) => {
       this.web3.version.getNetwork((err, network) => {
@@ -47,7 +47,7 @@ export default class EthereumClient {
   }
 
   @time
-  @cache('ethereum:account', 10 * 1000)
+  @cache('ethereum:account', 10)
   async getAccount() {
     return await new Promise((resolve, reject) => {
       this.web3.eth.getAccounts((err, accounts) => {

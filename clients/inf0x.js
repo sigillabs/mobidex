@@ -8,7 +8,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5 * 1000)
+  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5)
   async getForexPrices(symbol, quote = 'USD', sample = 'DAY', n = 7) {
     const qs = stringify({
       quote,
@@ -17,7 +17,7 @@ export default class Inf0xClient {
       n
     });
 
-    const response = await fetch(`${this.endpoint}?${qs}`);
+    const response = await fetch(`${this.endpoint}/forex/history?${qs}`);
     const json = await response.json();
 
     // console.debug('Forex Prices', `https://mobidex.io/inf0x/forex/history?${qs}`);
@@ -26,7 +26,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:forex:prices:{}:{}:{}', 5 * 1000)
+  @cache('inf0x:forex:prices:{}:{}:{}', 5)
   async getForexTicker(products = [], symbols = [], quote = 'USD') {
     const qs = stringify({
       product: products,
@@ -48,7 +48,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5 * 1000)
+  @cache('inf0x:forex:prices:{}:{}:{}:{}', 5)
   async getTokenPrices(symbol, quote = 'WETH', sample = 'DAY', n = 7) {
     const qs = stringify({
       quote,
@@ -71,7 +71,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:forex:prices:{}:{}:{}', 5 * 1000)
+  @cache('inf0x:forex:prices:{}:{}:{}', 5)
   async getTokenTicker(products = [], symbols = [], quote = 'WETH') {
     const qs = stringify({
       product: products,

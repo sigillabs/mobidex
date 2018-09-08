@@ -17,14 +17,14 @@ export default class ZeroExClient {
   }
 
   @time
-  @cache('0x:exchange-contract', 1000)
+  @cache('0x:exchange-contract', 60)
   async getZeroExContractAddress() {
     const zeroEx = await this.getZeroExClient();
     return await zeroEx.exchange.getContractAddress();
   }
 
   @time
-  @cache('0x:tokens', 1000)
+  @cache('0x:tokens', 60)
   async getZeroExTokens() {
     const zeroEx = await this.getZeroExClient();
     return await zeroEx.tokenRegistry.getTokensAsync();
