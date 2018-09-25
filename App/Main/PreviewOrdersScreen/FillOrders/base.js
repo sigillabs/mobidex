@@ -8,7 +8,6 @@ import NavigationService from '../../../../services/NavigationService';
 import * as OrderService from '../../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../../styles';
-import { fillOrders } from '../../../../thunks';
 import Button from '../../../components/Button';
 import TwoColumnListItem from '../../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
@@ -185,14 +184,16 @@ class BasePreviewFillOrders extends Component {
   }
 
   async submit() {
-    const { amount, orders } = this.props;
+    const { amount, baseToken, quoteToken, fillAction } = this.props;
     const fillAmount = new BigNumber(amount);
 
     this.setState({ showFilling: true });
     this.props.hideHeader();
 
     try {
-      await this.props.dispatch(fillOrders(orders, fillAmount));
+      await this.props.dispatch(
+        fillAction(`${baseToken.symbol}-${quoteToken.symbol}`, fillAmount)
+      );
     } catch (err) {
       NavigationService.error(err);
       return;
@@ -213,6 +214,7 @@ BasePreviewFillOrders.propTypes = {
   amount: PropTypes.string.isRequired,
   fee: PropTypes.string.isRequired,
   orders: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fillAction: PropTypes.func.isRequired,
   getSubtotal: PropTypes.func.isRequired,
   getTotalFee: PropTypes.func.isRequired,
   getTotal: PropTypes.func.isRequired,

@@ -3,8 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-sdk android:minSdkVersion="23"
-          android:targetSdkVersion="26" />
+    <uses-sdk android:targetSdkVersion="26" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <application
       android:name=".MainApplication"

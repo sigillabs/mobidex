@@ -89,7 +89,7 @@ export function reduceDecimalOverflow(amount, decimals = 4) {
   const stringAmount = amount.toString();
   const index = stringAmount.indexOf('.');
   if (index === -1) return stringAmount;
-  return stringAmount.substring(index, index + decimals + 1);
+  return stringAmount.substring(0, index + decimals + 1);
 }
 
 export function zeroDecimalPad(n, d) {

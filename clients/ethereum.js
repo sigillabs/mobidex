@@ -56,11 +56,16 @@ export default class EthereumClient {
 
   @time
   async send(to, amount) {
-    const sender = await this.ethereumClient.getAccount();
-    const value = Web3Wrapper.toBaseUnitAmount(
-      new BigNumber(amount),
-      18
-    ).toString();
-    return await this.web3.eth.sendTransaction({ from: sender, to, value });
+    const sender = await this.getAccount();
+    const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), 18);
+    return await new Promise((resolve, reject) => {
+      const response = this.web3.eth.sendTransaction({
+        from: sender,
+        to,
+        value
+      });
+      response.on('transactionHash', hash => resolve(hash));
+      response.on('error', error => reject(error));
+    });
   }
 }

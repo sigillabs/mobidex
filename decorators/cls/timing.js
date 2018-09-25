@@ -6,21 +6,22 @@ export function time(target, name, descriptor) {
       try {
         console.info(
           `Timing ${name}(${JSON.stringify(
-            Array.prototype.slice.call(args, 1)
+            Array.prototype.slice.call(args, 0)
           )})`
         );
         return await original.apply(this, args);
       } catch (err) {
         console.warn(
           `Timed ${name}(${JSON.stringify(
-            Array.prototype.slice.call(args, 1)
-          )}): Errored During Timing: ${err.message}`
+            Array.prototype.slice.call(args, 0)
+          )}): Errored During Timing: ${err.message}`,
+          err
         );
         throw err;
       } finally {
         console.info(
           `Timed ${name}(${JSON.stringify(
-            Array.prototype.slice.call(args, 1)
+            Array.prototype.slice.call(args, 0)
           )}): Duration: ${new Date() - start}`
         );
       }

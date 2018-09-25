@@ -10,7 +10,9 @@ class FilledItem extends Component {
     transaction: PropTypes.shape({
       id: PropTypes.string.isRequired,
       makerAssetAmount: PropTypes.string,
+      makerAssetFilledAmount: PropTypes.string,
       takerAssetAmount: PropTypes.string,
+      takerAssetFilledAmount: PropTypes.string,
       timestamp: PropTypes.string,
       makerAssetData: PropTypes.string,
       takerAssetData: PropTypes.string
@@ -20,7 +22,9 @@ class FilledItem extends Component {
   render() {
     let {
       makerAssetAmount,
+      makerAssetFilledAmount,
       takerAssetAmount,
+      takerAssetFilledAmount,
       makerAssetData,
       takerAssetData,
       timestamp
@@ -46,14 +50,14 @@ class FilledItem extends Component {
         label={'Filled'}
         source={{
           amount: formatAmountWithDecimals(
-            makerAssetAmount,
+            makerAssetAmount || makerAssetFilledAmount,
             makerToken.decimals
           ),
           symbol: makerToken.symbol
         }}
         destination={{
           amount: formatAmountWithDecimals(
-            takerAssetAmount,
+            takerAssetAmount || takerAssetFilledAmount,
             takerToken.decimals
           ),
           symbol: takerToken.symbol

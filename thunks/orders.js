@@ -188,18 +188,20 @@ export function loadAssets(force = false) {
   };
 }
 
-export function submitOrder(signedOrder) {
+export function submitOrder(order) {
   return async (dispatch, getState) => {
     const {
       settings: { network, relayerEndpoint }
     } = getState();
     const client = new RelayerClient(relayerEndpoint, { network });
     const makerTokenAddress = assetDataUtils.decodeERC20AssetData(
-      signedOrder.makerAssetData
+      order.makerAssetData
     ).tokenAddress;
     const takerTokenAddress = assetDataUtils.decodeERC20AssetData(
-      signedOrder.takerAssetData
+      order.takerAssetData
     ).tokenAddress;
+
+    const signedOrder = await OrderService.signOrder(order);
 
     await dispatch(
       checkAndWrapEther(makerTokenAddress, signedOrder.makerAssetAmount, {
@@ -207,6 +209,7 @@ export function submitOrder(signedOrder) {
         batch: false
       })
     );
+
     await dispatch(
       checkAndSetTokenAllowance(
         takerTokenAddress,
@@ -298,6 +301,7 @@ export function fillOrder(order, amount = null) {
   };
 }
 
+// TODO: Remove function
 export function fillOrders(orders, amount = null) {
   return async dispatch => {
     if (!orders || orders.length === 0) {
@@ -412,7 +416,6 @@ export function cancelOrder(order) {
       }
     }
     const txhash = await zeroExClient.cancelOrder(order);
-    console.warn('here3');
     const activeTransaction = {
       ...order,
       id: txhash,

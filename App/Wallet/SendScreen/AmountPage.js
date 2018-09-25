@@ -119,7 +119,7 @@ export default class AmountPage extends Component {
     if (isValidAmount(amount)) {
       const forex = TickerService.getForexTicker(this.props.asset.symbol);
       const forexAmount =
-        amount && forex
+        amount && forex && forex.price
           ? new BigNumber(amount).mul(forex.price).toNumber()
           : '';
       this.setState({ amount, forex: forexAmount });

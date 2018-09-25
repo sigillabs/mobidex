@@ -8,6 +8,7 @@ import {
   setBalances
 } from '../actions';
 import EthereumClient from '../clients/ethereum';
+import Inf0xClient from '../clients/inf0x';
 import TokenClient from '../clients/token';
 import * as AssetService from '../services/AssetService';
 import NavigationService from '../services/NavigationService';
@@ -68,88 +69,53 @@ export function loadBalances(force = false) {
 export function loadTransactions(force = false) {
   return async (dispatch, getState) => {
     let {
-      wallet: { address },
-      settings: { network }
+      wallet: { web3 },
+      settings: { inf0xEndpoint, network }
     } = getState();
     try {
       let transactions = await cache(
         `transactions:${network}`,
         async () => {
-          let options = {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            }
-          };
-          let promises = [
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/fills?maker=${address}`,
-              options
-            ),
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/fills?taker=${address}`,
-              options
-            ),
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/cancels?maker=${address}`,
-              options
-            ),
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/deposits?sender=${address}`,
-              options
-            ),
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/withdrawals?sender=${address}`,
-              options
-            ),
-            fetch(
-              `https://mobidex.io:8443/inf0x/${network}/approvals?owner=${address}`,
-              options
-            )
-          ];
-          const [
+          const ethereumClient = new EthereumClient(web3);
+          const inf0xClient = new Inf0xClient(inf0xEndpoint, { network });
+          const account = await ethereumClient.getAccount(force);
+          const {
             makerFills,
             takerFills,
             makerCancels,
             deposits,
             withdrawals,
             approvals
-          ] = await Promise.all(promises);
-          const makerFillsJSON = await makerFills.json();
-          const takerFillsJSON = await takerFills.json();
-          const makerCancelsJSON = await makerCancels.json();
-          const depositsJSON = await deposits.json();
-          const withdrawalsJSON = await withdrawals.json();
-          const approvalsJSON = await approvals.json();
-          const filltxs = makerFillsJSON
+          } = await inf0xClient.getEvents(account, force);
+          const filltxs = makerFills
             .map(log => ({
               ...log,
               id: log.transactionHash,
               status: 'FILL'
             }))
             .concat(
-              takerFillsJSON.map(log => ({
+              takerFills.map(log => ({
                 ...log,
                 id: log.transactionHash,
                 status: 'FILL'
               }))
             );
-          const canceltxs = makerCancelsJSON.map(log => ({
+          const canceltxs = makerCancels.map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'CANCEL'
           }));
-          const depositstxs = depositsJSON.map(log => ({
+          const depositstxs = deposits.map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'DEPOSIT'
           }));
-          const withdrawalstxs = withdrawalsJSON.map(log => ({
+          const withdrawalstxs = withdrawals.map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'WITHDRAWAL'
           }));
-          const approvalstxs = approvalsJSON.map(log => ({
+          const approvalstxs = approvals.map(log => ({
             ...log,
             id: log.transactionHash,
             type: 'APPROVAL',

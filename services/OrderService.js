@@ -1,4 +1,3 @@
-import { orderStateUtils } from '@0xproject/order-utils';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import {
   assetDataUtils,
@@ -220,6 +219,43 @@ export function convertZeroExOrderToLimitOrder(order) {
   }
 }
 
+export async function getFilledTakerAmounts(orders) {
+  if (!orders) return null;
+  if (!orders.length) return [];
+
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+
+  return Promise.all(
+    orders.map(order =>
+      zeroExClient.getFilledTakerAmount(
+        orderHashUtils.getOrderHashHex(order),
+        false
+      )
+    )
+  );
+}
+
+export async function getRemainingFillableTakerAssetAmounts(orders) {
+  if (!orders) return null;
+  if (!orders.length) return [];
+
+  const filledTakerAmounts = await getFilledTakerAmounts(orders);
+  const remainingFillableTakerAssetAmounts = _.zip(
+    orders,
+    filledTakerAmounts
+  ).map(([order, filledTakerAmount]) =>
+    new BigNumber(order.takerAssetAmount).sub(filledTakerAmount)
+  );
+
+  return remainingFillableTakerAssetAmounts;
+}
+
+// TODO: Remove function
 export async function getFillableOrderAmounts(orders, amount = null) {
   if (!orders) return null;
   if (!orders.length) return [];

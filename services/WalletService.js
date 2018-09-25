@@ -29,7 +29,6 @@ import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import ZeroExClient from '../clients/0x';
 import { setWallet } from '../actions';
-import { getURLFromNetwork } from '../utils';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -88,7 +87,7 @@ export async function lock() {
 export async function unlock(password = null) {
   if (!_web3) {
     const {
-      settings: { network }
+      settings: { ethereumNodeEndpoint, network }
     } = _store.getState();
 
     const exists = await isLocked();
@@ -100,7 +99,7 @@ export async function unlock(password = null) {
     const address = ethUtil.stripHexPrefix(addressBuffer.toString('hex'));
 
     const engine = ZeroClientProvider({
-      rpcUrl: getURLFromNetwork(network),
+      rpcUrl: ethereumNodeEndpoint, //getURLFromNetwork(network),
       getAccounts: cb => {
         cb(null, [`0x${address.toLowerCase()}`]);
       },

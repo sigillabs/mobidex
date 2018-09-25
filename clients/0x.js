@@ -118,4 +118,42 @@ export default class ZeroExClient {
       shouldValidate: false
     });
   }
+
+  @time
+  async marketBuyWithEth(
+    orders,
+    feeOrders,
+    feePercentage,
+    feeRecipient,
+    amount
+  ) {
+    const wrappers = await this.getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
+    const balance = await this.ethereumClient.getBalance(false);
+    return await wrappers.forwarder.marketBuyOrdersWithEthAsync(
+      orders,
+      new BigNumber(amount),
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      new BigNumber(balance),
+      feeOrders,
+      new BigNumber(feePercentage),
+      feeRecipient,
+      {}
+    );
+  }
+
+  @time
+  async marketSellEth(orders, feeOrders, feePercentage, feeRecipient, amount) {
+    const wrappers = await this.getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
+    return await wrappers.forwarder.marketSellOrdersWithEthAsync(
+      orders,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      new BigNumber(amount),
+      feeOrders,
+      new BigNumber(feePercentage),
+      feeRecipient,
+      {}
+    );
+  }
 }

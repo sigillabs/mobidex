@@ -2,9 +2,12 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
-  network: 1,
-  relayerEndpoint: 'https://mobidex.io:8443/relayer/v2',
-  inf0xEndpoint: 'https://mobidex.io:8443/inf0x',
+  network: 42,
+  // ethereumNodeEndpoint: 'http://mobidex.io:9545',
+  // ethereumNodeEndpoint: 'https://mainnet.infura.io/',
+  ethereumNodeEndpoint: 'https://kovan.infura.io/',
+  relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
+  inf0xEndpoint: 'https://mobidex.io:9443/inf0x',
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   showForexPrices: false,

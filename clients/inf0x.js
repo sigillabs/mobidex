@@ -1,3 +1,4 @@
+import ethUtil from 'ethereumjs-util';
 import { stringify } from 'qs';
 import { cache, time } from '../decorators/cls';
 
@@ -17,7 +18,12 @@ export default class Inf0xClient {
       n
     });
 
-    const response = await fetch(`${this.endpoint}/forex/history?${qs}`);
+    const response = await fetch(`${this.endpoint}/forex/history?${qs}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    });
     const json = await response.json();
 
     // console.debug('Forex Prices', `${this.endpoint}/forex/history?${qs}`);
@@ -35,7 +41,13 @@ export default class Inf0xClient {
     });
 
     const response = await fetch(
-      `${this.endpoint}/${this.network}/forex/ticker?${qs}`
+      `${this.endpoint}/${this.network}/forex/ticker?${qs}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
     );
     const json = await response.json();
 
@@ -58,7 +70,13 @@ export default class Inf0xClient {
     });
 
     const response = await fetch(
-      `${this.endpoint}/${this.network}/token/history?${qs}`
+      `${this.endpoint}/${this.network}/token/history?${qs}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
     );
     const json = await response.json();
 
@@ -80,7 +98,39 @@ export default class Inf0xClient {
     });
 
     const response = await fetch(
-      `${this.endpoint}/${this.network}/tokens/ticker?${qs}`
+      `${this.endpoint}/${this.network}/tokens/ticker?${qs}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    const json = await response.json();
+
+    // console.debug(
+    //   'Token Ticker',
+    //   `${this.endpoint}/${this.network}/tokens/ticker?${qs}`
+    // );
+    // console.debug('Token Ticker', json);
+    return json;
+  }
+
+  @time
+  @cache('inf0x:v2:events:all', 5)
+  async getEvents(account) {
+    const qs = stringify({
+      account: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    });
+
+    const response = await fetch(
+      `${this.endpoint}/${this.network}/events?${qs}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
     );
     const json = await response.json();
 

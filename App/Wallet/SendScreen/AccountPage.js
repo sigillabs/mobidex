@@ -23,9 +23,10 @@ class AccountPage extends Component {
   render() {
     const { asset, amount } = this.props;
     const forex = TickerService.getForexTicker(asset.symbol);
-    const forexAmount = forex
-      ? new BigNumber(amount).mul(forex.price).toNumber()
-      : null;
+    const forexAmount =
+      forex && forex.price
+        ? new BigNumber(amount).mul(forex.price).toNumber()
+        : null;
 
     return (
       <View style={{ padding: 20, flex: 1, width: '100%' }}>
