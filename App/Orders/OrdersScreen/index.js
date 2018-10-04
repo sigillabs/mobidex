@@ -100,7 +100,7 @@ class OrdersScreen extends Component {
   }
 
   componentDidMount() {
-    this.onRefresh();
+    this.onRefresh(false);
   }
 
   render() {
@@ -122,6 +122,7 @@ class OrdersScreen extends Component {
         <ScrollView
           refreshControl={
             <RefreshControl
+              // refreshing={this.state.refreshing}
               refreshing={this.state.refreshing}
               onRefresh={() => this.onRefresh()}
             />
@@ -156,7 +157,7 @@ class OrdersScreen extends Component {
 
   filterOrders() {
     const { params } = this.props.navigation.state;
-    let orders = this.props.orders
+    const orders = this.props.orders
       .filter(
         o =>
           ethUtil.stripHexPrefix(o.makerAddress) ===
@@ -180,9 +181,9 @@ class OrdersScreen extends Component {
     this.onRefresh();
   }
 
-  async onRefresh() {
+  async onRefresh(force = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadOrders(true));
+    await this.props.dispatch(loadOrders(force));
     this.setState({ refreshing: false });
   }
 }

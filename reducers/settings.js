@@ -2,17 +2,20 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
-  network: 42,
-  // ethereumNodeEndpoint: 'http://mobidex.io:9545',
+  network: 1,
+  ethereumNodeEndpoint: 'http://mobidex.io:8545',
   // ethereumNodeEndpoint: 'https://mainnet.infura.io/',
-  ethereumNodeEndpoint: 'https://kovan.infura.io/',
-  relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
-  inf0xEndpoint: 'https://mobidex.io:9443/inf0x',
+  // ethereumNodeEndpoint: 'http://mobidex.io:9545',
+  // ethereumNodeEndpoint: 'https://kovan.infura.io/',
+  relayerEndpoint: 'https://mobidex.io:8443/relayer/v2',
+  // relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
+  inf0xEndpoint: 'https://mobidex.io:8443/inf0x',
+  // inf0xEndpoint: 'https://mobidex.io:9443/inf0x',
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   showForexPrices: false,
-  // gasPrice: '3000000000',
-  gasPrice: '4000000000',
+  gasPrice: '3000000000',
+  // gasPrice: '4000000000',
   maxGas: '520000'
 };
 

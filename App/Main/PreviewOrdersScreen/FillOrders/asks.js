@@ -1,9 +1,10 @@
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ZeroExClient from '../../../../clients/0x';
 import * as OrderService from '../../../../services/OrderService';
-import { marketBuyWithEth } from '../../../../thunks';
+import { marketBuy, marketBuyWithEth } from '../../../../thunks';
 import BasePreviewFillOrders from './base';
 
 export default class PreviewFillAsks extends Component {
@@ -21,7 +22,13 @@ export default class PreviewFillAsks extends Component {
         getTotal={(baseToken, quoteToken, amount) =>
           this.getTotal(baseToken, quoteToken, amount)
         }
-        fillAction={marketBuyWithEth}
+        fillAction={marketBuy}
+        toBaseUnitAmount={(baseToken, quoteToken, amount) =>
+          Web3Wrapper.toBaseUnitAmount(
+            new BigNumber(amount),
+            quoteToken.decimals
+          )
+        }
       />
     );
   }

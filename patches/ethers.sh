@@ -1,0 +1,1 @@
+find ./node_modules -name ethers -type d -print -exec sed -i.bk 's|"browser": "./dist/ethers.js"|"browser": "./dist/ethers.min.js"|g' {}/package.json \;

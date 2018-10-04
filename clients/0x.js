@@ -1,13 +1,27 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import { cache, time } from '../decorators/cls';
-
-const TokenABI = require('../abi/Token.json');
-const BytesTokenABI = require('../abi/BytesToken.json');
+import { isValidSignedOrder } from '../utils';
 
 export default class ZeroExClient {
   static NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
   static ZERO = new BigNumber(0);
+  static ORDER_FIELDS = [
+    'exchangeAddress',
+    'expirationTimeSeconds',
+    'feeRecipientAddress',
+    'makerAddress',
+    'makerAssetAmount',
+    'makerAssetData',
+    'makerFee',
+    'salt',
+    'senderAddress',
+    'signature',
+    'takerAddress',
+    'takerAssetAmount',
+    'takerAssetData',
+    'takerFee'
+  ];
 
   constructor(ethereumClient) {
     this.ethereumClient = ethereumClient;
@@ -54,21 +68,20 @@ export default class ZeroExClient {
   @time
   async signOrderHash(orderHash) {
     const account = await this.ethereumClient.getAccount();
-    const signature = await signatureUtils.ecSignOrderHashAsync(
+    return signatureUtils.ecSignOrderHashAsync(
       this.ethereumClient.getCurrentProvider(),
       orderHash,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       SignerType.Metamask
     );
-    return signature;
   }
 
   @time
   async depositEther(amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const WETHAddress = await this.getWETHTokenAddress();
-    return await wrappers.etherToken.depositAsync(
+    const WETHAddress = await this.getWETHTokenAddress(true);
+    return wrappers.etherToken.depositAsync(
       WETHAddress,
       new BigNumber(amount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
@@ -79,8 +92,8 @@ export default class ZeroExClient {
   async withdrawEther(amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const WETHAddress = await this.getWETHTokenAddress();
-    return await wrappers.etherToken.withdrawAsync(
+    const WETHAddress = await this.getWETHTokenAddress(true);
+    return wrappers.etherToken.withdrawAsync(
       WETHAddress,
       new BigNumber(amount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
@@ -91,7 +104,7 @@ export default class ZeroExClient {
   async fillOrKillOrder(order, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    return await wrappers.exchange.fillOrKillOrderAsync(
+    return wrappers.exchange.fillOrKillOrderAsync(
       order,
       new BigNumber(amount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
@@ -103,7 +116,7 @@ export default class ZeroExClient {
   async fillOrKillOrders(orders, amounts) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    return await wrappers.exchange.batchFillOrKillOrdersAsync(
+    return wrappers.exchange.batchFillOrKillOrdersAsync(
       orders,
       amounts.map(amount => new BigNumber(amount)),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
@@ -114,9 +127,31 @@ export default class ZeroExClient {
   @time
   async cancelOrder(order) {
     const wrappers = await this.getContractWrappers();
-    return await wrappers.exchange.cancelOrderAsync(order, {
+    return wrappers.exchange.cancelOrderAsync(order, {
       shouldValidate: false
     });
+  }
+
+  @time
+  async marketBuy(orders, amount) {
+    const wrappers = await this.getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
+    return wrappers.exchange.marketBuyOrdersAsync(
+      orders,
+      new BigNumber(amount),
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    );
+  }
+
+  @time
+  async marketSell(orders, amount) {
+    const wrappers = await this.getContractWrappers();
+    const account = await this.ethereumClient.getAccount();
+    return wrappers.exchange.marketSellOrdersAsync(
+      orders,
+      new BigNumber(amount),
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    );
   }
 
   @time
@@ -130,28 +165,53 @@ export default class ZeroExClient {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
     const balance = await this.ethereumClient.getBalance(false);
-    return await wrappers.forwarder.marketBuyOrdersWithEthAsync(
+    return wrappers.forwarder.marketBuyOrdersWithEthAsync(
       orders,
       new BigNumber(amount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-      new BigNumber(balance),
+      new BigNumber(balance).sub(10 ** 16),
       feeOrders,
-      new BigNumber(feePercentage),
+      feePercentage,
       feeRecipient,
-      {}
+      {
+        gasLimit: 502887
+      }
     );
+
+    // This works
+    // return wrappers.exchangeAddress.fillOrderAsync(
+    //   orders[0],
+    //   new BigNumber(amount),
+    //   `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    //   {
+    //     gasLimit: 502887
+    //   }
+    // );
+
+    // return wrappers.forwarder.marketBuyOrdersWithEthAsync(
+    //   orders,
+    //   new BigNumber(10 ** 10),
+    //   `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    //   new BigNumber(10 ** 16),
+    //   [],
+    //   0,
+    //   '0x0000000000000000000000000000000000000000',
+    //   {
+    //     gasLimit: 502887
+    //   }
+    // );
   }
 
   @time
   async marketSellEth(orders, feeOrders, feePercentage, feeRecipient, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    return await wrappers.forwarder.marketSellOrdersWithEthAsync(
+    return wrappers.forwarder.marketSellOrdersWithEthAsync(
       orders,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       new BigNumber(amount),
       feeOrders,
-      new BigNumber(feePercentage),
+      feePercentage,
       feeRecipient,
       {}
     );

@@ -12,6 +12,10 @@ class TransactionItem extends Component {
     const { action } = this.props;
 
     switch (action) {
+      case 'MARKET_BUY':
+      case 'MARKET_SELL':
+      case 'MARKET_BUY_WITH_ETH':
+      case 'MARKET_SELL_ETH':
       case 'FILL':
       case 'CANCEL':
         return this.renderFillOrCancel();
@@ -88,7 +92,7 @@ class TransactionItem extends Component {
             <Text>{source ? source.amount : null}</Text>
             <Text> </Text>
             <Text>{source ? source.symbol : null}</Text>
-            <Text> for </Text>
+            <Text>{source && destination ? ' for ' : null}</Text>
             <Text>{destination.amount}</Text>
             <Text> </Text>
             <Text>{destination.symbol}</Text>

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TransactionItem from './TransactionItem';
-import { formatAmountWithDecimals } from '../../../utils';
 import * as AssetService from '../../../services/AssetService';
 
 class CancelledItem extends Component {
@@ -47,8 +46,6 @@ class CancelledItem extends Component {
     }
 
     let {
-      makerAssetAmount,
-      takerAssetAmount,
       timestamp
     } = this.props.transaction;
     let { makerToken, takerToken } = this.state;
@@ -58,17 +55,9 @@ class CancelledItem extends Component {
         action="CANCEL"
         label={'Cancelled'}
         source={{
-          amount: formatAmountWithDecimals(
-            makerAssetAmount,
-            makerToken.decimals
-          ),
           symbol: makerToken.symbol
         }}
         destination={{
-          amount: formatAmountWithDecimals(
-            takerAssetAmount,
-            takerToken.decimals
-          ),
           symbol: takerToken.symbol
         }}
         timestamp={timestamp}

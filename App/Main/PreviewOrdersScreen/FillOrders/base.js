@@ -186,13 +186,21 @@ class BasePreviewFillOrders extends Component {
   async submit() {
     const { amount, baseToken, quoteToken, fillAction } = this.props;
     const fillAmount = new BigNumber(amount);
+    const baseUnitFillAmount = this.props.toBaseUnitAmount(
+      baseToken,
+      quoteToken,
+      fillAmount
+    );
 
     this.setState({ showFilling: true });
     this.props.hideHeader();
 
     try {
       await this.props.dispatch(
-        fillAction(`${baseToken.symbol}-${quoteToken.symbol}`, fillAmount)
+        fillAction(
+          `${baseToken.symbol}-${quoteToken.symbol}`,
+          baseUnitFillAmount
+        )
       );
     } catch (err) {
       NavigationService.error(err);
@@ -218,6 +226,7 @@ BasePreviewFillOrders.propTypes = {
   getSubtotal: PropTypes.func.isRequired,
   getTotalFee: PropTypes.func.isRequired,
   getTotal: PropTypes.func.isRequired,
+  toBaseUnitAmount: PropTypes.func.isRequired,
   hideHeader: PropTypes.func.isRequired,
   showHeader: PropTypes.func.isRequired
 };

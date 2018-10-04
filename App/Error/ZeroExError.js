@@ -15,6 +15,8 @@ export default class ZeroExError extends Component {
       case 'INSUFFICIENT_TAKER_BALANCE':
       case 'ORDER_FILL_AMOUNT_ZERO':
       case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
+      case 'ERC20_TOKEN_CONTRACT_DOES_NOT_EXIST':
+      case 'CONTRACT_NOT_DEPLOYED_ON_NETWORK':
         return true;
     }
 
@@ -48,19 +50,18 @@ export default class ZeroExError extends Component {
       case 'INSUFFICIENT_TAKER_ALLOWANCE':
         return (
           <Text style={styles.text}>
-            <Text>
-              For some reason 0x cannot pull out funds from your wallet. It
-              seems you have reached an error with Mobidex. Awesome!
-            </Text>
-            <Text
-              onPress={() =>
-                Linking.openURL(
-                  'mailto://somethingemail@gmail.com&subject=abcdefg&body=body'
-                )
-              }
-            >
-              click here to notify the Mobidex team
-            </Text>
+            For some reason 0x cannot pull out funds from your wallet. It seems
+            you have reached an error with Mobidex. Awesome! You should probably
+            reach out to the Mobidex team.
+          </Text>
+        );
+      case 'CONTRACT_NOT_DEPLOYED_ON_NETWORK':
+      case 'ERC20_TOKEN_CONTRACT_DOES_NOT_EXIST':
+        return (
+          <Text style={styles.text}>
+            For some reason 0x cannot find the token on the ethereum blockchain.
+            This is super weird. You should probably reach out to the Mobidex
+            team.
           </Text>
         );
     }

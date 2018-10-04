@@ -82,7 +82,7 @@ export function loadOrderbooks(force = false) {
 
 export function loadOrders(force = false) {
   return async (dispatch, getState) => {
-    let {
+    const {
       settings: { network, relayerEndpoint }
     } = getState();
 
@@ -90,10 +90,8 @@ export function loadOrders(force = false) {
       const client = new RelayerClient(relayerEndpoint, { network });
       const orders = await client.getOrders(force);
       dispatch(setOrders(fixOrders(orders)));
-      return true;
     } catch (err) {
       NavigationService.error(err);
-      return false;
     }
   };
 }
@@ -398,24 +396,27 @@ export function cancelOrder(order) {
       throw new Error('Cannot cancel order that is not yours');
     }
 
-    const makerTokenAddress = assetDataUtils.decodeERC20AssetData(
-      order.makerAssetData
-    ).tokenAddress;
+    // TODO: Remove
+    // const makerTokenAddress = assetDataUtils.decodeERC20AssetData(
+    //   order.makerAssetData
+    // ).tokenAddress;
+    // try {
+    //   await dispatch(
+    //     checkAndUnwrapEther(makerTokenAddress, order.makerAssetAmount, {
+    //       wei: true,
+    //       batch: false
+    //     })
+    //   );
+    // } catch (err) {
+    //   console.warn(err);
+    //   if (err.message !== 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL') {
+    //     throw err;
+    //   }
+    // }
 
-    try {
-      await dispatch(
-        checkAndUnwrapEther(makerTokenAddress, order.makerAssetAmount, {
-          wei: true,
-          batch: false
-        })
-      );
-    } catch (err) {
-      console.warn(err);
-      if (err.message !== 'INSUFFICIENT_WETH_BALANCE_FOR_WITHDRAWAL') {
-        throw err;
-      }
-    }
-    const txhash = await zeroExClient.cancelOrder(order);
+    const txhash = await zeroExClient.cancelOrder(
+      _.pick(order, ZeroExClient.ORDER_FIELDS)
+    );
     const activeTransaction = {
       ...order,
       id: txhash,

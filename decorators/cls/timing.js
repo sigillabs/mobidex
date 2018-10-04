@@ -12,10 +12,9 @@ export function time(target, name, descriptor) {
         return await original.apply(this, args);
       } catch (err) {
         console.warn(
-          `Timed ${name}(${JSON.stringify(
+          `Timing Error ${name}(${JSON.stringify(
             Array.prototype.slice.call(args, 0)
-          )}): Errored During Timing: ${err.message}`,
-          err
+          )}): ${err.message}`
         );
         throw err;
       } finally {

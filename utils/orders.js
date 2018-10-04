@@ -1,4 +1,4 @@
-import { BigNumber } from '0x.js';
+import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
 
 export function findOrdersThatCoverMakerAssetFillAmount(
   orders,
@@ -30,4 +30,17 @@ export function findOrdersThatCoverMakerAssetFillAmount(
   }
 
   return result;
+}
+
+export function isValidSignedOrder(order) {
+  const hash = orderHashUtils.getOrderHashHex(order);
+  const prefixedMessage = signatureUtils.addSignedMessagePrefix(
+    hash,
+    SignerType.Metamask
+  );
+  return signatureUtils.isValidECSignature(
+    prefixedMessage,
+    signatureUtils.parseECSignature(order.signature),
+    order.makerAddress
+  );
 }
