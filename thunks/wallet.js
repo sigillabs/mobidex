@@ -123,11 +123,15 @@ export function loadTransactions(force = false) {
             address: log.address
           }));
 
-          return filltxs
+          const alltx = filltxs
             .concat(canceltxs)
             .concat(depositstxs)
             .concat(withdrawalstxs)
             .concat(approvalstxs);
+
+          alltx.sort((txa, txb) => txb.timestamp - txa.timestamp);
+
+          return alltx;
         },
         force ? 0 : 10 * 60
       );
