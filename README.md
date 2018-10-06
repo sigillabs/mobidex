@@ -1,5 +1,7 @@
 # Mobidex
 
+![animated preview](https://github.com/sigillabs/mobidex/raw/master/images/previews/animated/10-06-2018T13-57-49.gif)
+
 ## Table of Contents
 
 * [Setup](#setup)
@@ -20,6 +22,8 @@ System Dependencies:
 
 * node 8.6.0 or newer
 * g++
+* Android Studio
+* XCode
 
 ### Mac OS X Specific Setup
 
