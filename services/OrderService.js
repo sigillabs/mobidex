@@ -240,6 +240,24 @@ export async function getFilledTakerAmounts(orders) {
   );
 }
 
+export async function getRemainingFillableMakerAssetAmounts(orders) {
+  if (!orders) return null;
+  if (!orders.length) return [];
+
+  const filledTakerAmounts = await getFilledTakerAmounts(orders);
+  const remainingFillableMakerAssetAmounts = _.zip(
+    orders,
+    filledTakerAmounts
+  ).map(([order, filledTakerAmount]) =>
+    new BigNumber(order.takerAssetAmount)
+      .sub(filledTakerAmount)
+      .div(order.takerAssetAmount)
+      .mul(order.makerAssetAmount)
+  );
+
+  return remainingFillableMakerAssetAmounts;
+}
+
 export async function getRemainingFillableTakerAssetAmounts(orders) {
   if (!orders) return null;
   if (!orders.length) return [];

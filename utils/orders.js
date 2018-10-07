@@ -1,6 +1,6 @@
 import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
 
-export function findOrdersThatCoverMakerAssetFillAmount(
+export function findOrdersThatCoverTakerAssetFillAmount(
   orders,
   takerAssetAmount,
   options

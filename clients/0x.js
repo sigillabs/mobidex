@@ -160,16 +160,16 @@ export default class ZeroExClient {
     feeOrders,
     feePercentage,
     feeRecipient,
-    amount
+    makerAmount,
+    ethAmount
   ) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const balance = await this.ethereumClient.getBalance(false);
     return wrappers.forwarder.marketBuyOrdersWithEthAsync(
       orders,
-      new BigNumber(amount),
+      new BigNumber(makerAmount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-      new BigNumber(balance).sub(10 ** 16),
+      new BigNumber(ethAmount),
       feeOrders,
       feePercentage,
       feeRecipient,

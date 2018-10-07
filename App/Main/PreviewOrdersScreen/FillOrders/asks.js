@@ -22,7 +22,7 @@ export default class PreviewFillAsks extends Component {
         getTotal={(baseToken, quoteToken, amount) =>
           this.getTotal(baseToken, quoteToken, amount)
         }
-        fillAction={marketBuy}
+        fillAction={marketBuyWithEth}
         toBaseUnitAmount={(baseToken, quoteToken, amount) =>
           Web3Wrapper.toBaseUnitAmount(
             new BigNumber(amount),

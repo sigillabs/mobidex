@@ -1,10 +1,10 @@
+import { marketUtils } from '@0xproject/order-utils';
 import { BigNumber } from '0x.js';
 import * as _ from 'lodash';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
-import { findOrdersThatCoverMakerAssetFillAmount } from '../utils';
 
 export function deposit(address, amount) {
   return async (dispatch, getState) => {
@@ -106,13 +106,38 @@ export function marketBuyWithEth(product, amount) {
     const feeOrders = orderbooks['ZRX-WETH']['asks'].map(order =>
       _.pick(order, ZeroExClient.ORDER_FIELDS)
     );
+    const remainingFillableMakerAssetAmounts = await OrderService.getRemainingFillableMakerAssetAmounts(
+      orders
+    );
+    const {
+      ordersRemainingFillableMakerAssetAmounts,
+      remainingFillAmount,
+      resultOrders
+    } = marketUtils.findOrdersThatCoverMakerAssetFillAmount(
+      orders,
+      new BigNumber(amount),
+      {
+        remainingFillableMakerAssetAmounts,
+        slippageBufferAmount: ZeroExClient.ZERO
+      }
+    );
+    const fillableAmount = resultOrders.reduce(
+      (acc, order, index) =>
+        acc.add(
+          ordersRemainingFillableMakerAssetAmounts[index]
+            .div(order.makerAssetAmount)
+            .mul(order.takerAssetAmount)
+        ),
+      ZeroExClient.ZERO
+    );
 
     const txhash = await zeroExClient.marketBuyWithEth(
       orders,
       feeOrders,
       ZeroExClient.ZERO.toNumber(),
       ZeroExClient.NULL_ADDRESS,
-      amount
+      new BigNumber(amount).sub(remainingFillAmount),
+      fillableAmount
     );
     const activeTransaction = {
       id: txhash,
@@ -234,4 +259,3 @@ export function marketSell(product, amount) {
     await TransactionService.instance.addActiveTransaction(activeTransaction);
   };
 }
-
