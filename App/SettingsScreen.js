@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import NavigationService from '../services/NavigationService';
 import MutedText from './components/MutedText';
 import NormalHeader from './headers/Normal';
 
@@ -29,7 +30,7 @@ class SettingsScreen extends Component {
           />
           <ListItem
             title={<MutedText>Network</MutedText>}
-            subtitle={<Text>{network}</Text>}
+            subtitle={<Text>{network === 1 ? 'mainnet' : 'testnet'}</Text>}
           />
           <ListItem
             title={<MutedText>Relayer Endpoint</MutedText>}
@@ -43,6 +44,18 @@ class SettingsScreen extends Component {
               </Text>
             }
           />
+          <ListItem
+            title={<MutedText>Compliance</MutedText>}
+            subtitle={
+              <TouchableOpacity
+                onPress={() => {
+                  NavigationService.navigate('WyreVerification');
+                }}
+              >
+                <Text>Click here</Text>
+              </TouchableOpacity>
+            }
+          />
         </ScrollView>
       </View>
     );
@@ -51,7 +64,7 @@ class SettingsScreen extends Component {
 
 SettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
-  network: PropTypes.string.isRequired,
+  network: PropTypes.number.isRequired,
   relayerEndpoint: PropTypes.string.isRequired,
   forexCurrency: PropTypes.string.isRequired,
   quoteSymbol: PropTypes.string.isRequired

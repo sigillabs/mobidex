@@ -63,6 +63,7 @@
 		C24624756027419C81BFA1A5 /* libRCTRestart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */; };
 		C87B1B02CB19440194224338 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C1CAD49E578430987ED19B2 /* MaterialCommunityIcons.ttf */; };
 		D2DC8355516646D09E47956A /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4489169E69EF4AE0A3BDA512 /* FontAwesome.ttf */; };
+		F1A21D8AD4964062BCD968BA /* libRNWeb3Webview.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B72D62ABBCC41B89F9BC6E0 /* libRNWeb3Webview.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -240,6 +241,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
+		};
+		309850A8216F04DB00B8FF27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 163CDE4E2087CAD3001065FB;
+			remoteInfo = "RNRandomBytes-tvOS";
+		};
+		309850B0216F04DC00B8FF27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C6D0292C74664DBCBC8CEE85 /* RNWeb3Webview.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNWeb3Webview;
 		};
 		309C4D9E20DD761500B6EBB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -429,6 +444,7 @@
 		14E97D0DE6BB4973859D0C2F /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		168FB06E184A430ABEC3D593 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		2689DC0CF77740A1A489C005 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		2B72D62ABBCC41B89F9BC6E0 /* libRNWeb3Webview.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNWeb3Webview.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -460,6 +476,7 @@
 		AA01BB5DD0804CF78D3D67F5 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		C66DEE3EE1104F138E382177 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		C6D0292C74664DBCBC8CEE85 /* RNWeb3Webview.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNWeb3Webview.xcodeproj; path = "../node_modules/react-native-web3-webview/ios/RNWeb3Webview.xcodeproj"; sourceTree = "<group>"; };
 		EC724CCF91FA4437A902DFCE /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "../node_modules/react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<group>"; };
 		FD94ED3CAB15D32CA0118F0A /* Pods_mobidex.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_mobidex.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECCEE005B7F4F049EE9EEE7 /* libRNRandomBytes.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNRandomBytes.a; sourceTree = "<group>"; };
@@ -503,6 +520,7 @@
 				304C60AF20F1D0E000C08882 /* CoreData.framework in Frameworks */,
 				4604C6C67C1EC95D7FB704E5 /* Pods_mobidex.framework in Frameworks */,
 				C24624756027419C81BFA1A5 /* libRCTRestart.a in Frameworks */,
+				F1A21D8AD4964062BCD968BA /* libRNWeb3Webview.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +695,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		309850AD216F04DB00B8FF27 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				309850B1216F04DC00B8FF27 /* libRNWeb3Webview.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		309C4D7420DD761500B6EBB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -690,6 +716,7 @@
 			isa = PBXGroup;
 			children = (
 				30EB9EF620DB83560088F4BF /* libRNRandomBytes.a */,
+				309850A9216F04DB00B8FF27 /* libRNRandomBytes-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -706,6 +733,7 @@
 			isa = PBXGroup;
 			children = (
 				5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */,
+				2B72D62ABBCC41B89F9BC6E0 /* libRNWeb3Webview.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -767,6 +795,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */,
 				EC724CCF91FA4437A902DFCE /* RCTRestart.xcodeproj */,
+				C6D0292C74664DBCBC8CEE85 /* RNWeb3Webview.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1032,6 +1061,10 @@
 					ProductGroup = 3053033B20E97352004908AB /* Products */;
 					ProjectRef = 3053033A20E97352004908AB /* RNVectorIcons.xcodeproj */;
 				},
+				{
+					ProductGroup = 309850AD216F04DB00B8FF27 /* Products */;
+					ProjectRef = C6D0292C74664DBCBC8CEE85 /* RNWeb3Webview.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1203,6 +1236,20 @@
 			fileType = archive.ar;
 			path = libRNVectorIcons.a;
 			remoteRef = 3053033E20E97352004908AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		309850A9216F04DB00B8FF27 /* libRNRandomBytes-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNRandomBytes-tvOS.a";
+			remoteRef = 309850A8216F04DB00B8FF27 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		309850B1216F04DC00B8FF27 /* libRNWeb3Webview.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNWeb3Webview.a;
+			remoteRef = 309850B0216F04DC00B8FF27 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		309C4D9F20DD761500B6EBB5 /* libRNSVG.a */ = {
@@ -1577,12 +1624,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1606,12 +1655,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1639,6 +1690,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1675,6 +1727,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1713,11 +1766,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1750,11 +1805,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1786,11 +1843,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1822,11 +1881,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-web3-webview/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);

@@ -31,6 +31,7 @@ import PinScreen from './Onboarding/PinScreen';
 import PreviewMnemonicScreen from './Onboarding/PreviewMnemonicScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
+import WyreVerificationScreen from './WyreVerificationScreen.js';
 import LoadingScreen from './LoadingScreen';
 import ActiveTransactionsOverlay from './views/ActiveTransactionsOverlay';
 import ActiveOrdersOverlay from './views/ActiveOrdersOverlay';
@@ -188,6 +189,43 @@ const WalletNavigation = createStackNavigator(
 );
 WalletNavigation.router = AnalyticsService.wrapRouter(WalletNavigation.router);
 
+const SettingsNavigation = createStackNavigator(
+  {
+    About: { screen: SettingsScreen },
+    WyreVerification: { screen: WyreVerificationScreen }
+  },
+  {
+    cardStyle: {
+      backgroundColor: colors.background
+    },
+    initialRouteName: 'About',
+    lazy: true,
+    headerMode: 'float',
+    navigationOptions: ({ navigation }) => ({
+      header: () => {
+        if (navigation.getParam('hideHeader')) {
+          return null;
+        }
+
+        switch (navigation.state.routeName) {
+          case 'WyreVerification':
+            return null;
+
+          case 'About':
+            return (
+              <NormalHeader
+                navigation={navigation}
+                title="Receive Tokens"
+                showBackButton={true}
+              />
+            );
+        }
+      }
+    })
+  }
+);
+WalletNavigation.router = AnalyticsService.wrapRouter(WalletNavigation.router);
+
 const ProductsNavigation = createStackNavigator(
   {
     List: { screen: ProductScreen },
@@ -254,7 +292,7 @@ const MainTabsNavigator = createTabNavigator(
     Products: { screen: ProductsNavigation },
     Orders: { screen: OrdersNavigation },
     Wallet: { screen: WalletNavigation },
-    Settings: { screen: SettingsScreen }
+    Settings: { screen: SettingsNavigation }
   },
   {
     cardStyle: {
