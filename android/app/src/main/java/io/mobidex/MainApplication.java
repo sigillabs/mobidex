@@ -3,6 +3,14 @@ package io.mobidex;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.horcrux.svg.SvgPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -30,6 +38,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new VectorIconsPackage(),
+            new SvgPackage(),
+            new ReactNativeRestartPackage(),
+            new RandomBytesPackage(),
+            new ReactNativePushNotificationPackage(),
+            new GoogleAnalyticsBridgePackage(),
+            new ReactNativeExceptionHandlerPackage(),
+            new RNDeviceInfo(),
         new ReactNativeExceptionHandlerPackage(),
         new ReactNativeRestartPackage(),
         new RNDeviceInfo(),

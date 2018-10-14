@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
 
@@ -81,8 +80,8 @@ apply from: "../../node_modules/react-native/react.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
- *   An APK that only works on ARM devices
- *   An APK that only works on x86 devices
+ *   - An APK that only works on ARM devices
+ *   - An APK that only works on x86 devices
  * The advantage is the size of the APK is reduced by about 4MB.
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
@@ -95,8 +94,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     signingConfigs {
         release {
@@ -111,14 +110,13 @@ android {
 
     defaultConfig {
         applicationId "io.mobidex"
-        minSdkVersion 23
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 24
         versionName "0.6.24"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
-        multiDexEnabled true
     }
     splits {
         abi {
@@ -129,14 +127,9 @@ android {
         }
     }
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            debuggable true
-        }
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -152,60 +145,20 @@ android {
             }
         }
     }
-
-    packagingOptions {
-        exclude 'META-INF/main.kotlin_module'
-    }
 }
 
 dependencies {
-    compile project(':react-native-exception-handler')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-svg')
     compile project(':react-native-restart')
-    api (project(':react-native-device-info')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-google-analytics-bridge')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-exception-handler')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-svg')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-randombytes')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api (project(':react-native-vector-icons')) {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api fileTree(dir: "libs", include: ["*.jar"])
-//    compile "com.android.support:appcompat-v7:23.0.1"
-//    compile "com.facebook.react:react-native:+"  // From node_modules
-    api ("org.bouncycastle:bcprov-jdk15on:1.59") {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-//    api ("org.web3j:core:3.3.1-android") {
-//        exclude group: "com.android.support", module: "support-v4"
-//    }
-    implementation ('com.github.walleth.kethereum:base58:0.53') {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    implementation ("com.github.walleth.kethereum:bip39:0.53") {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    implementation ("com.github.walleth.kethereum:bip32:0.53") {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    implementation ("com.github.walleth.kethereum:wallet:0.53") {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    // Make sure appcompat and support are the same version
-    // appcompat and support must be version 26.1.0 for reactnavigation to work
-    api ("com.android.support:appcompat-v7:26.1.0") {
-        exclude group: "com.android.support", module: "support-v4"
-    }
-    api ("com.android.support:support-v4:27.1.0")
+    compile project(':react-native-randombytes')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-google-analytics-bridge')
+    compile project(':react-native-exception-handler')
+    compile project(':react-native-device-info')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.facebook.react:react-native:+"  // From node_modules
 }
 
 // Run this once to be able to run the application with BUCK
