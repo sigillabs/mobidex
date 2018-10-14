@@ -87,7 +87,7 @@ export async function lock() {
 export async function unlock(password = null) {
   if (!_web3) {
     const {
-      settings: { ethereumNodeEndpoint, network }
+      settings: { ethereumNodeEndpoint }
     } = _store.getState();
 
     const exists = await isLocked();
@@ -99,7 +99,7 @@ export async function unlock(password = null) {
     const address = ethUtil.stripHexPrefix(addressBuffer.toString('hex'));
 
     const engine = ZeroClientProvider({
-      rpcUrl: ethereumNodeEndpoint, //getURLFromNetwork(network),
+      rpcUrl: ethereumNodeEndpoint,
       getAccounts: cb => {
         cb(null, [`0x${address.toLowerCase()}`]);
       },

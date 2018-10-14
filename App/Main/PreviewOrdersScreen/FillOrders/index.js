@@ -20,6 +20,7 @@ export default class PreviewFillOrders extends Component {
           amount={this.props.navigation.state.params.amount}
           hideHeader={hideHeader}
           showHeader={showHeader}
+          fee={0}
         />
       );
     } else {
@@ -31,6 +32,7 @@ export default class PreviewFillOrders extends Component {
           amount={this.props.navigation.state.params.amount}
           hideHeader={hideHeader}
           showHeader={showHeader}
+          fee={0}
         />
       );
     }

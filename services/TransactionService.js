@@ -29,11 +29,8 @@ export class ActiveTransactionWatchdog extends BaseWatchdog {
               }
             });
           });
-
           if (receipt) {
-            TransactionService.instance.removeActiveTransaction({
-              id: txhash
-            });
+            TransactionService.instance.removeActiveTransaction({ id: txhash });
           }
         } catch (err) {
           console.warn(err.message);

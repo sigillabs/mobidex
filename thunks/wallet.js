@@ -1,6 +1,7 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import * as _ from 'lodash';
+import { InteractionManager } from 'react-native';
 import {
   addActiveTransactions,
   addTransactions,
@@ -10,6 +11,7 @@ import {
 import EthereumClient from '../clients/ethereum';
 import Inf0xClient from '../clients/inf0x';
 import TokenClient from '../clients/token';
+import ZeroExClient from '../clients/0x';
 import * as AssetService from '../services/AssetService';
 import NavigationService from '../services/NavigationService';
 import { TransactionService } from '../services/TransactionService';
@@ -27,16 +29,19 @@ export function loadAllowances(force = false) {
       assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
         const tokenClient = new TokenClient(ethereumClient, address);
         return tokenClient
-          .getAllowance(force)
+          .getAllowance(null, force)
           .then(allowance => ({ [address]: allowance }));
       })
     );
-    const allAllowances = allowances.reduce(
-      (acc, obj) => _.merge(acc, obj),
-      {}
-    );
 
-    dispatch(setAllowances(allAllowances));
+    InteractionManager.runAfterInteractions(() => {
+      const allAllowances = allowances.reduce(
+        (acc, obj) => _.merge(acc, obj),
+        {}
+      );
+
+      dispatch(setAllowances(allAllowances));
+    });
   };
 }
 
@@ -55,14 +60,17 @@ export function loadBalances(force = false) {
           .then(balance => ({ [address]: balance }));
       })
     );
-    const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+    const ethereumBalance = await ethereumClient.getBalance(force);
 
-    dispatch(setBalances(allBalances));
-    dispatch(
-      setBalances({
-        null: await ethereumClient.getBalance(force)
-      })
-    );
+    InteractionManager.runAfterInteractions(() => {
+      const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+      dispatch(setBalances(allBalances));
+      dispatch(
+        setBalances({
+          null: ethereumBalance
+        })
+      );
+    });
   };
 }
 
@@ -135,7 +143,9 @@ export function loadTransactions(force = false) {
         },
         force ? 0 : 10 * 60
       );
-      dispatch(addTransactions(transactions));
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(addTransactions(transactions));
+      });
     } catch (err) {
       NavigationService.error(err);
     }
@@ -263,30 +273,16 @@ export function setUnlimitedProxyAllowance(address) {
   };
 }
 
-export function checkAndSetTokenAllowance(
-  address,
-  amount,
-  options = { wei: false, batch: false }
-) {
+export function checkAndSetUnlimitedProxyAllowance(address) {
   return async (dispatch, getState) => {
     const {
       wallet: { web3 }
     } = getState();
     const ethereumClient = new EthereumClient(web3);
     const tokenClient = new TokenClient(ethereumClient, address);
-    const asset = AssetService.findAssetByAddress(address);
 
-    if (!asset) {
-      throw new Error('Could not find asset');
-    }
-
-    const { decimals } = asset;
-    const amt = options.wei
-      ? new BigNumber(amount)
-      : Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), decimals);
-
-    const allowance = await tokenClient.getAllowance();
-    if (new BigNumber(amt).gt(allowance)) {
+    const allowance = await tokenClient.getAllowance(null);
+    if (new BigNumber(allowance).lt(ZeroExClient.MAX)) {
       await dispatch(setUnlimitedProxyAllowance(address));
     }
   };

@@ -1,4 +1,5 @@
 import { BigNumber } from '0x.js';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
@@ -7,6 +8,10 @@ import * as TickerService from '../../../services/TickerService';
 import * as WalletService from '../../../services/WalletService';
 
 export default class PortfolioDetails extends Component {
+  static propTypes = {
+    assets: PropTypes.array.isRequired
+  };
+
   render() {
     const { assets } = this.props;
     const balance = assets

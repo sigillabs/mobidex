@@ -3,21 +3,23 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "prepare": "npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3",
+        "prepare":
+            "npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3 && npm run patch:ethers",
         "start": "node node_modules/react-native/local-cli/cli.js start",
         "patch:ethers": "./patches/ethers.sh",
         "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
         "patch:whatwg-fetch": "./patches/whatwg-fetch.sh",
         "patch:web3": "./patches/web3.sh",
         "build:android:release": "cli/build-android.sh",
-        "build:ios:release": "echo 'You need to build an archive via XCode!'"
+        "build:ios:release": "echo 'You need to build an archive via XCode!'",
+        "bundle:android":
+            "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
     },
     "dependencies": {
         "0x.js": "^1.0.0",
         "@0xproject/connect": "^3.0.0",
         "@0xproject/order-utils": "^1.0.0",
         "@0xproject/web3-wrapper": "^3.0.0",
-        "babel-plugin-transform-remove-console": "^6.9.0",
         "bignumber.js": "^5.0.0",
         "coinmarketcap-api": "^1.0.2",
         "eth-sig-util": "^1.4.2",
@@ -56,7 +58,7 @@
         "react-native-swipeout": "^2.3.3",
         "react-native-vector-icons": "^4.5.0",
         "react-native-virtual-keyboard": "^1.0.8",
-        "react-navigation": "^2.3.1",
+        "react-navigation": "^2.18.0",
         "react-redux": "^5.0.6",
         "react-router-native": "^4.2.0",
         "react-timer-mixin": "^0.13.3",
@@ -79,6 +81,7 @@
         "babel-jest": "22.4.3",
         "babel-plugin-transform-async-to-generator": "^6.24.1",
         "babel-plugin-transform-decorators-legacy": "^1.3.4",
+        "babel-plugin-transform-remove-console": "^6.9.4",
         "babel-preset-es2015": "^6.24.1",
         "babel-preset-es2017": "^6.24.1",
         "babel-preset-react-native": "4.0.0",

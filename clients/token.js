@@ -132,11 +132,15 @@ export default class TokenClient {
   @cache(function() {
     return 'client:token:' + this.address + ':allowance';
   }, 60)
-  async getAllowance() {
+  async getAllowance(account = null) {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient
     ).getContractWrappers();
-    const account = await this.ethereumClient.getAccount();
+
+    if (account == null) {
+      account = await this.ethereumClient.getAccount();
+    }
+
     return await contractWrappers.erc20Token.getProxyAllowanceAsync(
       `0x${ethUtil.stripHexPrefix(this.address.toString())}`,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
@@ -144,11 +148,15 @@ export default class TokenClient {
   }
 
   @time
-  async setUnlimitedProxyAllowance() {
+  async setUnlimitedProxyAllowance(account = null) {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient
     ).getContractWrappers();
-    const account = await this.ethereumClient.getAccount();
+
+    if (account == null) {
+      account = await this.ethereumClient.getAccount();
+    }
+
     return await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
       `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`

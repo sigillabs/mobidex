@@ -14,9 +14,9 @@ const initialState = {
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   showForexPrices: false,
-  gasPrice: '3000000000',
-  // gasPrice: '4000000000',
-  maxGas: '520000'
+  gasPrice: 3000000000,
+  gasLimit: 620000,
+  minimumBalance: 10 ** 16
 };
 
 export default handleActions(

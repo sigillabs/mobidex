@@ -291,19 +291,38 @@ class ProductScreen extends Component {
     );
   }
 
-  onRefresh(reload = true) {
+  async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    InteractionManager.runAfterInteractions(async () => {
-      await this.props.dispatch(loadProducts(reload));
-      await this.props.dispatch(loadAssets(reload));
-      await this.props.dispatch(loadAllowances(reload));
-      await this.props.dispatch(loadBalances(reload));
+    await this.props.dispatch(loadProducts(reload));
+    await this.props.dispatch(loadAssets(reload));
+    this.setState({ refreshing: false });
+
+    InteractionManager.runAfterInteractions(() => {
+      this.props.dispatch(loadAllowances(reload));
+    });
+
+    InteractionManager.runAfterInteractions(() => {
+      this.props.dispatch(loadBalances(reload));
+    });
+
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(updateForexTickers(reload));
+    });
+
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(updateTokenTickers(reload));
+    });
+
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(loadActiveTransactions());
+    });
+
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(loadOrders());
+    });
+
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(loadOrderbooks());
-      this.setState({ refreshing: false });
     });
   }
 }

@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { InteractionManager } from 'react-native';
 import { updateForexTicker, updateTokenTicker } from '../actions';
 import Inf0xClient from '../clients/inf0x';
 
@@ -12,7 +13,9 @@ export function updateForexTickers(force = false) {
     const products = assets.map(({ symbol }) => `${symbol}-${forexCurrency}`);
 
     const jsonResponse = await client.getForexTicker(products, force);
-    dispatch(updateForexTicker(jsonResponse));
+    InteractionManager.runAfterInteractions(() => {
+      dispatch(updateForexTicker(jsonResponse));
+    });
   };
 }
 
@@ -31,6 +34,8 @@ export function updateTokenTickers(force = false) {
       .filter(([tokenA, tokenB]) => tokenA && tokenB)
       .map(([tokenA, tokenB]) => `${tokenB.symbol}-${tokenA.symbol}`);
     const jsonResponse = await client.getTokenTicker(_products, force);
-    dispatch(updateTokenTicker(jsonResponse));
+    InteractionManager.runAfterInteractions(() => {
+      dispatch(updateTokenTicker(jsonResponse));
+    });
   };
 }

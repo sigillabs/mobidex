@@ -7,29 +7,38 @@ export function findOrdersThatCoverTakerAssetFillAmount(
 ) {
   if (!orders || !orders.length) return [];
   if (!options) options = {};
-  takerAssetAmount = new BigNumber(takerAssetAmount);
+  let remainingFillAmount = new BigNumber(takerAssetAmount);
 
   const remainingFillableTakerAssetAmounts =
     options.remainingFillableTakerAssetAmounts || [];
-  const result = [];
+  const resultOrders = [];
+  const ordersRemainingFillableTakerAssetAmounts = [];
 
   for (let i = 0; i < orders.length; ++i) {
-    if (takerAssetAmount.lte(0)) {
+    if (remainingFillAmount.lte(0)) {
       break;
     }
 
     if (remainingFillableTakerAssetAmounts[i]) {
-      takerAssetAmount = takerAssetAmount.sub(
+      ordersRemainingFillableTakerAssetAmounts.push(
+        remainingFillableTakerAssetAmounts[i]
+      );
+      remainingFillAmount = remainingFillAmount.sub(
         remainingFillableTakerAssetAmounts[i]
       );
     } else {
-      takerAssetAmount = takerAssetAmount.sub(orders[i].takerAssetAmount);
+      ordersRemainingFillableTakerAssetAmounts.push(orders[i].takerAssetAmount);
+      remainingFillAmount = remainingFillAmount.sub(orders[i].takerAssetAmount);
     }
 
-    result.push(orders[i]);
+    resultOrders.push(orders[i]);
   }
 
-  return result;
+  return {
+    ordersRemainingFillableTakerAssetAmounts,
+    remainingFillAmount,
+    resultOrders
+  };
 }
 
 export function isValidSignedOrder(order) {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ZeroExClient from '../../../../clients/0x';
 import * as OrderService from '../../../../services/OrderService';
-import { marketBuy, marketBuyWithEth } from '../../../../thunks';
+import { batchMarketBuyWithEth } from '../../../../thunks';
 import BasePreviewFillOrders from './base';
 
 export default class PreviewFillAsks extends Component {
@@ -22,7 +22,7 @@ export default class PreviewFillAsks extends Component {
         getTotal={(baseToken, quoteToken, amount) =>
           this.getTotal(baseToken, quoteToken, amount)
         }
-        fillAction={marketBuyWithEth}
+        fillAction={batchMarketBuyWithEth}
         toBaseUnitAmount={(baseToken, quoteToken, amount) =>
           Web3Wrapper.toBaseUnitAmount(
             new BigNumber(amount),

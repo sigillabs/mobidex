@@ -23,3 +23,12 @@ export async function cache(ns, update, expiration = 60 * 60 * 24) {
 
   return data;
 }
+
+export async function clearCache() {
+  const keys = await AsyncStorage.getAllKeys();
+  const dataKeys = keys.filter(key => key.indexOf(':data') !== -1);
+  const lastUpdatedKeys = keys.filter(
+    key => key.indexOf(':last-updated') !== -1
+  );
+  await AsyncStorage.multiRemove(dataKeys.concat(lastUpdatedKeys));
+}

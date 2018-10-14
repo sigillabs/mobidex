@@ -1,11 +1,11 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import { cache, time } from '../decorators/cls';
-import { isValidSignedOrder } from '../utils';
 
 export default class ZeroExClient {
   static NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
   static ZERO = new BigNumber(0);
+  static MAX = new BigNumber(2).pow(256).minus(1);
   static ORDER_FIELDS = [
     'exchangeAddress',
     'expirationTimeSeconds',
@@ -23,8 +23,49 @@ export default class ZeroExClient {
     'takerFee'
   ];
 
-  constructor(ethereumClient) {
+  constructor(ethereumClient, options = {}) {
     this.ethereumClient = ethereumClient;
+    this.options = options;
+  }
+
+  async filterFillableOrders(orders) {
+    const wrappers = await this.getContractWrappers();
+    const orderFillableStatuses = await Promise.all(
+      orders.map(async order => {
+        try {
+          await wrappers.exchange.validateOrderFillableOrThrowAsync(order);
+          return true;
+        } catch (err) {
+          return false;
+        }
+      })
+    );
+    const fillableOrders = orders.filter(
+      (order, index) => orderFillableStatuses[index]
+    );
+    return fillableOrders;
+  }
+
+  async filterTestOrderFill(orders, amount, account) {
+    const wrappers = await this.getContractWrappers();
+    const orderFillableStatuses = await Promise.all(
+      orders.map(async order => {
+        try {
+          await wrappers.exchange.validateFillOrderThrowIfInvalidAsync(
+            order,
+            new BigNumber(amount),
+            `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+          );
+          return true;
+        } catch (err) {
+          return false;
+        }
+      })
+    );
+    const fillableOrders = orders.filter(
+      (order, index) => orderFillableStatuses[index]
+    );
+    return fillableOrders;
   }
 
   @time
@@ -136,10 +177,23 @@ export default class ZeroExClient {
   async marketBuy(orders, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
+    const fillableOrders = await this.filterTestOrderFill(
+      await this.filterFillableOrders(orders),
+      amount,
+      account
+    );
+
+    if (fillableOrders.length === 0) {
+      throw new Error(
+        'There are no more valid orders to fill. Sometimes this happens when there are several invalid orders stored in the orderbook.'
+      );
+    }
+
     return wrappers.exchange.marketBuyOrdersAsync(
-      orders,
+      fillableOrders,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      this.options
     );
   }
 
@@ -147,10 +201,23 @@ export default class ZeroExClient {
   async marketSell(orders, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
+    const fillableOrders = await this.filterTestOrderFill(
+      await this.filterFillableOrders(orders),
+      amount,
+      account
+    );
+
+    if (fillableOrders.length === 0) {
+      throw new Error(
+        'There are no more valid orders to fill. Sometimes this happens when there are several invalid orders stored in the orderbook.'
+      );
+    }
+
     return wrappers.exchange.marketSellOrdersAsync(
-      orders,
+      fillableOrders,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      { ...this.options, shouldValidate: true }
     );
   }
 
@@ -165,41 +232,25 @@ export default class ZeroExClient {
   ) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
+    const fillableOrders = await this.filterFillableOrders(orders);
+    const fillableFeeOrders = await this.filterFillableOrders(feeOrders);
+
+    if (fillableOrders.length === 0) {
+      throw new Error(
+        'There are no more valid orders to fill. Sometimes this happens when there are several invalid orders stored in the orderbook.'
+      );
+    }
+
     return wrappers.forwarder.marketBuyOrdersWithEthAsync(
-      orders,
+      fillableOrders,
       new BigNumber(makerAmount),
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
       new BigNumber(ethAmount),
-      feeOrders,
+      fillableFeeOrders,
       feePercentage,
       feeRecipient,
-      {
-        gasLimit: 502887
-      }
+      this.options
     );
-
-    // This works
-    // return wrappers.exchangeAddress.fillOrderAsync(
-    //   orders[0],
-    //   new BigNumber(amount),
-    //   `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-    //   {
-    //     gasLimit: 502887
-    //   }
-    // );
-
-    // return wrappers.forwarder.marketBuyOrdersWithEthAsync(
-    //   orders,
-    //   new BigNumber(10 ** 10),
-    //   `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-    //   new BigNumber(10 ** 16),
-    //   [],
-    //   0,
-    //   '0x0000000000000000000000000000000000000000',
-    //   {
-    //     gasLimit: 502887
-    //   }
-    // );
   }
 
   @time
@@ -213,7 +264,7 @@ export default class ZeroExClient {
       feeOrders,
       feePercentage,
       feeRecipient,
-      {}
+      this.options
     );
   }
 }

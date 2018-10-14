@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 
 export default class PinKeyboard extends Component {
@@ -10,7 +10,9 @@ export default class PinKeyboard extends Component {
         <VirtualKeyboard
           color="black"
           pressMode="char"
-          onPress={val => this.onChange(val)}
+          onPress={val =>
+            InteractionManager.runAfterInteractions(() => this.onChange(val))
+          }
           decimal={false}
           {...this.props}
         />

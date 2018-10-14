@@ -254,8 +254,13 @@ export async function getRemainingFillableMakerAssetAmounts(orders) {
       .div(order.takerAssetAmount)
       .mul(order.makerAssetAmount)
   );
+  const remainingFillableMakerAssetAmountsRounded = remainingFillableMakerAssetAmounts.map(
+    amount => amount.toFixed(0, BigNumber.ROUND_DOWN)
+  );
 
-  return remainingFillableMakerAssetAmounts;
+  return remainingFillableMakerAssetAmountsRounded.map(
+    amount => new BigNumber(amount)
+  );
 }
 
 export async function getRemainingFillableTakerAssetAmounts(orders) {
@@ -271,52 +276,6 @@ export async function getRemainingFillableTakerAssetAmounts(orders) {
   );
 
   return remainingFillableTakerAssetAmounts;
-}
-
-// TODO: Remove function
-export async function getFillableOrderAmounts(orders, amount = null) {
-  if (!orders) return null;
-  if (!orders.length) return [];
-
-  const {
-    wallet: { web3 }
-  } = _store.getState();
-
-  const ethereumClient = new EthereumClient(web3);
-  const zeroExClient = new ZeroExClient(ethereumClient);
-
-  const filled = await Promise.all(
-    orders.map(order =>
-      zeroExClient.getFilledTakerAmount(
-        orderHashUtils.getOrderHashHex(order),
-        false
-      )
-    )
-  );
-
-  const amounts = orders.map((order, index) =>
-    new BigNumber(order.takerAssetAmount).sub(filled[index])
-  );
-
-  if (amount === null) {
-    return amounts;
-  }
-
-  let fillableAmount = new BigNumber(amount);
-  const fillableAmounts = [];
-
-  for (let i = 0; i < amounts.length; ++i) {
-    let amount = amounts[i];
-
-    if (fillableAmount.lt(amount)) {
-      fillableAmounts.push(fillableAmount);
-      break;
-    } else {
-      fillableAmounts.push(new BigNumber(amount));
-    }
-  }
-
-  return fillableAmounts;
 }
 
 export async function createOrder(limitOrder) {
