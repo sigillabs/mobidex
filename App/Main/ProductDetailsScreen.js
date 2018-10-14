@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { getProfitLossStyle } from '../../styles';
 import {
-  loadOrderbooks,
+  loadOrderbook,
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
@@ -298,6 +298,12 @@ ForexProductDetailsView.propTypes = {
 };
 
 class ProductDetailsScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.any,
+    dispatch: PropTypes.func,
+    showForexPrices: PropTypes.bool
+  };
+
   static periods = ['Day', 'Month', 'Year'];
 
   constructor(props) {
@@ -353,19 +359,25 @@ class ProductDetailsScreen extends Component {
   }
 
   async onRefresh(reload = true) {
+    const {
+      navigation: {
+        state: {
+          params: {
+            product: { base, quote }
+          }
+        }
+      }
+    } = this.props;
+
     this.setState({ refreshing: true });
     await this.props.dispatch(updateForexTickers(reload));
     await this.props.dispatch(updateTokenTickers(reload));
-    await this.props.dispatch(loadOrderbooks(reload));
+    await this.props.dispatch(
+      loadOrderbook(base.assetData, quote.assetData, reload)
+    );
     this.setState({ refreshing: false });
   }
 }
-
-ProductDetailsScreen.propTypes = {
-  navigation: PropTypes.any,
-  dispatch: PropTypes.func,
-  showForexPrices: PropTypes.bool
-};
 
 const styles = {
   container: {

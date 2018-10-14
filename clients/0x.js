@@ -1,7 +1,6 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import { cache, time } from '../decorators/cls';
-import { isValidSignedOrder } from '../utils';
 
 export default class ZeroExClient {
   static NULL_ADDRESS = '0x0000000000000000000000000000000000000000';

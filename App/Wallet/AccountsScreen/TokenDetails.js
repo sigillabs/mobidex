@@ -8,8 +8,13 @@ import { getImage } from '../../../utils';
 import Button from '../../components/Button';
 import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
 import NavigationService from '../../../services/NavigationService';
+import { assetProp } from '../../../types/props';
 
 class TokenDetails extends Component {
+  static propTypes = {
+    asset: assetProp.isRequired
+  };
+
   receive() {
     const { asset } = this.props;
     NavigationService.navigate('Receive', {

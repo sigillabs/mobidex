@@ -1,6 +1,7 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import * as _ from 'lodash';
+import { InteractionManager } from 'react-native';
 import {
   addActiveTransactions,
   addTransactions,
@@ -31,12 +32,15 @@ export function loadAllowances(force = false) {
           .then(allowance => ({ [address]: allowance }));
       })
     );
-    const allAllowances = allowances.reduce(
-      (acc, obj) => _.merge(acc, obj),
-      {}
-    );
 
-    dispatch(setAllowances(allAllowances));
+    InteractionManager.runAfterInteractions(() => {
+      const allAllowances = allowances.reduce(
+        (acc, obj) => _.merge(acc, obj),
+        {}
+      );
+
+      dispatch(setAllowances(allAllowances)); 
+    });
   };
 }
 
@@ -55,14 +59,17 @@ export function loadBalances(force = false) {
           .then(balance => ({ [address]: balance }));
       })
     );
-    const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+    const ethereumBalance = await ethereumClient.getBalance(force);
 
-    dispatch(setBalances(allBalances));
-    dispatch(
-      setBalances({
-        null: await ethereumClient.getBalance(force)
-      })
-    );
+    InteractionManager.runAfterInteractions(() => {
+      const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+      dispatch(setBalances(allBalances));
+      dispatch(
+        setBalances({
+          null: ethereumBalance
+        })
+      );
+    });
   };
 }
 
@@ -135,7 +142,9 @@ export function loadTransactions(force = false) {
         },
         force ? 0 : 10 * 60
       );
-      dispatch(addTransactions(transactions));
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(addTransactions(transactions));
+      });
     } catch (err) {
       NavigationService.error(err);
     }

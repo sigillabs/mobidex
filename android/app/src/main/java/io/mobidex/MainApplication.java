@@ -9,7 +9,6 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -36,7 +35,6 @@ public class MainApplication extends Application implements ReactApplication {
         new RNDeviceInfo(),
         new GoogleAnalyticsBridgePackage(),
         new WalletManagerPackage(),
-        new ReactNativePushNotificationPackage(),
         new SvgPackage(),
         new VectorIconsPackage(),
         new RandomBytesPackage()

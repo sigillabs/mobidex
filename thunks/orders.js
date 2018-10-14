@@ -3,6 +3,7 @@ import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { assetDataUtils, BigNumber } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
+import { InteractionManager } from 'react-native';
 import { addAssets, setOrders, setOrderbook, setProducts } from '../actions';
 import EthereumClient from '../clients/ethereum';
 import RelayerClient from '../clients/relayer';
@@ -16,7 +17,6 @@ import { formatProduct } from '../utils';
 import { fillOrKillOrder, batchFillOrKill } from './0x';
 import {
   checkAndWrapEther,
-  checkAndUnwrapEther,
   checkAndSetTokenAllowance
 } from './wallet';
 
@@ -53,9 +53,12 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
         quoteAsset.assetData,
         force
       );
-      orderbook.asks = fixOrders(orderbook.asks);
-      orderbook.bids = fixOrders(orderbook.bids);
-      dispatch(setOrderbook([product, orderbook]));
+
+      InteractionManager.runAfterInteractions(() => {
+        orderbook.asks = fixOrders(orderbook.asks);
+        orderbook.bids = fixOrders(orderbook.bids);
+        dispatch(setOrderbook([product, orderbook]));
+      });
     } catch (err) {
       NavigationService.error(err);
     }
@@ -89,7 +92,9 @@ export function loadOrders(force = false) {
     try {
       const client = new RelayerClient(relayerEndpoint, { network });
       const orders = await client.getOrders(force);
-      dispatch(setOrders(fixOrders(orders)));
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(setOrders(fixOrders(orders)));
+      });
     } catch (err) {
       NavigationService.error(err);
     }
@@ -106,11 +111,14 @@ export function loadOrder(orderHash) {
       const client = new RelayerClient(relayerEndpoint, { network });
       const order = await client.getOrder(orderHash);
       if (!order) return;
-      dispatch(
-        setOrders([
-          orderParsingUtils.convertOrderStringFieldsToBigNumber(order)
-        ])
-      );
+
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(
+          setOrders([
+            orderParsingUtils.convertOrderStringFieldsToBigNumber(order)
+          ])
+        );
+      });
     } catch (err) {
       NavigationService.error(err);
     }
@@ -126,19 +134,21 @@ export function loadProducts(force = false) {
     try {
       const client = new RelayerClient(relayerEndpoint, { network });
       const pairs = await client.getAssetPairs(force);
-      const extendedPairs = pairs.map(({ assetDataA, assetDataB }) => ({
-        assetDataA: {
-          ...assetDataA,
-          address: assetDataUtils.decodeERC20AssetData(assetDataA.assetData)
-            .tokenAddress
-        },
-        assetDataB: {
-          ...assetDataB,
-          address: assetDataUtils.decodeERC20AssetData(assetDataB.assetData)
-            .tokenAddress
-        }
-      }));
-      dispatch(setProducts(extendedPairs));
+      InteractionManager.runAfterInteractions(() => {
+        const extendedPairs = pairs.map(({ assetDataA, assetDataB }) => ({
+          assetDataA: {
+            ...assetDataA,
+            address: assetDataUtils.decodeERC20AssetData(assetDataA.assetData)
+              .tokenAddress
+          },
+          assetDataB: {
+            ...assetDataB,
+            address: assetDataUtils.decodeERC20AssetData(assetDataB.assetData)
+              .tokenAddress
+          }
+        }));
+        dispatch(setProducts(extendedPairs));
+      });
     } catch (err) {
       NavigationService.error(err);
     }
@@ -167,19 +177,22 @@ export function loadAssets(force = false) {
           };
         })
       );
-      dispatch(
-        addAssets(
-          [
-            {
-              assetData: null,
-              address: null,
-              decimals: 18,
-              name: 'Ether',
-              symbol: 'ETH'
-            }
-          ].concat(allExtendedAssets)
-        )
-      );
+
+      InteractionManager.runAfterInteractions(() => {
+        dispatch(
+          addAssets(
+            [
+              {
+                assetData: null,
+                address: null,
+                decimals: 18,
+                name: 'Ether',
+                symbol: 'ETH'
+              }
+            ].concat(allExtendedAssets)
+          )
+        );
+      });
     } catch (err) {
       NavigationService.error(err);
     }

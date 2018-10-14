@@ -1,13 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import MutedText from './components/MutedText';
 import NormalHeader from './headers/Normal';
+import { clearCache } from '../utils';
 
 class SettingsScreen extends Component {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+    network: PropTypes.string.isRequired,
+    relayerEndpoint: PropTypes.string.isRequired,
+    forexCurrency: PropTypes.string.isRequired,
+    quoteSymbol: PropTypes.string.isRequired
+  };
+
   render() {
     const { network, relayerEndpoint, forexCurrency, quoteSymbol } = this.props;
     return (
@@ -43,19 +52,19 @@ class SettingsScreen extends Component {
               </Text>
             }
           />
+          <ListItem
+            title={<MutedText>Clear Cache</MutedText>}
+            subtitle={
+              <TouchableOpacity onPress={() => clearCache()}>
+                <Text>Click Here</Text>
+              </TouchableOpacity>
+            }
+          />
         </ScrollView>
       </View>
     );
   }
 }
-
-SettingsScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  network: PropTypes.string.isRequired,
-  relayerEndpoint: PropTypes.string.isRequired,
-  forexCurrency: PropTypes.string.isRequired,
-  quoteSymbol: PropTypes.string.isRequired
-};
 
 export default connect(
   state => ({ ...state.settings }),
