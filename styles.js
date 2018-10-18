@@ -236,7 +236,7 @@ export const margin0 = {
 export const fluff0 = [padding0, margin0];
 
 export function getProfitLossColor(number) {
-  number = new BigNumber(number);
+  number = new BigNumber(number.toString());
   if (number.gt(0)) {
     return colors.green0;
   } else if (number.lt(0)) {
