@@ -163,7 +163,7 @@ export const padding1 = [
 
 export const padding2 = [
   {
-    padding: padding1.padding * 2
+    padding: padding1[0].padding * 2
   },
   ph2,
   pv2
@@ -171,7 +171,7 @@ export const padding2 = [
 
 export const padding3 = [
   {
-    padding: padding1.padding * 3
+    padding: padding1[0].padding * 3
   },
   ph2,
   pv2
@@ -232,6 +232,30 @@ export const margin0 = {
   marginBottom: 0,
   marginLeft: 0
 };
+
+export const margin1 = [
+  {
+    margin: 5
+  },
+  mv1,
+  mh1
+];
+
+export const margin2 = [
+  {
+    margin: margin1[0].margin * 2
+  },
+  mv2,
+  mh2
+];
+
+export const margin3 = [
+  {
+    margin: margin1[0].margin * 3
+  },
+  mv3,
+  mh3
+];
 
 export const fluff0 = [padding0, margin0];
 

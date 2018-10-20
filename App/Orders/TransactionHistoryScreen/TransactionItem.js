@@ -14,8 +14,6 @@ class TransactionItem extends Component {
     switch (action) {
       case 'MARKET_BUY':
       case 'MARKET_SELL':
-      case 'MARKET_BUY_WITH_ETH':
-      case 'MARKET_SELL_ETH':
       case 'FILL':
       case 'CANCEL':
         return this.renderFillOrCancel();

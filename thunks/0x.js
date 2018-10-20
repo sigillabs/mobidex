@@ -1,13 +1,13 @@
-import { assetDataUtils, marketUtils } from '@0xproject/order-utils';
+import { AssetBuyer } from '@0xproject/asset-buyer';
+import { marketUtils } from '@0xproject/order-utils';
 import { BigNumber } from '0x.js';
 import * as _ from 'lodash';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
-import TokenClient from '../clients/token';
+import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
-import { isValidSignedOrder } from '../utils';
 import { checkAndSetUnlimitedProxyAllowance } from './wallet';
 
 export function deposit(address, amount) {
@@ -89,251 +89,81 @@ export function batchFillOrKill(orders, amounts) {
   };
 }
 
-export function marketBuyWithEth(product, amount) {
+export function marketBuy(quote) {
   return async (dispatch, getState) => {
     const {
-      relayer: { orderbooks },
-      wallet: { web3 },
-      settings: { minimumBalance, gasLimit }
-    } = getState();
-
-    if (orderbooks[product] === null) {
-      return;
-    }
-
-    if (orderbooks[product]['asks'] === null) {
-      return;
-    }
-
-    const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
-    const balance = new BigNumber(await ethereumClient.getBalance());
-
-    if (balance.lte(minimumBalance)) {
-      throw new Error('Need a minimum balance of 0.01 ETH for gas.');
-    }
-
-    const maxFillableAmount = new BigNumber(balance.sub(minimumBalance));
-
-    const orders = orderbooks[product]['asks'].map(order =>
-      _.pick(order, ZeroExClient.ORDER_FIELDS)
-    );
-    const feeOrders = orderbooks['ZRX-WETH']['asks'].map(order =>
-      _.pick(order, ZeroExClient.ORDER_FIELDS)
-    );
-    const remainingFillableMakerAssetAmounts = await OrderService.getRemainingFillableMakerAssetAmounts(
-      orders
-    );
-    const {
-      ordersRemainingFillableMakerAssetAmounts,
-      remainingFillAmount,
-      resultOrders
-    } = marketUtils.findOrdersThatCoverMakerAssetFillAmount(
-      orders,
-      new BigNumber(amount),
-      {
-        remainingFillableMakerAssetAmounts,
-        slippageBufferAmount: ZeroExClient.ZERO
-      }
-    );
-    let fillableAmount = resultOrders.reduce(
-      (acc, order, index) =>
-        acc.add(
-          ordersRemainingFillableMakerAssetAmounts[index]
-            .div(order.makerAssetAmount)
-            .mul(order.takerAssetAmount)
-        ),
-      ZeroExClient.ZERO
-    );
-    fillableAmount = new BigNumber(
-      fillableAmount.toFixed(0, BigNumber.ROUND_DOWN)
-    );
-
-    const txhash = await zeroExClient.marketBuyWithEth(
-      orders,
-      feeOrders,
-      ZeroExClient.ZERO.toNumber(),
-      ZeroExClient.NULL_ADDRESS,
-      new BigNumber(amount).sub(remainingFillAmount),
-      fillableAmount.gt(maxFillableAmount) ? maxFillableAmount : fillableAmount
-    );
-    const activeTransaction = {
-      id: txhash,
-      type: 'MARKET_BUY_WITH_ETH',
-      product,
-      orders,
-      feeOrders,
-      amount
-    };
-    await TransactionService.instance.addActiveTransaction(activeTransaction);
-  };
-}
-
-export function marketSellEth(product, amount) {
-  return async (dispatch, getState) => {
-    const {
-      relayer: { orderbooks },
       wallet: { web3 },
       settings: { gasLimit }
     } = getState();
 
-    if (orderbooks[product] === null) {
-      return;
+    if (quote === null) {
+      throw new Error('Need a quote to sell assets.');
     }
 
-    if (orderbooks[product]['asks'] === null) {
-      return;
-    }
-
-    const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
-    const orders = orderbooks[product]['asks'].map(order =>
-      _.pick(order, ZeroExClient.ORDER_FIELDS)
-    );
-    const feeOrders = orderbooks['ZRX-WETH']['asks'].map(order =>
-      _.pick(order, ZeroExClient.ORDER_FIELDS)
-    );
-
-    const txhash = await zeroExClient.marketSellEth(
-      orders,
-      feeOrders,
-      ZeroExClient.ZERO.toNumber(),
-      ZeroExClient.NULL_ADDRESS,
-      amount
-    );
-    const activeTransaction = {
-      id: txhash,
-      type: 'MARKET_SELL_ETH',
-      product,
-      orders,
-      feeOrders,
-      amount
-    };
-    await TransactionService.instance.addActiveTransaction(activeTransaction);
-  };
-}
-
-export function marketBuy(product, amount) {
-  return async (dispatch, getState) => {
-    const {
-      relayer: { orderbooks },
-      wallet: { web3 },
-      settings: { gasLimit }
-    } = getState();
-
-    if (orderbooks[product] === null) {
-      return;
-    }
-
-    if (orderbooks[product]['asks'] === null) {
-      return;
+    if (!quote.orders.length) {
+      throw new Error('Need orders to fill in order to sell assets.');
     }
 
     const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
-    const orders = orderbooks[product]['asks'].map(order =>
-      _.pick(order, ZeroExClient.ORDER_FIELDS)
+    const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
+      ethereumClient.getCurrentProvider(),
+      quote.orders,
+      quote.feeOrders
     );
 
-    const txhash = await zeroExClient.marketBuy(orders, amount);
+    const txhash = await buyer.executeBuyQuoteAsync(quote);
     const activeTransaction = {
       id: txhash,
       type: 'MARKET_BUY',
-      product,
-      orders,
-      amount
+      quote
     };
     await TransactionService.instance.addActiveTransaction(activeTransaction);
   };
 }
 
-export function marketSell(product, amount) {
+export function marketSell(quote) {
   return async (dispatch, getState) => {
     const {
-      relayer: { orderbooks },
       wallet: { web3 },
       settings: { gasLimit }
     } = getState();
 
-    if (orderbooks[product] === null) {
-      return;
+    if (quote === null) {
+      throw new Error('Need a quote to sell assets.');
     }
 
-    if (orderbooks[product]['bids'] === null) {
-      return;
-    }
-
-    if (orderbooks[product]['bids'].length === 0) {
-      return;
+    if (!quote.orders.length) {
+      throw new Error('Need orders to fill in order to sell assets.');
     }
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
-    const orders = orderbooks[product]['bids'];
-    // console.warn(
-    //   JSON.stringify(
-    //     _.zip(
-    //       orderbooks[product]['bids'].map(order => order.orderHash),
-    //       await OrderService.getRemainingFillableTakerAssetAmounts(
-    //         orderbooks[product]['bids']
-    //       )
-    //     )
-    //   )
-    // );
 
-    // const makerTokenAddress = assetDataUtils.decodeERC20AssetData(
-    //   orderbooks[product]['bids'][0].makerAssetData
-    // ).tokenAddress;
-    // const takerTokenAddress = assetDataUtils.decodeERC20AssetData(
-    //   orderbooks[product]['bids'][0].takerAssetData
-    // ).tokenAddress;
-
-    // const makerTokenClient = new TokenClient(ethereumClient, makerTokenAddress);
-    // console.warn(
-    //   (await Promise.all(
-    //     orderbooks[product]['bids'].map(order =>
-    //       makerTokenClient.getAllowance(order.makerAddress)
-    //     )
-    //   )).map(allowance => allowance.toString())
-    // );
-
-    // const takerTokenClient = new TokenClient(ethereumClient, takerTokenAddress);
-    // console.warn(
-    //   (await Promise.all(
-    //     orderbooks[product]['bids'].map(order =>
-    //       takerTokenClient.getAllowance(order.takerAddress)
-    //     )
-    //   )).map(allowance => allowance.toString())
-    // );
-
-    // console.warn(
-    //   orderbooks[product]['bids'].map(order => isValidSignedOrder(order))
-    // );
-
-    const txhash = await zeroExClient.marketSell(orders, amount);
+    const txhash = await zeroExClient.marketSell(
+      quote.orders,
+      quote.assetSellAmount
+    );
     const activeTransaction = {
       id: txhash,
       type: 'MARKET_SELL',
-      product,
-      orders,
-      amount
+      quote
     };
     await TransactionService.instance.addActiveTransaction(activeTransaction);
   };
 }
 
-export function batchMarketBuyWithEth(product, amount) {
+export function batchMarketBuyWithEth(quote) {
   return async dispatch => {
     const asset = AssetService.getWETHAsset();
     await dispatch(checkAndSetUnlimitedProxyAllowance(asset.address));
-    await dispatch(marketBuyWithEth(product, amount));
+    await dispatch(marketBuy(quote));
   };
 }
 
-export function batchMarketSell(product, amount) {
+export function batchMarketSell(quote) {
   return async dispatch => {
-    const asset = AssetService.findAssetBySymbol(product.split('-')[0]);
+    const asset = AssetService.findAssetByData(quote.assetData);
     await dispatch(checkAndSetUnlimitedProxyAllowance(asset.address));
-    await dispatch(marketSell(product, amount));
+    await dispatch(marketSell(quote));
   };
 }

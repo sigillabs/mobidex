@@ -14,10 +14,7 @@ export default class PreviewFillOrders extends Component {
     if (this.props.navigation.state.params.side === 'buy') {
       return (
         <PreviewFillAsks
-          baseToken={this.props.navigation.state.params.product.base}
-          quoteToken={this.props.navigation.state.params.product.quote}
-          orders={this.props.navigation.state.params.orders}
-          amount={this.props.navigation.state.params.amount}
+          quote={this.props.navigation.state.params.quote}
           hideHeader={hideHeader}
           showHeader={showHeader}
           fee={0}
@@ -26,10 +23,7 @@ export default class PreviewFillOrders extends Component {
     } else {
       return (
         <PreviewFillBids
-          baseToken={this.props.navigation.state.params.product.base}
-          quoteToken={this.props.navigation.state.params.product.quote}
-          orders={this.props.navigation.state.params.orders}
-          amount={this.props.navigation.state.params.amount}
+          quote={this.props.navigation.state.params.quote}
           hideHeader={hideHeader}
           showHeader={showHeader}
           fee={0}

@@ -25,6 +25,7 @@ export default class TokenAmountKeyboard extends Component {
           containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
           iconRight={this.props.buttonIconRight}
           disabled={this.props.disableButton}
+          loading={this.props.buttonLoading}
         />
       </View>
     );
@@ -45,6 +46,7 @@ TokenAmountKeyboard.propTypes = {
   buttonTitle: PropTypes.string.isRequired,
   buttonIcon: PropTypes.node,
   buttonIconRight: PropTypes.bool,
+  buttonLoading: PropTypes.bool,
   disableButton: PropTypes.bool
 };
 

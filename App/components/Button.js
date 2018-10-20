@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import { Button as RNEButton } from 'react-native-elements';
-import { colors } from '../../styles';
+import * as styles from '../../styles';
 
 export default class Button extends Component {
   render() {
-    let { titleStyle, buttonStyle, ...rest } = this.props;
+    let { titleStyle, buttonStyle, loadingStyle, ...rest } = this.props;
     return (
       <RNEButton
         {...rest}
-        titleStyle={[styles.title, titleStyle]}
-        buttonStyle={[styles.button, buttonStyle]}
-        disabledStyle={[styles.button, styles.disabled, buttonStyle]}
+        titleStyle={[style.title, titleStyle]}
+        buttonStyle={[style.button, buttonStyle]}
+        disabledStyle={[style.button, style.disabled, buttonStyle]}
+        loadingStyle={[styles.margin2, loadingStyle]}
       />
     );
   }
 }
 
-const styles = {
+const style = {
   button: {
-    backgroundColor: colors.yellow0,
-    borderColor: colors.yellow0,
+    backgroundColor: styles.colors.yellow0,
+    borderColor: styles.colors.yellow0,
     borderRadius: 0,
     borderWidth: 1,
     marginTop: 5,

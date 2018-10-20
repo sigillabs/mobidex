@@ -5,7 +5,7 @@ import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { InteractionManager, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import ZeroExClient from '../../../clients/0x';
+import { ZERO } from '../../../constants/0x';
 import { sendEther, sendTokens } from '../../../thunks';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
@@ -17,7 +17,7 @@ class SendTokensWizard extends Component {
     super(props);
 
     this.state = {
-      amount: ZeroExClient.ZERO,
+      amount: ZERO,
       address: '',
       page: 0,
       showSending: false

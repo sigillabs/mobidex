@@ -14,9 +14,7 @@ const LABEL_LOOKUP = {
   FILL: 'Fill',
   CANCEL: 'Cancel',
   MARKET_BUY: 'Market Buy',
-  MARKET_BUY_WITH_ETH: 'Market Buy',
   MARKET_SELL: 'Market Sell',
-  MARKET_SELL_ETH: 'Market Buy',
   SEND_ETHER: 'Send',
   SEND_TOKENS: 'Send',
   DEPOSIT: 'Wrapped',
@@ -27,8 +25,8 @@ const LABEL_LOOKUP = {
 function getToken(tx) {
   if (tx.address) {
     return AssetService.findAssetByAddress(tx.address);
-  } else if (tx.product && tx.type.indexOf('MARKET_') === 0) {
-    return AssetService.findAssetBySymbol(tx.product.split('-')[0]);
+  } else if (tx.quote) {
+    return AssetService.findAssetByData(tx.quote.assetData);
   }
 
   return null;
@@ -40,6 +38,7 @@ class TransactionsList extends Component {
       .filter(tx => Boolean(tx.id))
       .map((tx, index) => {
         const token = getToken(tx);
+        const quote = tx.quote;
         let txtype = tx.status || tx.type;
 
         if (txtype === 'DEPOSITED') txtype = 'DEPOSIT';
@@ -47,9 +46,7 @@ class TransactionsList extends Component {
 
         switch (txtype) {
           case 'MARKET_BUY':
-          case 'MARKET_BUY_WITH_ETH':
           case 'MARKET_SELL':
-          case 'MARKET_SELL_ETH':
             return (
               <TouchableOpacity key={`active-${index}`}>
                 <TransactionItem
@@ -61,7 +58,7 @@ class TransactionsList extends Component {
                       tx.amount === 'UNLIMITED'
                         ? 'UNLIMITED'
                         : formatAmountWithDecimals(
-                            tx.amount,
+                            quote.assetSellAmount || quote.assetBuyAmount,
                             token ? token.decimals : 18
                           ),
                     symbol: token ? token.symbol : 'Token'

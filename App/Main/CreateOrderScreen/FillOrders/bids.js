@@ -1,10 +1,11 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import NavigationService from '../../../../services/NavigationService';
-import { formatProduct } from '../../../../utils';
+import * as OrderService from '../../../../services/OrderService';
+import BestCaseSellPrice from '../../../views/BestCaseSellPrice';
 import BaseFillOrders from './base';
 
 class FillBids extends Component {
@@ -15,65 +16,47 @@ class FillBids extends Component {
         quoteToken={this.props.quoteToken}
         buttonTitle={'Preview Sell Order'}
         inputTitle={'Selling'}
-        getFillableOrders={(baseToken, quoteToken, amount) =>
-          this.getFillableOrders(baseToken, quoteToken, amount)
+        getQuote={(baseToken, quoteToken, amount) =>
+          this.getQuote(baseToken, quoteToken, amount)
         }
-        preview={(baseToken, quoteToken, amount, orders) =>
-          this.preview(baseToken, quoteToken, amount, orders)
-        }
+        preview={quote => this.preview(quote)}
+        renderQuote={quote => (
+          <BestCaseSellPrice
+            quote={quote}
+            symbol={this.props.quoteToken.symbol}
+          />
+        )}
       />
     );
   }
 
-  getOrders(baseToken, quoteToken) {
-    const product = formatProduct(baseToken.symbol, quoteToken.symbol);
-    const orderbook = this.props.orderbooks[product];
-    if (!orderbook) {
-      return null;
-    }
-    return orderbook.bids.slice();
-  }
-
-  getFillableOrders(baseToken, quoteToken, amount) {
-    const orders = this.getOrders(baseToken, quoteToken);
-
-    if (!orders) {
-      return null;
-    }
-
-    const result = [];
-    let amountInWEI = Web3Wrapper.toBaseUnitAmount(
+  async getQuote(baseToken, quoteToken, amount) {
+    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
       baseToken.decimals
     );
-
-    while (amountInWEI.gt(0) && orders.length > 0) {
-      const order = orders.shift();
-      result.push(order);
-      amountInWEI = amountInWEI.sub(order.takerAssetAmount);
-    }
-
-    return result;
+    return OrderService.getSellAssetsQuoteAsync(
+      baseToken.assetData,
+      baseUnitAmount
+    );
   }
 
-  preview(baseToken, quoteToken, amount, orders) {
+  preview(quote) {
     NavigationService.navigate('PreviewOrders', {
       type: 'fill',
       side: 'sell',
-      amount: new BigNumber(amount || 0).toString(),
-      product: { base: baseToken, quote: quoteToken },
-      orders
+      quote,
+      product: {
+        base: this.props.baseToken,
+        quote: this.props.quoteToken
+      }
     });
   }
 }
 
 FillBids.propTypes = {
   baseToken: PropTypes.object.isRequired,
-  quoteToken: PropTypes.object.isRequired,
-  orderbooks: PropTypes.object.isRequired
+  quoteToken: PropTypes.object.isRequired
 };
 
-export default connect(
-  state => ({ orderbooks: state.relayer.orderbooks }),
-  dispatch => ({ dispatch })
-)(FillBids);
+export default connect(state => ({}), dispatch => ({ dispatch }))(FillBids);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
-import ZeroExClient from '../../../clients/0x';
+import { ZERO } from '../../../constants/0x';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { submitOrder } from '../../../thunks';
 import Button from '../../components/Button';
@@ -171,7 +171,7 @@ class PreviewLimitOrder extends Component {
     if (!limitOrder) return null;
 
     let subtotal = new BigNumber(limitOrder.amount).mul(limitOrder.price);
-    let fee = ZeroExClient.ZERO;
+    let fee = ZERO;
     let total = subtotal.add(fee);
 
     if (side === 'buy') {

@@ -93,7 +93,7 @@ class OrdersScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: true,
+      refreshing: false,
       showCancelling: false,
       showCancelled: false
     };
@@ -122,9 +122,10 @@ class OrdersScreen extends Component {
         <ScrollView
           refreshControl={
             <RefreshControl
-              // refreshing={this.state.refreshing}
               refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh()}
+              onRefresh={() => {
+                this.onRefresh();
+              }}
             />
           }
         >

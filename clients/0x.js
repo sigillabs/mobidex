@@ -1,11 +1,10 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
+import { MAX, NULL_ADDRESS, ZERO } from '../constants/0x';
 import { cache, time } from '../decorators/cls';
+import { filterFillableOrders } from '../utils/orders';
 
 export default class ZeroExClient {
-  static NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
-  static ZERO = new BigNumber(0);
-  static MAX = new BigNumber(2).pow(256).minus(1);
   static ORDER_FIELDS = [
     'exchangeAddress',
     'expirationTimeSeconds',
@@ -26,46 +25,6 @@ export default class ZeroExClient {
   constructor(ethereumClient, options = {}) {
     this.ethereumClient = ethereumClient;
     this.options = options;
-  }
-
-  async filterFillableOrders(orders) {
-    const wrappers = await this.getContractWrappers();
-    const orderFillableStatuses = await Promise.all(
-      orders.map(async order => {
-        try {
-          await wrappers.exchange.validateOrderFillableOrThrowAsync(order);
-          return true;
-        } catch (err) {
-          return false;
-        }
-      })
-    );
-    const fillableOrders = orders.filter(
-      (order, index) => orderFillableStatuses[index]
-    );
-    return fillableOrders;
-  }
-
-  async filterTestOrderFill(orders, amount, account) {
-    const wrappers = await this.getContractWrappers();
-    const orderFillableStatuses = await Promise.all(
-      orders.map(async order => {
-        try {
-          await wrappers.exchange.validateFillOrderThrowIfInvalidAsync(
-            order,
-            new BigNumber(amount),
-            `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
-          );
-          return true;
-        } catch (err) {
-          return false;
-        }
-      })
-    );
-    const fillableOrders = orders.filter(
-      (order, index) => orderFillableStatuses[index]
-    );
-    return fillableOrders;
   }
 
   @time
@@ -177,11 +136,7 @@ export default class ZeroExClient {
   async marketBuy(orders, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const fillableOrders = await this.filterTestOrderFill(
-      await this.filterFillableOrders(orders),
-      amount,
-      account
-    );
+    const fillableOrders = await filterFillableOrders(wrappers, orders);
 
     if (fillableOrders.length === 0) {
       throw new Error(
@@ -201,11 +156,7 @@ export default class ZeroExClient {
   async marketSell(orders, amount) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const fillableOrders = await this.filterTestOrderFill(
-      await this.filterFillableOrders(orders),
-      amount,
-      account
-    );
+    const fillableOrders = await filterFillableOrders(wrappers, orders);
 
     if (fillableOrders.length === 0) {
       throw new Error(
@@ -232,8 +183,8 @@ export default class ZeroExClient {
   ) {
     const wrappers = await this.getContractWrappers();
     const account = await this.ethereumClient.getAccount();
-    const fillableOrders = await this.filterFillableOrders(orders);
-    const fillableFeeOrders = await this.filterFillableOrders(feeOrders);
+    const fillableOrders = await filterFillableOrders(wrappers, orders);
+    const fillableFeeOrders = await filterFillableOrders(wrappers, feeOrders);
 
     if (fillableOrders.length === 0) {
       throw new Error(

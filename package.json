@@ -3,8 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "prepare":
-            "npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3 && npm run patch:ethers",
+        "prepare": "npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3 && npm run patch:ethers",
         "start": "node node_modules/react-native/local-cli/cli.js start",
         "patch:ethers": "./patches/ethers.sh",
         "patch:isomorphic-fetch": "./patches/isomorphic-fetch.sh",
@@ -12,11 +11,11 @@
         "patch:web3": "./patches/web3.sh",
         "build:android:release": "cli/build-android.sh",
         "build:ios:release": "echo 'You need to build an archive via XCode!'",
-        "bundle:android":
-            "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
+        "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
     },
     "dependencies": {
         "0x.js": "^1.0.0",
+        "@0xproject/asset-buyer": "^2.0.0",
         "@0xproject/connect": "^3.0.0",
         "@0xproject/order-utils": "^1.0.0",
         "@0xproject/web3-wrapper": "^3.0.0",

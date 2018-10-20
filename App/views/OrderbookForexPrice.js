@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ZeroExClient from '../../clients/0x';
+import { ZERO } from '../../constants/0x';
 import * as AssetService from '../../services/AssetService';
 import * as OrderService from '../../services/OrderService';
 import * as TickerService from '../../services/TickerService';
@@ -36,7 +36,7 @@ export class OrderbookForexPrice extends Component {
         ? OrderService.getOrderPrice(
             side === 'buy' ? orderbook.bids[0] : orderbook.asks[0]
           )
-        : ZeroExClient.ZERO;
+        : ZERO;
 
     return (
       <FormattedForexAmount

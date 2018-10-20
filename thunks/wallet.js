@@ -11,7 +11,7 @@ import {
 import EthereumClient from '../clients/ethereum';
 import Inf0xClient from '../clients/inf0x';
 import TokenClient from '../clients/token';
-import ZeroExClient from '../clients/0x';
+import { MAX } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
 import NavigationService from '../services/NavigationService';
 import { TransactionService } from '../services/TransactionService';
@@ -282,7 +282,7 @@ export function checkAndSetUnlimitedProxyAllowance(address) {
     const tokenClient = new TokenClient(ethereumClient, address);
 
     const allowance = await tokenClient.getAllowance(null);
-    if (new BigNumber(allowance).lt(ZeroExClient.MAX)) {
+    if (new BigNumber(allowance).lt(MAX)) {
       await dispatch(setUnlimitedProxyAllowance(address));
     }
   };

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ZeroExClient from '../../clients/0x';
+import { ZERO } from '../../constants/0x';
 import * as AssetService from '../../services/AssetService';
 import * as OrderService from '../../services/OrderService';
 import FormattedTokenAmount from '../components/FormattedTokenAmount';
@@ -10,11 +10,11 @@ function getPrice(orderbook, side) {
   if (side === 'buy') {
     return orderbook.bids.length > 0
       ? OrderService.getOrderPrice(orderbook.bids[0])
-      : ZeroExClient.ZERO;
+      : ZERO;
   } else {
     return orderbook.asks.length > 0
       ? OrderService.getOrderPrice(orderbook.asks[0])
-      : ZeroExClient.ZERO;
+      : ZERO;
   }
 }
 

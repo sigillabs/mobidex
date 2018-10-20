@@ -1,3 +1,4 @@
+import { AssetBuyer } from '@0xproject/asset-buyer';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import {
   assetDataUtils,
@@ -9,7 +10,13 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
-import { formatProduct } from '../utils';
+import { NULL_ADDRESS, ZERO } from '../constants/0x';
+import {
+  averagePriceByMakerAmount,
+  filterFillableOrders,
+  findOrdersThatCoverTakerAssetFillAmount,
+  formatProduct
+} from '../utils';
 import * as AssetService from './AssetService';
 import NavigationService from './NavigationService';
 
@@ -289,11 +296,11 @@ export async function createOrder(limitOrder) {
     exchangeAddress: await zeroExClient.getExchangeContractAddress(),
     expirationTimeSeconds: new BigNumber(moment().unix() + 60 * 60 * 24),
     makerAddress: `0x${address.toLowerCase()}`,
-    makerFee: ZeroExClient.ZERO,
-    senderAddress: ZeroExClient.NULL_ADDRESS,
-    takerAddress: ZeroExClient.NULL_ADDRESS,
-    takerFee: ZeroExClient.ZERO,
-    feeRecipientAddress: ZeroExClient.NULL_ADDRESS,
+    makerFee: ZERO,
+    senderAddress: NULL_ADDRESS,
+    takerAddress: NULL_ADDRESS,
+    takerFee: ZERO,
+    feeRecipientAddress: NULL_ADDRESS,
     salt: generatePseudoRandomSalt()
   };
 }
@@ -322,4 +329,139 @@ export async function signOrder(order) {
     NavigationService.error(err);
     return null;
   }
+}
+
+export async function getBuyAssetsQuoteAsync(
+  assetData,
+  assetBuyAmount,
+  options = {
+    slippagePercentage: 0.2
+  }
+) {
+  if (!options)
+    options = {
+      slippagePercentage: 0.2
+    };
+  if (
+    options.slippagePercentage === null ||
+    options.slippagePercentage === undefined
+  )
+    options.slippagePercentage = 0.2;
+
+  assetBuyAmount = new BigNumber(assetBuyAmount.toString());
+
+  const {
+    relayer: { orderbooks },
+    wallet: { web3 }
+  } = _store.getState();
+
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const wrappers = await zeroExClient.getContractWrappers();
+
+  const quoteAsset = AssetService.getQuoteAsset();
+  const baseAsset = AssetService.findAssetByData(assetData);
+  const product = formatProduct(baseAsset.symbol, quoteAsset.symbol);
+  const feeProduct = formatProduct('ZRX', quoteAsset.symbol);
+  const orderbook = orderbooks[product];
+  if (!orderbook) {
+    return null;
+  }
+  const feeOrderbook = orderbooks[feeProduct];
+  if (!feeOrderbook) {
+    return null;
+  }
+  const orders = await filterFillableOrders(wrappers, orderbook.asks.slice());
+  if (!orders.length) {
+    return null;
+  }
+  const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
+    ethereumClient.getCurrentProvider(),
+    orderbook.asks.slice(),
+    feeOrderbook.asks.slice()
+  );
+  return buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
+}
+
+export async function getSellAssetsQuoteAsync(
+  assetData,
+  assetSellAmount,
+  options = {
+    slippagePercentage: 0.2
+  }
+) {
+  if (!options)
+    options = {
+      slippagePercentage: 0.2
+    };
+  if (
+    options.slippagePercentage === null ||
+    options.slippagePercentage === undefined
+  )
+    options.slippagePercentage = 0.2;
+
+  assetSellAmount = new BigNumber(assetSellAmount.toString());
+
+  const {
+    relayer: { orderbooks },
+    wallet: { web3 }
+  } = _store.getState();
+
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const wrappers = await zeroExClient.getContractWrappers();
+
+  const quoteAsset = AssetService.getQuoteAsset();
+  const baseAsset = AssetService.findAssetByData(assetData);
+  const product = formatProduct(baseAsset.symbol, quoteAsset.symbol);
+  const orderbook = orderbooks[product];
+  if (!orderbook) {
+    return null;
+  }
+  const orders = await filterFillableOrders(wrappers, orderbook.bids.slice());
+  if (!orders.length) {
+    return null;
+  }
+  const remainingFillableMakerAssetAmounts = await getRemainingFillableMakerAssetAmounts(
+    orders
+  );
+  const worstCaseOrders = findOrdersThatCoverTakerAssetFillAmount(
+    orders,
+    assetSellAmount,
+    {
+      remainingFillableMakerAssetAmounts,
+      slippageBufferAmount: assetSellAmount
+        .mul(options.slippagePercentage)
+        .round()
+    }
+  );
+  const bestCaseOrders = findOrdersThatCoverTakerAssetFillAmount(
+    orders,
+    assetSellAmount,
+    {
+      remainingFillableMakerAssetAmounts,
+      slippageBufferAmount: ZERO
+    }
+  );
+  const worstCasePrice = averagePriceByMakerAmount(
+    worstCaseOrders.resultOrders,
+    {
+      remainingFillableMakerAssetAmounts
+    }
+  );
+  const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders, {
+    remainingFillableMakerAssetAmounts
+  });
+
+  return {
+    assetSellAmount,
+    assetData,
+    bestCaseQuoteInfo: {
+      ethPerAssetPrice: bestCasePrice
+    },
+    orders: worstCaseOrders.resultOrders,
+    worstCaseQuoteInfo: {
+      ethPerAssetPrice: worstCasePrice
+    }
+  };
 }

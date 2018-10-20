@@ -1,5 +1,5 @@
 import { BigNumber } from '0x.js';
-import ZeroExClient from '../clients/0x';
+import { ZERO } from '../constants/0x';
 
 let _store;
 
@@ -48,39 +48,37 @@ export function getForexTicker(tokenSymbol = null, forexSymbol = null) {
 }
 
 export function get24HRAverage(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.price) return ZeroExClient.ZERO;
-  if (!ticker.history) return ZeroExClient.ZERO;
-  if (!ticker.history.day) return ZeroExClient.ZERO;
-  if (!ticker.history.day.length) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.price) return ZERO;
+  if (!ticker.history) return ZERO;
+  if (!ticker.history.day) return ZERO;
+  if (!ticker.history.day.length) return ZERO;
 
   const prices = ticker.history.day.map(({ price }) => new BigNumber(price));
 
-  return prices
-    .reduce((sum, price) => sum.add(price), ZeroExClient.ZERO)
-    .div(prices.length);
+  return prices.reduce((sum, price) => sum.add(price), ZERO).div(prices.length);
 }
 
 export function get24HRMin(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.daymin) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.daymin) return ZERO;
 
   return new BigNumber(ticker.daymin);
 }
 
 export function get24HRMax(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.daymax) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.daymax) return ZERO;
 
   return new BigNumber(ticker.daymax);
 }
 
 export function get24HRChange(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.price) return ZeroExClient.ZERO;
-  if (!ticker.history) return ZeroExClient.ZERO;
-  if (!ticker.history.day) return ZeroExClient.ZERO;
-  if (!ticker.history.day.length) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.price) return ZERO;
+  if (!ticker.history) return ZERO;
+  if (!ticker.history.day) return ZERO;
+  if (!ticker.history.day.length) return ZERO;
 
   const start = new BigNumber(
     ticker.history.day[ticker.history.day.length - 1].price
@@ -91,11 +89,11 @@ export function get24HRChange(ticker) {
 }
 
 export function get24HRChangePercent(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.price) return ZeroExClient.ZERO;
-  if (!ticker.history) return ZeroExClient.ZERO;
-  if (!ticker.history.day) return ZeroExClient.ZERO;
-  if (!ticker.history.day.length) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.price) return ZERO;
+  if (!ticker.history) return ZERO;
+  if (!ticker.history.day) return ZERO;
+  if (!ticker.history.day.length) return ZERO;
 
   const start = new BigNumber(
     ticker.history.day[ticker.history.day.length - 1].price
@@ -103,15 +101,15 @@ export function get24HRChangePercent(ticker) {
   const end = new BigNumber(ticker.history.day[0].price);
 
   if (start.eq(0)) {
-    return ZeroExClient.ZERO;
+    return ZERO;
   }
 
   return end.sub(start).div(start);
 }
 
 export function getCurrentPrice(ticker) {
-  if (!ticker) return ZeroExClient.ZERO;
-  if (!ticker.price) return ZeroExClient.ZERO;
+  if (!ticker) return ZERO;
+  if (!ticker.price) return ZERO;
 
   return new BigNumber(ticker.price);
 }

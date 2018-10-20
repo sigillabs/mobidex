@@ -27,8 +27,8 @@ import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
-import ZeroExClient from '../clients/0x';
 import { setWallet } from '../actions';
+import { ZERO } from '../constants/0x';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -155,15 +155,15 @@ export function getBalanceByAddress(address) {
   } = _store.getState();
   if (!address) {
     if (!balances[null]) {
-      ZeroExClient.ZERO;
+      ZERO;
     } else {
       return Web3Wrapper.toUnitAmount(new BigNumber(balances[null]), 18);
     }
   }
 
   const asset = _.find(assets, { address });
-  if (!asset) return ZeroExClient.ZERO;
-  if (!balances[address]) return ZeroExClient.ZERO;
+  if (!asset) return ZERO;
+  if (!balances[address]) return ZERO;
   return Web3Wrapper.toUnitAmount(
     new BigNumber(balances[address]),
     asset.decimals
@@ -178,8 +178,8 @@ export function getBalanceBySymbol(symbol) {
   if (!symbol) return getBalanceByAddress();
 
   const asset = _.find(assets, { symbol });
-  if (!asset) return ZeroExClient.ZERO;
-  if (!balances[asset.address]) return ZeroExClient.ZERO;
+  if (!asset) return ZERO;
+  if (!balances[asset.address]) return ZERO;
   return Web3Wrapper.toUnitAmount(
     new BigNumber(balances[asset.address]),
     asset.decimals
@@ -192,7 +192,7 @@ export function getAdjustedBalanceByAddress(address) {
   } = _store.getState();
   if (!address) return getFullEthereumBalance();
   const asset = _.find(assets, { address });
-  if (!asset) return ZeroExClient.ZERO;
+  if (!asset) return ZERO;
   if (asset.symbol === 'ETH' || asset.symbol === 'WETH')
     return getFullEthereumBalance();
   return getBalanceByAddress(address);
