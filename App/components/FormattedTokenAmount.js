@@ -7,7 +7,8 @@ import FormattedSymbol from './FormattedSymbol';
 
 export default class FormattedTokenAmount extends Component {
   render() {
-    const { amount, decimals, symbol } = this.props;
+    const { amount, percent, decimals, symbol } = this.props;
+    const showPercent = percent !== null && percent !== undefined;
 
     return (
       <Text {...this.props}>
@@ -16,8 +17,9 @@ export default class FormattedTokenAmount extends Component {
             ? formatAmountWithDecimals(amount, decimals)
             : formatAmount(amount)}
         </Text>
-        {symbol ? <Text> </Text> : null}
+        {symbol || showPercent ? <Text> </Text> : null}
         {symbol ? <FormattedSymbol symbol={symbol} /> : null}
+        {showPercent ? <Text>({percent})</Text> : null}
       </Text>
     );
   }
@@ -29,6 +31,11 @@ FormattedTokenAmount.propTypes = {
     PropTypes.number,
     PropTypes.string
   ]).isRequired,
+  percent: PropTypes.oneOfType([
+    PropTypes.instanceOf(BigNumber),
+    PropTypes.number,
+    PropTypes.string
+  ]),
   decimals: PropTypes.number,
   symbol: PropTypes.string
 };

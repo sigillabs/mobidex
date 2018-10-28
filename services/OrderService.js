@@ -378,9 +378,18 @@ export async function getBuyAssetsQuoteAsync(
   const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
     ethereumClient.getCurrentProvider(),
     orderbook.asks.slice(),
-    feeOrderbook.asks.slice()
+    feeOrderbook.asks.slice(), {
+      expiryBufferSeconds: 30,
+      networkId: await ethereumClient.getNetworkId()
+    }
   );
-  return buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
+
+  try {
+    return await buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
+  } catch(err) {
+    NavigationService.error(err);
+    return null;
+  }
 }
 
 export async function getSellAssetsQuoteAsync(
@@ -422,14 +431,10 @@ export async function getSellAssetsQuoteAsync(
   if (!orders.length) {
     return null;
   }
-  const remainingFillableMakerAssetAmounts = await getRemainingFillableMakerAssetAmounts(
-    orders
-  );
   const worstCaseOrders = findOrdersThatCoverTakerAssetFillAmount(
     orders,
     assetSellAmount,
     {
-      remainingFillableMakerAssetAmounts,
       slippageBufferAmount: assetSellAmount
         .mul(options.slippagePercentage)
         .round()
@@ -439,19 +444,13 @@ export async function getSellAssetsQuoteAsync(
     orders,
     assetSellAmount,
     {
-      remainingFillableMakerAssetAmounts,
       slippageBufferAmount: ZERO
     }
   );
   const worstCasePrice = averagePriceByMakerAmount(
-    worstCaseOrders.resultOrders,
-    {
-      remainingFillableMakerAssetAmounts
-    }
+    worstCaseOrders.resultOrders
   );
-  const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders, {
-    remainingFillableMakerAssetAmounts
-  });
+  const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders);
 
   return {
     assetSellAmount,

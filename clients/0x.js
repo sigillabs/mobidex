@@ -1,6 +1,5 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
-import { MAX, NULL_ADDRESS, ZERO } from '../constants/0x';
 import { cache, time } from '../decorators/cls';
 import { filterFillableOrders } from '../utils/orders';
 

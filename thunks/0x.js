@@ -1,12 +1,8 @@
 import { AssetBuyer } from '@0xproject/asset-buyer';
-import { marketUtils } from '@0xproject/order-utils';
 import { BigNumber } from '0x.js';
-import * as _ from 'lodash';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
-import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
-import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import { checkAndSetUnlimitedProxyAllowance } from './wallet';
 
@@ -108,10 +104,13 @@ export function marketBuy(quote) {
     const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
       ethereumClient.getCurrentProvider(),
       quote.orders,
-      quote.feeOrders
+      quote.feeOrders, {
+        expiryBufferSeconds: 30,
+        networkId: await ethereumClient.getNetworkId()
+      }
     );
 
-    const txhash = await buyer.executeBuyQuoteAsync(quote);
+    const txhash = await buyer.executeBuyQuoteAsync(quote, { gasLimit });
     const activeTransaction = {
       id: txhash,
       type: 'MARKET_BUY',

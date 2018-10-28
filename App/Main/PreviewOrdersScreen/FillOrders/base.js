@@ -194,6 +194,7 @@ class BasePreviewFillOrders extends Component {
     try {
       await this.props.dispatch(fillAction(quote));
     } catch (err) {
+      console.error(err);
       NavigationService.error(err);
       return;
     } finally {

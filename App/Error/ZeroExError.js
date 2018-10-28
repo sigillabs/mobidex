@@ -17,6 +17,7 @@ export default class ZeroExError extends Component {
       case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
       case 'ERC20_TOKEN_CONTRACT_DOES_NOT_EXIST':
       case 'CONTRACT_NOT_DEPLOYED_ON_NETWORK':
+      case 'INSUFFICIENT_ASSET_LIQUIDITY':
         return true;
     }
 
@@ -62,6 +63,13 @@ export default class ZeroExError extends Component {
             For some reason 0x cannot find the token on the ethereum blockchain.
             This is super weird. You should probably reach out to the Mobidex
             team.
+          </Text>
+        );
+
+      case 'INSUFFICIENT_ASSET_LIQUIDITY':
+        return (
+          <Text style={styles.text}>
+            There is not enough liquidity to fill your order.
           </Text>
         );
     }

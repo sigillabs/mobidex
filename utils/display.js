@@ -66,7 +66,12 @@ export function formatAmount(amount) {
 }
 
 export function formatMoney(n) {
-  return '$' + zeroDecimalPad(Math.floor(n * 100) / 100, 2).toString();
+  const bn = new BigNumber(n.toString());
+  return (
+    (bn.lt(0) ? '-' : '') +
+    '$' +
+    zeroDecimalPad(Math.floor(bn.abs().toNumber() * 100) / 100, 2).toString()
+  );
 }
 
 export function formatPercent(n) {

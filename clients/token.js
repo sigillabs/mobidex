@@ -20,8 +20,9 @@ export default class TokenClient {
     return 'client:token:' + this.address;
   }, 24 * 60 * 60)
   async get() {
-    let networkId = await this.ethereumClient.getNetworkId();
-    let contract = ContractDefinitionLoader({
+    const networkId = await this.ethereumClient.getNetworkId();
+    const account = await this.ethereumClient.getAccount();
+    const contract = ContractDefinitionLoader({
       web3: this.ethereumClient.getWeb3(),
       contractDefinitions: {
         Token: {
@@ -33,9 +34,11 @@ export default class TokenClient {
           }
         }
       },
-      options: null
+      options: {
+        from: account
+      }
     }).Token;
-    let bytesContract = ContractDefinitionLoader({
+    const bytesContract = ContractDefinitionLoader({
       web3: this.ethereumClient.getWeb3(),
       contractDefinitions: {
         Token: {
@@ -47,12 +50,21 @@ export default class TokenClient {
           }
         }
       },
-      options: null
+      options: {
+        from: account
+      }
     }).Token;
 
     let name = null;
     let symbol = null;
     let decimals = null;
+
+    try {
+      decimals = await contract.methods.decimals().call();
+      decimals = parseInt(decimals);
+    } catch (err) {
+      console.warn('MOBIDEX: ', 'Could not fetch decimals', err);
+    }
 
     try {
       name = await contract.methods.name().call();
@@ -67,7 +79,7 @@ export default class TokenClient {
           .trim()
           .substring(1);
       } catch (err) {
-        console.warn('MOBIDEX: ', 'Could not fetch name', err);
+        console.warn('MOBIDEX: ', 'Could not fetch name again', err);
       }
     }
 
@@ -94,13 +106,6 @@ export default class TokenClient {
 
     if (!symbol) {
       return null;
-    }
-
-    try {
-      decimals = await contract.methods.decimals().call();
-      decimals = parseInt(decimals);
-    } catch (err) {
-      console.warn('MOBIDEX: ', 'Could not fetch decimals', err);
     }
 
     let token = { address: this.address, name, symbol, decimals };

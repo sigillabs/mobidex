@@ -10,14 +10,12 @@ import {
   updateForexTickers,
   updateTokenTickers
 } from '../../thunks';
-import {
-  formatAmount,
-  formatMoney,
-  formatPercent,
-  formatProduct
-} from '../../utils';
+import { formatAmount, formatMoney, formatProduct } from '../../utils';
 import Button from '../components/Button';
 import Divider from '../components/Divider';
+import FormattedForexAmount from '../components/FormattedForexAmount';
+import FormattedPercent from '../components/FormattedPercent';
+import FormattedTokenAmount from '../components/FormattedTokenAmount';
 import Padding from '../components/Padding';
 import Row from '../components/Row';
 import NavigationService from '../../services/NavigationService';
@@ -175,25 +173,31 @@ class TokenProductDetailsView extends Component {
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: `${formatAmount(average)} ${quote.symbol}`
+        right: <FormattedTokenAmount amount={average} symbol={quote.symbol} />
       },
       {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
-        right: `${formatAmount(change)} ${quote.symbol} (${formatPercent(
-          changePercent.abs()
-        )})`,
+        right: (
+          <Text>
+            <FormattedTokenAmount amount={change} symbol={quote.symbol} />
+            <Text> </Text>
+            <Text>(</Text>
+            <FormattedPercent percent={changePercent} />
+            <Text>)</Text>
+          </Text>
+        ),
         rightStyle: getProfitLossStyle(changePercent)
       },
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right: `${formatAmount(max)} ${quote.symbol}`
+        right: <FormattedTokenAmount amount={max} symbol={quote.symbol} />
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right: `${formatAmount(min)} ${quote.symbol}`
+        right: <FormattedTokenAmount amount={min} symbol={quote.symbol} />
       }
     ];
 
@@ -256,25 +260,31 @@ class ForexProductDetailsView extends Component {
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: formatMoney(average)
+        right: <FormattedForexAmount amount={average} />
       },
       {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
-        right: `${change.lt(0) ? '-' : ''}${formatMoney(
-          change.abs()
-        )} (${formatPercent(changePercent)})`,
+        right: (
+          <Text>
+            <FormattedForexAmount amount={change} />
+            <Text> </Text>
+            <Text>(</Text>
+            <FormattedPercent percent={changePercent} />
+            <Text>)</Text>
+          </Text>
+        ),
         rightStyle: getProfitLossStyle(changePercent)
       },
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right: formatMoney(max)
+        right: <FormattedForexAmount amount={max} />
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right: formatMoney(min)
+        right: <FormattedForexAmount amount={min} />
       }
     ];
 

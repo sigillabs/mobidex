@@ -28,7 +28,7 @@ export default class EthereumClient {
   @time
   @cache('ethereum:network-id', 10)
   async getNetworkId() {
-    return await this.web3.eth.net.getId();
+    return this.web3.eth.net.getId();
   }
 
   @time

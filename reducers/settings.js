@@ -17,7 +17,7 @@ const initialState = {
   quoteSymbol: 'WETH',
   showForexPrices: false,
   gasPrice: 3000000000,
-  gasLimit: 1000000,
+  gasLimit: 8000029000,
   minimumBalance: 10 ** 16
 };
 
