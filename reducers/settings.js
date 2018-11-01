@@ -3,8 +3,8 @@ import * as Actions from '../constants/actions';
 
 const initialState = {
   network: 1,
-  ethereumNodeEndpoint: 'http://mobidex.io:8545',
-  // ethereumNodeEndpoint: 'https://mainnet.infura.io/',
+  // ethereumNodeEndpoint: 'http://mobidex.io:8545',
+  ethereumNodeEndpoint: 'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   // ethereumNodeEndpoint: 'http://mobidex.io:9545',
   // ethereumNodeEndpoint: 'https://kovan.infura.io/',
   relayerEndpoint: 'https://mobidex.io/relayer/v2',
