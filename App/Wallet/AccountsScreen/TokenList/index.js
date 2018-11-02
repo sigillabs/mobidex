@@ -1,43 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-elements';
-import { colors } from '../../../styles';
-import { formatMoney } from '../../../utils';
-import TokenIcon from '../../components/TokenIcon';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
-import FormattedAdjustedTokenBalance from '../../components/FormattedAdjustedTokenBalance';
-import * as TickerService from '../../../services/TickerService';
-import * as WalletService from '../../../services/WalletService';
-
-class TokenItem extends Component {
-  render() {
-    const { asset } = this.props;
-    const { symbol } = asset;
-    const balance = WalletService.getAdjustedBalanceBySymbol(symbol);
-    const price = TickerService.getCurrentPrice(
-      TickerService.getForexTicker(symbol)
-    );
-
-    return (
-      <View
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'flex-end'
-        }}
-      >
-        <FormattedAdjustedTokenBalance symbol={symbol} />
-        <Text>({formatMoney(balance.mul(price).toNumber())})</Text>
-      </View>
-    );
-  }
-}
-
-TokenItem.propTypes = {
-  asset: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
-};
+import { colors } from '../../../../styles';
+import TokenIcon from '../../../components/TokenIcon';
+import TwoColumnListItem from '../../../components/TwoColumnListItem';
+import TokenItem from './TokenItem';
+import TokenTitle from './TokenTitle';
 
 export default class TokenList extends Component {
   render() {
@@ -62,8 +30,18 @@ export default class TokenList extends Component {
                   showName={false}
                 />
               }
-              left={asset.name}
-              right={<TokenItem asset={asset} />}
+              left={
+                <TokenTitle
+                  asset={asset}
+                  highlight={this.props.asset.address === asset.address}
+                />
+              }
+              right={
+                <TokenItem
+                  asset={asset}
+                  highlight={this.props.asset.address === asset.address}
+                />
+              }
               containerStyle={[
                 this.props.asset &&
                   this.props.asset.address === asset.address &&

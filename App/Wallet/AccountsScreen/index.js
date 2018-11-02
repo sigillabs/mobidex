@@ -62,12 +62,13 @@ class AccountsScreen extends Component {
               <TokenList
                 asset={asset}
                 assets={assets}
-                onPress={asset =>
-                  this.setState({
-                    asset:
-                      this.state.asset !== asset.symbol ? asset.symbol : null
-                  })
-                }
+                onPress={asset => {
+                  if (this.state.asset !== asset.symbol) {
+                    this.setState({
+                      asset: asset.symbol
+                    });
+                  }
+                }}
               />
             </Row>
           ) : null}

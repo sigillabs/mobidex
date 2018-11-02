@@ -2,6 +2,7 @@ import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
+import { ZERO } from '../constants/0x';
 import { cache, time } from '../decorators/cls';
 import { hex2a } from '../utils';
 import ZeroExClient from './0x.js';
@@ -165,6 +166,23 @@ export default class TokenClient {
     return await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
       `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+    );
+  }
+
+  @time
+  async setProxyAllowance(account = null, amount = ZERO) {
+    const contractWrappers = await new ZeroExClient(
+      this.ethereumClient
+    ).getContractWrappers();
+
+    if (account == null) {
+      account = await this.ethereumClient.getAccount();
+    }
+
+    return await contractWrappers.erc20Token.setProxyAllowanceAsync(
+      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
+      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      amount
     );
   }
 

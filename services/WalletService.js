@@ -28,7 +28,7 @@ import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { setWallet } from '../actions';
-import { ZERO } from '../constants/0x';
+import { ZERO, MAX } from '../constants/0x';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -155,7 +155,7 @@ export function getBalanceByAddress(address) {
   } = _store.getState();
   if (!address) {
     if (!balances[null]) {
-      ZERO;
+      return ZERO;
     } else {
       return Web3Wrapper.toUnitAmount(new BigNumber(balances[null]), 18);
     }
@@ -205,6 +205,70 @@ export function getAdjustedBalanceBySymbol(symbol) {
 
 export function getFullEthereumBalance() {
   return getBalanceBySymbol('ETH').add(getBalanceBySymbol('WETH'));
+}
+
+export function getAllowanceByAddress(address) {
+  const {
+    wallet: { allowances },
+    relayer: { assets }
+  } = _store.getState();
+  if (!address) {
+    return ZERO;
+  }
+
+  const asset = _.find(assets, { address });
+  if (!asset) return ZERO;
+  if (!allowances[address]) return ZERO;
+  return Web3Wrapper.toUnitAmount(
+    new BigNumber(allowances[address]),
+    asset.decimals
+  );
+}
+
+export function getAllowanceBySymbol(symbol) {
+  const {
+    wallet: { allowances },
+    relayer: { assets }
+  } = _store.getState();
+  if (!symbol) return ZERO;
+
+  const asset = _.find(assets, { symbol });
+  if (!asset) return ZERO;
+  if (!allowances[asset.address]) return ZERO;
+  return Web3Wrapper.toUnitAmount(
+    new BigNumber(allowances[asset.address]),
+    asset.decimals
+  );
+}
+
+export function isUnlockedByAddress(address) {
+  const {
+    wallet: { allowances },
+    relayer: { assets }
+  } = _store.getState();
+  if (!address) {
+    return false;
+  }
+
+  const asset = _.find(assets, { address });
+  if (!asset) return false;
+  if (!allowances[address]) return false;
+  return MAX.eq(allowances[address]);
+}
+
+export function isUnlockedBySymbol(symbol) {
+  const {
+    wallet: { allowances },
+    relayer: { assets }
+  } = _store.getState();
+  if (!symbol) {
+    return false;
+  }
+
+  const asset = _.find(assets, { symbol });
+  if (!asset) return false;
+  if (!allowances[asset.address]) return false;
+  return MAX.eq(allowances[asset.address]);
 }
 
 export function getDecimalsByAddress(address) {

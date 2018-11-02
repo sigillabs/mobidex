@@ -273,6 +273,24 @@ export function setUnlimitedProxyAllowance(address) {
   };
 }
 
+export function setNoProxyAllowance(address) {
+  return async (dispatch, getState) => {
+    const {
+      wallet: { web3 }
+    } = getState();
+    const ethereumClient = new EthereumClient(web3);
+    const tokenClient = new TokenClient(ethereumClient, address);
+    const txhash = await tokenClient.setProxyAllowance();
+    const activeTransaction = {
+      id: txhash,
+      type: 'APPROVAL',
+      address,
+      amount: '0'
+    };
+    await TransactionService.instance.addActiveTransaction(activeTransaction);
+  };
+}
+
 export function checkAndSetUnlimitedProxyAllowance(address) {
   return async (dispatch, getState) => {
     const {
