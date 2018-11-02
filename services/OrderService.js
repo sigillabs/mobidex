@@ -335,18 +335,26 @@ export async function getBuyAssetsQuoteAsync(
   assetData,
   assetBuyAmount,
   options = {
-    slippagePercentage: 0.2
+    slippagePercentage: 0.2,
+    expiryBufferSeconds: 30
   }
 ) {
   if (!options)
     options = {
-      slippagePercentage: 0.2
+      slippagePercentage: 0.2,
+      expiryBufferSeconds: 30
     };
   if (
     options.slippagePercentage === null ||
     options.slippagePercentage === undefined
   )
     options.slippagePercentage = 0.2;
+
+  if (
+    options.expiryBufferSeconds === null ||
+    options.expiryBufferSeconds === undefined
+  )
+    options.expiryBufferSeconds = 30;
 
   assetBuyAmount = new BigNumber(assetBuyAmount.toString());
 
@@ -378,15 +386,16 @@ export async function getBuyAssetsQuoteAsync(
   const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
     ethereumClient.getCurrentProvider(),
     orderbook.asks.slice(),
-    feeOrderbook.asks.slice(), {
-      expiryBufferSeconds: 30,
+    feeOrderbook.asks.slice(),
+    {
+      expiryBufferSeconds: options.expiryBufferSeconds,
       networkId: await ethereumClient.getNetworkId()
     }
   );
 
   try {
     return await buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
-  } catch(err) {
+  } catch (err) {
     NavigationService.error(err);
     return null;
   }
@@ -396,7 +405,8 @@ export async function getSellAssetsQuoteAsync(
   assetData,
   assetSellAmount,
   options = {
-    slippagePercentage: 0.2
+    slippagePercentage: 0.2,
+    expiryBufferSeconds: 30
   }
 ) {
   if (!options)
@@ -408,6 +418,12 @@ export async function getSellAssetsQuoteAsync(
     options.slippagePercentage === undefined
   )
     options.slippagePercentage = 0.2;
+
+  if (
+    options.expiryBufferSeconds === null ||
+    options.expiryBufferSeconds === undefined
+  )
+    options.expiryBufferSeconds = 30;
 
   assetSellAmount = new BigNumber(assetSellAmount.toString());
 
@@ -431,6 +447,7 @@ export async function getSellAssetsQuoteAsync(
   if (!orders.length) {
     return null;
   }
+
   const worstCaseOrders = findOrdersThatCoverTakerAssetFillAmount(
     orders,
     assetSellAmount,
@@ -447,6 +464,21 @@ export async function getSellAssetsQuoteAsync(
       slippageBufferAmount: ZERO
     }
   );
+
+  // Filter expired.
+  const earliestExperiationTimeInSeconds =
+    Math.ceil(new Date().getTime() / 1000) + options.expiryBufferSeconds;
+  worstCaseOrders.resultOrders = worstCaseOrders.resultOrders.filter(order =>
+    new BigNumber(order.expirationTimeSeconds).gt(
+      earliestExperiationTimeInSeconds
+    )
+  );
+  bestCaseOrders.resultOrders = bestCaseOrders.resultOrders.filter(order =>
+    new BigNumber(order.expirationTimeSeconds).gt(
+      earliestExperiationTimeInSeconds
+    )
+  );
+
   const worstCasePrice = averagePriceByMakerAmount(
     worstCaseOrders.resultOrders
   );
