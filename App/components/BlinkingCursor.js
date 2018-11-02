@@ -1,31 +1,41 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import reactMixin from 'react-mixin';
-import { View } from 'react-native';
-import TimerMixin from 'react-timer-mixin';
+import { Animated, View } from 'react-native';
 import { colors } from '../../styles';
 
-@reactMixin.decorate(TimerMixin)
 export default class BlinkingCursor extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      show: false
-    };
+    this.opacity = new Animated.Value(0);
+  }
 
-    this.setInterval(() => this.blink(), props.delay);
+  componentDidMount() {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(this.opacity, {
+          toValue: 1,
+          duration: 0,
+          delay: this.props.delay
+        }),
+        Animated.timing(this.opacity, {
+          toValue: 0,
+          duration: 0,
+          delay: this.props.delay
+        })
+      ])
+    ).start();
   }
 
   render() {
     let { height, width, style, delay, ...rest } = this.props;
     return (
-      <View
+      <Animated.View
         style={[
           styles.default,
           { height, width },
           style,
-          this.state.show ? styles.show : styles.hide
+          { opacity: this.opacity }
         ]}
         {...rest}
       />
