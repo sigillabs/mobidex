@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import Button from './Button';
 
@@ -11,9 +11,7 @@ export default class TokenAmountKeyboard extends Component {
         <VirtualKeyboard
           color="black"
           pressMode="string"
-          onPress={val =>
-            InteractionManager.runAfterInteractions(() => this.onChange(val))
-          }
+          onPress={val => this.onChange(val)}
           decimal={true}
           {...this.props}
         />

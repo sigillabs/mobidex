@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 import { colors } from '../../styles';
 
 export default class PageRoot extends Component {
@@ -7,6 +7,7 @@ export default class PageRoot extends Component {
     let { style } = this.props;
     return (
       <SafeAreaView
+        {...this.props}
         style={[
           {
             backgroundColor: colors.background,

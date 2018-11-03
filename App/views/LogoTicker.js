@@ -1,18 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Avatar, Text } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { getProfitLossStyle } from '../../styles';
-import {
-  formatAmount,
-  formatMoney,
-  formatPercent,
-  formatProduct,
-  getImage
-} from '../../utils';
-import MutedText from '../components/MutedText';
-import SmallText from '../components/SmallText';
+import { formatProduct, getImage } from '../../utils';
 import Row from '../components/Row';
 import * as TickerService from '../../services/TickerService';
 import OrderbookPrice from './OrderbookPrice';
