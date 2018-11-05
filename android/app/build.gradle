@@ -112,9 +112,9 @@ android {
     defaultConfig {
         applicationId "io.mobidex"
         minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 30
-        versionName "0.6.30"
+        targetSdkVersion 26
+        versionCode 32
+        versionName "0.6.32"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
