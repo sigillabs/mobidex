@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import { InteractionManager, View } from 'react-native';
-import { Input, Text } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import * as styles from '../../styles';
-import { unlock } from '../../thunks';
-import Button from '../components/Button';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import NavigationService from '../../services/NavigationService';
 import * as WalletService from '../../services/WalletService';
+import UnlockingScreen from './Unlocking';
 
 @reactMixin.decorate(TimerMixin)
 class UnlockWithPinScreen extends Component {
@@ -20,11 +18,16 @@ class UnlockWithPinScreen extends Component {
 
     this.state = {
       pin: '',
-      pinError: false
+      pinError: false,
+      showUnlocking: false
     };
   }
 
   render() {
+    if (this.state.showUnlocking) {
+      return <UnlockingScreen />;
+    }
+
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -47,7 +50,7 @@ class UnlockWithPinScreen extends Component {
         </View>
         <PinKeyboard
           onChange={value => this.setPin(value)}
-          onSubmit={() => this.unlock()}
+          onSubmit={() => {}}
         />
       </View>
     );
@@ -70,28 +73,32 @@ class UnlockWithPinScreen extends Component {
       this.setState({ pin: current, pinError: false });
 
       if (current.length === 6) {
-        this.state.pin = current;
-        this.unlock();
+        this.setState({ pin: current });
+        this.unlock(current);
       }
     }
   }
 
-  unlock() {
-    if (this.state.pin.length < 6) {
+  unlock(pin) {
+    if (pin.length < 6) {
       this.setState({ pinError: true });
       return;
     }
 
+    this.setState({ showUnlocking: true });
+
     InteractionManager.runAfterInteractions(async () => {
       try {
-        await WalletService.unlock(this.state.pin.slice(0, 6));
+        await WalletService.unlock(pin.slice(0, 6));
       } catch (err) {
         this.setState({ pinError: true });
         return;
+      } finally {
+        this.setState({ showUnlocking: false });
       }
 
       this.setState({ pinError: false });
-      NavigationService.navigate('Products');
+      NavigationService.navigate('Initial');
     });
   }
 }

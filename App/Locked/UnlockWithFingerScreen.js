@@ -96,7 +96,7 @@ export default class UnlockWithFingerScreen extends Component {
         this.setState({ showUnlocking: false });
       }
 
-      NavigationService.navigate('Products');
+      NavigationService.navigate('Initial');
     });
   }
 

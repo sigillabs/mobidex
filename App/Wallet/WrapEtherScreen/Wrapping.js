@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { colors } from '../../../styles';
+import Padding from '../../components/Padding';
+import RotatingView from '../../components/RotatingView';
 
 export default class WrappingScreen extends Component {
   render() {
@@ -18,13 +20,17 @@ export default class WrappingScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Entypo
-          name="chevron-with-circle-up"
-          size={100}
-          style={{ marginBottom: 25 }}
-        />
+        <RotatingView>
+          <Entypo
+            name="chevron-with-circle-up"
+            size={100}
+            style={{ marginBottom: 25 }}
+          />
+        </RotatingView>
+        <Padding size={25} />
         <Text style={styles.text}>Wrapping...</Text>
-        <ActivityIndicator size="large" color={colors.gray1} />
+        <Padding size={25} />
+        <Padding size={25} />
       </View>
     );
   }

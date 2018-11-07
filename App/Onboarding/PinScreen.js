@@ -96,7 +96,7 @@ export default class PinScreen extends Component {
       try {
         await WalletService.importMnemonics(mnemonic.join(' '), pin);
 
-        NavigationService.navigate('Products');
+        NavigationService.navigate('Initial');
       } catch (err) {
         console.warn(err);
         return;

@@ -2,7 +2,7 @@ import React from 'react';
 import {
   createStackNavigator,
   createSwitchNavigator,
-  createTabNavigator
+  createBottomTabNavigator
 } from 'react-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,6 +15,7 @@ import OrdersHeader from './headers/Orders';
 import ProductsHeader from './headers/Products';
 import SendTokensHeader from './headers/SendTokens';
 import ProductDetailsHeader from './headers/ProductDetails';
+import InitialLoadScreen from './Main/InitialLoadScreen';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import PreviewOrdersScreen from './Main/PreviewOrdersScreen';
@@ -251,7 +252,7 @@ ProductsNavigation.router = AnalyticsService.wrapRouter(
   ProductsNavigation.router
 );
 
-const MainTabsNavigator = createTabNavigator(
+const MainTabsNavigator = createBottomTabNavigator(
   {
     Products: { screen: ProductsNavigation },
     Orders: { screen: OrdersNavigation },
@@ -309,6 +310,7 @@ MainTabsNavigator.router = AnalyticsService.wrapRouter(
 
 export default createSwitchNavigator(
   {
+    Initial: { screen: InitialLoadScreen },
     Loading: { screen: LoadingScreen },
     Error: { screen: ErrorScreen },
     Onboarding: { screen: OnboardingNavigation },

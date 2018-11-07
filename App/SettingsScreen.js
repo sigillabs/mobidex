@@ -4,9 +4,9 @@ import { ScrollView, TouchableOpacity, View } from 'react-native';
 import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { clearCache } from '../utils';
 import MutedText from './components/MutedText';
 import NormalHeader from './headers/Normal';
-import { clearCache } from '../utils';
 
 class SettingsScreen extends Component {
   static propTypes = {

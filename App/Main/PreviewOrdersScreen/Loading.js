@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { colors } from '../../../styles';
+import Padding from '../../components/Padding';
+import RotatingView from '../../components/RotatingView';
 
 export default class FillingOrdersScreen extends Component {
   render() {
@@ -19,13 +21,17 @@ export default class FillingOrdersScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Entypo
-          name="chevron-with-circle-up"
-          size={100}
-          style={{ marginBottom: 25 }}
-        />
+        <RotatingView>
+          <Entypo
+            name="chevron-with-circle-up"
+            size={100}
+            style={{ marginBottom: 25 }}
+          />
+        </RotatingView>
+        <Padding size={25} />
         <Text style={styles.text}>{this.props.text}</Text>
-        <ActivityIndicator size="large" color={colors.gray1} />
+        <Padding size={25} />
+        <Padding size={25} />
       </View>
     );
   }

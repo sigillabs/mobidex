@@ -16,12 +16,14 @@ export default class BlinkingCursor extends Component {
         Animated.timing(this.opacity, {
           toValue: 1,
           duration: 0,
-          delay: this.props.delay
+          delay: this.props.delay,
+          useNativeDriver: true
         }),
         Animated.timing(this.opacity, {
           toValue: 0,
           duration: 0,
-          delay: this.props.delay
+          delay: this.props.delay,
+          useNativeDriver: true
         })
       ])
     ).start();
