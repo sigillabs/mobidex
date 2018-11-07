@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ZERO } from '../../../../constants/0x';
 import * as AssetService from '../../../../services/AssetService';
-import { batchMarketBuyWithEth } from '../../../../thunks';
+import * as WalletService from '../../../../services/WalletService';
+import { batchMarketBuy, batchMarketBuyWithEth } from '../../../../thunks';
 import BasePreviewFillOrders from './base';
 
 export default class PreviewFillAsks extends Component {
@@ -15,7 +16,7 @@ export default class PreviewFillAsks extends Component {
         getSubtotal={quote => this.getSubtotal(quote)}
         getTotalFee={quote => this.getTotalFee(quote)}
         getTotal={quote => this.getTotal(quote)}
-        fillAction={batchMarketBuyWithEth}
+        fillAction={quote => this.getFillAction(quote)}
       />
     );
   }
@@ -36,6 +37,21 @@ export default class PreviewFillAsks extends Component {
   getTotal(quote) {
     const subtotal = this.getSubtotal(quote);
     return subtotal;
+  }
+
+  getFillAction(quote) {
+    const asset = AssetService.findAssetByData(quote.assetData);
+    const balance = WalletService.getAdjustedBalanceByAddress(asset.token);
+    const amount = Web3Wrapper.toUnitAmount(
+      quote.assetBuyAmount,
+      asset.decimals
+    );
+    const quoteAmount = amount.mul(quote.worstCaseQuoteInfo.ethPerAssetPrice);
+    if (quoteAmount.gt(balance)) {
+      return batchMarketBuyWithEth(quote);
+    } else {
+      return batchMarketBuy(quote);
+    }
   }
 }
 

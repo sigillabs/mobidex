@@ -105,7 +105,7 @@ BaseFillOrders.propTypes = {
   quoteToken: PropTypes.object.isRequired,
   buttonTitle: PropTypes.string.isRequired,
   inputTitle: PropTypes.string.isRequired,
-  renderQuote: PropTypes.element.isRequired,
+  renderQuote: PropTypes.func.isRequired,
   getQuote: PropTypes.func.isRequired,
   preview: PropTypes.func.isRequired
 };

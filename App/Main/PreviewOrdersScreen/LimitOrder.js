@@ -79,7 +79,7 @@ class PreviewLimitOrder extends Component {
             />
           }
           bottomDivider={false}
-          leftStyle={{ color: colors.primary, height: 30 }}
+          leftStyle={{ height: 30 }}
         />
         <TwoColumnListItem
           left="Total"

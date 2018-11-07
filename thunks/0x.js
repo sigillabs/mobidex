@@ -85,7 +85,7 @@ export function batchFillOrKill(orders, amounts) {
   };
 }
 
-export function marketBuy(quote) {
+export function marketBuyWithEth(quote) {
   return async (dispatch, getState) => {
     const {
       wallet: { web3 },
@@ -104,13 +104,45 @@ export function marketBuy(quote) {
     const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
       ethereumClient.getCurrentProvider(),
       quote.orders,
-      quote.feeOrders, {
+      quote.feeOrders,
+      {
         expiryBufferSeconds: 30,
         networkId: await ethereumClient.getNetworkId()
       }
     );
 
     const txhash = await buyer.executeBuyQuoteAsync(quote, { gasLimit });
+    const activeTransaction = {
+      id: txhash,
+      type: 'MARKET_BUY',
+      quote
+    };
+    await TransactionService.instance.addActiveTransaction(activeTransaction);
+  };
+}
+
+export function marketBuy(quote) {
+  return async (dispatch, getState) => {
+    const {
+      wallet: { web3 },
+      settings: { gasLimit }
+    } = getState();
+
+    if (quote === null) {
+      throw new Error('Need a quote to buy assets.');
+    }
+
+    if (!quote.orders.length) {
+      throw new Error('Need orders to fill in order to buy assets.');
+    }
+
+    const ethereumClient = new EthereumClient(web3);
+    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
+
+    const txhash = await zeroExClient.marketBuy(
+      quote.orders,
+      quote.assetBuyAmount
+    );
     const activeTransaction = {
       id: txhash,
       type: 'MARKET_BUY',
@@ -155,7 +187,15 @@ export function batchMarketBuyWithEth(quote) {
   return async dispatch => {
     const asset = AssetService.getWETHAsset();
     await dispatch(checkAndSetUnlimitedProxyAllowance(asset.address));
-    await dispatch(marketBuy(quote));
+    await dispatch(marketBuyWithEth(quote));
+  };
+}
+
+export function batchMarketBuy(quote) {
+  return async dispatch => {
+    const asset = AssetService.getWETHAsset();
+    await dispatch(checkAndSetUnlimitedProxyAllowance(asset.address));
+    await dispatch(marketBuyWithEth(quote));
   };
 }
 

@@ -49,7 +49,12 @@ export default class TokenAmount extends Component {
             </Text>
             {cursor ? <BlinkingCursor /> : null}
           </View>
-          <FormattedSymbol name={symbol} style={[styles.symbol, symbolStyle]} />
+          {symbol ? (
+            <FormattedSymbol
+              name={symbol}
+              style={[styles.symbol, symbolStyle]}
+            />
+          ) : null}
           {name ? (
             <MutedText style={[styles.name, nameStyle]}>{name}</MutedText>
           ) : null}
