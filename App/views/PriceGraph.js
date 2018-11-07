@@ -67,7 +67,7 @@ export default class PriceGraph extends React.PureComponent {
             flex: 1,
             height: this.props.height,
             padding: 0,
-            marginHorizontal: 10
+            marginHorizontal: 0
           },
           containerStyle
         ]}
@@ -81,7 +81,7 @@ export default class PriceGraph extends React.PureComponent {
             strokeWidth: 2,
             fill: colorWithAlpha(colors.yellow0, 0.6)
           }}
-          contentInset={{ top: 10, right: 0, bottom: 10, left: 40 }}
+          contentInset={{ top: 10, right: 0, bottom: 10, left: 0 }}
           xAccessor={({ index, item }) => index}
           yAccessor={({ index, item }) => parseFloat(item.price)}
           gridMin={min}
