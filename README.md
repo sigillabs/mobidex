@@ -106,7 +106,7 @@ All issues with the Mobidex client are public. They can be found at https://gith
 2. Fill in the template
 3. Click submit
 
-You can also run the issue by the telegram [telegram](https://t.me/mobidex) before creating an issue.
+You can also run the issue by the [telegram](https://t.me/mobidex) group before creating an issue.
 
 ### Development
 
@@ -120,6 +120,7 @@ Any one can become a tester. Just join the Mobidex [telegram](https://t.me/mobid
 **Testers**:
 
 - [AboShanab](https://github.com/AboShanab)
+- [gsampathkumar](https://github.com/gsampathkumar)
 
 ## Notes
 
