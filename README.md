@@ -94,6 +94,33 @@ Run `npm run build:android:release`. See notes above.
 2.  Archive App
 3.  Upload app to app store
 
+## Contributing
+
+Mobidex is an open source project. As such, there are many ways to contribute. See below to see how you can get involved!
+
+### Submit A Bug
+
+All issues with the Mobidex client are public. They can be found at https://github.com/sigillabs/mobidex/issues.
+
+1. Click *New Issue*
+2. Fill in the template
+3. Click submit
+
+You can also run the issue by the telegram [telegram](https://t.me/mobidex) before creating an issue.
+
+### Development
+
+1. Find a **good first issue** [issue](https://github.com/sigillabs/mobidex/issues).
+2. Submit a pull request.
+
+### Testing
+
+Any one can become a tester. Just join the Mobidex [telegram](https://t.me/mobidex) and ask and admin to join.
+
+**Testers**:
+
+- [AboShanab](https://github.com/AboShanab)
+
 ## Notes
 
 ### Web3 and 0x.js
