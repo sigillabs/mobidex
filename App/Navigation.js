@@ -29,8 +29,9 @@ import SendScreen from './Wallet/SendScreen';
 import WrapEtherScreen from './Wallet/WrapEtherScreen';
 import IntroScreen from './Onboarding/IntroScreen';
 import ImportMnemonicScreen from './Onboarding/ImportMnemonicScreen';
-import PinScreen from './Onboarding/PinScreen';
 import PreviewMnemonicScreen from './Onboarding/PreviewMnemonicScreen';
+import PinScreen from './Onboarding/PinScreen';
+import ConstructWalletScreen from './Onboarding/ConstructWalletScreen';
 import ErrorScreen from './Error';
 import SettingsScreen from './SettingsScreen.js';
 import LoadingScreen from './LoadingScreen';
@@ -58,7 +59,8 @@ const OnboardingNavigation = createStackNavigator(
     Intro: { screen: IntroScreen },
     ImportMnemonic: { screen: ImportMnemonicScreen },
     ImportPin: { screen: PinScreen },
-    PreviewMnemonic: { screen: PreviewMnemonicScreen }
+    PreviewMnemonic: { screen: PreviewMnemonicScreen },
+    ConstructWallet: { screen: ConstructWalletScreen }
   },
   {
     cardStyle: {
@@ -113,7 +115,10 @@ OrdersNavigation.router = AnalyticsService.wrapRouter(OrdersNavigation.router);
 const WalletNavigation = createStackNavigator(
   {
     Accounts: {
-      screen: AccountsScreen
+      screen: AccountsScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: null
+      })
     },
     Receive: {
       screen: ReceiveScreen,

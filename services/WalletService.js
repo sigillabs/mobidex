@@ -57,7 +57,7 @@ export async function cancelFingerPrintUnlock() {
   );
 }
 
-export async function isLocked() {
+export async function hasWallet() {
   return await new Promise((resolve, reject) =>
     WalletManager.doesWalletExist((err, data) => {
       if (err) return reject(err);
@@ -90,7 +90,7 @@ export async function unlock(password = null) {
       settings: { ethereumNodeEndpoint }
     } = _store.getState();
 
-    const exists = await isLocked();
+    const exists = await hasWallet();
     if (!exists) throw new Error('Wallet does not exist!');
 
     const privateKey = await getPrivateKey(password);
@@ -136,7 +136,7 @@ export async function importMnemonics(mnemonics, password) {
       resolve(data);
     });
   });
-  return await unlock(password);
+  return unlock(password);
 }
 
 export async function generateMnemonics() {

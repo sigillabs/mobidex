@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Image } from 'react-native';
+import { Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { colors } from '../../styles.js';
+import BigCenter from '../components/BigCenter';
 import Button from '../components/Button';
 import Padding from '../components/Padding';
 import Row from '../components/Row';
@@ -12,18 +12,7 @@ import * as WalletService from '../../services/WalletService';
 class Intro extends Component {
   render() {
     return (
-      <View
-        backgroundColor={colors.transparent}
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          paddingTop: '15%',
-          paddingRight: 10,
-          paddingBottom: 10,
-          paddingLeft: 10,
-          width: '100%'
-        }}
-      >
+      <BigCenter>
         <Image
           source={require('../../images/logo-with-text/logo-with-text-transparent.png')}
           style={{
@@ -33,7 +22,7 @@ class Intro extends Component {
           }}
         />
         <Padding size={20} />
-        <Text h4>Trade ERC-20 Tokens.</Text>
+        <Text h4>Trustlessly Trade ERC20 Tokens</Text>
         <Padding size={20} />
         <Text h6>
           To get started, import or generate a wallet. It is the 12-word
@@ -52,7 +41,7 @@ class Intro extends Component {
             onPress={() => NavigationService.navigate('ImportMnemonic')}
           />
         </Row>
-      </View>
+      </BigCenter>
     );
   }
 

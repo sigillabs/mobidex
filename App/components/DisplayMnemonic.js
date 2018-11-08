@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
 import { colors } from '../../styles';
+import { styleProp } from '../../types/props';
 import Row from './Row';
 
 class Cell extends Component {
@@ -58,8 +59,8 @@ export default class DisplayMnemonic extends Component {
 
 DisplayMnemonic.propTypes = {
   mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
-  cellStyle: PropTypes.object,
-  containerStyle: PropTypes.object
+  cellStyle: styleProp,
+  containerStyle: styleProp
 };
 
 const styles = {

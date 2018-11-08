@@ -9,8 +9,8 @@ import {
   updateForexTickers,
   updateTokenTickers
 } from '../../../thunks';
-import Row from '../../components/Row';
 import PageRoot from '../../components/PageRoot';
+import Row from '../../components/Row';
 import TokenList from './TokenList';
 import PortfolioDetails from './PortfolioDetails';
 import TokenDetails from './TokenDetails';

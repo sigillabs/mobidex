@@ -23,7 +23,7 @@ export function gotoEtherScan(txaddr) {
 
 export function gotoOnboardingOrLocked() {
   return async dispatch => {
-    let hasWallet = await WalletService.isLocked();
+    let hasWallet = await WalletService.hasWallet();
     if (hasWallet) {
       NavigationService.navigate('Locked');
     } else {

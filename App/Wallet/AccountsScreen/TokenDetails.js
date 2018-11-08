@@ -44,7 +44,7 @@ class TokenDetails extends Component {
   toggleApprove() {
     const { asset } = this.props;
     NavigationService.navigate('ToggleApprove', {
-      assetData: asset.assetData
+      asset
     });
   }
 

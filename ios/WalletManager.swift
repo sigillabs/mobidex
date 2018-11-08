@@ -70,7 +70,7 @@ class WalletManager: NSObject {
           kSecReturnData as String: true,
           kSecReturnAttributes as String: true,
           kSecAttrAccount as String: "mobidex",
-          kSecAttrService as String: "io.mobidex.app.password",
+          kSecAttrService as String: "io.mobidex.wallet.password",
           kSecMatchLimit as String: kSecMatchLimitOne,
           kSecUseAuthenticationContext as String: context,
 //          kSecUseOperationPrompt as String: "Unlock your wallet",
@@ -180,6 +180,9 @@ class WalletManager: NSObject {
       
       let privateKey = try store.UNSAFE_getPrivateKeyData(password: password, account: addresses[0])
       callback([NSNull(), privateKey.toHexString()])
+    } catch let error as WalletManagerError {
+      print(error.message);
+      callback([error, NSNull()])
     } catch let error as NSError {
       print(error.localizedDescription);
       callback([error, NSNull()])
