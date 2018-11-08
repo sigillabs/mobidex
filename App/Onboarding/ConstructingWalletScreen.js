@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { colors } from '../../styles';
 import BigCenter from '../components/BigCenter';
 import Padding from '../components/Padding';
+import RotatingView from '../components/RotatingView';
 
-export default class UnlockingScreen extends Component {
+export default class ConstructingWalletScreen extends Component {
   render() {
     return (
       <BigCenter>
-        <FontAwesome name="unlock" color={colors.yellow0} size={100} />
+        <RotatingView>
+          <FontAwesome name="gear" size={100} />
+        </RotatingView>
         <Padding size={25} />
-        <Text>Unlocking Mobidex...</Text>
+        <Text>Constructing Wallet...</Text>
       </BigCenter>
     );
   }

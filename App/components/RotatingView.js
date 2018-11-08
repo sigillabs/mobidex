@@ -4,7 +4,6 @@ import { Animated } from 'react-native';
 
 export default class RotatingView extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     duration: PropTypes.number.isRequired
   };
 

@@ -218,12 +218,8 @@ class ProductScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: true
+      refreshing: false
     };
-  }
-
-  componentDidMount() {
-    this.onRefresh(false);
   }
 
   render() {

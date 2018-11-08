@@ -1,7 +1,6 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import * as _ from 'lodash';
-import { InteractionManager } from 'react-native';
 import {
   addActiveTransactions,
   addTransactions,
@@ -34,14 +33,12 @@ export function loadAllowances(force = false) {
       })
     );
 
-    InteractionManager.runAfterInteractions(() => {
-      const allAllowances = allowances.reduce(
-        (acc, obj) => _.merge(acc, obj),
-        {}
-      );
+    const allAllowances = allowances.reduce(
+      (acc, obj) => _.merge(acc, obj),
+      {}
+    );
 
-      dispatch(setAllowances(allAllowances));
-    });
+    dispatch(setAllowances(allAllowances));
   };
 }
 
@@ -62,15 +59,13 @@ export function loadBalances(force = false) {
     );
     const ethereumBalance = await ethereumClient.getBalance(force);
 
-    InteractionManager.runAfterInteractions(() => {
-      const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
-      dispatch(setBalances(allBalances));
-      dispatch(
-        setBalances({
-          null: ethereumBalance
-        })
-      );
-    });
+    const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+    dispatch(setBalances(allBalances));
+    dispatch(
+      setBalances({
+        null: ethereumBalance
+      })
+    );
   };
 }
 
@@ -143,9 +138,7 @@ export function loadTransactions(force = false) {
         },
         force ? 0 : 10 * 60
       );
-      InteractionManager.runAfterInteractions(() => {
-        dispatch(addTransactions(transactions));
-      });
+      dispatch(addTransactions(transactions));
     } catch (err) {
       NavigationService.error(err);
     }

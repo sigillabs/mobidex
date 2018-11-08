@@ -6,13 +6,15 @@ import * as WalletService from '../../services/WalletService';
 import MutedText from '../components/MutedText';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
+import ConstructingWalletScreen from './ConstructingWalletScreen';
 
 export default class PinScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pin: ''
+      pin: '',
+      loading: false
     };
   }
 
@@ -30,6 +32,10 @@ export default class PinScreen extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <ConstructingWalletScreen />;
+    }
+
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <View style={{ flex: 1, marginHorizontal: 50 }}>
@@ -89,18 +95,22 @@ export default class PinScreen extends Component {
       return;
     }
 
+    this.setState({ loading: true });
+
     const mnemonic = this.props.navigation.getParam('mnemonic');
     const { pin } = this.state;
 
     InteractionManager.runAfterInteractions(async () => {
       try {
         await WalletService.importMnemonics(mnemonic.join(' '), pin);
-
-        NavigationService.navigate('Initial');
       } catch (err) {
         console.warn(err);
         return;
+      } finally {
+        this.setState({ loading: false });
       }
     });
+
+    NavigationService.navigate('Initial');
   }
 }

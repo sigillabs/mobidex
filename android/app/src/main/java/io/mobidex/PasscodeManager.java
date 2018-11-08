@@ -55,9 +55,20 @@ public class PasscodeManager extends BaseActivityEventListener {
         context = reactContext;
         fingerprintManager = (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
         keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-        supportsFingerPrint = fingerprintManager.isHardwareDetected();
-        hasEnrolled = fingerprintManager.hasEnrolledFingerprints();
-        hasLockScreen  = keyguardManager.isKeyguardSecure();
+
+        if (fingerprintManager == null) {
+            supportsFingerPrint = false;
+            hasEnrolled = false;
+        } else {
+            supportsFingerPrint = fingerprintManager.isHardwareDetected();
+            hasEnrolled = fingerprintManager.hasEnrolledFingerprints();
+        }
+
+        if (keyguardManager == null) {
+            hasLockScreen  = false;
+        } else {
+            hasLockScreen  = keyguardManager.isKeyguardSecure();
+        }
 
         reactContext.addActivityEventListener(this);
     }

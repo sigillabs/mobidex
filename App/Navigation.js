@@ -74,8 +74,30 @@ OnboardingNavigation.router = AnalyticsService.wrapRouter(
 
 const OrdersNavigation = createStackNavigator(
   {
-    Orders: { screen: OrdersScreen },
-    History: { screen: TransactionHistoryScreen }
+    Orders: {
+      screen: OrdersScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <OrdersHeader
+            navigation={navigation}
+            title="Active Orders"
+            showBackButton={false}
+          />
+        )
+      })
+    },
+    History: {
+      screen: TransactionHistoryScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <NormalHeader
+            navigation={navigation}
+            title="Transaction History"
+            showBackButton={true}
+          />
+        )
+      })
+    }
   },
   {
     cardStyle: {
@@ -83,46 +105,63 @@ const OrdersNavigation = createStackNavigator(
     },
     initialRouteName: 'Orders',
     lazy: true,
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      header: () => {
-        if (navigation.getParam('hideHeader')) {
-          return null;
-        }
-
-        switch (navigation.state.routeName) {
-          case 'Orders':
-            return (
-              <OrdersHeader
-                navigation={navigation}
-                title="Active Orders"
-                showBackButton={false}
-              />
-            );
-
-          case 'History':
-          default:
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Transaction History"
-                showBackButton={true}
-              />
-            );
-        }
-      }
-    })
+    headerMode: 'float'
   }
 );
 OrdersNavigation.router = AnalyticsService.wrapRouter(OrdersNavigation.router);
 
 const WalletNavigation = createStackNavigator(
   {
-    Accounts: { screen: AccountsScreen },
-    Receive: { screen: ReceiveScreen },
-    Send: { screen: SendScreen },
-    Wrap: { screen: WrapEtherScreen },
-    ToggleApprove: { screen: ToggleApproveScreen }
+    Accounts: {
+      screen: AccountsScreen
+    },
+    Receive: {
+      screen: ReceiveScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <NormalHeader
+            navigation={navigation}
+            title="Receive Tokens"
+            showBackButton={true}
+          />
+        )
+      })
+    },
+    Send: {
+      screen: SendScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <SendTokensHeader
+            navigation={navigation}
+            asset={navigation.state.params.asset}
+          />
+        )
+      })
+    },
+    Wrap: {
+      screen: WrapEtherScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <NormalHeader
+            navigation={navigation}
+            title="Wrap Ether"
+            showBackButton={true}
+          />
+        )
+      })
+    },
+    ToggleApprove: {
+      screen: ToggleApproveScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: navigation.getParam('hideHeader') ? null : (
+          <NormalHeader
+            navigation={navigation}
+            title="Mobidex"
+            showBackButton={true}
+          />
+        )
+      })
+    }
   },
   {
     cardStyle: {
@@ -130,122 +169,74 @@ const WalletNavigation = createStackNavigator(
     },
     initialRouteName: 'Accounts',
     lazy: true,
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      header: () => {
-        if (navigation.getParam('hideHeader')) {
-          return null;
-        }
-
-        switch (navigation.state.routeName) {
-          case 'Accounts':
-            return null;
-
-          case 'Receive':
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Receive Tokens"
-                showBackButton={true}
-              />
-            );
-
-          case 'Send':
-            return (
-              <SendTokensHeader
-                navigation={navigation}
-                asset={navigation.state.params.asset}
-              />
-            );
-
-          case 'Wrap':
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Wrap Ether"
-                showBackButton={true}
-              />
-            );
-
-          case 'Unwrap':
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Unwrap Ether"
-                showBackButton={true}
-              />
-            );
-
-          default:
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Mobidex"
-                showBackButton={true}
-              />
-            );
-        }
-      }
-    })
+    headerMode: 'float'
   }
 );
 WalletNavigation.router = AnalyticsService.wrapRouter(WalletNavigation.router);
 
 const ProductsNavigation = createStackNavigator(
   {
-    List: { screen: ProductScreen },
-    Details: { screen: ProductDetailsScreen },
-    CreateOrder: { screen: CreateOrderScreen },
-    PreviewOrders: { screen: PreviewOrdersScreen }
+    List: {
+      screen: ProductScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <ProductsHeader
+            navigation={navigation}
+            showBackButton={false}
+            showForexToggleButton={true}
+          />
+        )
+      })
+    },
+    Details: {
+      screen: ProductDetailsScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <ProductDetailsHeader
+            navigation={navigation}
+            base={navigation.state.params.product.base}
+            quote={navigation.state.params.product.quote}
+            showBackButton={true}
+            showForexToggleButton={true}
+          />
+        )
+      })
+    },
+    CreateOrder: {
+      screen: CreateOrderScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <ProductDetailsHeader
+            navigation={navigation}
+            base={navigation.state.params.product.base}
+            quote={navigation.state.params.product.quote}
+            showBackButton={true}
+            showForexToggleButton={true}
+          />
+        )
+      })
+    },
+    PreviewOrders: {
+      screen: PreviewOrdersScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <ProductDetailsHeader
+            navigation={navigation}
+            base={navigation.state.params.product.base}
+            quote={navigation.state.params.product.quote}
+            showBackButton={true}
+            showForexToggleButton={true}
+          />
+        )
+      })
+    }
   },
   {
     cardStyle: {
       backgroundColor: colors.background
     },
-    lazy: true,
     initialRouteName: 'List',
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      header: () => {
-        if (navigation.getParam('hideHeader')) {
-          return null;
-        }
-
-        switch (navigation.state.routeName) {
-          case 'List':
-            return (
-              <ProductsHeader
-                navigation={navigation}
-                showBackButton={false}
-                showForexToggleButton={true}
-              />
-            );
-
-          case 'PreviewOrders':
-          case 'CreateOrder':
-          case 'Details':
-            return (
-              <ProductDetailsHeader
-                navigation={navigation}
-                base={navigation.state.params.product.base}
-                quote={navigation.state.params.product.quote}
-                showBackButton={true}
-                showForexToggleButton={true}
-              />
-            );
-
-          default:
-            return (
-              <NormalHeader
-                navigation={navigation}
-                title="Mobidex"
-                showBackButton={true}
-                showForexToggleButton={false}
-              />
-            );
-        }
-      }
-    })
+    headerMode: 'float'
   }
 );
 ProductsNavigation.router = AnalyticsService.wrapRouter(
@@ -254,54 +245,60 @@ ProductsNavigation.router = AnalyticsService.wrapRouter(
 
 const MainTabsNavigator = createBottomTabNavigator(
   {
-    Products: { screen: ProductsNavigation },
-    Orders: { screen: OrdersNavigation },
-    Wallet: { screen: WalletNavigation },
-    Settings: { screen: SettingsScreen }
+    Products: {
+      screen: ProductsNavigation,
+      /* eslint-disable */
+      navigationOptions: ({ navigation }) => ({
+        tabBarLabel: 'Trade',
+        tabBarIcon: ({ tintColor }) => (
+          <FontAwesome name="line-chart" size={25} color={tintColor} />
+        )
+      })
+      /* eslint-enable */
+    },
+    Orders: {
+      screen: OrdersNavigation,
+      /* eslint-disable */
+      navigationOptions: ({ navigation }) => ({
+        tabBarLabel: 'Orders',
+        tabBarIcon: ({ tintColor }) => (
+          <ActiveTransactionsOverlay orientation="right">
+            <ActiveOrdersOverlay>
+              <Ionicons name="ios-book" size={25} color={tintColor} />
+            </ActiveOrdersOverlay>
+          </ActiveTransactionsOverlay>
+        )
+      })
+      /* eslint-enable */
+    },
+    Wallet: {
+      screen: WalletNavigation,
+      /* eslint-disable */
+      navigationOptions: ({ navigation }) => ({
+        tabBarLabel: 'Wallet',
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="md-card" size={25} color={tintColor} />
+        )
+      })
+      /* eslint-enable */
+    },
+    Settings: {
+      screen: SettingsScreen,
+      /* eslint-disable */
+      navigationOptions: ({ navigation }) => ({
+        tabBarLabel: 'About',
+        tabBarIcon: ({ tintColor }) => (
+          <Ionicons name="ios-settings" size={25} color={tintColor} />
+        )
+      })
+      /* eslint-enable */
+    }
   },
   {
     cardStyle: {
       backgroundColor: colors.background
     },
-    tabBarPosition: 'bottom',
-    lazy: true,
-    initialRouteName: 'Products',
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      tabBarLabel: ({ focused, tintColor }) => {
-        switch (navigation.state.routeName) {
-          case 'Products':
-            return 'Trade';
-          case 'Settings':
-            return 'About';
-          default:
-            return navigation.state.routeName;
-        }
-      },
-      tabBarIcon: ({ focused, tintColor }) => {
-        switch (navigation.state.routeName) {
-          case 'Products':
-            return (
-              <FontAwesome name="line-chart" size={25} color={tintColor} />
-            );
-
-          case 'Wallet':
-            return <Ionicons name="md-card" size={25} color={tintColor} />;
-
-          case 'Orders':
-            return (
-              <ActiveTransactionsOverlay orientation="right">
-                <ActiveOrdersOverlay>
-                  <Ionicons name="ios-book" size={25} color={tintColor} />
-                </ActiveOrdersOverlay>
-              </ActiveTransactionsOverlay>
-            );
-
-          case 'Settings':
-            return <Ionicons name="ios-settings" size={25} color={tintColor} />;
-        }
-      }
-    })
+    initialRouteName: 'Products'
   }
 );
 MainTabsNavigator.router = AnalyticsService.wrapRouter(
