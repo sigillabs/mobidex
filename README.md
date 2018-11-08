@@ -117,7 +117,7 @@ You can also run the issue by the [telegram](https://t.me/mobidex) group before 
 
 Any one can become a tester. Just join the Mobidex [telegram](https://t.me/mobidex) and ask and admin to join.
 
-**Testers**:
+## Special Thanks To Our Testers
 
 - [AboShanab](https://github.com/AboShanab)
 - [gsampathkumar](https://github.com/gsampathkumar)
