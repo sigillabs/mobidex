@@ -110,7 +110,7 @@ You can also run the issue by the [telegram](https://t.me/mobidex) group before 
 
 ### Development
 
-1. Find a **good first issue** [issue](https://github.com/sigillabs/mobidex/issues).
+1. Find a **good first [issue](https://github.com/sigillabs/mobidex/issues)**.
 2. Submit a pull request.
 
 ### Testing
