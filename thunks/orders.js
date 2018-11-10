@@ -11,7 +11,6 @@ import * as AssetService from '../services/AssetService';
 import NavigationService from '../services/NavigationService';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
-import { formatProduct } from '../utils';
 import {
   checkAndWrapEther,
   checkAndSetUnlimitedProxyAllowance
@@ -41,8 +40,6 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
       throw new Error('Could not find quote asset');
     }
 
-    const product = formatProduct(baseAsset.symbol, quoteAsset.symbol);
-
     try {
       const client = new RelayerClient(relayerEndpoint, { network });
       const orderbook = await client.getOrderbook(
@@ -53,7 +50,14 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
 
       orderbook.asks = fixOrders(orderbook.asks);
       orderbook.bids = fixOrders(orderbook.bids);
-      dispatch(setOrderbook([product, orderbook]));
+      dispatch(
+        setOrderbook([
+          baseAsset.assetData,
+          quoteAsset.assetData,
+          orderbook.bids,
+          orderbook.asks
+        ])
+      );
     } catch (err) {
       NavigationService.error(err);
     }
@@ -66,15 +70,17 @@ export function loadOrderbooks(force = false) {
       relayer: { products }
     } = getState();
 
-    for (const product of products) {
-      await dispatch(
-        loadOrderbook(
-          product.assetDataB.assetData,
-          product.assetDataA.assetData,
-          force
+    return Promise.all(
+      products.map(product =>
+        dispatch(
+          loadOrderbook(
+            product.assetDataB.assetData,
+            product.assetDataA.assetData,
+            force
+          )
         )
-      );
-    }
+      )
+    );
   };
 }
 

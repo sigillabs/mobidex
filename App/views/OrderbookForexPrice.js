@@ -25,16 +25,16 @@ export class OrderbookForexPrice extends Component {
       return <FormattedForexAmount {...this.props} amount={0} />;
     }
 
-    const orderbook = orderbooks[product];
+    const orderbook = orderbooks[baseToken.assetData][quoteToken.assetData];
 
     if (!orderbook) {
       return <FormattedForexAmount {...this.props} amount={0} />;
     }
 
     const price =
-      orderbook.bids.length > 0
+      orderbook.bids.size > 0
         ? OrderService.getOrderPrice(
-            side === 'buy' ? orderbook.bids[0] : orderbook.asks[0]
+            side === 'buy' ? orderbook.highestBid() : orderbook.lowestAsk()
           )
         : ZERO;
 

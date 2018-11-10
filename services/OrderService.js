@@ -26,28 +26,26 @@ export function setStore(store) {
   _store = store;
 }
 
-export function getOrderbook(baseToken, quoteToken = null) {
+export function getOrderbook(baseAsset, quoteAsset = null) {
   const {
     relayer: { orderbooks }
   } = _store.getState();
 
-  if (!quoteToken) {
-    quoteToken = AssetService.getQuoteAsset();
+  if (!quoteAsset) {
+    quoteAsset = AssetService.getQuoteAsset();
   } else if (typeof quoteToken === 'string') {
-    quoteToken = AssetService.findAssetByAddress(quoteToken);
+    quoteAsset = AssetService.findAssetByAddress(quoteAsset);
   }
 
-  if (typeof baseToken === 'string') {
-    baseToken = AssetService.findAssetByAddress(baseToken);
+  if (typeof baseAsset === 'string') {
+    baseAsset = AssetService.findAssetByAddress(baseAsset);
   }
 
-  if (!baseToken || !quoteToken) {
+  if (!baseAsset || !quoteAsset) {
     return null;
   }
 
-  const product = formatProduct(baseToken.symbol, quoteToken.symbol);
-
-  return orderbooks[product];
+  return orderbooks[baseAsset.assetData][quoteAsset.assetData];
 }
 
 export function getOrderPrice(order) {
@@ -368,25 +366,28 @@ export async function getBuyAssetsQuoteAsync(
   const wrappers = await zeroExClient.getContractWrappers();
 
   const quoteAsset = AssetService.getQuoteAsset();
+  const feeAsset = AssetService.getFeeAsset();
   const baseAsset = AssetService.findAssetByData(assetData);
-  const product = formatProduct(baseAsset.symbol, quoteAsset.symbol);
-  const feeProduct = formatProduct('ZRX', quoteAsset.symbol);
-  const orderbook = orderbooks[product];
+  const orderbook = orderbooks[baseAsset.assetData][quoteAsset.assetData];
   if (!orderbook) {
     return null;
   }
-  const feeOrderbook = orderbooks[feeProduct];
+  const feeOrderbook = orderbooks[feeAsset.assetData][quoteAsset.assetData];
   if (!feeOrderbook) {
     return null;
   }
-  const orders = await filterFillableOrders(wrappers, orderbook.asks.slice());
+  const orders = await filterFillableOrders(wrappers, orderbook.asksArray());
   if (!orders.length) {
     return null;
   }
+  const feeOrders = await filterFillableOrders(
+    wrappers,
+    feeOrderbook.asksArray()
+  );
   const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
     ethereumClient.getCurrentProvider(),
-    orderbook.asks.slice(),
-    feeOrderbook.asks.slice(),
+    orders,
+    feeOrders,
     {
       expiryBufferSeconds: options.expiryBufferSeconds,
       networkId: await ethereumClient.getNetworkId()
@@ -438,12 +439,11 @@ export async function getSellAssetsQuoteAsync(
 
   const quoteAsset = AssetService.getQuoteAsset();
   const baseAsset = AssetService.findAssetByData(assetData);
-  const product = formatProduct(baseAsset.symbol, quoteAsset.symbol);
-  const orderbook = orderbooks[product];
+  const orderbook = orderbooks[baseAsset.assetData][quoteAsset.assetData];
   if (!orderbook) {
     return null;
   }
-  const orders = await filterFillableOrders(wrappers, orderbook.bids.slice());
+  const orders = await filterFillableOrders(wrappers, orderbook.bidsArray());
   if (!orders.length) {
     return null;
   }

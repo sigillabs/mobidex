@@ -8,12 +8,12 @@ import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
 function getPrice(orderbook, side) {
   if (side === 'buy') {
-    return orderbook.bids.length > 0
-      ? OrderService.getOrderPrice(orderbook.bids[0])
+    return orderbook.bids.size > 0
+      ? OrderService.getOrderPrice(orderbook.highestBid())
       : ZERO;
   } else {
-    return orderbook.asks.length > 0
-      ? OrderService.getOrderPrice(orderbook.asks[0])
+    return orderbook.asks.size > 0
+      ? OrderService.getOrderPrice(orderbook.lowestAsk())
       : ZERO;
   }
 }
@@ -27,18 +27,19 @@ export class OrderbookPrice extends Component {
     }
 
     const [baseTokenSymbol, quoteTokenSymbol] = product.split('-');
-    const baseToken = AssetService.findAssetBySymbol(baseTokenSymbol);
-    const quoteToken = AssetService.findAssetBySymbol(quoteTokenSymbol);
+    const baseAsset = AssetService.findAssetBySymbol(baseTokenSymbol);
+    const quoteAsset = AssetService.findAssetBySymbol(quoteTokenSymbol);
 
-    if (!baseToken || !quoteToken) {
+    if (!baseAsset || !quoteAsset) {
       return <FormattedTokenAmount {...this.props} amount={0} />;
     }
 
-    const orderbook = orderbooks[product];
+    const orderbook = orderbooks[baseAsset.assetData][quoteAsset.assetData];
 
     if (!orderbook) {
       return <FormattedTokenAmount {...this.props} amount={0} />;
     }
+
     const price = getPrice(orderbook, side);
 
     return (

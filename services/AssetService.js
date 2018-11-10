@@ -27,6 +27,14 @@ export function findAssetBySymbol(symbol) {
   return _.find(assets, { symbol });
 }
 
+export function getFeeAsset() {
+  const {
+    relayer: { assets },
+    settings: { feeSymbol }
+  } = _store.getState();
+  return _.find(assets, { symbol: feeSymbol });
+}
+
 export function getQuoteAsset() {
   const {
     relayer: { assets },
