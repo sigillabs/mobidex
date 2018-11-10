@@ -9,7 +9,7 @@ export default class RelayerClient {
   }
 
   @time
-  @cache('relayer:v2:pairs', 60 * 1)
+  @cache('relayer:v2:pairs', 24 * 60 * 60)
   async getAssetPairs() {
     const result = await this.client.getAssetPairsAsync({
       networkId: this.network,
