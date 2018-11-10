@@ -25,10 +25,6 @@ class AccountsScreen extends Component {
     };
   }
 
-  async componentDidMount() {
-    await this.onRefresh(false);
-  }
-
   render() {
     const asset = _.find(this.props.assets, { symbol: this.state.asset });
     const ethToken = _.find(this.props.assets, { symbol: 'ETH' });

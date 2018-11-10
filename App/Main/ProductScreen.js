@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
 import {
-  InteractionManager,
   RefreshControl,
   ScrollView,
   TouchableOpacity,
@@ -15,6 +14,7 @@ import * as AssetService from '../../services/AssetService';
 import NavigationService from '../../services/NavigationService';
 import * as TickerService from '../../services/TickerService';
 import {
+  initialLoad,
   loadActiveTransactions,
   loadAllowances,
   loadAssets,
@@ -289,37 +289,8 @@ class ProductScreen extends Component {
 
   async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadProducts(reload));
-    await this.props.dispatch(loadAssets(reload));
+    await this.props.dispatch(initialLoad(reload ? 3 : 0));
     this.setState({ refreshing: false });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(loadAllowances(reload));
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(loadBalances(reload));
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(updateForexTickers(reload));
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(updateTokenTickers(reload));
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(loadActiveTransactions());
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(loadOrders());
-    });
-
-    InteractionManager.runAfterInteractions(() => {
-      this.props.dispatch(loadOrderbooks());
-    });
   }
 }
 

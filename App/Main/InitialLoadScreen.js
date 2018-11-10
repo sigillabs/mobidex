@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import NavigationService from '../../services/NavigationService';
-import { initialLoad } from '../../thunks/boot';
+import { initialLoad, startWebsockets } from '../../thunks/boot';
 import BigCenter from '../components/BigCenter';
 import Padding from '../components/Padding';
 import RotatingView from '../components/RotatingView';
@@ -16,6 +16,7 @@ class InitialLoadScreen extends Component {
 
   async componentDidMount() {
     await this.props.dispatch(initialLoad(1));
+    this.props.dispatch(startWebsockets(1));
     requestAnimationFrame(() => {
       NavigationService.navigate('Main');
     });

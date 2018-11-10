@@ -14,8 +14,7 @@ import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import {
   averagePriceByMakerAmount,
   filterFillableOrders,
-  findOrdersThatCoverTakerAssetFillAmount,
-  formatProduct
+  findOrdersThatCoverTakerAssetFillAmount
 } from '../utils';
 import * as AssetService from './AssetService';
 import NavigationService from './NavigationService';

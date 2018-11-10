@@ -325,10 +325,6 @@ class ProductDetailsScreen extends Component {
     };
   }
 
-  componentDidMount() {
-    this.onRefresh(false);
-  }
-
   render() {
     const {
       navigation: {
@@ -380,11 +376,13 @@ class ProductDetailsScreen extends Component {
     } = this.props;
 
     this.setState({ refreshing: true });
-    await this.props.dispatch(updateForexTickers(reload));
-    await this.props.dispatch(updateTokenTickers(reload));
-    await this.props.dispatch(
-      loadOrderbook(base.assetData, quote.assetData, reload)
-    );
+    await Promise.all([
+      this.props.dispatch(updateForexTickers(reload)),
+      this.props.dispatch(updateTokenTickers(reload)),
+      this.props.dispatch(
+        loadOrderbook(base.assetData, quote.assetData, reload)
+      )
+    ]);
     this.setState({ refreshing: false });
   }
 }

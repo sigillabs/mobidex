@@ -23,14 +23,16 @@ export default class BaseFillOrders extends Component {
       loadingQuote: false
     };
 
-    this.loadQuote = _.debounce(async () => {
-      this.setState({ loadingQuote: true });
-      const quote = await this.props.getQuote(
-        this.props.baseToken,
-        this.props.quoteToken,
-        this.state.amount || 0
-      );
-      this.setState({ quote, loadingQuote: false });
+    this.loadQuote = _.debounce(() => {
+      requestAnimationFrame(async () => {
+        this.setState({ loadingQuote: true });
+        const quote = await this.props.getQuote(
+          this.props.baseToken,
+          this.props.quoteToken,
+          this.state.amount || 0
+        );
+        this.setState({ quote, loadingQuote: false });
+      });
     }, 100);
   }
 

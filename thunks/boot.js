@@ -17,8 +17,6 @@ export function initialLoad(forceLevel = 0) {
       dispatch(loadOrders(forceLevel > 0)),
       dispatch(loadOrderbooks(forceLevel > 0))
     ]);
-
-    dispatch(startWebsockets());
   };
 }
 
