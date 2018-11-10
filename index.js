@@ -10,7 +10,10 @@ import App from './App';
 import * as AnalyticsService from './services/AnalyticsService';
 
 try {
-  I18nManager.allowRTL(false);
+  if (I18nManager.isRTL) {
+    I18nManager.allowRTL(false);
+    RNRestart.Restart();
+  }
 } catch (e) {
   console.log(e);
 }
