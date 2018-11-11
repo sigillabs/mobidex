@@ -159,6 +159,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-uuid-generator')
     compile project(':react-native-exception-handler')
     compile project(':react-native-restart')
     api (project(':react-native-device-info')) {

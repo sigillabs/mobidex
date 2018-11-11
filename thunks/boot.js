@@ -1,5 +1,6 @@
 import { ordersChannelFactory } from '@0xproject/connect';
-import { addOrders } from '../actions';
+import { addOrders, updateForexTicker, updateTokenTicker } from '../actions';
+import { Inf0xWebSocketClient } from '../clients/inf0x';
 import { updateForexTickers, updateTokenTickers } from './inf0x';
 import { loadAssets, loadOrderbooks, loadOrders, loadProducts } from './orders';
 import { loadActiveTransactions, loadAllowances, loadBalances } from './wallet';
@@ -21,6 +22,13 @@ export function initialLoad(forceLevel = 0) {
 }
 
 export function startWebsockets() {
+  return async dispatch => {
+    dispatch(startRelayerWebsockets());
+    dispatch(startInf0xWebsockets());
+  };
+}
+
+export function startRelayerWebsockets() {
   return async (dispatch, getState) => {
     const {
       relayer: { products },
@@ -31,8 +39,8 @@ export function startWebsockets() {
       relayerWSS,
       {
         onClose: channel => {
-          console.warn('relayer wss orders channel -- restarting');
-          dispatch(startWebsockets());
+          console.trace('relayer wss connection terminated -- restarting');
+          dispatch(startRelayerWebsockets());
         },
         onError: (channel, error, subscriptionOpts) => {
           console.warn('relayer wss error', channel, error, subscriptionOpts);
@@ -46,11 +54,56 @@ export function startWebsockets() {
     for (const product of products) {
       ordersChannel.subscribe({
         baseAssetData: product.assetDataA.assetData,
-        quoteAssetData: product.assetDataB.assetData
+        quoteAssetData: product.assetDataB.assetData,
+        limit: 1000
       });
       ordersChannel.subscribe({
         baseAssetData: product.assetDataB.assetData,
-        quoteAssetData: product.assetDataA.assetData
+        quoteAssetData: product.assetDataA.assetData,
+        limit: 1000
+      });
+    }
+  };
+}
+
+export function startInf0xWebsockets() {
+  return async (dispatch, getState) => {
+    const {
+      relayer: { products, assets },
+      settings: { forexCurrency, inf0xWSS }
+    } = getState();
+
+    const tickerChannel = await Inf0xWebSocketClient.getInf0xWebSocketClient(
+      inf0xWSS,
+      {
+        onClose: (code, reason) => {
+          console.warn('inf0x wss connection terminated -- restarting');
+          dispatch(startInf0xWebsockets());
+        },
+        onError: error => {
+          console.error(error);
+        },
+        onUpdate: (channel, ticker) => {
+          if (channel === 'token-ticker') {
+            dispatch(updateTokenTicker(ticker));
+          } else if (channel === 'forex-ticker') {
+            dispatch(updateForexTicker(ticker));
+          }
+        }
+      }
+    );
+    for (const product of products) {
+      tickerChannel.subscribeTokenTicker({
+        traderAssetData: product.assetDataA.assetData
+      });
+      tickerChannel.subscribeTokenTicker({
+        traderAssetData: product.assetDataB.assetData
+      });
+    }
+    for (const asset of assets) {
+      tickerChannel.subscribeForexTicker({
+        symbol: asset.symbol,
+        forex: forexCurrency
       });
     }
   };

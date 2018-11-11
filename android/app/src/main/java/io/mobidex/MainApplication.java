@@ -3,6 +3,7 @@ package io.mobidex;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RNUUIDGeneratorPackage(),
         new ReactNativeExceptionHandlerPackage(),
         new ReactNativeRestartPackage(),
         new RNDeviceInfo(),

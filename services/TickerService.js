@@ -49,14 +49,9 @@ export function getForexTicker(tokenSymbol = null, forexSymbol = null) {
 
 export function get24HRAverage(ticker) {
   if (!ticker) return ZERO;
-  if (!ticker.price) return ZERO;
-  if (!ticker.history) return ZERO;
-  if (!ticker.history.day) return ZERO;
-  if (!ticker.history.day.length) return ZERO;
+  if (!ticker.dayavg) return ZERO;
 
-  const prices = ticker.history.day.map(({ price }) => new BigNumber(price));
-
-  return prices.reduce((sum, price) => sum.add(price), ZERO).div(prices.length);
+  return new BigNumber(ticker.dayavg);
 }
 
 export function get24HRMin(ticker) {
@@ -75,36 +70,18 @@ export function get24HRMax(ticker) {
 
 export function get24HRChange(ticker) {
   if (!ticker) return ZERO;
+  if (!ticker.dayavg) return ZERO;
   if (!ticker.price) return ZERO;
-  if (!ticker.history) return ZERO;
-  if (!ticker.history.day) return ZERO;
-  if (!ticker.history.day.length) return ZERO;
 
-  const start = new BigNumber(
-    ticker.history.day[ticker.history.day.length - 1].price
-  );
-  const end = new BigNumber(ticker.history.day[0].price);
-
-  return end.sub(start);
+  return new BigNumber(ticker.price).sub(ticker.dayavg);
 }
 
 export function get24HRChangePercent(ticker) {
   if (!ticker) return ZERO;
+  if (!ticker.dayavg) return ZERO;
   if (!ticker.price) return ZERO;
-  if (!ticker.history) return ZERO;
-  if (!ticker.history.day) return ZERO;
-  if (!ticker.history.day.length) return ZERO;
 
-  const start = new BigNumber(
-    ticker.history.day[ticker.history.day.length - 1].price
-  );
-  const end = new BigNumber(ticker.history.day[0].price);
-
-  if (start.eq(0)) {
-    return ZERO;
-  }
-
-  return end.sub(start).div(start);
+  return new BigNumber(ticker.price).sub(ticker.dayavg).div(ticker.dayavg);
 }
 
 export function getCurrentPrice(ticker) {

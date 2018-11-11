@@ -1,5 +1,6 @@
 import ethUtil from 'ethereumjs-util';
 import { stringify } from 'qs';
+import UUIDGenerator from 'react-native-uuid-generator';
 import { cache, time } from '../decorators/cls';
 
 export default class Inf0xClient {
@@ -70,7 +71,7 @@ export default class Inf0xClient {
     });
 
     const response = await fetch(
-      `${this.endpoint}/${this.network}/token/history?${qs}`,
+      `${this.endpoint}/${this.network}/tokens/history?${qs}`,
       {
         headers: {
           Accept: 'application/json',
@@ -140,5 +141,98 @@ export default class Inf0xClient {
     // );
     // console.debug('Token Ticker', json);
     return json;
+  }
+}
+
+export class Inf0xWebSocketClient {
+  static async getInf0xWebSocketClient(
+    endpoint,
+    options = {
+      onUpdate: message => {
+        console.log(message);
+      },
+      onError: error => {
+        console.error(error);
+      },
+      onClose: (code, reason) => {
+        console.log(code, reason);
+      }
+    }
+  ) {
+    const socket = await new Promise((resolve, reject) => {
+      const socket = new WebSocket(endpoint);
+
+      socket.onopen = function onOpen() {
+        console.info(`Opened inf0x websocket: ${endpoint}`);
+        socket.send(JSON.stringify({ type: 'init_req' }));
+        resolve(socket);
+      };
+
+      socket.onmessage = function onMessage(e) {
+        if (options.onUpdate) {
+          const data = JSON.parse(e.data);
+          if (data && data.payload) {
+            options.onUpdate(
+              data.channel,
+              data.payload.map(({ ticker }) => ticker)
+            );
+          }
+        }
+      };
+
+      socket.onerror = function onError(e) {
+        if (options.onError) {
+          options.onError(new Error(e.message));
+        }
+      };
+
+      socket.onclose = function onClose(e) {
+        if (options.onClose) {
+          options.onClose(e.code, e.reason);
+        }
+      };
+    });
+
+    const requestId = await UUIDGenerator.getRandomUUID();
+
+    return new Inf0xWebSocketClient(socket, requestId);
+  }
+
+  constructor(socket, requestId) {
+    this.socket = socket;
+    this.requestId = requestId;
+  }
+
+  async subscribeTokenTicker(
+    options = {
+      makerAssetData: null,
+      takerAssetData: null,
+      traderAssetData: null
+    }
+  ) {
+    this.socket.send(
+      JSON.stringify({
+        type: 'subscribe',
+        channel: 'token-ticker',
+        requestId: this.requestId,
+        payload: options
+      })
+    );
+  }
+
+  async subscribeForexTicker(
+    options = {
+      symbol: null,
+      forex: null
+    }
+  ) {
+    this.socket.send(
+      JSON.stringify({
+        type: 'subscribe',
+        channel: 'forex-ticker',
+        requestId: this.requestId,
+        payload: options
+      })
+    );
   }
 }

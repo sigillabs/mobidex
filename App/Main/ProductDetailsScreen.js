@@ -22,9 +22,19 @@ import NavigationService from '../../services/NavigationService';
 import * as TickerService from '../../services/TickerService';
 import OrderbookPrice from '../views/OrderbookPrice';
 import OrderbookForexPrice from '../views/OrderbookForexPrice';
-import PriceGraph from '../views/PriceGraph';
+import ForexPriceGraph from '../views/ForexPriceGraph';
+import TokenPriceGraph from '../views/TokenPriceGraph';
 
 class ProductDetailListItem extends Component {
+  static get propTypes() {
+    return {
+      left: PropTypes.node,
+      right: PropTypes.node,
+      leftStyle: PropTypes.object,
+      rightStyle: PropTypes.object
+    };
+  }
+
   render() {
     const { left, right, leftStyle, rightStyle, ...rest } = this.props;
 
@@ -47,28 +57,31 @@ class ProductDetailListItem extends Component {
   }
 }
 
-ProductDetailListItem.propTypes = {
-  left: PropTypes.any,
-  right: PropTypes.any,
-  leftStyle: PropTypes.object,
-  rightStyle: PropTypes.object
-};
-
 class ProductDetailsView extends Component {
+  static get propTypes() {
+    return {
+      base: PropTypes.object,
+      quote: PropTypes.object,
+      period: PropTypes.string,
+      infolist: PropTypes.arrayOf(
+        PropTypes.shape({
+          key: PropTypes.string,
+          left: PropTypes.node,
+          right: PropTypes.node
+        })
+      ),
+      history: PropTypes.array,
+      formatAmount: PropTypes.func,
+      graph: PropTypes.node
+    };
+  }
+
   render() {
-    const { base, quote, period, infolist, history } = this.props;
-    const data = history.slice();
-    data.reverse();
+    const { base, quote, infolist, graph } = this.props;
 
     return (
       <View style={[styles.container]}>
-        <PriceGraph
-          interval={period}
-          height={200}
-          data={data}
-          label={'Last 30 Days'}
-          formatAmount={this.props.formatAmount}
-        />
+        {graph}
         <Divider style={{ marginTop: 0 }} />
         <Row style={{ justifyContent: 'center' }}>
           <Button
@@ -118,30 +131,22 @@ class ProductDetailsView extends Component {
   }
 }
 
-ProductDetailsView.propTypes = {
-  base: PropTypes.object,
-  quote: PropTypes.object,
-  period: PropTypes.string,
-  infolist: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string,
-      left: PropTypes.string,
-      right: PropTypes.string
-    })
-  ),
-  history: PropTypes.array,
-  formatAmount: PropTypes.func
-};
-
 class TokenProductDetailsView extends Component {
+  static get propTypes() {
+    return {
+      base: PropTypes.object,
+      quote: PropTypes.object,
+      periodIndex: PropTypes.number
+    };
+  }
+
   render() {
     const { base, quote, periodIndex } = this.props;
     const ticker = TickerService.getQuoteTicker(base.symbol, quote.symbol);
 
-    if (!ticker || !ticker.history) return null;
+    if (!ticker) return null;
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
-    const history = ticker.history[period];
     const average = TickerService.get24HRAverage(ticker);
     const change = TickerService.get24HRChange(ticker);
     const changePercent = TickerService.get24HRChangePercent(ticker);
@@ -200,6 +205,13 @@ class TokenProductDetailsView extends Component {
         right: <FormattedTokenAmount amount={min} symbol={quote.symbol} />
       }
     ];
+    const graph = (
+      <TokenPriceGraph
+        height={200}
+        baseSymbol={base.symbol}
+        quoteSymbol={quote.symbol}
+      />
+    );
 
     return (
       <ProductDetailsView
@@ -207,28 +219,29 @@ class TokenProductDetailsView extends Component {
         quote={quote}
         period={period}
         infolist={infolist}
-        history={history}
         formatAmount={v => `${formatAmount(v)} ${quote.symbol}`}
+        graph={graph}
       />
     );
   }
 }
 
-TokenProductDetailsView.propTypes = {
-  base: PropTypes.object,
-  quote: PropTypes.object,
-  periodIndex: PropTypes.number
-};
-
 class ForexProductDetailsView extends Component {
+  static get propTypes() {
+    return {
+      base: PropTypes.object,
+      quote: PropTypes.object,
+      periodIndex: PropTypes.number
+    };
+  }
+
   render() {
     const { base, quote, periodIndex } = this.props;
     const ticker = TickerService.getForexTicker(base.symbol);
 
-    if (!ticker || !ticker.history) return null;
+    if (!ticker) return null;
 
     const period = ProductDetailsScreen.periods[periodIndex].toLowerCase();
-    const history = ticker.history[period];
     const average = TickerService.get24HRAverage(ticker);
     const change = TickerService.get24HRChange(ticker);
     const changePercent = TickerService.get24HRChangePercent(ticker);
@@ -287,6 +300,13 @@ class ForexProductDetailsView extends Component {
         right: <FormattedForexAmount amount={min} />
       }
     ];
+    const graph = (
+      <ForexPriceGraph
+        height={200}
+        baseSymbol={base.symbol}
+        quoteSymbol={quote.symbol}
+      />
+    );
 
     return (
       <ProductDetailsView
@@ -294,18 +314,12 @@ class ForexProductDetailsView extends Component {
         quote={quote}
         period={period}
         infolist={infolist}
-        history={history}
         formatAmount={v => formatMoney(v)}
+        graph={graph}
       />
     );
   }
 }
-
-ForexProductDetailsView.propTypes = {
-  base: PropTypes.object,
-  quote: PropTypes.object,
-  periodIndex: PropTypes.number
-};
 
 class ProductDetailsScreen extends Component {
   static propTypes = {

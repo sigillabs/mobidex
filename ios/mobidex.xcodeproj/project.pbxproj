@@ -14,6 +14,7 @@
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		05193ABE91034B0690705970 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA01BB5DD0804CF78D3D67F5 /* Entypo.ttf */; };
 		07F7FBD0BE244C4CAFA99C31 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AF2D5562C8D48F6BCB176F5 /* Ionicons.ttf */; };
+		0BDE03F1E2484FE2A4E94C43 /* libRNUUIDGenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1441786E9784CC0830730E8 /* libRNUUIDGenerator.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -241,6 +242,13 @@
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
 		};
+		305678D12197E772006B2B33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNUUIDGenerator;
+		};
 		30886C6E2194FAB80017251A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */;
@@ -456,6 +464,7 @@
 		30EB9EFC20DB9E390088F4BF /* WalletManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
 		30EF49C92108277F00620DAC /* ReactNativeExceptionHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeExceptionHandler.xcodeproj; path = "../node_modules/react-native-exception-handler/ios/ReactNativeExceptionHandler.xcodeproj"; sourceTree = "<group>"; };
 		4489169E69EF4AE0A3BDA512 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUUIDGenerator.xcodeproj; path = "../node_modules/react-native-uuid-generator/ios/RNUUIDGenerator.xcodeproj"; sourceTree = "<group>"; };
 		5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTRestart.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -466,6 +475,7 @@
 		A975F1298B7B3A9AA4BE816C /* Pods-mobidex.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mobidex.release.xcconfig"; path = "Pods/Target Support Files/Pods-mobidex/Pods-mobidex.release.xcconfig"; sourceTree = "<group>"; };
 		AA01BB5DD0804CF78D3D67F5 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		C1441786E9784CC0830730E8 /* libRNUUIDGenerator.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNUUIDGenerator.a; sourceTree = "<group>"; };
 		C66DEE3EE1104F138E382177 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		EC724CCF91FA4437A902DFCE /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "../node_modules/react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<group>"; };
 		FD94ED3CAB15D32CA0118F0A /* Pods_mobidex.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_mobidex.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -510,6 +520,7 @@
 				304C60AF20F1D0E000C08882 /* CoreData.framework in Frameworks */,
 				4604C6C67C1EC95D7FB704E5 /* Pods_mobidex.framework in Frameworks */,
 				C24624756027419C81BFA1A5 /* libRCTRestart.a in Frameworks */,
+				0BDE03F1E2484FE2A4E94C43 /* libRNUUIDGenerator.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,6 +695,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		305678CE2197E772006B2B33 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				305678D22197E772006B2B33 /* libRNUUIDGenerator.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		309C4D7420DD761500B6EBB5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -714,6 +733,7 @@
 			isa = PBXGroup;
 			children = (
 				5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */,
+				C1441786E9784CC0830730E8 /* libRNUUIDGenerator.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -775,6 +795,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */,
 				EC724CCF91FA4437A902DFCE /* RCTRestart.xcodeproj */,
+				4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1037,6 +1058,10 @@
 					ProjectRef = 309C4D7320DD761500B6EBB5 /* RNSVG.xcodeproj */;
 				},
 				{
+					ProductGroup = 305678CE2197E772006B2B33 /* Products */;
+					ProjectRef = 4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */;
+				},
+				{
 					ProductGroup = 3053033B20E97352004908AB /* Products */;
 					ProjectRef = 3053033A20E97352004908AB /* RNVectorIcons.xcodeproj */;
 				},
@@ -1211,6 +1236,13 @@
 			fileType = archive.ar;
 			path = libRNVectorIcons.a;
 			remoteRef = 3053033E20E97352004908AB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		305678D22197E772006B2B33 /* libRNUUIDGenerator.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNUUIDGenerator.a;
+			remoteRef = 305678D12197E772006B2B33 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		30886C6F2194FAB80017251A /* libRNRandomBytes-tvOS.a */ = {
@@ -1592,12 +1624,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1621,12 +1655,14 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1654,6 +1690,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1690,6 +1727,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1728,11 +1766,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1765,11 +1805,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1801,11 +1843,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1837,11 +1881,13 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
+					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);

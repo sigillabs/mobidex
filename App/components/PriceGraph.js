@@ -1,15 +1,23 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { G, Line, Text as SVGText } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
 import { colors } from '../../styles';
+import { styleProp } from '../../types/props/styles';
 import { colorWithAlpha } from '../../utils';
-import MutedText from '../components/MutedText';
+import MutedText from './MutedText';
 
 class SVGHorizontalLine extends React.PureComponent {
+  static get propTypes() {
+    return {
+      y: PropTypes.number.isRequired,
+      value: PropTypes.node.isRequired
+    };
+  }
+
   render() {
     return (
       <G y={this.props.y}>
@@ -32,7 +40,38 @@ class SVGHorizontalLine extends React.PureComponent {
 }
 
 export default class PriceGraph extends React.PureComponent {
+  static get propTypes() {
+    return {
+      loading: PropTypes.bool,
+      height: PropTypes.number.isRequired,
+      interval: PropTypes.string.isRequired,
+      data: PropTypes.arrayOf(
+        PropTypes.shape({
+          timestamp: PropTypes.number.isRequired,
+          price: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+            .isRequired
+        })
+      ).isRequired,
+      formatAmount: PropTypes.func.isRequired,
+      label: PropTypes.string,
+      containerStyle: styleProp,
+      chartStyle: styleProp
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      height: 0,
+      interval: 'DAY',
+      data: []
+    };
+  }
+
   render() {
+    if (this.props.loading) {
+      return this.renderLoadingView();
+    }
+
     const { containerStyle, chartStyle, ...rest } = this.props;
     const { data } = rest;
 
@@ -116,25 +155,25 @@ export default class PriceGraph extends React.PureComponent {
       </View>
     );
   }
+
+  renderLoadingView() {
+    const { containerStyle } = this.props;
+    return (
+      <View
+        style={[
+          {
+            flex: 1,
+            height: this.props.height,
+            padding: 0,
+            marginHorizontal: 10,
+            justifyContent: 'center',
+            alignItems: 'center'
+          },
+          containerStyle
+        ]}
+      >
+        <ActivityIndicator />
+      </View>
+    );
+  }
 }
-
-PriceGraph.propTypes = {
-  height: PropTypes.number.isRequired,
-  interval: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      timestamp: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired
-    })
-  ).isRequired,
-  formatAmount: PropTypes.func.isRequired,
-  label: PropTypes.string,
-  containerStyle: PropTypes.object,
-  chartStyle: PropTypes.object
-};
-
-PriceGraph.defaultProps = {
-  height: 0,
-  interval: 'DAY',
-  data: []
-};
