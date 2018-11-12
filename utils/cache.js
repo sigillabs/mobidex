@@ -24,6 +24,13 @@ export async function cache(ns, update, expiration = 60 * 60 * 24) {
   return data;
 }
 
+export async function invalidate(ns) {
+  await AsyncStorage.multiRemove([
+    AsyncStorage.removeItem(`${ns}:last-updated`),
+    AsyncStorage.removeItem(`${ns}:data`)
+  ]);
+}
+
 export async function clearCache() {
   const keys = await AsyncStorage.getAllKeys();
   const dataKeys = keys.filter(key => key.indexOf(':data') !== -1);

@@ -81,7 +81,7 @@ export function startInf0xWebsockets() {
           dispatch(startInf0xWebsockets());
         },
         onError: error => {
-          console.error(error);
+          console.warn(error);
         },
         onUpdate: (channel, ticker) => {
           if (channel === 'token-ticker') {

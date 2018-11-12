@@ -49,7 +49,9 @@ class UnlockWithPinScreen extends Component {
           )}
         </View>
         <PinKeyboard
-          onChange={value => this.setPin(value)}
+          onChange={value =>
+            InteractionManager.runAfterInteractions(() => this.setPin(value))
+          }
           onSubmit={() => {}}
         />
       </View>
