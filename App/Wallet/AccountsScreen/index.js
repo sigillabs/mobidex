@@ -1,14 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  loadAllowances,
-  loadBalances,
-  updateForexTickers,
-  updateTokenTickers
-} from '../../../thunks';
 import PageRoot from '../../components/PageRoot';
 import Row from '../../components/Row';
 import TokenList from './TokenList';
@@ -16,11 +9,16 @@ import PortfolioDetails from './PortfolioDetails';
 import TokenDetails from './TokenDetails';
 
 class AccountsScreen extends Component {
+  static get propTypes() {
+    return {
+      assets: PropTypes.arrayOf(PropTypes.object).isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      refreshing: false,
       asset: 'ETH'
     };
   }
@@ -44,51 +42,24 @@ class AccountsScreen extends Component {
             <PortfolioDetails assets={this.props.assets} />
           )}
         </Row>
-        <ScrollView
-          style={{ width: '100%' }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh()}
-            />
-          }
-        >
-          {this.props.assets.length ? (
-            <Row>
-              <TokenList
-                asset={asset}
-                assets={assets}
-                onPress={asset => {
-                  if (this.state.asset !== asset.symbol) {
-                    this.setState({
-                      asset: asset.symbol
-                    });
-                  }
-                }}
-              />
-            </Row>
-          ) : null}
-        </ScrollView>
+        <Row>
+          <TokenList
+            asset={asset}
+            assets={assets}
+            onPress={asset => {
+              if (this.state.asset !== asset.symbol) {
+                this.setState({
+                  asset: asset.symbol
+                });
+              }
+            }}
+          />
+        </Row>
       </PageRoot>
     );
   }
-
-  async onRefresh(reload = true) {
-    this.setState({ refreshing: true });
-    await this.props.dispatch(loadAllowances(reload));
-    await this.props.dispatch(loadBalances(reload));
-    await this.props.dispatch(updateForexTickers(reload));
-    await this.props.dispatch(updateTokenTickers(reload));
-    this.setState({ refreshing: false });
-  }
 }
 
-AccountsScreen.propTypes = {
-  assets: PropTypes.arrayOf(PropTypes.object).isRequired,
-  dispatch: PropTypes.func.isRequired
-};
-
-export default connect(
-  state => ({ ...state.wallet, ...state.relayer, ...state.device.layout }),
-  dispatch => ({ dispatch })
-)(AccountsScreen);
+export default connect(state => ({
+  assets: state.relayer.assets
+}))(AccountsScreen);

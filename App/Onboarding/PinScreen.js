@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import NavigationService from '../../services/NavigationService';
 import MutedText from '../components/MutedText';
 import PinKeyboard from '../components/PinKeyboard';
@@ -51,7 +51,9 @@ export default class PinScreen extends Component {
           />
         </View>
         <PinKeyboard
-          onChange={value => this.setPin(value)}
+          onChange={value =>
+            InteractionManager.runAfterInteractions(() => this.setPin(value))
+          }
           onSubmit={() => this.submit()}
           buttonTitle={'Import'}
         />

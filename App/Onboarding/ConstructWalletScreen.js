@@ -17,11 +17,13 @@ export default class ConstructWalletScreen extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const mnemonic = this.props.navigation.getParam('mnemonic').join(' ');
     const pin = this.props.navigation.getParam('pin');
-    await WalletService.importMnemonics(mnemonic, pin);
-    NavigationService.navigate('Initial');
+    requestAnimationFrame(async () => {
+      await WalletService.importMnemonics(mnemonic, pin);
+      NavigationService.navigate('Initial');
+    });
   }
 
   render() {

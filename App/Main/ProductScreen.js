@@ -1,30 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import {
-  RefreshControl,
-  ScrollView,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
 import * as AssetService from '../../services/AssetService';
 import NavigationService from '../../services/NavigationService';
 import * as TickerService from '../../services/TickerService';
-import {
-  initialLoad,
-  loadActiveTransactions,
-  loadAllowances,
-  loadAssets,
-  loadBalances,
-  loadOrderbooks,
-  loadOrders,
-  loadProducts,
-  updateForexTickers,
-  updateTokenTickers
-} from '../../thunks';
+import { initialLoad } from '../../thunks';
 import {
   formatAmount,
   formatMoney,
@@ -223,67 +207,47 @@ class ProductScreen extends Component {
   }
 
   render() {
-    const { assets, products } = this.props;
+    const { products } = this.props;
     const ProductItem = this.props.showForexPrices
       ? ForexTokenItem
       : QuoteTokenItem;
 
-    let subview = null;
-
-    if (!products || !products.length || !assets || !assets.length) {
-      subview = (
-        <EmptyList
-          wrapperStyle={{
-            height: '100%',
-            width: '100%',
-            justifyContent: 'flex-start'
-          }}
-        >
-          <MutedText style={{ marginTop: 25 }}>Loading Products</MutedText>
-        </EmptyList>
-      );
-    } else {
-      subview = (
-        <View style={{ width: '100%', backgroundColor: 'white' }}>
-          {products.map((product, index) => {
-            const fullTokenA = AssetService.findAssetByData(
-              product.assetDataA.assetData
-            );
-            const fullTokenB = AssetService.findAssetByData(
-              product.assetDataB.assetData
-            );
-
-            return (
-              <TouchableOpacity
-                key={`token-${index}`}
-                onPress={() =>
-                  NavigationService.navigate('Details', {
-                    product: {
-                      quote: fullTokenA,
-                      base: fullTokenB
-                    }
-                  })
-                }
-              >
-                <ProductItem quoteToken={fullTokenA} baseToken={fullTokenB} />
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      );
-    }
-
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={() => this.onRefresh()}
-          />
-        }
-      >
-        {subview}
-      </ScrollView>
+      <FlatList
+        data={products}
+        keyExtractor={(item, index) => `token-${index}`}
+        renderItem={({ item, index }) => {
+          const quote = AssetService.findAssetByData(item.assetDataA.assetData);
+          const base = AssetService.findAssetByData(item.assetDataB.assetData);
+          return (
+            <TouchableOpacity
+              onPress={() =>
+                NavigationService.navigate('Details', {
+                  product: {
+                    quote,
+                    base
+                  }
+                })
+              }
+            >
+              <ProductItem quoteToken={quote} baseToken={base} />
+            </TouchableOpacity>
+          );
+        }}
+        refreshing={this.state.refreshing}
+        onRefresh={() => this.onRefresh()}
+        ListEmptyComponent={() => (
+          <EmptyList
+            wrapperStyle={{
+              height: '100%',
+              width: '100%',
+              justifyContent: 'flex-start'
+            }}
+          >
+            <MutedText style={{ marginTop: 25 }}>Loading Products</MutedText>
+          </EmptyList>
+        )}
+      />
     );
   }
 

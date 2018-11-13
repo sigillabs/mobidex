@@ -16,10 +16,8 @@ class InitialLoadScreen extends Component {
 
   async componentDidMount() {
     await this.props.dispatch(initialLoad(1));
-    this.props.dispatch(startWebsockets(1));
-    requestAnimationFrame(() => {
-      NavigationService.navigate('Main');
-    });
+    this.props.dispatch(startWebsockets());
+    NavigationService.navigate('Main');
   }
 
   render() {

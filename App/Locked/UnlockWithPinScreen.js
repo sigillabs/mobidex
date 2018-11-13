@@ -89,7 +89,7 @@ class UnlockWithPinScreen extends Component {
 
     this.setState({ showUnlocking: true });
 
-    InteractionManager.runAfterInteractions(async () => {
+    requestAnimationFrame(async () => {
       try {
         await WalletService.unlock(pin.slice(0, 6));
       } catch (err) {
@@ -105,6 +105,6 @@ class UnlockWithPinScreen extends Component {
   }
 }
 
-export default connect(state => ({}), dispatch => ({ dispatch }))(
+export default connect(() => ({}), dispatch => ({ dispatch }))(
   UnlockWithPinScreen
 );
