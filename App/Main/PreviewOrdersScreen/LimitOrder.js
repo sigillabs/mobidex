@@ -16,18 +16,26 @@ import {
   signOrder
 } from '../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
-import Loading from './Loading';
 
 class PreviewLimitOrder extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showCreating: false
+  static get propTypes() {
+    return {
+      quoteSymbol: PropTypes.string.isRequired,
+      dispatch: PropTypes.func.isRequired,
+      navigation: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+        setParams: PropTypes.func.isRequired,
+        state: PropTypes.shape({
+          params: PropTypes.shape({
+            side: PropTypes.string.isRequired,
+            order: PropTypes.object.isRequired
+          }).isRequired
+        }).isRequired
+      }).isRequired
     };
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const {
       navigation: {
         state: {
@@ -42,8 +50,16 @@ class PreviewLimitOrder extends Component {
   }
 
   render() {
-    if (this.state.showCreating) {
-      return <Loading text={'Creating limit order'} />;
+    const {
+      navigation: {
+        state: {
+          params: { side }
+        }
+      }
+    } = this.props;
+
+    if (side !== 'buy' && side !== 'sell') {
+      return null;
     }
 
     const quoteToken = getQuoteAsset();
@@ -195,44 +211,19 @@ class PreviewLimitOrder extends Component {
       }
     } = this.props;
 
-    this.setState({ showCreating: true });
-    this.props.navigation.setParams({ hideHeader: true });
-
-    const signedOrder = await signOrder(order);
-    if (!signedOrder) {
-      this.setState({ showCreating: false });
-      this.props.navigation.setParams({ hideHeader: false });
-      return;
-    }
-
-    try {
-      await this.props.dispatch(submitOrder(signedOrder));
-    } catch (error) {
-      NavigationService.error(error);
-      return;
-    } finally {
-      this.setState({ showCreating: false });
-      this.props.navigation.setParams({ hideHeader: false });
-    }
-
-    NavigationService.navigate('List');
+    NavigationService.navigate('SubmittingOrders', {
+      action: async () => {
+        const signedOrder = await signOrder(order);
+        if (!signedOrder) {
+          throw new Error('Order could not be signed.');
+        }
+        await this.props.dispatch(submitOrder(signedOrder));
+      },
+      next: 'List',
+      text: 'Creating Limit Order'
+    });
   }
 }
-
-PreviewLimitOrder.propTypes = {
-  quoteSymbol: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-    setParams: PropTypes.func.isRequired,
-    state: PropTypes.shape({
-      params: PropTypes.shape({
-        side: PropTypes.string.isRequired,
-        order: PropTypes.object.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired
-};
 
 export default connect(
   state => ({

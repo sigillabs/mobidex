@@ -2,7 +2,13 @@ import { orderParsingUtils } from '@0xproject/order-utils';
 import { assetDataUtils } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
-import { addAssets, setOrders, setOrderbook, setProducts } from '../actions';
+import {
+  addAssets,
+  setOrders,
+  setOrderbook,
+  setProducts,
+  setQuote
+} from '../actions';
 import EthereumClient from '../clients/ethereum';
 import RelayerClient from '../clients/relayer';
 import TokenClient from '../clients/token';
@@ -188,6 +194,53 @@ export function loadAssets(force = false) {
       );
     } catch (err) {
       NavigationService.error(err);
+    }
+  };
+}
+
+export function loadMarketBuyQuote(
+  assetData,
+  assetBuyAmount,
+  options = {
+    slippagePercentage: 0.2,
+    expiryBufferSeconds: 30,
+    filterInvalidOrders: true
+  }
+) {
+  return async dispatch => {
+    dispatch(setQuote(['buy', null, true]));
+    try {
+      const quote = await OrderService.getBuyAssetsQuoteAsync(
+        assetData,
+        assetBuyAmount,
+        options
+      );
+      dispatch(setQuote(['buy', quote, false]));
+    } catch (err) {
+      dispatch(setQuote(['buy', null, false, err]));
+    }
+  };
+}
+
+export function loadMarketSellQuote(
+  assetData,
+  assetSellAmount,
+  options = {
+    slippagePercentage: 0.2,
+    expiryBufferSeconds: 30
+  }
+) {
+  return async dispatch => {
+    dispatch(setQuote(['sell', null, true]));
+    try {
+      const quote = await OrderService.getSellAssetsQuoteAsync(
+        assetData,
+        assetSellAmount,
+        options
+      );
+      dispatch(setQuote(['sell', quote, false]));
+    } catch (err) {
+      dispatch(setQuote(['sell', null, false, err]));
     }
   };
 }

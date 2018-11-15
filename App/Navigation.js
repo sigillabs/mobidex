@@ -10,6 +10,7 @@ import { colors } from '../styles';
 import ChooseUnlockMethodScreen from './Locked/ChooseUnlockMethodScreen';
 import UnlockWithFingerScreen from './Locked/UnlockWithFingerScreen';
 import UnlockWithPinScreen from './Locked/UnlockWithPinScreen';
+import UnlockingScreen from './Locked/UnlockingScreen';
 import NormalHeader from './headers/Normal';
 import OrdersHeader from './headers/Orders';
 import ProductsHeader from './headers/Products';
@@ -19,6 +20,7 @@ import InitialLoadScreen from './Main/InitialLoadScreen';
 import ProductScreen from './Main/ProductScreen';
 import CreateOrderScreen from './Main/CreateOrderScreen';
 import PreviewOrdersScreen from './Main/PreviewOrdersScreen';
+import SubmittingOrdersScreen from './Main/SubmittingOrdersScreen';
 import ProductDetailsScreen from './Main/ProductDetailsScreen';
 import OrdersScreen from './Orders/OrdersScreen';
 import TransactionHistoryScreen from './Orders/TransactionHistoryScreen';
@@ -43,7 +45,8 @@ const LockedNavigation = createSwitchNavigator(
   {
     ChooseUnlockMethod: { screen: ChooseUnlockMethodScreen },
     UnlockWithFinger: { screen: UnlockWithFingerScreen },
-    UnlockWithPin: { screen: UnlockWithPinScreen }
+    UnlockWithPin: { screen: UnlockWithPinScreen },
+    Unlocking: { screen: UnlockingScreen }
   },
   {
     cardStyle: {
@@ -60,6 +63,7 @@ const OnboardingNavigation = createStackNavigator(
     ImportMnemonic: { screen: ImportMnemonicScreen },
     ImportPin: { screen: PinScreen },
     PreviewMnemonic: { screen: PreviewMnemonicScreen },
+    SubmittingOrders: { screen: SubmittingOrdersScreen },
     ConstructWallet: { screen: ConstructWalletScreen }
   },
   {
@@ -199,8 +203,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            base={navigation.state.params.product.base}
-            quote={navigation.state.params.product.quote}
+            baseAssetData={navigation.state.params.product.base.assetData}
+            quoteAssetData={navigation.state.params.product.quote.assetData}
             showBackButton={true}
             showForexToggleButton={true}
           />
@@ -213,8 +217,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            base={navigation.state.params.product.base}
-            quote={navigation.state.params.product.quote}
+            baseAssetData={navigation.state.params.product.base.assetData}
+            quoteAssetData={navigation.state.params.product.quote.assetData}
             showBackButton={true}
             showForexToggleButton={true}
           />
@@ -227,8 +231,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            base={navigation.state.params.product.base}
-            quote={navigation.state.params.product.quote}
+            baseAssetData={navigation.state.params.baseAssetData}
+            quoteAssetData={navigation.state.params.quoteAssetData}
             showBackButton={true}
             showForexToggleButton={true}
           />

@@ -1,11 +1,11 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Text } from 'react-native-elements';
 import { formatAmount, formatAmountWithDecimals } from '../../utils';
 import FormattedSymbol from './FormattedSymbol';
 
-export default class FormattedTokenAmount extends Component {
+export default class FormattedTokenAmount extends PureComponent {
   render() {
     const { amount, percent, decimals, symbol } = this.props;
     const showPercent = percent !== null && percent !== undefined;

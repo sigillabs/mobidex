@@ -4,15 +4,27 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
+import * as AssetService from '../../services/AssetService';
+import NavigationService from '../../services/NavigationService';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import LogoTicker from '../views/LogoTicker';
 import ToggleForexButton from '../views/ToggleForexButton';
-import NavigationService from '../../services/NavigationService';
 
 class ProductDetailsHeader extends Component {
+  static get propTypes() {
+    return {
+      showBackButton: PropTypes.bool,
+      showForexToggleButton: PropTypes.bool,
+      baseAssetData: PropTypes.string.isRequired,
+      quoteAssetData: PropTypes.string.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
   render() {
-    const { base, quote } = this.props;
+    const { baseAssetData, quoteAssetData } = this.props;
+    const base = AssetService.findAssetByData(baseAssetData);
+    const quote = AssetService.findAssetByData(quoteAssetData);
 
     return (
       <Header
@@ -30,7 +42,7 @@ class ProductDetailsHeader extends Component {
             <FakeHeaderButton />
           )
         }
-        centerComponent={<LogoTicker base={base} quote={quote} />}
+        centerComponent={base ? <LogoTicker base={base} quote={quote} /> : null}
         rightComponent={
           this.props.showForexToggleButton ? <ToggleForexButton /> : null
         }
@@ -39,14 +51,6 @@ class ProductDetailsHeader extends Component {
     );
   }
 }
-
-ProductDetailsHeader.propTypes = {
-  showBackButton: PropTypes.bool,
-  showForexToggleButton: PropTypes.bool,
-  base: PropTypes.object.isRequired,
-  quote: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
-};
 
 export default connect(
   state => ({

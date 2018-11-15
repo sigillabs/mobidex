@@ -1,5 +1,6 @@
 import 'node-libs-react-native/globals';
 import { EventEmitter } from 'events';
+import React from 'react';
 import { Alert, AppRegistry, I18nManager, YellowBox } from 'react-native';
 import {
   setJSExceptionHandler,
@@ -29,7 +30,10 @@ EventEmitter.defaultMaxListeners = 32000;
 
 AppRegistry.registerComponent('mobidex', () => App);
 
-if (!__DEV__) {
+if (__DEV__) {
+  const { whyDidYouUpdate } = require('why-did-you-update');
+  // whyDidYouUpdate(React);
+} else {
   setJSExceptionHandler((error, isFatal) => {
     if (isFatal) {
       if (error) {

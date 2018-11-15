@@ -113,10 +113,12 @@ export default connect(state => ({ ...state }), dispatch => ({ dispatch }))(
 SendTokensWizard.propTypes = {
   navigation: PropTypes.shape({
     setParams: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
     state: PropTypes.shape({
       params: PropTypes.shape({
         asset: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired
 };

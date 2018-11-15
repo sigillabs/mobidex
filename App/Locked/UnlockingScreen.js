@@ -5,11 +5,12 @@ import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NavigationService from '../../services/NavigationService';
 import * as WalletService from '../../services/WalletService';
+import { colors } from '../../styles';
 import BigCenter from '../components/BigCenter';
 import Padding from '../components/Padding';
 import RotatingView from '../components/RotatingView';
 
-export default class ConstructWalletScreen extends Component {
+export default class UnlockingScreen extends Component {
   static get propTypes() {
     return {
       navigation: PropTypes.shape({
@@ -19,11 +20,15 @@ export default class ConstructWalletScreen extends Component {
   }
 
   componentDidMount() {
-    const mnemonic = this.props.navigation.getParam('mnemonic').join(' ');
     const pin = this.props.navigation.getParam('pin');
     InteractionManager.runAfterInteractions(async () => {
-      await WalletService.importMnemonics(mnemonic, pin);
-      NavigationService.navigate('Initial');
+      try {
+        await WalletService.unlock(pin.slice(0, 6));
+      } catch (err) {
+        NavigationService.navigate('ChooseUnlockMethod', { error: true });
+      } finally {
+        NavigationService.navigate('Initial');
+      }
     });
   }
 
@@ -31,10 +36,10 @@ export default class ConstructWalletScreen extends Component {
     return (
       <BigCenter>
         <RotatingView>
-          <FontAwesome name="gear" size={100} />
+          <FontAwesome name="unlock" color={colors.yellow0} size={100} />
         </RotatingView>
         <Padding size={25} />
-        <Text>Constructing Wallet...</Text>
+        <Text>Unlocking Mobidex...</Text>
       </BigCenter>
     );
   }

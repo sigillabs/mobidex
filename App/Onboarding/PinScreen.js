@@ -50,18 +50,12 @@ export default class PinScreen extends Component {
             }}
           />
         </View>
-        <PinKeyboard
-          onChange={value =>
-            InteractionManager.runAfterInteractions(() => this.setPin(value))
-          }
-          onSubmit={() => this.submit()}
-          buttonTitle={'Import'}
-        />
+        <PinKeyboard onChange={this.setPin} buttonTitle={'Import'} />
       </View>
     );
   }
 
-  async setPin(value) {
+  setPin = async value => {
     let current = this.state.pin.slice();
     if (current.length > 6) {
       this.setState({ pin: '' });
@@ -83,7 +77,7 @@ export default class PinScreen extends Component {
         this.submit();
       }
     }
-  }
+  };
 
   submit() {
     if (this.state.pin.length < 6) {

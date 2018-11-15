@@ -23,7 +23,8 @@ export default class RotatingView extends Component {
         toValue: 1,
         duration: this.props.duration,
         delay: 0,
-        useNativeDriver: true
+        useNativeDriver: true,
+        isInteraction: false
       })
     ).start();
   }

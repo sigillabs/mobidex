@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { InteractionManager } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -14,10 +15,12 @@ class InitialLoadScreen extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  async componentDidMount() {
-    await this.props.dispatch(initialLoad(1));
-    this.props.dispatch(startWebsockets());
-    NavigationService.navigate('Main');
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(async () => {
+      await this.props.dispatch(initialLoad(1));
+      this.props.dispatch(startWebsockets());
+      NavigationService.navigate('Main');
+    });
   }
 
   render() {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
+import { View, Image } from 'react-native';
 import { colors } from '../styles';
+import RotatingView from './components/RotatingView';
 
 export default class LoadingScreen extends Component {
   render() {
@@ -17,15 +18,16 @@ export default class LoadingScreen extends Component {
           paddingLeft: 10
         }}
       >
-        <Image
-          source={require('../images/logo-with-text/logo-with-text-transparent.png')}
-          style={{
-            marginHorizontal: 0,
-            width: '100%',
-            resizeMode: Image.resizeMode.contain
-          }}
-        />
-        <ActivityIndicator size="large" color={colors.gray1} />
+        <RotatingView>
+          <Image
+            source={require('../images/logo-with-text/logo-with-text-transparent.png')}
+            style={{
+              marginHorizontal: 0,
+              width: '100%',
+              resizeMode: Image.resizeMode.contain
+            }}
+          />
+        </RotatingView>
       </View>
     );
   }

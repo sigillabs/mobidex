@@ -13,6 +13,7 @@ export const SET_NETWORK = 'SET_NETWORK';
 export const SET_ORDERBOOK = 'SET_ORDERBOOK';
 export const SET_ORDERS = 'SET_ORDERS';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
+export const SET_QUOTE = 'SET_QUOTE';
 export const SET_TRANSACTION_HASH = 'SET_TRANSACTION_HASH';
 export const SET_WALLET = 'SET_WALLET';
 export const TOGGLE_SHOW_FOREX = 'TOGGLE_SHOW_FOREX';

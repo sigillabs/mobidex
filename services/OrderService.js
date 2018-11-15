@@ -333,13 +333,15 @@ export async function getBuyAssetsQuoteAsync(
   assetBuyAmount,
   options = {
     slippagePercentage: 0.2,
-    expiryBufferSeconds: 30
+    expiryBufferSeconds: 30,
+    filterInvalidOrders: true
   }
 ) {
   if (!options)
     options = {
       slippagePercentage: 0.2,
-      expiryBufferSeconds: 30
+      expiryBufferSeconds: 30,
+      filterInvalidOrders: true
     };
   if (
     options.slippagePercentage === null ||
@@ -357,7 +359,8 @@ export async function getBuyAssetsQuoteAsync(
 
   const {
     relayer: { orderbooks },
-    wallet: { web3 }
+    wallet: { web3 },
+    settings: { network }
   } = _store.getState();
 
   const ethereumClient = new EthereumClient(web3);
@@ -375,30 +378,26 @@ export async function getBuyAssetsQuoteAsync(
   if (!feeOrderbook) {
     return null;
   }
-  const orders = await filterFillableOrders(wrappers, orderbook.asksArray());
+  const orders = options.filterInvalidOrders
+    ? await filterFillableOrders(wrappers, orderbook.asksArray())
+    : orderbook.asksArray();
   if (!orders.length) {
     return null;
   }
-  const feeOrders = await filterFillableOrders(
-    wrappers,
-    feeOrderbook.asksArray()
-  );
+  const feeOrders = options.filterInvalidOrders
+    ? await filterFillableOrders(wrappers, feeOrderbook.asksArray())
+    : feeOrderbook.asksArray();
   const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
     ethereumClient.getCurrentProvider(),
     orders,
     feeOrders,
     {
       expiryBufferSeconds: options.expiryBufferSeconds,
-      networkId: await ethereumClient.getNetworkId()
+      networkId: network
     }
   );
 
-  try {
-    return await buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
-  } catch (err) {
-    NavigationService.error(err);
-    return null;
-  }
+  return buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
 }
 
 export async function getSellAssetsQuoteAsync(

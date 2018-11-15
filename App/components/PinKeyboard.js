@@ -10,9 +10,7 @@ export default class PinKeyboard extends Component {
         <VirtualKeyboard
           color="black"
           pressMode="char"
-          onPress={val =>
-            InteractionManager.runAfterInteractions(() => this.onChange(val))
-          }
+          onPress={this.onChange}
           decimal={false}
           {...this.props}
         />
@@ -20,18 +18,14 @@ export default class PinKeyboard extends Component {
     );
   }
 
-  onChange(value) {
-    if (this.props.onChange) this.props.onChange(value);
-  }
-
-  onSubmit() {
-    if (this.props.onSubmit) this.props.onSubmit();
-  }
+  onChange = value => {
+    if (this.props.onChange)
+      InteractionManager.runAfterInteractions(() => this.props.onChange(value));
+  };
 }
 
 PinKeyboard.propTypes = {
   onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
   buttonTitle: PropTypes.string.isRequired
 };
 

@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import Button from './Button';
 
-export default class TokenAmountKeyboard extends Component {
+export default class TokenAmountKeyboard extends PureComponent {
   render() {
     return (
       <View style={{ flex: 1 }}>
         <VirtualKeyboard
           color="black"
           pressMode="string"
-          onPress={val => this.onChange(val)}
+          onPress={this.onChange}
           decimal={true}
           {...this.props}
         />
@@ -19,7 +19,7 @@ export default class TokenAmountKeyboard extends Component {
           large
           title={this.props.buttonTitle}
           icon={this.props.buttonIcon}
-          onPress={() => this.onSubmit()}
+          onPress={this.onSubmit}
           containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
           iconRight={this.props.buttonIconRight}
           disabled={this.props.disableButton}
@@ -29,13 +29,13 @@ export default class TokenAmountKeyboard extends Component {
     );
   }
 
-  onChange(value) {
+  onChange = value => {
     if (this.props.onChange) this.props.onChange(value);
-  }
+  };
 
-  onSubmit() {
+  onSubmit = () => {
     if (this.props.onSubmit) this.props.onSubmit();
-  }
+  };
 }
 
 TokenAmountKeyboard.propTypes = {

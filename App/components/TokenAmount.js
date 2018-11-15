@@ -8,6 +8,45 @@ import MutedText from './MutedText';
 import BlinkingCursor from './BlinkingCursor';
 
 export default class TokenAmount extends Component {
+  static get propTypes() {
+    return {
+      label: PropTypes.string.isRequired,
+      amount: PropTypes.string.isRequired,
+      symbol: PropTypes.string,
+      name: PropTypes.string,
+      right: PropTypes.element,
+      format: PropTypes.bool,
+      cursor: PropTypes.bool,
+      onPress: PropTypes.func,
+      icon: PropTypes.element,
+      avatarProps: PropTypes.shape({
+        small: PropTypes.bool,
+        medium: PropTypes.bool,
+        large: PropTypes.bool,
+        xlarge: PropTypes.bool
+      }),
+      cursorProps: PropTypes.object,
+      amountStyle: PropTypes.object,
+      amountContainerStyle: PropTypes.object,
+      containerStyle: PropTypes.object,
+      wrapperStyle: PropTypes.object,
+      nameStyle: PropTypes.object,
+      symbolStyle: PropTypes.object
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      avatarProps: {
+        medium: true,
+        rounded: true,
+        activeOpacity: 0.7,
+        overlayContainerStyle: { backgroundColor: 'transparent' }
+      },
+      format: true
+    };
+  }
+
   render() {
     const {
       label,
@@ -40,9 +79,9 @@ export default class TokenAmount extends Component {
         <View style={[styles.wrapper, wrapperStyle]}>
           {icon ? (
             icon
-          ) : (
+          ) : symbol ? (
             <Avatar source={getImage(formatSymbol(symbol))} {...avatarProps} />
-          )}
+          ) : null}
           <View style={[styles.amountContainer, amountContainerStyle]}>
             <Text style={[amountStyle]}>
               {format ? formatAmount(amount) : amount.toString()}
@@ -51,7 +90,7 @@ export default class TokenAmount extends Component {
           </View>
           {symbol ? (
             <FormattedSymbol
-              name={symbol}
+              symbol={symbol}
               style={[styles.symbol, symbolStyle]}
             />
           ) : null}
@@ -64,41 +103,6 @@ export default class TokenAmount extends Component {
     );
   }
 }
-
-TokenAmount.propTypes = {
-  label: PropTypes.string.isRequired,
-  amount: PropTypes.string.isRequired,
-  symbol: PropTypes.string.isRequired,
-  name: PropTypes.string,
-  right: PropTypes.element,
-  format: PropTypes.bool,
-  cursor: PropTypes.bool,
-  onPress: PropTypes.func,
-  icon: PropTypes.element,
-  avatarProps: PropTypes.shape({
-    small: PropTypes.bool,
-    medium: PropTypes.bool,
-    large: PropTypes.bool,
-    xlarge: PropTypes.bool
-  }),
-  cursorProps: PropTypes.object,
-  amountStyle: PropTypes.object,
-  amountContainerStyle: PropTypes.object,
-  containerStyle: PropTypes.object,
-  wrapperStyle: PropTypes.object,
-  nameStyle: PropTypes.object,
-  symbolStyle: PropTypes.object
-};
-
-TokenAmount.defaultProps = {
-  avatarProps: {
-    medium: true,
-    rounded: true,
-    activeOpacity: 0.7,
-    overlayContainerStyle: { backgroundColor: 'transparent' }
-  },
-  format: true
-};
 
 const styles = StyleSheet.create({
   container: {

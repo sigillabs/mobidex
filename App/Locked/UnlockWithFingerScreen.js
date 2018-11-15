@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import reactMixin from 'react-mixin';
 import {
   InteractionManager,
   Platform,
@@ -9,16 +8,11 @@ import {
 import { Text } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { connect } from 'react-redux';
-import TimerMixin from 'react-timer-mixin';
 import * as styles from '../../styles';
-import { unlock } from '../../thunks';
 import Button from '../components/Button';
-import MutedText from '../components/MutedText';
 import * as WalletService from '../../services/WalletService';
 import NavigationService from '../../services/NavigationService';
 
-@reactMixin.decorate(TimerMixin)
 export default class UnlockWithFingerScreen extends Component {
   constructor(props) {
     super(props);

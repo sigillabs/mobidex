@@ -20,6 +20,7 @@ export const setNetwork = createAction(Actions.SET_NETWORK);
 export const setOrderbook = createAction(Actions.SET_ORDERBOOK);
 export const setOrders = createAction(Actions.SET_ORDERS);
 export const setProducts = createAction(Actions.SET_PRODUCTS);
+export const setQuote = createAction(Actions.SET_QUOTE);
 export const setWallet = createAction(Actions.SET_WALLET);
 export const setTransactionHash = createAction(Actions.SET_TRANSACTION_HASH);
 export const toggleShowForex = createAction(Actions.TOGGLE_SHOW_FOREX);

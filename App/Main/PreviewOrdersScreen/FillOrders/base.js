@@ -12,9 +12,17 @@ import Button from '../../../components/Button';
 import TwoColumnListItem from '../../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
 import Row from '../../../components/Row';
-import Loading from '../Loading';
 
 class Order extends Component {
+  static get propTypes() {
+    return {
+      limitOrder: PropTypes.object.isRequired,
+      base: PropTypes.object.isRequired,
+      quote: PropTypes.object.isRequired,
+      highlight: PropTypes.bool
+    };
+  }
+
   render() {
     const { limitOrder, base, quote, highlight, ...rest } = this.props;
     const { amount, price } = limitOrder;
@@ -36,27 +44,20 @@ class Order extends Component {
   }
 }
 
-Order.propTypes = {
-  limitOrder: PropTypes.object.isRequired,
-  base: PropTypes.object.isRequired,
-  quote: PropTypes.object.isRequired,
-  highlight: PropTypes.bool
-};
-
 class BasePreviewFillOrders extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showFilling: false
+  static get propTypes() {
+    return {
+      buttonTitle: PropTypes.string.isRequired,
+      quote: PropTypes.object.isRequired,
+      subtotal: PropTypes.string.isRequired,
+      fee: PropTypes.string.isRequired,
+      total: PropTypes.string.isRequired,
+      fillAction: PropTypes.func.isRequired,
+      dispatch: PropTypes.func.isRequired
     };
   }
 
   render() {
-    if (this.state.showFilling) {
-      return <Loading text={'Filling orders'} />;
-    }
-
     const receipt = this.getReceipt();
 
     if (!receipt) return null;
@@ -171,11 +172,13 @@ class BasePreviewFillOrders extends Component {
   }
 
   getReceipt() {
-    const { quote } = this.props;
+    const { quote, subtotal, fee, total } = this.props;
+
+    if (!quote) {
+      return null;
+    }
+
     const priceAverage = OrderService.getAveragePrice(quote.orders);
-    const subtotal = this.props.getSubtotal(quote);
-    const fee = this.props.getTotalFee(quote);
-    const total = this.props.getTotal(quote);
 
     return {
       priceAverage,
@@ -185,38 +188,16 @@ class BasePreviewFillOrders extends Component {
     };
   }
 
-  async submit() {
-    const { quote, fillAction } = this.props;
+  submit() {
+    const { fillAction, quote } = this.props;
 
-    this.setState({ showFilling: true });
-    this.props.hideHeader();
-
-    try {
-      await this.props.dispatch(fillAction(quote));
-    } catch (err) {
-      console.error(err);
-      NavigationService.error(err);
-      return;
-    } finally {
-      this.setState({ showFilling: false });
-      this.props.showHeader();
-    }
-
-    NavigationService.navigate('List');
+    NavigationService.navigate('SubmittingOrders', {
+      action: () => this.props.dispatch(fillAction(quote)),
+      next: 'List',
+      text: 'Filling Orders'
+    });
   }
 }
-
-BasePreviewFillOrders.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  buttonTitle: PropTypes.string.isRequired,
-  quote: PropTypes.object.isRequired,
-  fillAction: PropTypes.func.isRequired,
-  getSubtotal: PropTypes.func.isRequired,
-  getTotalFee: PropTypes.func.isRequired,
-  getTotal: PropTypes.func.isRequired,
-  hideHeader: PropTypes.func.isRequired,
-  showHeader: PropTypes.func.isRequired
-};
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
   BasePreviewFillOrders

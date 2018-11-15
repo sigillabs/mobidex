@@ -8,8 +8,6 @@ import * as styles from '../../styles';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import NavigationService from '../../services/NavigationService';
-import * as WalletService from '../../services/WalletService';
-import UnlockingScreen from './Unlocking';
 
 @reactMixin.decorate(TimerMixin)
 class UnlockWithPinScreen extends Component {
@@ -18,16 +16,11 @@ class UnlockWithPinScreen extends Component {
 
     this.state = {
       pin: '',
-      pinError: false,
-      showUnlocking: false
+      pinError: false
     };
   }
 
   render() {
-    if (this.state.showUnlocking) {
-      return <UnlockingScreen />;
-    }
-
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -48,17 +41,12 @@ class UnlockWithPinScreen extends Component {
             <Text style={[styles.top, { color: 'red' }]}> </Text>
           )}
         </View>
-        <PinKeyboard
-          onChange={value =>
-            InteractionManager.runAfterInteractions(() => this.setPin(value))
-          }
-          onSubmit={() => {}}
-        />
+        <PinKeyboard onChange={this.setPin} />
       </View>
     );
   }
 
-  setPin(value) {
+  setPin = value => {
     let current = this.state.pin.slice();
     if (current.length > 6) {
       this.setState({ pin: '', pinError: false });
@@ -79,7 +67,7 @@ class UnlockWithPinScreen extends Component {
         this.unlock(current);
       }
     }
-  }
+  };
 
   unlock(pin) {
     if (pin.length < 6) {
@@ -87,21 +75,7 @@ class UnlockWithPinScreen extends Component {
       return;
     }
 
-    this.setState({ showUnlocking: true });
-
-    requestAnimationFrame(async () => {
-      try {
-        await WalletService.unlock(pin.slice(0, 6));
-      } catch (err) {
-        this.setState({ pinError: true });
-        return;
-      } finally {
-        this.setState({ showUnlocking: false });
-      }
-
-      this.setState({ pinError: false });
-      NavigationService.navigate('Initial');
-    });
+    NavigationService.navigate('Unlocking', { pin: pin.slice(0, 6) });
   }
 }
 

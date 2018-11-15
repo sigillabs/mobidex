@@ -1,10 +1,10 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { ZERO } from '../../constants/0x';
 import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
-export default class BestCaseSellPrice extends Component {
+export default class BestCaseSellPrice extends PureComponent {
   static propTypes = {
     quote: PropTypes.shape({
       assetData: PropTypes.string.isRequired,

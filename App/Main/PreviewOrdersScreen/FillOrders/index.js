@@ -5,28 +5,23 @@ import PreviewFillBids from './bids';
 
 export default class PreviewFillOrders extends Component {
   render() {
-    const hideHeader = () => {
-      this.props.navigation.setParams({ hideHeader: true });
-    };
-    const showHeader = () => {
-      this.props.navigation.setParams({ hideHeader: false });
-    };
+    const amount = this.props.navigation.getParam('amount');
+    const baseAssetData = this.props.navigation.getParam('baseAssetData');
+    const quoteAssetData = this.props.navigation.getParam('quoteAssetData');
     if (this.props.navigation.state.params.side === 'buy') {
       return (
         <PreviewFillAsks
-          quote={this.props.navigation.state.params.quote}
-          hideHeader={hideHeader}
-          showHeader={showHeader}
-          fee={0}
+          amount={amount}
+          baseAssetData={baseAssetData}
+          quoteAssetData={quoteAssetData}
         />
       );
     } else {
       return (
         <PreviewFillBids
-          quote={this.props.navigation.state.params.quote}
-          hideHeader={hideHeader}
-          showHeader={showHeader}
-          fee={0}
+          amount={amount}
+          baseAssetData={baseAssetData}
+          quoteAssetData={quoteAssetData}
         />
       );
     }
@@ -34,5 +29,7 @@ export default class PreviewFillOrders extends Component {
 }
 
 PreviewFillOrders.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.shape({
+    getParam: PropTypes.func.isRequired
+  }).isRequired
 };

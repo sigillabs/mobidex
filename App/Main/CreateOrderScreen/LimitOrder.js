@@ -9,6 +9,24 @@ import { createOrder } from '../../../services/OrderService';
 import NavigationService from '../../../services/NavigationService';
 
 export default class CreateLimitOrder extends Component {
+  static get propTypes() {
+    return {
+      navigation: PropTypes.shape({
+        push: PropTypes.func.isRequired,
+        state: PropTypes.shape({
+          params: PropTypes.shape({
+            type: PropTypes.string.isRequired,
+            side: PropTypes.string.isRequired,
+            product: PropTypes.shape({
+              base: PropTypes.object.isRequired,
+              quote: PropTypes.object.isRequired
+            }).isRequired
+          }).isRequired
+        }).isRequired
+      }).isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -165,20 +183,3 @@ export default class CreateLimitOrder extends Component {
     });
   }
 }
-
-CreateLimitOrder.propTypes = {
-  assets: PropTypes.arrayOf(PropTypes.object).isRequired,
-  navigation: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-    state: PropTypes.shape({
-      params: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        side: PropTypes.string.isRequired,
-        product: PropTypes.shape({
-          base: PropTypes.object.isRequired,
-          quote: PropTypes.object.isRequired
-        }).isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired
-};
