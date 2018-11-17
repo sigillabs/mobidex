@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
-import * as styles from '../../../../styles';
+import { colors, styles } from '../../../../styles';
 import TokenLockByAssetData from '../../../views/TokenLockByAssetData';
 
 export default class TokenTitle extends Component {
@@ -21,9 +21,7 @@ export default class TokenTitle extends Component {
       >
         <TokenLockByAssetData
           assetData={asset.assetData}
-          color={
-            this.props.highlight ? styles.colors.white : styles.colors.yellow0
-          }
+          color={this.props.highlight ? colors.white : colors.yellow0}
         />
         <Text> </Text>
         <Text> </Text>

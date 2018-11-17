@@ -32,12 +32,10 @@ export function loadAllowances(force = false) {
           .then(allowance => ({ [address]: allowance }));
       })
     );
-
     const allAllowances = allowances.reduce(
       (acc, obj) => _.merge(acc, obj),
       {}
     );
-
     dispatch(setAllowances(allAllowances));
   };
 }
@@ -58,7 +56,6 @@ export function loadBalances(force = false) {
       })
     );
     const ethereumBalance = await ethereumClient.getBalance(force);
-
     const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
     dispatch(setBalances(allBalances));
     dispatch(

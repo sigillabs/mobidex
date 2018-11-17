@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import reactMixin from 'react-mixin';
-import { InteractionManager, View } from 'react-native';
+import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import TimerMixin from 'react-timer-mixin';
-import * as styles from '../../styles';
+import { styles } from '../../styles';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import NavigationService from '../../services/NavigationService';
@@ -24,7 +24,7 @@ class UnlockWithPinScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View
-          style={[styles.bigcenter, { marginHorizontal: 50, marginBottom: 30 }]}
+          style={[styles.bigCenter, { marginHorizontal: 50, marginBottom: 30 }]}
         >
           <PinView
             value={this.state.pin}

@@ -1,27 +1,21 @@
 import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationService from '../../../../services/NavigationService';
-import * as styles from '../../../../styles';
+import { styles } from '../../../../styles';
 import { loadMarketBuyQuote } from '../../../../thunks';
-import {
-  isValidAmount,
-  processVirtualKeyboardCharacter
-} from '../../../../utils';
 import MutedText from '../../../components/MutedText';
-import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
 import TokenBuyQuoteAmount from '../../../views/TokenBuyQuoteAmount';
 import TokenBuyQuoteError from '../../../views/TokenBuyQuoteError';
+import BaseFillOrders from './base';
 
 class FillAsks extends Component {
   static get propTypes() {
     return {
       quote: PropTypes.object,
-      quoteLoading: PropTypes.bool,
+      isQuoteLoading: PropTypes.bool,
       quoteError: PropTypes.object,
       baseToken: PropTypes.object.isRequired,
       quoteToken: PropTypes.object.isRequired,
@@ -29,129 +23,82 @@ class FillAsks extends Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      amount: '',
-      amountError: null
-    };
-
-    this.loadQuote = _.debounce(() => {
-      const { amount } = this.state;
-      const { baseToken } = this.props;
-      const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
-        new BigNumber(amount || 0),
-        baseToken.decimals
-      );
-      InteractionManager.runAfterInteractions(async () => {
-        try {
-          await this.props.dispatch(
-            loadMarketBuyQuote(baseToken.assetData, baseUnitAmount, {
-              slippagePercentage: 0.2,
-              expiryBufferSeconds: 30,
-              filterInvalidOrders: false
-            })
-          );
-        } catch (err) {
-          this.setState({ amountError: err });
-        }
-      });
-    }, 500);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { quote, quoteLoading } = this.props;
-    const { amount, amountError } = this.state;
-
-    if (nextState.amount !== amount) {
-      return true;
-    }
-
-    if (nextState.amountError !== amountError) {
-      return true;
-    }
-
-    if (nextProps.quote !== quote) {
-      return true;
-    }
-
-    if (nextProps.quoteLoading !== quoteLoading) {
-      return true;
-    }
-
-    return false;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { amount } = this.state;
-    if (prevState.amount !== amount) {
-      this.loadQuote();
-    }
-  }
-
   render() {
-    const { quote, quoteLoading, quoteError } = this.props;
-    const isEmptyQuote = !quote || quote.orders.length === 0;
+    const { isQuoteLoading, quote, quoteError } = this.props;
+    const isQuoteEmpty = !quote || quote.orders.length === 0;
 
     return (
-      <View style={{ width: '100%', height: '100%' }}>
-        <TokenBuyQuoteAmount
-          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          amount={this.state.amount.toString()}
-          cursor={true}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          format={false}
-        />
-        <TokenAmountKeyboard
-          onChange={this.onSetAmount}
-          onSubmit={this.preview}
-          pressMode="char"
-          buttonTitle={'Preview Buy Orders'}
-          buttonLoading={quoteLoading}
-          disableButton={isEmptyQuote}
-        />
-        {isEmptyQuote && !quoteError && !quoteLoading ? (
-          <MutedText
-            style={[styles.flex1, styles.row, styles.center, styles.textcenter]}
-          >
-            There are no orders to fill.
-          </MutedText>
-        ) : null}
-        <TokenBuyQuoteError
-          style={[styles.flex1, styles.row, styles.center, styles.textcenter]}
-        />
-      </View>
+      <BaseFillOrders
+        isQuoteLoading={isQuoteLoading}
+        isQuoteEmpty={isQuoteEmpty}
+        isQuoteError={Boolean(quoteError)}
+        renderQuoteAmount={this.renderQuoteAmount}
+        renderQuoteEmpty={this.renderQuoteEmpty}
+        renderQuoteError={this.renderQuoteError}
+        loadQuote={this.loadQuote}
+        preview={this.preview}
+      />
     );
   }
 
-  preview = () => {
-    const { amount } = this.state;
+  renderQuoteAmount = amount => {
+    const { baseToken, quoteToken } = this.props;
+    return (
+      <TokenBuyQuoteAmount
+        amount={amount.toString()}
+        cursor={true}
+        cursorProps={{ style: { marginLeft: 2 } }}
+        format={false}
+        baseSymbol={baseToken.symbol}
+        quoteSymbol={quoteToken.symbol}
+      />
+    );
+  };
+
+  renderQuoteEmpty = () => {
+    return (
+      <MutedText
+        style={[styles.flex1, styles.row, styles.center, styles.textCenter]}
+      >
+        There are no orders to fill.
+      </MutedText>
+    );
+  };
+
+  renderQuoteError = () => {
+    return (
+      <TokenBuyQuoteError
+        style={[styles.flex1, styles.row, styles.center, styles.textCenter]}
+      />
+    );
+  };
+
+  loadQuote = amount => {
+    const { baseToken } = this.props;
+    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
+      new BigNumber(amount || 0),
+      baseToken.decimals
+    );
+    return this.props.dispatch(
+      loadMarketBuyQuote(baseToken.assetData, baseUnitAmount, {
+        slippagePercentage: 0.2,
+        expiryBufferSeconds: 30,
+        filterInvalidOrders: false
+      })
+    );
+  };
+
+  preview = amount => {
     const baseAssetData = this.props.baseToken.assetData;
     const quoteAssetData = this.props.quoteToken.assetData;
 
-    if (isValidAmount(amount)) {
-      NavigationService.navigate('PreviewOrders', {
-        type: 'fill',
-        side: 'buy',
-        amount,
-        baseAssetData,
-        quoteAssetData
-      });
-    }
-  };
-
-  onSetAmount = value => {
-    const text = processVirtualKeyboardCharacter(
-      value,
-      this.state.amount.toString()
-    );
-
-    if (isValidAmount(text)) {
-      this.setState({ amount: text, amountError: false });
-    } else {
-      this.setState({ amountError: true });
-    }
+    NavigationService.navigate('PreviewOrders', {
+      type: 'fill',
+      side: 'buy',
+      amount,
+      baseAssetData,
+      quoteAssetData
+    });
   };
 }
 
@@ -160,6 +107,6 @@ export default connect(
     quote: {
       buy: { quote, loading, error }
     }
-  }) => ({ quote, quoteLoading: loading, quoteError: error }),
+  }) => ({ quote, isQuoteLoading: loading, quoteError: error }),
   dispatch => ({ dispatch })
 )(FillAsks);

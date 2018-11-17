@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import * as styles from '../../styles';
+import { colors, styles } from '../../styles';
 import Button from './Button';
 
 export default class MaxButton extends Component {
@@ -21,8 +21,8 @@ export default class MaxButton extends Component {
 
 const style = {
   button: {
-    backgroundColor: styles.colors.transparent,
-    borderColor: styles.colors.primary,
+    backgroundColor: colors.transparent,
+    borderColor: colors.primary,
     borderRadius: 3,
     borderWidth: 1,
     elevation: 0,
@@ -37,8 +37,8 @@ const style = {
     opacity: 0.7
   },
   title: {
-    backgroundColor: styles.colors.transparent,
-    color: styles.colors.primary
+    backgroundColor: colors.transparent,
+    color: colors.primary
   }
 };
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
-import * as styles from '../../styles';
+import { styles } from '../../styles';
 import NavigationService from '../../services/NavigationService';
 import Button from '../components/Button';
 import DisplayMnemonic from '../components/DisplayMnemonic';
@@ -37,7 +37,11 @@ export default class PreviewMnemonicScreen extends Component {
 
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {isGenerated ? <MutedText>Please write down your seed phrase</MutedText> : <MutedText>Is your seed entered correctly?</MutedText>}
+        {isGenerated ? (
+          <MutedText>Please write down your seed phrase</MutedText>
+        ) : (
+          <MutedText>Is your seed entered correctly?</MutedText>
+        )}
         <DisplayMnemonic
           containerStyle={[styles.mv3, { flex: 0, height: 260 }]}
           mnemonic={mnemonic}

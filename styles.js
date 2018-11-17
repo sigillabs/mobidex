@@ -24,240 +24,265 @@ export const colors = {
   transparent: 'transparent'
 };
 
-export const small = {
-  fontSize: 10
-};
-
-export const background = {
-  backgroundColor: colors.background
-};
-
-export const primary = {
-  backgroundColor: colors.background
-};
-
-export const textcenter = {
-  textAlign: 'center'
-};
-
-export const center = {
-  justifyContent: 'center',
-  alignItems: 'center'
-};
-
-export const top = {
-  justifyContent: 'flex-start',
-  alignItems: 'center'
-};
-
-export const bottom = {
-  justifyContent: 'flex-end',
-  alignItems: 'center'
-};
-
-export const bigcenter = [
-  {
+export const styles = StyleSheet.create({
+  small: {
+    fontSize: 10
+  },
+  background: {
+    backgroundColor: colors.background
+  },
+  primary: {
+    backgroundColor: colors.background
+  },
+  bigCenter: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  center
-];
-
-export const bigtop = [
-  {
+  textCenter: {
+    textAlign: 'center'
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  bigBottom: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
-  top
-];
-
-export const bigbottom = [
-  {
+  bigTop: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
-  bottom
-];
-
-export const row = {
-  flexDirection: 'row',
-  justifyContent: 'flex-start',
-  alignItems: 'center'
-};
-
-export const flex0 = {
-  flex: 0
-};
-
-export const flex1 = {
-  flex: 1
-};
-
-export const flex2 = {
-  flex: 2
-};
-
-export const ph0 = {
-  paddingHorizontal: 0,
-  paddingLeft: 0,
-  paddingRight: 0
-};
-
-export const ph1 = {
-  paddingHorizontal: 5,
-  paddingLeft: 5,
-  paddingRight: 5
-};
-
-export const ph2 = {
-  paddingHorizontal: ph1.paddingHorizontal * 2,
-  paddingLeft: ph1.paddingLeft * 2,
-  paddingRight: ph1.paddingRight * 2
-};
-
-export const ph3 = {
-  paddingHorizontal: ph1.paddingHorizontal * 3,
-  paddingLeft: ph1.paddingLeft * 3,
-  paddingRight: ph1.paddingRight * 3
-};
-
-export const pv0 = {
-  paddingVertical: 0,
-  paddingTop: 0,
-  paddingBottom: 0
-};
-
-export const pv1 = {
-  paddingVertical: 5,
-  paddingTop: 5,
-  paddingBottom: 5
-};
-
-export const pv2 = {
-  paddingVertical: pv1.paddingVertical * 2,
-  paddingTop: pv1.paddingTop * 2,
-  paddingBottom: pv1.paddingBottom * 2
-};
-
-export const pv3 = {
-  paddingVertical: pv1.paddingVertical * 3,
-  paddingTop: pv1.paddingTop * 3,
-  paddingBottom: pv1.paddingBottom * 3
-};
-
-export const padding0 = [
-  {
-    padding: 0
+  top: {
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
-  ph0,
-  pv0
-];
-
-export const padding1 = [
-  {
-    padding: 5
+  bottom: {
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
-  ph1,
-  pv1
-];
-
-export const padding2 = [
-  {
-    padding: padding1[0].padding * 2
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
-  ph2,
-  pv2
-];
-
-export const padding3 = [
-  {
-    padding: padding1[0].padding * 3
+  flex0: {
+    flex: 0
   },
-  ph2,
-  pv2
-];
-
-export const mh0 = {
-  marginHorizontal: 0,
-  marginLeft: 0,
-  marginRight: 0
-};
-
-export const mh1 = {
-  marginHorizontal: 5,
-  marginLeft: 5,
-  marginRight: 5
-};
-
-export const mh2 = {
-  marginHorizontal: mh1.marginHorizontal * 2,
-  marginLeft: mh1.marginLeft * 2,
-  marginRight: mh1.marginRight * 2
-};
-
-export const mh3 = {
-  marginHorizontal: mh1.marginHorizontal * 3,
-  marginLeft: mh1.marginLeft * 3,
-  marginRight: mh1.marginRight * 3
-};
-
-export const mv0 = {
-  marginVertical: 0,
-  marginTop: 0,
-  marginBottom: 0
-};
-
-export const mv1 = {
-  marginVertical: 5,
-  marginTop: 5,
-  marginBottom: 5
-};
-
-export const mv2 = {
-  marginVertical: mv1.marginVertical * 2,
-  marginTop: mv1.marginTop * 2,
-  marginBottom: mv1.marginBottom * 2
-};
-
-export const mv3 = {
-  marginVertical: mv1.marginVertical * 3,
-  marginTop: mv1.marginTop * 3,
-  marginBottom: mv1.marginBottom * 3
-};
-
-export const margin0 = {
-  margin: 0,
-  marginTop: 0,
-  marginRight: 0,
-  marginBottom: 0,
-  marginLeft: 0
-};
-
-export const margin1 = [
-  {
-    margin: 5
+  flex1: {
+    flex: 1
   },
-  mv1,
-  mh1
-];
-
-export const margin2 = [
-  {
-    margin: margin1[0].margin * 2
+  flex2: {
+    flex: 2
   },
-  mv2,
-  mh2
-];
-
-export const margin3 = [
-  {
-    margin: margin1[0].margin * 3
+  flex3: {
+    flex: 3
   },
-  mv3,
-  mh3
-];
-
-export const fluff0 = [padding0, margin0];
+  flex4: {
+    flex: 4
+  },
+  ph0: {
+    paddingHorizontal: 0,
+    paddingLeft: 0,
+    paddingRight: 0
+  },
+  ph1: {
+    paddingHorizontal: 5,
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  ph2: {
+    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  ph3: {
+    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 15
+  },
+  pv0: {
+    paddingVertical: 0,
+    paddingTop: 0,
+    paddingBottom: 0
+  },
+  pv1: {
+    paddingVertical: 5,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+  pv2: {
+    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  pv3: {
+    paddingVertical: 15,
+    paddingTop: 15,
+    paddingBottom: 15
+  },
+  p0: {
+    padding: 0,
+    paddingHorizontal: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingVertical: 0,
+    paddingTop: 0,
+    paddingBottom: 0
+  },
+  p1: {
+    padding: 5,
+    paddingHorizontal: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingVertical: 5,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+  p2: {
+    padding: 10,
+    paddingHorizontal: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  p3: {
+    padding: 15,
+    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingVertical: 15,
+    paddingTop: 15,
+    paddingBottom: 15
+  },
+  mr0: {
+    marginRight: 0
+  },
+  mr1: {
+    marginRight: 5
+  },
+  mr2: {
+    marginRight: 10
+  },
+  mr3: {
+    marginRight: 15
+  },
+  mh0: {
+    marginHorizontal: 0,
+    marginLeft: 0,
+    marginRight: 0
+  },
+  mh1: {
+    marginHorizontal: 5,
+    marginLeft: 5,
+    marginRight: 5
+  },
+  mh2: {
+    marginHorizontal: 10,
+    marginLeft: 10,
+    marginRight: 10
+  },
+  mh3: {
+    marginHorizontal: 15,
+    marginLeft: 15,
+    marginRight: 15
+  },
+  mt0: {
+    marginTop: 0
+  },
+  mt1: {
+    marginTop: 5
+  },
+  mt2: {
+    marginTop: 10
+  },
+  mt3: {
+    marginTop: 15
+  },
+  mt4: {
+    marginTop: 20
+  },
+  mv0: {
+    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: 0
+  },
+  mv1: {
+    marginVertical: 5,
+    marginTop: 5,
+    marginBottom: 5
+  },
+  mv2: {
+    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 10
+  },
+  mv3: {
+    marginVertical: 15,
+    marginTop: 15,
+    marginBottom: 15
+  },
+  m0: {
+    margin: 0,
+    marginHorizontal: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: 0
+  },
+  m1: {
+    margin: 5,
+    marginHorizontal: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginVertical: 5,
+    marginTop: 5,
+    marginBottom: 5
+  },
+  m2: {
+    margin: 10,
+    marginHorizontal: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 10
+  },
+  m3: {
+    margin: 15,
+    marginHorizontal: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    marginVertical: 15,
+    marginTop: 15,
+    marginBottom: 15
+  },
+  fluff0: {
+    margin: 0,
+    marginHorizontal: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    padding: 0,
+    paddingHorizontal: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingVertical: 0,
+    paddingTop: 0,
+    paddingBottom: 0
+  }
+});
 
 export function getProfitLossColor(number) {
   number = new BigNumber(number.toString());

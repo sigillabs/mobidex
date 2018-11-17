@@ -45,7 +45,7 @@
         "react-native-crypto": "^2.1.2",
         "react-native-device-info": "^0.21.5",
         "react-native-drawer": "^2.5.0",
-        "react-native-elements": "^1.0.0-beta5",
+        "react-native-elements": "^1.0.0-beta7",
         "react-native-exception-handler": "^2.8.9",
         "react-native-google-analytics-bridge": "^5.8.0",
         "react-native-masked-text": "^1.7.0",

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button as RNEButton } from 'react-native-elements';
-import * as styles from '../../styles';
+import { colors, styles } from '../../styles';
 
 export default class Button extends Component {
   render() {
@@ -19,8 +19,8 @@ export default class Button extends Component {
 
 const style = {
   button: {
-    backgroundColor: styles.colors.yellow0,
-    borderColor: styles.colors.yellow0,
+    backgroundColor: colors.yellow0,
+    borderColor: colors.yellow0,
     borderRadius: 0,
     borderWidth: 1,
     marginTop: 5,

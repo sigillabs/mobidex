@@ -12,6 +12,7 @@ import {
 import MaxButton from '../../components/MaxButton';
 import Row from '../../components/Row';
 import TokenAmount from '../../components/TokenAmount';
+import TouchableTokenAmount from '../../components/TouchableTokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import * as TickerService from '../../../services/TickerService';
 import * as WalletService from '../../../services/WalletService';
@@ -50,7 +51,7 @@ export default class AmountPage extends Component {
           onPress={() => this.setState({ focus: 'amount' })}
         />
         <Row>
-          <TokenAmount
+          <TouchableTokenAmount
             label={'Send Amount'}
             symbol={asset.symbol}
             containerStyle={{
@@ -68,7 +69,7 @@ export default class AmountPage extends Component {
           />
           <MaxButton onPress={() => this.setTokenAmount(balance.toString())} />
         </Row>
-        <TokenAmount
+        <TouchableTokenAmount
           label={'Send Amount in Forex'}
           symbol={'USD'}
           icon={getForexIcon('USD', { size: 30, style: { marginLeft: 10 } })}

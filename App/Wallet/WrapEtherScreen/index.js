@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as WalletService from '../../../services/WalletService';
 import NavigationService from '../../../services/NavigationService';
-import * as styles from '../../../styles';
+import { styles } from '../../../styles';
 import { wrapEther, unwrapEther } from '../../../thunks';
 import {
   formatAmount,

@@ -120,7 +120,7 @@ const WalletNavigation = createStackNavigator(
   {
     Accounts: {
       screen: AccountsScreen,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         header: null
       })
     },

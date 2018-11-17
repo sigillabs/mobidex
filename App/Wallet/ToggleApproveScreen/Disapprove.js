@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as AssetService from '../../../services/AssetService';
 import NavigationService from '../../../services/NavigationService';
-import * as styles from '../../../styles';
+import { colors, styles } from '../../../styles';
 import { setNoProxyAllowance } from '../../../thunks';
 import Button from '../../components/Button';
 import Disapproving from './Disapproving';
@@ -30,7 +30,7 @@ class DisapproveScreen extends Component {
 
     return (
       <View
-        backgroundColor={styles.colors.transparent}
+        backgroundColor={colors.transparent}
         style={{
           flex: 1,
           alignItems: 'center',
@@ -45,7 +45,7 @@ class DisapproveScreen extends Component {
         <Text
           style={{
             fontSize: 18,
-            color: styles.colors.primary,
+            color: colors.primary,
             paddingBottom: 10,
             textAlign: 'center'
           }}

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import { formatAmount, formatSymbol, getImage } from '../../utils';
 import FormattedSymbol from './FormattedSymbol';
@@ -14,7 +14,6 @@ export default class TokenAmount extends Component {
       amount: PropTypes.string.isRequired,
       symbol: PropTypes.string,
       name: PropTypes.string,
-      right: PropTypes.element,
       format: PropTypes.bool,
       cursor: PropTypes.bool,
       onPress: PropTypes.func,
@@ -28,7 +27,6 @@ export default class TokenAmount extends Component {
       cursorProps: PropTypes.object,
       amountStyle: PropTypes.object,
       amountContainerStyle: PropTypes.object,
-      containerStyle: PropTypes.object,
       wrapperStyle: PropTypes.object,
       nameStyle: PropTypes.object,
       symbolStyle: PropTypes.object
@@ -55,26 +53,20 @@ export default class TokenAmount extends Component {
       avatarProps,
       symbol,
       name,
-      right,
       format,
       cursor,
-      onPress,
       ...more
     } = this.props;
     const {
       amountStyle,
       amountContainerStyle,
-      containerStyle,
       wrapperStyle,
       nameStyle,
       symbolStyle
     } = more;
 
     return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={[styles.container, containerStyle]}
-      >
+      <Fragment>
         {label ? <MutedText>{label}</MutedText> : null}
         <View style={[styles.wrapper, wrapperStyle]}>
           {icon ? (
@@ -97,22 +89,13 @@ export default class TokenAmount extends Component {
           {name ? (
             <MutedText style={[styles.name, nameStyle]}>{name}</MutedText>
           ) : null}
-          {right ? right : null}
         </View>
-      </TouchableOpacity>
+      </Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 0,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 0,
-    height: 60
-  },
   wrapper: {
     flex: 1,
     flexDirection: 'row',

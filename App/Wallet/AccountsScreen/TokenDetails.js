@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import * as AssetService from '../../../services/AssetService';
 import NavigationService from '../../../services/NavigationService';
 import * as WalletService from '../../../services/WalletService';
-import * as styles from '../../../styles';
+import { styles } from '../../../styles';
 import { getImage } from '../../../utils';
 import { assetProp } from '../../../types/props';
 import Button from '../../components/Button';

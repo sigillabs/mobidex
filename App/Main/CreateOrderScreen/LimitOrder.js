@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { isValidAmount, processVirtualKeyboardCharacter } from '../../../utils';
-import TokenAmount from '../../components/TokenAmount';
+import TouchableTokenAmount from '../../components/TouchableTokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import { createOrder } from '../../../services/OrderService';
 import NavigationService from '../../../services/NavigationService';
@@ -57,7 +57,7 @@ export default class CreateLimitOrder extends Component {
 
     return (
       <View style={{ width: '100%', height: '100%' }}>
-        <TokenAmount
+        <TouchableTokenAmount
           label={side === 'buy' ? 'Buying' : 'Selling'}
           symbol={base.symbol}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
@@ -67,7 +67,7 @@ export default class CreateLimitOrder extends Component {
           cursorProps={{ style: { marginLeft: 2 } }}
           amount={this.state.amount.toString()}
         />
-        <TokenAmount
+        <TouchableTokenAmount
           label={'Price'}
           symbol={quote.symbol}
           containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}

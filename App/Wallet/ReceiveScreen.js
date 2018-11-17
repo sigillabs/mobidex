@@ -5,7 +5,7 @@ import { Avatar, Text } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import ethUtil from 'ethereumjs-util';
-import * as styles from '../../styles';
+import { styles } from '../../styles';
 import Button from '../components/Button';
 
 class ReceiveScreen extends Component {

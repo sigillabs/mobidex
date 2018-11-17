@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Animated, TouchableOpacity, View } from 'react-native';
-import * as styles from '../../styles';
+import { styles } from '../../styles';
 import Button from './Button';
 
 export default class CollapsibleButtonView extends Component {

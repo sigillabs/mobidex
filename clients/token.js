@@ -121,7 +121,7 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':balance';
-  }, 60)
+  }, 24 * 60 * 60)
   async getBalance() {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient
@@ -137,7 +137,7 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':allowance';
-  }, 60)
+  }, 24 * 60 * 60)
   async getAllowance(account = null) {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient

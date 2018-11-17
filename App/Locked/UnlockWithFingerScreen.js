@@ -8,7 +8,7 @@ import {
 import { Text } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import * as styles from '../../styles';
+import { styles } from '../../styles';
 import Button from '../components/Button';
 import * as WalletService from '../../services/WalletService';
 import NavigationService from '../../services/NavigationService';
@@ -29,10 +29,10 @@ export default class UnlockWithFingerScreen extends Component {
     }
 
     return (
-      <View style={styles.bigcenter}>
+      <View style={styles.bigCenter}>
         <TouchableOpacity
           onPress={() => this.unlock()}
-          style={[styles.bigbottom, styles.flex1]}
+          style={[styles.bigBottom, styles.flex1]}
         >
           <View>
             <MaterialIcon name="fingerprint" color="black" size={100} />
@@ -42,7 +42,7 @@ export default class UnlockWithFingerScreen extends Component {
         <View style={[styles.padding2, styles.flex0]}>
           {this.state.error ? this.renderError() : <Text>Or</Text>}
         </View>
-        <View style={[styles.bigtop, styles.flex1]}>
+        <View style={[styles.bigTop, styles.flex1]}>
           <Button
             onPress={() => NavigationService.navigate('UnlockWithPin')}
             title={'Unlock with pin'}
@@ -55,7 +55,7 @@ export default class UnlockWithFingerScreen extends Component {
 
   renderUnlocking() {
     return (
-      <View style={styles.bigcenter}>
+      <View style={styles.bigCenter}>
         <MaterialIcon name="fingerprint" color="green" size={100} />
         <Text>Start scanning your fingerprint</Text>
         <Button

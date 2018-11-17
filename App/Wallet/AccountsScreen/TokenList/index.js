@@ -3,12 +3,7 @@ import React, { Component } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { colors } from '../../../../styles';
-import {
-  loadAllowances,
-  loadBalances,
-  updateForexTickers,
-  updateTokenTickers
-} from '../../../../thunks';
+import { loadAllowances, loadBalances } from '../../../../thunks';
 import EmptyList from '../../../components/EmptyList';
 import MutedText from '../../../components/MutedText';
 import TokenIcon from '../../../components/TokenIcon';
@@ -100,8 +95,6 @@ class TokenList extends Component {
     this.setState({ refreshing: true });
     await this.props.dispatch(loadAllowances(reload));
     await this.props.dispatch(loadBalances(reload));
-    await this.props.dispatch(updateForexTickers(reload));
-    await this.props.dispatch(updateTokenTickers(reload));
     this.setState({ refreshing: false });
   }
 }

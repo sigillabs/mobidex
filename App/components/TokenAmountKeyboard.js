@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import React, { Fragment, PureComponent } from 'react';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import Button from './Button';
 
 export default class TokenAmountKeyboard extends PureComponent {
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <Fragment>
         <VirtualKeyboard
           color="black"
           pressMode="string"
@@ -25,7 +24,7 @@ export default class TokenAmountKeyboard extends PureComponent {
           disabled={this.props.disableButton}
           loading={this.props.buttonLoading}
         />
-      </View>
+      </Fragment>
     );
   }
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { background } from '../../styles';
+import { styles } from '../../styles';
 import { getImage } from '../../utils';
 
 export default class TokenIcon extends Component {
@@ -16,18 +16,18 @@ export default class TokenIcon extends Component {
     } = this.props;
 
     return (
-      <View style={[styles.container, style]}>
+      <View style={[styles.center, style]}>
         <Avatar
           rounded
           source={getImage(symbol)}
-          containerStyle={[showName || showSymbol ? styles.padBottom : null]}
-          overlayContainerStyle={background}
+          containerStyle={[showName || showSymbol ? styles.pb1 : null]}
+          overlayContainerStyle={styles.background}
         />
         {showName ? (
-          <Text style={[styles.small, styles.center]}>{name}</Text>
+          <Text style={[styles.small, styles.textCenter]}>{name}</Text>
         ) : null}
         {showSymbol ? (
-          <Text style={[styles.small, styles.center]}>
+          <Text style={[styles.small, styles.textCenter]}>
             {amount} {symbol}
           </Text>
         ) : null}
@@ -50,20 +50,4 @@ TokenIcon.propTypes = {
 TokenIcon.defaultProps = {
   showName: true,
   showSymbol: true
-};
-
-const styles = {
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  center: {
-    textAlign: 'center'
-  },
-  padBottom: {
-    marginBottom: 5
-  },
-  small: {
-    fontSize: 10
-  }
 };

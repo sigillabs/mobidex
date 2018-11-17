@@ -1,40 +1,36 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import * as AssetService from '../../services/AssetService';
+import { styles } from '../../styles';
 import TokenAmount from '../components/TokenAmount';
-import BestCaseBuyPrice from './BestCaseBuyPrice';
+import BestCasePrice from './BestCasePrice';
 
 class TokenBuyQuoteAmount extends Component {
   static get propTypes() {
     return {
       quote: PropTypes.object,
-      defaultSymbol: PropTypes.string
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      defaultSymbol: 'N/A'
+      baseSymbol: PropTypes.string.isRequired,
+      quoteSymbol: PropTypes.string.isRequired
     };
   }
 
   render() {
-    const { quote, defaultSymbol } = this.props;
-    let symbol = defaultSymbol;
-
-    if (quote) {
-      symbol = AssetService.findAssetByData(quote.assetData).symbol;
-    }
+    const { quote, baseSymbol, quoteSymbol } = this.props;
 
     return (
-      <TokenAmount
-        {...this.props}
-        label={'Buying'}
-        right={
-          quote ? <BestCaseBuyPrice quote={quote} symbol={symbol} /> : null
-        }
-      />
+      <Fragment>
+        <TokenAmount
+          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
+          symbol={baseSymbol}
+          label={'Buying'}
+          {...this.props}
+        />
+        <BestCasePrice
+          style={[styles.flex2, styles.mv2, styles.mr2, styles.p2, styles.mt4]}
+          quote={quote}
+          symbol={quoteSymbol}
+        />
+      </Fragment>
     );
   }
 }
