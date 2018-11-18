@@ -24,10 +24,9 @@ export default class UnlockingScreen extends Component {
     InteractionManager.runAfterInteractions(async () => {
       try {
         await WalletService.unlock(pin.slice(0, 6));
+        NavigationService.navigate('Initial');
       } catch (err) {
         NavigationService.navigate('ChooseUnlockMethod', { error: true });
-      } finally {
-        NavigationService.navigate('Initial');
       }
     });
   }
