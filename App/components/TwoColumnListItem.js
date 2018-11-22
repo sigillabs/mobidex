@@ -8,6 +8,7 @@ import Row from './Row';
 export default class TwoColumnListItem extends Component {
   render() {
     const rest = _.omit(this.props, [
+      'color',
       'left',
       'leftHeader',
       'leftHeaderStyle',

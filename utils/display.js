@@ -79,7 +79,7 @@ export function formatPercent(n) {
 }
 
 export function isDecimalOverflow(amount, decimals = 4) {
-  if (amount === null) return false;
+  if (!amount) return false;
   try {
     const stringAmount = new BigNumber(amount).toString();
     if (stringAmount.indexOf('.') === -1) return false;
@@ -90,7 +90,7 @@ export function isDecimalOverflow(amount, decimals = 4) {
 }
 
 export function reduceDecimalOverflow(amount, decimals = 4) {
-  if (amount === null) return false;
+  if (!amount) return false;
   const stringAmount = amount.toString();
   const index = stringAmount.indexOf('.');
   if (index === -1) return stringAmount;

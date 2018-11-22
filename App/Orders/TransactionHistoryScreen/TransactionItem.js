@@ -8,6 +8,28 @@ import Row from '../../components/Row';
 import { formatTimestamp } from '../../../utils';
 
 class TransactionItem extends Component {
+  static get propTypes() {
+    return {
+      action: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      amount: PropTypes.number,
+      symbol: PropTypes.string,
+      address: PropTypes.string,
+      source: PropTypes.shape({
+        address: PropTypes.string,
+        amount: PropTypes.string,
+        symbol: PropTypes.string
+      }),
+      destination: PropTypes.shape({
+        address: PropTypes.string,
+        amount: PropTypes.string,
+        symbol: PropTypes.string
+      }),
+      processing: PropTypes.bool,
+      timestamp: PropTypes.string
+    };
+  }
+
   render() {
     const { action } = this.props;
 
@@ -150,26 +172,6 @@ class TransactionItem extends Component {
     );
   }
 }
-
-TransactionItem.propTypes = {
-  action: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  amount: PropTypes.number,
-  symbol: PropTypes.string,
-  address: PropTypes.string,
-  source: PropTypes.shape({
-    address: PropTypes.string,
-    amount: PropTypes.number,
-    symbol: PropTypes.string
-  }),
-  destination: PropTypes.shape({
-    address: PropTypes.string,
-    amount: PropTypes.number,
-    symbol: PropTypes.string
-  }),
-  processing: PropTypes.bool,
-  timestamp: PropTypes.string
-};
 
 export default connect(
   state => ({

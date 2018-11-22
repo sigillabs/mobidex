@@ -27,6 +27,5 @@ export default class TokenItem extends Component {
 }
 
 TokenItem.propTypes = {
-  asset: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
+  asset: PropTypes.object.isRequired
 };

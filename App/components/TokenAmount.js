@@ -46,58 +46,91 @@ export default class TokenAmount extends Component {
   }
 
   render() {
-    const {
-      label,
-      amount,
-      icon,
-      avatarProps,
-      symbol,
-      name,
-      format,
-      cursor,
-      ...more
-    } = this.props;
-    const {
-      amountStyle,
-      amountContainerStyle,
-      wrapperStyle,
-      nameStyle,
-      symbolStyle
-    } = more;
+    const { wrapperStyle } = this.props;
 
     return (
       <Fragment>
-        {label ? <MutedText>{label}</MutedText> : null}
-        <View style={[styles.wrapper, wrapperStyle]}>
-          {icon ? (
-            icon
-          ) : symbol ? (
-            <Avatar source={getImage(formatSymbol(symbol))} {...avatarProps} />
-          ) : null}
-          <View style={[styles.amountContainer, amountContainerStyle]}>
-            <Text style={[amountStyle]}>
-              {format ? formatAmount(amount) : amount.toString()}
-            </Text>
-            {cursor ? <BlinkingCursor /> : null}
-          </View>
-          {symbol ? (
-            <FormattedSymbol
-              symbol={symbol}
-              style={[styles.symbol, symbolStyle]}
-            />
-          ) : null}
-          {name ? (
-            <MutedText style={[styles.name, nameStyle]}>{name}</MutedText>
-          ) : null}
+        {this.renderLabel()}
+        <View style={[style.wrapper, wrapperStyle]}>
+          {this.renderIcon()}
+          {this.renderAmount()}
+          {this.renderSymbol()}
+          {this.renderName()}
         </View>
       </Fragment>
     );
   }
+
+  renderAmount() {
+    const {
+      amount,
+      amountStyle,
+      amountContainerStyle,
+      cursor,
+      format
+    } = this.props;
+    const formattedAmount = format ? formatAmount(amount) : amount.toString();
+
+    return (
+      <View style={[style.amountContainer, amountContainerStyle]}>
+        <Text style={[amountStyle]}>{formattedAmount}</Text>
+        {cursor ? <BlinkingCursor /> : null}
+      </View>
+    );
+  }
+
+  renderIcon() {
+    const { avatarProps, icon, symbol } = this.props;
+
+    if (icon) {
+      return icon;
+    }
+
+    if (symbol) {
+      return (
+        <Avatar source={getImage(formatSymbol(symbol))} {...avatarProps} />
+      );
+    }
+
+    return null;
+  }
+
+  renderLabel() {
+    const { label } = this.props;
+
+    if (!label) {
+      return null;
+    }
+
+    return <MutedText>{label}</MutedText>;
+  }
+
+  renderName() {
+    const { name, nameStyle } = this.props;
+
+    if (!name) {
+      return null;
+    }
+
+    return <MutedText style={[style.name, nameStyle]}>{name}</MutedText>;
+  }
+
+  renderSymbol() {
+    const { symbol, symbolStyle } = this.props;
+
+    if (!symbol) {
+      return null;
+    }
+
+    return (
+      <FormattedSymbol symbol={symbol} style={[style.symbol, symbolStyle]} />
+    );
+  }
 }
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   wrapper: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

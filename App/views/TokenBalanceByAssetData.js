@@ -8,7 +8,7 @@ import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
 export default class TokenBalanceByAssetData extends Component {
   static propTypes = {
-    assetData: PropTypes.string.isRequired,
+    assetData: PropTypes.string,
     showSymbol: PropTypes.bool
   };
 
@@ -18,10 +18,9 @@ export default class TokenBalanceByAssetData extends Component {
 
   render() {
     const { assetData, showSymbol } = this.props;
-    const asset =
-      assetData !== null
-        ? AssetService.findAssetByData(assetData)
-        : AssetService.getWETHAsset();
+    const asset = assetData
+      ? AssetService.findAssetByData(assetData)
+      : AssetService.getWETHAsset();
 
     if (!asset) {
       return (

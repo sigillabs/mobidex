@@ -13,7 +13,7 @@ export default class BestCasePrice extends PureComponent {
         PropTypes.number,
         PropTypes.instanceOf(BigNumber)
       ])
-    }).isRequired,
+    }),
     symbol: PropTypes.string
   };
 
@@ -25,7 +25,7 @@ export default class BestCasePrice extends PureComponent {
         <TokenAmount
           {...this.props}
           label={'price'}
-          amount={ZERO}
+          amount={ZERO.toString()}
           symbol={this.props.symbol}
         />
       );
@@ -36,7 +36,7 @@ export default class BestCasePrice extends PureComponent {
         <TokenAmount
           {...this.props}
           label={'price'}
-          amount={ZERO}
+          amount={ZERO.toString()}
           symbol={this.props.symbol}
         />
       );
@@ -46,7 +46,7 @@ export default class BestCasePrice extends PureComponent {
       <TokenAmount
         {...this.props}
         label={'price'}
-        amount={quote.bestCaseQuoteInfo.ethPerAssetPrice}
+        amount={quote.bestCaseQuoteInfo.ethPerAssetPrice.toString()}
         symbol={this.props.symbol}
       />
     );

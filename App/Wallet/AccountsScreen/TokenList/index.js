@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { colors } from '../../../../styles';
+import { assetProp } from '../../../../types/props';
 import { loadAllowances, loadBalances } from '../../../../thunks';
 import EmptyList from '../../../components/EmptyList';
 import MutedText from '../../../components/MutedText';
@@ -12,20 +13,20 @@ import TokenItem from './TokenItem';
 import TokenTitle from './TokenTitle';
 
 class TokenList extends Component {
+  static get propTypes() {
+    return {
+      asset: assetProp,
+      assets: PropTypes.arrayOf(PropTypes.object).isRequired,
+      onPress: PropTypes.func.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       refreshing: false
-    };
-  }
-
-  static get propTypes() {
-    return {
-      asset: PropTypes.string,
-      assets: PropTypes.arrayOf(PropTypes.object).isRequired,
-      onPress: PropTypes.func.isRequired,
-      dispatch: PropTypes.func.isRequired
     };
   }
 
@@ -66,9 +67,9 @@ class TokenList extends Component {
                 />
               }
               containerStyle={[
-                this.props.asset &&
-                  this.props.asset.address === item.address &&
-                  styles.highlight
+                this.props.asset && this.props.asset.address === item.address
+                  ? styles.highlight
+                  : null
               ]}
               rightStyle={{ textAlign: 'right' }}
             />
@@ -105,7 +106,6 @@ const styles = {
   highlight: {
     backgroundColor: colors.yellow0,
     borderColor: colors.yellow0,
-    color: colors.white,
     borderWidth: 1
   }
 };

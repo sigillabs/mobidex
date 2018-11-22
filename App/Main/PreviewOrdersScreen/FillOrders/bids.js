@@ -62,7 +62,7 @@ class PreviewFillBids extends Component {
   }
 
   getTotalFee() {
-    return ZERO;
+    return ZERO.toString();
   }
 
   getSubtotal() {
@@ -72,13 +72,13 @@ class PreviewFillBids extends Component {
       quote.assetSellAmount,
       asset.decimals
     );
-    return amount.mul(quote.bestCaseQuoteInfo.ethPerAssetPrice);
+    return amount.mul(quote.bestCaseQuoteInfo.ethPerAssetPrice).toString();
   }
 
   getTotal() {
     const { quote } = this.props;
     const subtotal = this.getSubtotal(quote);
-    return subtotal;
+    return subtotal.toString();
   }
 }
 

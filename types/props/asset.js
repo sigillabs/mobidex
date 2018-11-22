@@ -3,8 +3,8 @@ import { addressProp } from './address';
 import { assetDataProp } from './asset-data';
 
 export const assetProp = PropTypes.shape({
-  address: addressProp.isRequired,
-  assetData: assetDataProp.isRequired,
+  address: addressProp,
+  assetData: assetDataProp,
   decimals: PropTypes.number,
   name: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired

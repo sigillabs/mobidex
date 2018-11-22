@@ -1,26 +1,33 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import reactMixin from 'react-mixin';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import TimerMixin from 'react-timer-mixin';
 import { styles } from '../../styles';
 import PinKeyboard from '../components/PinKeyboard';
 import PinView from '../components/PinView';
 import NavigationService from '../../services/NavigationService';
 
-@reactMixin.decorate(TimerMixin)
 class UnlockWithPinScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: PropTypes.shape({
+        getParam: PropTypes.func.isRequired
+      }).isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      pin: '',
-      pinError: false
+      pin: ''
     };
   }
 
   render() {
+    const error = this.props.navigation.getParam('error');
+
     return (
       <View style={{ flex: 1 }}>
         <View
@@ -33,7 +40,7 @@ class UnlockWithPinScreen extends Component {
               marginBottom: 20
             }}
           />
-          {this.state.pinError ? (
+          {error ? (
             <Text style={[styles.top, { color: 'red' }]}>
               Pin incorrect. Try again.
             </Text>

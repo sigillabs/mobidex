@@ -111,7 +111,7 @@ export function marketBuyWithEth(quote) {
       }
     );
 
-    const txhash = await buyer.executeBuyQuoteAsync(quote, { gasLimit });
+    const txhash = await buyer.executeBuyQuoteAsync(quote);
     const activeTransaction = {
       id: txhash,
       type: 'MARKET_BUY',
@@ -137,7 +137,7 @@ export function marketBuy(quote) {
     }
 
     const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
+    const zeroExClient = new ZeroExClient(ethereumClient);
 
     const txhash = await zeroExClient.marketBuy(
       quote.orders,
@@ -195,7 +195,7 @@ export function batchMarketBuy(quote) {
   return async dispatch => {
     const asset = AssetService.getWETHAsset();
     await dispatch(checkAndSetUnlimitedProxyAllowance(asset.address));
-    await dispatch(marketBuyWithEth(quote));
+    await dispatch(marketBuy(quote));
   };
 }
 

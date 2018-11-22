@@ -7,7 +7,7 @@ import * as WalletService from '../../services/WalletService';
 
 export default class TokenLockByAssetData extends Component {
   static propTypes = {
-    assetData: PropTypes.string.isRequired
+    assetData: PropTypes.string
   };
 
   static defaultProps = {
@@ -16,10 +16,9 @@ export default class TokenLockByAssetData extends Component {
 
   render() {
     const { assetData } = this.props;
-    const asset =
-      assetData !== null
-        ? AssetService.findAssetByData(assetData)
-        : AssetService.getWETHAsset();
+    const asset = assetData
+      ? AssetService.findAssetByData(assetData)
+      : AssetService.getWETHAsset();
 
     if (!asset) {
       return <Icon color="white" {...this.props} name="lock" size={20} />;

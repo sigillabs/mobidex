@@ -115,10 +115,7 @@ class BasePreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={total}
               symbol={quoteAsset.symbol}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
-              ]}
+              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -147,10 +144,7 @@ class BasePreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={fundsAfterOrder}
               symbol={quoteAsset.symbol}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
-              ]}
+              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
             />
           }
           rightStyle={{ height: 30 }}

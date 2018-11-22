@@ -38,12 +38,6 @@ class WrapEtherScreen extends Component {
     });
   }
 
-  UNSAFE_componentWillMount() {
-    this.setState({
-      amount: WalletService.getBalanceBySymbol('WETH').toString()
-    });
-  }
-
   render() {
     if (this.state.wrapping) {
       return <Wrapping />;
@@ -55,15 +49,17 @@ class WrapEtherScreen extends Component {
 
     return (
       <View style={{ width: '100%', height: '100%' }}>
-        <TokenAmount
-          label={'Wrapped Ether Amount'}
-          symbol={'ETH'}
-          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          format={true}
-          cursor={true}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          amount={new BigNumber(this.state.amount || 0)}
-        />
+        <View>
+          <TokenAmount
+            label={'Wrapped Ether Amount'}
+            symbol={'ETH'}
+            containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
+            format={true}
+            cursor={true}
+            cursorProps={{ style: { marginLeft: 2 } }}
+            amount={new BigNumber(this.state.amount || 0)}
+          />
+        </View>
         <Slider
           step={0.0001}
           minimumValue={0}

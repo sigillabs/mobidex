@@ -1,13 +1,21 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import { SectionList } from 'react-native';
 import { connect } from 'react-redux';
-import TransactionsList from './List';
-import { loadTransactions } from '../../../thunks';
+import { gotoEtherScan, loadTransactions } from '../../../thunks';
 import EmptyList from '../../components/EmptyList';
 import MutedText from '../../components/MutedText';
-import PageRoot from '../../components/PageRoot';
+import AdaptTransactionItem from './AdaptTransactionItem';
 
 class TransactionHistoryScreen extends Component {
+  static get propTypes() {
+    return {
+      transactions: PropTypes.array.isRequired,
+      activeTransactions: PropTypes.array.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -21,42 +29,58 @@ class TransactionHistoryScreen extends Component {
   }
 
   render() {
-    const allTransactions = []
-      .concat(this.props.activeTransactions)
-      .concat(this.props.transactions);
+    const sections = [];
+
+    if (this.props.activeTransactions.length > 0) {
+      sections.push({
+        title: 'Active Transactions',
+        data: this.props.activeTransactions
+      });
+    }
+
+    if (this.props.transactions.length > 0) {
+      sections.push({ title: 'Transactions', data: this.props.transactions });
+    }
 
     return (
-      <PageRoot>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={() => this.onRefresh()}
-            />
-          }
-        >
-          {allTransactions.length > 0 ? (
-            <TransactionsList
-              active={this.props.activeTransactions}
-              transactions={this.props.transactions}
-            />
-          ) : (
-            <EmptyList style={{ height: '100%', width: '100%' }}>
-              <MutedText style={{ marginTop: 25 }}>
-                No transaction history to show.
-              </MutedText>
-            </EmptyList>
-          )}
-        </ScrollView>
-      </PageRoot>
+      <SectionList
+        refreshing={this.state.refreshing}
+        onRefresh={this.onRefresh}
+        renderItem={this.renderItem}
+        renderSectionHeader={this.renderSectionHeader}
+        keyExtractor={this.keyExtractor}
+        ListEmptyComponent={this.renderEmpty}
+        sections={sections}
+      />
     );
   }
 
-  async onRefresh(reload = true) {
+  renderEmpty = () => {
+    return (
+      <EmptyList style={{ height: '100%', width: '100%' }}>
+        <MutedText style={{ marginTop: 25 }}>
+          No transaction history to show.
+        </MutedText>
+      </EmptyList>
+    );
+  };
+
+  renderItem = ({ item }, index, section) => (
+    <AdaptTransactionItem
+      transaction={item}
+      onPress={() => this.props.dispatch(gotoEtherScan(item.id))}
+    />
+  );
+
+  renderSectionHeader = () => null;
+
+  keyExtractor = (item, index) => index;
+
+  onRefresh = async (reload = true) => {
     this.setState({ refreshing: true });
     await this.props.dispatch(loadTransactions(reload));
     this.setState({ refreshing: false });
-  }
+  };
 }
 
 export default connect(

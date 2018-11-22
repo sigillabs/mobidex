@@ -104,10 +104,7 @@ class PreviewLimitOrder extends Component {
             <FormattedTokenAmount
               amount={total}
               symbol={quoteToken.symbol}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
-              ]}
+              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -134,10 +131,7 @@ class PreviewLimitOrder extends Component {
             <FormattedTokenAmount
               amount={fundsAfterOrder}
               symbol={quoteToken.symbol}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(total.toNumber())
-              ]}
+              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
             />
           }
           rowStyle={{ marginTop: 10 }}
