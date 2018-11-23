@@ -84,11 +84,7 @@ const OrdersNavigation = createStackNavigator(
       screen: OrdersScreen,
       navigationOptions: ({ navigation }) => ({
         header: navigation.getParam('hideHeader') ? null : (
-          <OrdersHeader
-            navigation={navigation}
-            title="Active Orders"
-            showBackButton={false}
-          />
+          <OrdersHeader title="Active Orders" showBackButton={false} />
         )
       })
     },
@@ -203,8 +199,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            baseAssetData={navigation.state.params.product.base.assetData}
-            quoteAssetData={navigation.state.params.product.quote.assetData}
+            baseAssetData={navigation.state.params.base.assetData}
+            quoteAssetData={navigation.state.params.quote.assetData}
             showBackButton={true}
             showForexToggleButton={true}
           />
@@ -217,8 +213,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            baseAssetData={navigation.state.params.product.base.assetData}
-            quoteAssetData={navigation.state.params.product.quote.assetData}
+            baseAssetData={navigation.state.params.base.assetData}
+            quoteAssetData={navigation.state.params.quote.assetData}
             showBackButton={true}
             showForexToggleButton={true}
           />
@@ -231,8 +227,8 @@ const ProductsNavigation = createStackNavigator(
         header: (
           <ProductDetailsHeader
             navigation={navigation}
-            baseAssetData={navigation.state.params.baseAssetData}
-            quoteAssetData={navigation.state.params.quoteAssetData}
+            baseAssetData={navigation.state.params.base.assetData}
+            quoteAssetData={navigation.state.params.quote.assetData}
             showBackButton={true}
             showForexToggleButton={true}
           />

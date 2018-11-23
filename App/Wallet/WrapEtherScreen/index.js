@@ -57,7 +57,7 @@ class WrapEtherScreen extends Component {
             format={true}
             cursor={true}
             cursorProps={{ style: { marginLeft: 2 } }}
-            amount={new BigNumber(this.state.amount || 0)}
+            amount={new BigNumber(this.state.amount || 0).toString()}
           />
         </View>
         <Slider
@@ -87,7 +87,7 @@ class WrapEtherScreen extends Component {
 
   setAmount(amount) {
     amount = reduceDecimalOverflow(amount, 6);
-    if (this.getTotalEthereum().lt(amount)) {
+    if (this.getTotalEthereum().lt(amount || 0)) {
       amount = this.getTotalEthereum().toString();
     }
     if (isValidAmount(amount)) {

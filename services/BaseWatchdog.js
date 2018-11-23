@@ -1,23 +1,16 @@
 import { InteractionManager } from 'react-native';
+import TimerService from './TimerService';
 
 export default class BaseWatchdog {
-  constructor(timeout = 1000) {
+  constructor(timeout = 10) {
     this.timeout = timeout;
-    this.timer = null;
   }
 
   start() {
-    if (this.timer === null) {
-      this.run();
-    }
+    TimerService.getInstance().setTimeout(this.run.bind(this), this.timeout);
   }
 
-  stop() {
-    if (this.timer !== null) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  }
+  stop() {}
 
   async run() {
     InteractionManager.runAfterInteractions(async () => {
@@ -27,7 +20,7 @@ export default class BaseWatchdog {
         console.warn(err.message);
       }
 
-      this.timer = setTimeout(this.run.bind(this), this.timeout);
+      TimerService.getInstance().setTimeout(this.run.bind(this), this.timeout);
     });
   }
 

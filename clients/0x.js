@@ -143,13 +143,6 @@ export default class ZeroExClient {
       );
     }
 
-    console.warn(JSON.stringify(fillableOrders));
-    console.warn(amount.toString());
-    console.warn(
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
-    );
-    console.warn(this.options);
-
     return wrappers.exchange.marketBuyOrdersAsync(
       fillableOrders,
       new BigNumber(amount),

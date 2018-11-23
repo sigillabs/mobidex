@@ -8,6 +8,7 @@ import { setStore as setStoreForNavigationService } from '../services/Navigation
 import { setStore as setStoreForOrderService } from '../services/OrderService';
 import { setStore as setStoreForProductService } from '../services/ProductService';
 import { setStore as setStoreForTickerService } from '../services/TickerService';
+import TimerService from '../services/TimerService';
 import {
   ActiveTransactionWatchdog,
   TransactionService
@@ -16,6 +17,8 @@ import { setStore as setStoreForWalletService } from '../services/WalletService'
 import { setStore as setStoreForZeroExService } from '../services/ZeroExService';
 
 const store = configureStore();
+
+TimerService.getInstance(1000).start();
 
 setStoreForAssetService(store);
 setStoreForNavigationService(store);

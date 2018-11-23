@@ -91,9 +91,10 @@ class ProductDetailsView extends Component {
             }
             onPress={() =>
               NavigationService.navigate('CreateOrder', {
-                product: { base, quote },
                 type: 'fill',
-                side: 'buy'
+                side: 'buy',
+                base,
+                quote
               })
             }
             title="Buy"
@@ -106,9 +107,10 @@ class ProductDetailsView extends Component {
             }
             onPress={() =>
               NavigationService.navigate('CreateOrder', {
-                product: { base, quote },
                 type: 'fill',
-                side: 'sell'
+                side: 'sell',
+                base,
+                quote
               })
             }
             title="Sell"
@@ -160,7 +162,8 @@ class TokenProductDetailsView extends Component {
           <OrderbookPrice
             product={formatProduct(base.symbol, quote.symbol)}
             default={0}
-            side={'buy'}
+            side={'sell'}
+            symbol={quote.symbol}
           />
         )
       },
@@ -171,7 +174,8 @@ class TokenProductDetailsView extends Component {
           <OrderbookPrice
             product={formatProduct(base.symbol, quote.symbol)}
             default={0}
-            side={'sell'}
+            side={'buy'}
+            symbol={quote.symbol}
           />
         )
       },
@@ -343,9 +347,7 @@ class ProductDetailsScreen extends Component {
     const {
       navigation: {
         state: {
-          params: {
-            product: { base, quote }
-          }
+          params: { base, quote }
         }
       }
     } = this.props;
@@ -382,9 +384,7 @@ class ProductDetailsScreen extends Component {
     const {
       navigation: {
         state: {
-          params: {
-            product: { base, quote }
-          }
+          params: { base, quote }
         }
       }
     } = this.props;

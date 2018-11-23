@@ -34,14 +34,14 @@ class LogoTicker extends Component {
               style={[{ fontSize: 24 }, priceStyle]}
               product={formatProduct(base.symbol, quote.symbol)}
               default={0}
-              side={'sell'}
+              side={'buy'}
             />
           ) : (
             <OrderbookPrice
               style={[{ fontSize: 24 }, priceStyle]}
               product={formatProduct(base.symbol, quote.symbol)}
               default={0}
-              side={'sell'}
+              side={'buy'}
             />
           )}
         </View>

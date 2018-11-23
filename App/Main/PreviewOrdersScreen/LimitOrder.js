@@ -20,29 +20,16 @@ import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 class PreviewLimitOrder extends Component {
   static get propTypes() {
     return {
-      quoteSymbol: PropTypes.string.isRequired,
-      dispatch: PropTypes.func.isRequired,
-      navigation: PropTypes.shape({
-        push: PropTypes.func.isRequired,
-        setParams: PropTypes.func.isRequired,
-        state: PropTypes.shape({
-          params: PropTypes.shape({
-            side: PropTypes.string.isRequired,
-            order: PropTypes.object.isRequired
-          }).isRequired
-        }).isRequired
-      }).isRequired
+      side: PropTypes.string.isRequired,
+      amount: PropTypes.string.isRequired,
+      base: PropTypes.object.isRequired,
+      order: PropTypes.object.isRequired,
+      dispatch: PropTypes.func.isRequired
     };
   }
 
   componentDidMount() {
-    const {
-      navigation: {
-        state: {
-          params: { side }
-        }
-      }
-    } = this.props;
+    const { side } = this.props;
 
     if (side !== 'buy' && side !== 'sell') {
       return NavigationService.goBack();
@@ -50,13 +37,7 @@ class PreviewLimitOrder extends Component {
   }
 
   render() {
-    const {
-      navigation: {
-        state: {
-          params: { side }
-        }
-      }
-    } = this.props;
+    const { side } = this.props;
 
     if (side !== 'buy' && side !== 'sell') {
       return null;
@@ -147,13 +128,7 @@ class PreviewLimitOrder extends Component {
   }
 
   getButtonTitle() {
-    const {
-      navigation: {
-        state: {
-          params: { side }
-        }
-      }
-    } = this.props;
+    const { side } = this.props;
 
     switch (side) {
       case 'buy':
@@ -168,13 +143,7 @@ class PreviewLimitOrder extends Component {
   }
 
   getReceipt() {
-    const {
-      navigation: {
-        state: {
-          params: { side, order }
-        }
-      }
-    } = this.props;
+    const { order, side } = this.props;
 
     const limitOrder = convertZeroExOrderToLimitOrder(order, side);
 
@@ -197,13 +166,7 @@ class PreviewLimitOrder extends Component {
   }
 
   async submit() {
-    const {
-      navigation: {
-        state: {
-          params: { order }
-        }
-      }
-    } = this.props;
+    const { order } = this.props;
 
     NavigationService.navigate('SubmittingOrders', {
       action: async () => {
@@ -219,12 +182,9 @@ class PreviewLimitOrder extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    quoteSymbol: state.settings.quoteSymbol
-  }),
-  dispatch => ({ dispatch })
-)(PreviewLimitOrder);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  PreviewLimitOrder
+);
 
 const styles = {
   tokenAmountLeft: {

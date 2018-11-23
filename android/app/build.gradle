@@ -113,7 +113,7 @@ android {
         applicationId "io.mobidex"
         minSdkVersion 23
         targetSdkVersion 26
-        versionCode 39
+        versionCode 40
         versionName "0.7.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -159,9 +159,15 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-uuid-generator')
-    compile project(':react-native-exception-handler')
-    compile project(':react-native-restart')
+    api (project(':react-native-background-timer')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    api (project(':react-native-uuid-generator')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
+    api (project(':react-native-restart')) {
+        exclude group: "com.android.support", module: "support-v4"
+    }
     api (project(':react-native-device-info')) {
         exclude group: "com.android.support", module: "support-v4"
     }

@@ -11,19 +11,10 @@ import NavigationService from '../../../services/NavigationService';
 export default class CreateLimitOrder extends Component {
   static get propTypes() {
     return {
-      navigation: PropTypes.shape({
-        push: PropTypes.func.isRequired,
-        state: PropTypes.shape({
-          params: PropTypes.shape({
-            type: PropTypes.string.isRequired,
-            side: PropTypes.string.isRequired,
-            product: PropTypes.shape({
-              base: PropTypes.object.isRequired,
-              quote: PropTypes.object.isRequired
-            }).isRequired
-          }).isRequired
-        }).isRequired
-      }).isRequired
+      type: PropTypes.string.isRequired,
+      side: PropTypes.string.isRequired,
+      base: PropTypes.object.isRequired,
+      quote: PropTypes.object.isRequired
     };
   }
 
@@ -40,16 +31,7 @@ export default class CreateLimitOrder extends Component {
   }
 
   render() {
-    const {
-      navigation: {
-        state: {
-          params: {
-            product: { quote, base },
-            side
-          }
-        }
-      }
-    } = this.props;
+    const { side, quote, base } = this.props;
 
     if (side !== 'buy' && side !== 'sell') {
       NavigationService.goBack();
@@ -94,17 +76,20 @@ export default class CreateLimitOrder extends Component {
   }
 
   getButtonTitle() {
-    if (this.state.focus === 'price') {
-      if (this.props.navigation.state.params.side === 'buy') {
+    const { focus } = this.state;
+    const { side } = this.props;
+
+    if (focus === 'price') {
+      if (side === 'buy') {
         return 'Preview Buy Order';
-      } else if (this.props.navigation.state.params.side === 'sell') {
+      } else if (side === 'sell') {
         return 'Preview Sell Order';
-      } else {
-        return null;
       }
-    } else if (this.state.focus === 'amount') {
+    } else if (focus === 'amount') {
       return 'Next';
     }
+
+    return null;
   }
 
   getButtonIcon() {
@@ -138,16 +123,7 @@ export default class CreateLimitOrder extends Component {
   }
 
   async submit() {
-    const {
-      navigation: {
-        state: {
-          params: {
-            product: { quote, base },
-            side
-          }
-        }
-      }
-    } = this.props;
+    const { side, quote, base } = this.props;
     const { amount, price } = this.state;
 
     if (!isValidAmount(amount) || !amount) {
@@ -177,9 +153,10 @@ export default class CreateLimitOrder extends Component {
 
     NavigationService.navigate('PreviewOrders', {
       type: 'limit',
-      order: order,
+      order,
       side,
-      product: { base, quote }
+      base,
+      quote
     });
   }
 }

@@ -23,6 +23,16 @@ import TokenIcon from '../components/TokenIcon';
 import OrderbookPrice from '../views/OrderbookPrice';
 
 class TokenItem extends Component {
+  static get propTypes() {
+    return {
+      baseToken: PropTypes.object.isRequired,
+      quoteToken: PropTypes.object.isRequired,
+      price: PropTypes.number.isRequired,
+      change: PropTypes.number.isRequired,
+      priceFormatter: PropTypes.func.isRequired
+    };
+  }
+
   render() {
     const { baseToken, price, change, priceFormatter } = this.props;
 
@@ -71,15 +81,14 @@ class TokenItem extends Component {
   }
 }
 
-TokenItem.propTypes = {
-  baseToken: PropTypes.object.isRequired,
-  quoteToken: PropTypes.object.isRequired,
-  price: PropTypes.number.isRequired,
-  change: PropTypes.number.isRequired,
-  priceFormatter: PropTypes.func.isRequired
-};
-
 class BaseQuoteTokenItem extends Component {
+  static get propTypes() {
+    return {
+      quoteToken: PropTypes.object,
+      baseToken: PropTypes.object
+    };
+  }
+
   render() {
     const { quoteToken, baseToken } = this.props;
 
@@ -118,7 +127,7 @@ class BaseQuoteTokenItem extends Component {
           <OrderbookPrice
             product={formatProduct(baseToken.symbol, quoteToken.symbol)}
             default={v}
-            side={'sell'}
+            side={'buy'}
           />
         )}
         {...this.props}
@@ -127,16 +136,18 @@ class BaseQuoteTokenItem extends Component {
   }
 }
 
-BaseQuoteTokenItem.propTypes = {
-  quoteToken: PropTypes.object,
-  baseToken: PropTypes.object
-};
-
 const QuoteTokenItem = connect(state => ({ ticker: state.ticker }))(
   BaseQuoteTokenItem
 );
 
 class BaseForexTokenItem extends Component {
+  static get propTypes() {
+    return {
+      quoteToken: PropTypes.object.isRequired,
+      baseToken: PropTypes.object.isRequired
+    };
+  }
+
   render() {
     const { quoteToken, baseToken } = this.props;
 
@@ -180,23 +191,20 @@ class BaseForexTokenItem extends Component {
   }
 }
 
-BaseForexTokenItem.propTypes = {
-  quoteToken: PropTypes.object.isRequired,
-  baseToken: PropTypes.object.isRequired
-};
-
 const ForexTokenItem = connect(state => ({ ticker: state.ticker }))(
   BaseForexTokenItem
 );
 
 @reactMixin.decorate(TimerMixin)
 class ProductScreen extends Component {
-  static propTypes = {
-    assets: PropTypes.array.isRequired,
-    products: PropTypes.array.isRequired,
-    showForexPrices: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
-  };
+  static get propTypes() {
+    return {
+      assets: PropTypes.array.isRequired,
+      products: PropTypes.array.isRequired,
+      showForexPrices: PropTypes.bool.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
 
   constructor(props) {
     super(props);
@@ -223,10 +231,8 @@ class ProductScreen extends Component {
             <TouchableOpacity
               onPress={() =>
                 NavigationService.navigate('Details', {
-                  product: {
-                    quote,
-                    base
-                  }
+                  quote,
+                  base
                 })
               }
             >

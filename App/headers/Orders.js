@@ -8,6 +8,13 @@ import FakeHeaderButton from '../components/FakeHeaderButton';
 import NavigationService from '../../services/NavigationService';
 
 export default class OrdersHeader extends Component {
+  static get propTypes() {
+    return {
+      title: PropTypes.string.isRequired,
+      showBackButton: PropTypes.bool
+    };
+  }
+
   render() {
     return (
       <Header
@@ -42,8 +49,3 @@ export default class OrdersHeader extends Component {
     );
   }
 }
-
-OrdersHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  showBackButton: PropTypes.bool
-};

@@ -11,11 +11,7 @@ const TYPES = ['fill', 'limit'];
 
 export default class CreateOrderScreen extends Component {
   render() {
-    const {
-      type,
-      side,
-      product: { base, quote }
-    } = this.props.navigation.state.params;
+    const { type, side, base, quote } = this.props.navigation.state.params;
 
     let subview = null;
     let index = 0;
@@ -23,12 +19,12 @@ export default class CreateOrderScreen extends Component {
     switch (type) {
       case 'fill':
         index = 0;
-        subview = <FillOrders {...this.props} />;
+        subview = <FillOrders side={side} base={base} quote={quote} />;
         break;
 
       case 'limit':
         index = 1;
-        subview = <LimitOrder {...this.props} />;
+        subview = <LimitOrder side={side} base={base} quote={quote} />;
         break;
     }
 
@@ -37,9 +33,10 @@ export default class CreateOrderScreen extends Component {
         <Tabs
           onPress={index =>
             this.props.navigation.replace('CreateOrder', {
-              product: { base, quote },
               type: TYPES[index],
-              side: side
+              side,
+              base,
+              quote
             })
           }
           selectedIndex={index}
@@ -59,10 +56,8 @@ CreateOrderScreen.propTypes = {
       params: PropTypes.shape({
         type: PropTypes.string.isRequired,
         side: PropTypes.string.isRequired,
-        product: PropTypes.shape({
-          base: PropTypes.object.isRequired,
-          quote: PropTypes.object.isRequired
-        }).isRequired
+        base: PropTypes.object.isRequired,
+        quote: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired

@@ -1,6 +1,7 @@
 import { ordersChannelFactory } from '@0xproject/connect';
 import { addOrders, updateForexTicker, updateTokenTicker } from '../actions';
 import { Inf0xWebSocketClient } from '../clients/inf0x';
+import TimerService from '../services/TimerService';
 import { updateForexTickers, updateTokenTickers } from './inf0x';
 import { loadAssets, loadOrderbooks, loadOrders, loadProducts } from './orders';
 import { loadActiveTransactions, loadAllowances, loadBalances } from './wallet';
@@ -40,7 +41,11 @@ export function startRelayerWebsockets() {
       {
         onClose: channel => {
           console.trace('relayer wss connection terminated -- restarting');
-          dispatch(startRelayerWebsockets());
+
+          TimerService.getInstance().setTimeout(
+            () => dispatch(startRelayerWebsockets()),
+            1
+          );
         },
         onError: (channel, error, subscriptionOpts) => {
           console.warn('relayer wss error', channel, error, subscriptionOpts);
@@ -78,7 +83,10 @@ export function startInf0xWebsockets() {
       {
         onClose: (code, reason) => {
           console.warn('inf0x wss connection terminated -- restarting');
-          dispatch(startInf0xWebsockets());
+          TimerService.getInstance().setTimeout(
+            () => dispatch(startInf0xWebsockets()),
+            1
+          );
         },
         onError: error => {
           console.warn(error);

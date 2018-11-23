@@ -168,7 +168,7 @@ export function marketSell(quote) {
     }
 
     const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
+    const zeroExClient = new ZeroExClient(ethereumClient);
 
     const txhash = await zeroExClient.marketSell(
       quote.orders,

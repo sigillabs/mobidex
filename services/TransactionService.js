@@ -4,7 +4,7 @@ import BaseService from './BaseService';
 import BaseWatchdog from './BaseWatchdog';
 
 export class ActiveTransactionWatchdog extends BaseWatchdog {
-  constructor(store, timeout = 5 * 1000) {
+  constructor(store, timeout = 1) {
     super(timeout);
 
     this.store = store;

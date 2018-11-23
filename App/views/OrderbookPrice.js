@@ -8,12 +8,12 @@ import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
 function getPrice(orderbook, side) {
   if (side === 'buy') {
-    return orderbook.bids.size > 0
-      ? OrderService.getOrderPrice(orderbook.highestBid())
-      : ZERO;
-  } else {
     return orderbook.asks.size > 0
       ? OrderService.getOrderPrice(orderbook.lowestAsk())
+      : ZERO;
+  } else {
+    return orderbook.bids.size > 0
+      ? OrderService.getOrderPrice(orderbook.highestBid())
       : ZERO;
   }
 }
@@ -42,14 +42,7 @@ export class OrderbookPrice extends Component {
 
     const price = getPrice(orderbook, side);
 
-    return (
-      <FormattedTokenAmount
-        {...this.props}
-        amount={price}
-        symbol={quoteTokenSymbol}
-        side={side}
-      />
-    );
+    return <FormattedTokenAmount {...this.props} amount={price} />;
   }
 }
 

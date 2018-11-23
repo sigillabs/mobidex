@@ -11,7 +11,8 @@ export default class TokenAmount extends Component {
   static get propTypes() {
     return {
       label: PropTypes.string.isRequired,
-      amount: PropTypes.string.isRequired,
+      amount: PropTypes.oneOfType([PropTypes.node, PropTypes.string])
+        .isRequired,
       symbol: PropTypes.string,
       name: PropTypes.string,
       format: PropTypes.bool,
@@ -69,14 +70,23 @@ export default class TokenAmount extends Component {
       cursor,
       format
     } = this.props;
-    const formattedAmount = format ? formatAmount(amount) : amount.toString();
 
-    return (
-      <View style={[style.amountContainer, amountContainerStyle]}>
-        <Text style={[amountStyle]}>{formattedAmount}</Text>
-        {cursor ? <BlinkingCursor /> : null}
-      </View>
-    );
+    if (typeof amount === 'string') {
+      const formattedAmount = format ? formatAmount(amount) : amount.toString();
+
+      return (
+        <View style={[style.amountContainer, amountContainerStyle]}>
+          <Text style={[amountStyle]}>{formattedAmount}</Text>
+          {cursor ? <BlinkingCursor /> : null}
+        </View>
+      );
+    } else {
+      return (
+        <View style={[style.amountContainer, amountContainerStyle]}>
+          {amount}
+        </View>
+      );
+    }
   }
 
   renderIcon() {

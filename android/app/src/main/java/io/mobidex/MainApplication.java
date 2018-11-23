@@ -3,14 +3,16 @@ package io.mobidex;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
-import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
-import com.avishayil.rnrestart.ReactNativeRestartPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.ocetnik.timer.BackgroundTimerPackage;
+import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -31,7 +33,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
-            new RNUUIDGeneratorPackage(),
         new ReactNativeExceptionHandlerPackage(),
         new ReactNativeRestartPackage(),
         new RNDeviceInfo(),
@@ -39,7 +40,9 @@ public class MainApplication extends Application implements ReactApplication {
         new WalletManagerPackage(),
         new SvgPackage(),
         new VectorIconsPackage(),
-        new RandomBytesPackage()
+        new RandomBytesPackage(),
+        new BackgroundTimerPackage(),
+        new RNUUIDGeneratorPackage()
       );
     }
 

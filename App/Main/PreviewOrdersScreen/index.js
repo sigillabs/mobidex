@@ -7,7 +7,7 @@ import LimitOrderPreview from './LimitOrder';
 
 export default class PreviewOrdersScreen extends Component {
   render() {
-    const { type } = this.props.navigation.state.params;
+    const { type, ...rest } = this.props.navigation.state.params;
 
     if (type !== 'limit' && type !== 'fill') {
       return NavigationService.goBack();
@@ -17,11 +17,11 @@ export default class PreviewOrdersScreen extends Component {
 
     switch (type) {
       case 'fill':
-        subview = <FillOrdersPreview {...this.props} />;
+        subview = <FillOrdersPreview {...rest} />;
         break;
 
       case 'limit':
-        subview = <LimitOrderPreview {...this.props} />;
+        subview = <LimitOrderPreview {...rest} />;
         break;
     }
 
@@ -33,7 +33,9 @@ PreviewOrdersScreen.propTypes = {
   navigation: PropTypes.shape({
     state: PropTypes.shape({
       params: PropTypes.shape({
-        type: PropTypes.string.isRequired
+        type: PropTypes.string.isRequired,
+        quote: PropTypes.object.isRequired,
+        base: PropTypes.object.isRequired
       }).isRequired
     }).isRequired
   }).isRequired

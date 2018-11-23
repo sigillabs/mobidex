@@ -55,12 +55,14 @@ class TransactionsList extends Component {
                   destination={{
                     address: tx.spender,
                     amount:
+                      /* eslint-disable */
                       tx.amount === 'UNLIMITED'
                         ? 'UNLIMITED'
                         : formatAmountWithDecimals(
                             quote.assetSellAmount || quote.assetBuyAmount,
                             token ? token.decimals : 18
                           ),
+                    /* eslint-enable */
                     symbol: token ? token.symbol : 'Token'
                   }}
                   timestamp={tx.timestamp}
