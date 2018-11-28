@@ -125,7 +125,8 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
     makerAssetData: null,
     makerAssetAmount: null,
     takerAssetData: null,
-    takerAssetAmount: null
+    takerAssetAmount: null,
+    expirationTimeSeconds: new BigNumber(limitOrder.expirationTimeSeconds)
   };
 
   switch (limitOrder.side) {
@@ -291,7 +292,6 @@ export async function createOrder(limitOrder) {
   return {
     ...convertLimitOrderToZeroExOrder(limitOrder),
     exchangeAddress: await zeroExClient.getExchangeContractAddress(),
-    expirationTimeSeconds: new BigNumber(moment().unix() + 60 * 60 * 24),
     makerAddress: `0x${address.toLowerCase()}`,
     makerFee: ZERO,
     senderAddress: NULL_ADDRESS,

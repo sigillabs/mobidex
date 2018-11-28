@@ -284,6 +284,28 @@ export const styles = StyleSheet.create({
   }
 });
 
+export const circles = StyleSheet.create({
+  circle0: {
+    margin: 0,
+    marginHorizontal: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginVertical: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    padding: 0,
+    paddingHorizontal: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingVertical: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: 50,
+    height: 50,
+    borderRadius: 50 / 2
+  }
+});
+
 export function getProfitLossColor(number) {
   number = new BigNumber(number.toString());
   if (number.gt(0)) {

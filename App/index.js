@@ -34,11 +34,9 @@ new ActiveTransactionWatchdog(store).start();
 export default class App extends Component {
   render() {
     return (
-      <PageRoot forceInset={{ bottom: 'never', top: 'never' }}>
-        <Provider store={store}>
-          <Bootstrap />
-        </Provider>
-      </PageRoot>
+      <Provider store={store}>
+        <Bootstrap />
+      </Provider>
     );
   }
 }

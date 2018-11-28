@@ -46,7 +46,6 @@ class ProductDetailsHeader extends Component {
         rightComponent={
           this.props.showForexToggleButton ? <ToggleForexButton /> : null
         }
-        outerContainerStyles={{ height: 60, paddingTop: 0 }}
       />
     );
   }

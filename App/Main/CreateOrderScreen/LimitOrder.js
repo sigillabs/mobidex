@@ -2,11 +2,22 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { styles } from '../../../styles';
 import { isValidAmount, processVirtualKeyboardCharacter } from '../../../utils';
+import SelectableCirclesRow from '../../components/SelectableCirclesRow';
 import TouchableTokenAmount from '../../components/TouchableTokenAmount';
 import TokenAmountKeyboard from '../../components/TokenAmountKeyboard';
 import { createOrder } from '../../../services/OrderService';
 import NavigationService from '../../../services/NavigationService';
+
+const EXPIRATION_LABELS = ['1 min', '1 hour', '1 day', '1 mon', '1 year'];
+const EXPIRATION_VALUES = [
+  60,
+  60 * 60,
+  24 * 60 * 60,
+  30 * 24 * 60 * 60,
+  365 * 24 * 60 * 60
+];
 
 export default class CreateLimitOrder extends Component {
   static get propTypes() {
@@ -26,7 +37,8 @@ export default class CreateLimitOrder extends Component {
       amountError: false,
       price: '',
       priceError: false,
-      focus: 'amount'
+      focus: 'amount',
+      expirationIndex: 2
     };
   }
 
@@ -40,24 +52,29 @@ export default class CreateLimitOrder extends Component {
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <TouchableTokenAmount
-          label={side === 'buy' ? 'Buying' : 'Selling'}
+          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
           symbol={base.symbol}
-          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onPress={() => this.setState({ focus: 'amount' })}
-          format={false}
+          label={'Buying'}
+          amount={this.state.amount.toString()}
           cursor={this.state.focus === 'amount'}
           cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.amount.toString()}
+          format={false}
+          onPress={this.selectAmountTokenAmount}
         />
         <TouchableTokenAmount
-          label={'Price'}
+          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
           symbol={quote.symbol}
-          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-          onPress={() => this.setState({ focus: 'price' })}
+          label={'price'}
+          amount={this.state.price.toString()}
           format={false}
           cursor={this.state.focus === 'price'}
           cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.price.toString()}
+          onPress={this.selectPriceTokenAmount}
+        />
+        <SelectableCirclesRow
+          labels={EXPIRATION_LABELS}
+          selectedIndex={this.state.expirationIndex}
+          onSelect={this.selectExpirationIndex}
         />
         <TokenAmountKeyboard
           onChange={c => this.onSetValue(this.state.focus, c)}
@@ -74,6 +91,18 @@ export default class CreateLimitOrder extends Component {
       </View>
     );
   }
+
+  selectExpirationIndex = expirationIndex => {
+    this.setState({ expirationIndex });
+  };
+
+  selectAmountTokenAmount = () => {
+    this.setState({ focus: 'amount' });
+  };
+
+  selectPriceTokenAmount = () => {
+    this.setState({ focus: 'price' });
+  };
 
   getButtonTitle() {
     const { focus } = this.state;
@@ -124,7 +153,7 @@ export default class CreateLimitOrder extends Component {
 
   async submit() {
     const { side, quote, base } = this.props;
-    const { amount, price } = this.state;
+    const { amount, price, expirationIndex } = this.state;
 
     if (!isValidAmount(amount) || !amount) {
       this.setState({ amountError: true });
@@ -136,6 +165,8 @@ export default class CreateLimitOrder extends Component {
       return;
     }
 
+    const expirationTimeSeconds =
+      Math.ceil(Date.now() / 1000) + EXPIRATION_VALUES[expirationIndex];
     let order;
 
     try {
@@ -144,7 +175,8 @@ export default class CreateLimitOrder extends Component {
         quoteAddress: quote.address,
         price,
         amount,
-        side
+        side,
+        expirationTimeSeconds
       });
     } catch (error) {
       NavigationService.error(error);
