@@ -113,8 +113,8 @@ android {
         applicationId "io.mobidex"
         minSdkVersion 23
         targetSdkVersion 26
-        versionCode 40
-        versionName "0.7.2"
+        versionCode 41
+        versionName "0.7.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
