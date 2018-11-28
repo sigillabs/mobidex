@@ -149,7 +149,7 @@ class PreviewFillOrders extends Component {
     if (!receipt) return null;
 
     const { gas, gasPrice, quote } = this.state;
-    const { web3 } = this.props;
+    const { web3, side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
 
@@ -217,7 +217,7 @@ class PreviewFillOrders extends Component {
           leftStyle={{ height: 30 }}
           right={
             <FormattedTokenAmount
-              amount={gasPrice.mul(gas)}
+              amount={this.getTotalGasCost()}
               symbol={'ETH'}
               style={[styles.tokenAmountRight]}
             />
@@ -231,7 +231,10 @@ class PreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={total}
               symbol={quoteAsset.symbol}
-              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(side === 'buy' ? -1 : 1)
+              ]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -260,7 +263,10 @@ class PreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={fundsAfterOrder}
               symbol={quoteAsset.symbol}
-              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(side === 'buy' ? -1 : 1)
+              ]}
             />
           }
           rightStyle={{ height: 30 }}
@@ -295,15 +301,21 @@ class PreviewFillOrders extends Component {
     return ZERO.toString();
   };
 
+  getTotalGasCost = () => {
+    const { gasPrice, gas } = this.state;
+    return gasPrice.mul(gas).toString();
+  };
+
   getSubtotal = () => {
     const { side } = this.props;
     const { quote } = this.state;
     const asset = AssetService.findAssetByData(quote.assetData);
     let amount = null;
     if (side === 'buy') {
-      amount = Web3Wrapper.toUnitAmount(quote.assetBuyAmount, asset.decimals)
-        .mul(quote.bestCaseQuoteInfo.ethPerAssetPrice)
-        .negated();
+      amount = Web3Wrapper.toUnitAmount(
+        quote.assetBuyAmount,
+        asset.decimals
+      ).mul(quote.bestCaseQuoteInfo.ethPerAssetPrice);
     } else {
       amount = Web3Wrapper.toUnitAmount(
         quote.assetSellAmount,
@@ -315,8 +327,13 @@ class PreviewFillOrders extends Component {
 
   getTotal = () => {
     const { quote } = this.state;
+    const fee = this.getTotalFee();
     const subtotal = this.getSubtotal(quote);
-    return subtotal.toString();
+    const gas = this.getTotalGasCost();
+    return new BigNumber(subtotal)
+      .add(gas)
+      .add(fee)
+      .toString();
   };
 
   getFillAction = () => {
