@@ -10,12 +10,9 @@ import * as AssetService from '../../../services/AssetService';
 import NavigationService from '../../../services/NavigationService';
 import * as OrderService from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
+import * as ZeroExService from '../../../services/ZeroExService';
 import { colors, getProfitLossStyle } from '../../../styles';
-import {
-  batchMarketBuy,
-  batchMarketBuyWithEth,
-  batchMarketSell
-} from '../../../thunks';
+import { batchMarketBuy, batchMarketSell } from '../../../thunks';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -56,6 +53,7 @@ class Order extends Component {
 class PreviewFillOrders extends Component {
   static get propTypes() {
     return {
+      web3: PropTypes.object.isRequired,
       side: PropTypes.string.isRequired,
       amount: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
@@ -68,8 +66,10 @@ class PreviewFillOrders extends Component {
     super(props);
 
     this.state = {
-      quote: null,
-      loading: true
+      gas: 0,
+      gasPrice: 0,
+      loading: true,
+      quote: null
     };
   }
 
@@ -82,8 +82,9 @@ class PreviewFillOrders extends Component {
 
     InteractionManager.runAfterInteractions(async () => {
       try {
-        let quote;
+        let quote, gas;
 
+        // 1. Load quote
         if (side === 'buy') {
           quote = await OrderService.getBuyAssetsQuoteAsync(
             base.assetData,
@@ -109,8 +110,30 @@ class PreviewFillOrders extends Component {
           return;
         }
 
-        this.setState({ quote, loading: false });
+        // 2. Load gas estimatation
+        if (side === 'buy') {
+          gas = await ZeroExService.estimateMarketBuyOrders(
+            quote.orders,
+            quote.assetBuyAmount
+          );
+        } else {
+          gas = await ZeroExService.estimateMarketSellOrders(
+            quote.orders,
+            quote.assetSellAmount
+          );
+        }
+
+        // 3. Load gas price
+        const gasPrice = await WalletService.getGasPrice();
+
+        this.setState({
+          quote,
+          gas,
+          gasPrice,
+          loading: false
+        });
       } catch (err) {
+        console.warn(err.message, err);
         NavigationService.goBack();
       }
     });
@@ -125,13 +148,17 @@ class PreviewFillOrders extends Component {
 
     if (!receipt) return null;
 
-    const { quote } = this.state;
+    const { gas, gasPrice, quote } = this.state;
+    const { web3 } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
 
     const { priceAverage, subtotal, fee, total } = receipt;
     const funds = WalletService.getAdjustedBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder = funds.add(total);
+
+    const priceInWEI = web3.utils.toWei(gasPrice.toString());
+    const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -169,7 +196,33 @@ class PreviewFillOrders extends Component {
               style={[styles.tokenAmountRight]}
             />
           }
+          bottomDivider={true}
+        />
+        <TwoColumnListItem
+          left="Gas Price"
+          leftStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={priceInGWEI}
+              symbol={'GWEI'}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          rowStyle={{ marginTop: 10 }}
+          topDivider={true}
           bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Total Gas Cost"
+          leftStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={gasPrice.mul(gas)}
+              symbol={'ETH'}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          bottomDivider={true}
         />
         <TwoColumnListItem
           left="Total"
@@ -268,22 +321,9 @@ class PreviewFillOrders extends Component {
 
   getFillAction = () => {
     const { side } = this.props;
-    const { quote } = this.state;
 
     if (side === 'buy') {
-      const asset = AssetService.findAssetByData(quote.assetData);
-      const WETHAsset = AssetService.getWETHAsset();
-      const balance = WalletService.getBalanceByAddress(WETHAsset.address);
-      const amount = Web3Wrapper.toUnitAmount(
-        quote.assetBuyAmount,
-        asset.decimals
-      );
-      const quoteAmount = amount.mul(quote.worstCaseQuoteInfo.ethPerAssetPrice);
-      if (quoteAmount.gt(balance)) {
-        return batchMarketBuyWithEth;
-      } else {
-        return batchMarketBuy;
-      }
+      return batchMarketBuy;
     } else {
       return batchMarketSell;
     }
@@ -321,9 +361,10 @@ class PreviewFillOrders extends Component {
   };
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  PreviewFillOrders
-);
+export default connect(
+  ({ wallet: { web3 } }) => ({ web3 }),
+  dispatch => ({ dispatch })
+)(PreviewFillOrders);
 
 const styles = {
   tokenAmountRight: {

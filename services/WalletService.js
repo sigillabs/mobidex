@@ -288,3 +288,10 @@ export function getDecimalsBySymbol(symbol) {
   if (!asset) return 0;
   return asset.decimals;
 }
+
+export async function getGasPrice() {
+  const {
+    wallet: { web3 }
+  } = _store.getState();
+  return new BigNumber(web3.utils.fromWei(await web3.eth.getGasPrice()));
+}

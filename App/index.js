@@ -18,7 +18,7 @@ import { setStore as setStoreForZeroExService } from '../services/ZeroExService'
 
 const store = configureStore();
 
-TimerService.getInstance(1000).start();
+TimerService.getInstance(60 * 1000).start();
 
 setStoreForAssetService(store);
 setStoreForNavigationService(store);

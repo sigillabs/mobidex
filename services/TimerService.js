@@ -46,7 +46,7 @@ export default class TimerService {
     });
   }
 
-  static getInstance(interval = 60 * 1000) {
+  static getInstance(interval = 5 * 60 * 1000) {
     if (TimerService.instance === null) {
       TimerService.instance = new TimerService(interval);
     }
