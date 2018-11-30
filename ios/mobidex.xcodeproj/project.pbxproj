@@ -49,6 +49,7 @@
 		3053034020E9736B004908AB /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3053033F20E97352004908AB /* libRNVectorIcons.a */; };
 		309C4DA220DD763100B6EBB5 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 309C4D9F20DD761500B6EBB5 /* libRNSVG.a */; };
 		30B76AD021A894D0002A5451 /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B76ACD21A8949E002A5451 /* libRNBackgroundTimer.a */; };
+		30D5E1DB21AFDFE200CB020D /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30D5E1CE21AFDFA500CB020D /* libReactNativeNavigation.a */; };
 		30EB9EFB20DB9D700088F4BF /* WalletManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */; };
 		30EB9EFD20DB9E3A0088F4BF /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB9EFC20DB9E390088F4BF /* WalletManager.swift */; };
 		30EF49CF210827C400620DAC /* libReactNativeExceptionHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30EF49CE2108278000620DAC /* libReactNativeExceptionHandler.a */; };
@@ -277,6 +278,20 @@
 			remoteGlobalIDString = 641926921ECB4257009CF731;
 			remoteInfo = "RNBackgroundTimer-tvOS";
 		};
+		30D5E1CD21AFDFA500CB020D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D8AFADBD1BEE6F3F00A4592D;
+			remoteInfo = ReactNativeNavigation;
+		};
+		30D5E1CF21AFDFA500CB020D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7B49FEBB1E95090800DEB3EA;
+			remoteInfo = ReactNativeNavigationTests;
+		};
 		30EB9EF520DB83560088F4BF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */;
@@ -467,6 +482,7 @@
 		309C4D7320DD761500B6EBB5 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		30B76AC721A8949E002A5451 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundTimer.xcodeproj; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; };
 		30D3983020DC80910016BC91 /* RNSVG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNSVG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeNavigation.xcodeproj; path = "../node_modules/react-native-navigation/lib/ios/ReactNativeNavigation.xcodeproj"; sourceTree = "<group>"; };
 		30EB9EF720DB98FC0088F4BF /* mobidex-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "mobidex-Bridging-Header.h"; sourceTree = "<group>"; };
 		30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WalletManagerBridge.m; sourceTree = "<group>"; };
 		30EB9EFC20DB9E390088F4BF /* WalletManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletManager.swift; sourceTree = "<group>"; };
@@ -502,6 +518,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30D5E1DB21AFDFE200CB020D /* libReactNativeNavigation.a in Frameworks */,
 				30EF49CF210827C400620DAC /* libReactNativeExceptionHandler.a in Frameworks */,
 				304C60AD20F1D0C600C08882 /* libRCTGoogleAnalyticsBridge.a in Frameworks */,
 				3053034020E9736B004908AB /* libRNVectorIcons.a in Frameworks */,
@@ -729,6 +746,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		30D5E1A121AFDFA500CB020D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30D5E1CE21AFDFA500CB020D /* libReactNativeNavigation.a */,
+				30D5E1D021AFDFA500CB020D /* ReactNativeNavigationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		30EB9EF220DB83550088F4BF /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -793,6 +819,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */,
 				30B76AC721A8949E002A5451 /* RNBackgroundTimer.xcodeproj */,
 				30EF49C92108277F00620DAC /* ReactNativeExceptionHandler.xcodeproj */,
 				301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */,
@@ -1063,6 +1090,10 @@
 					ProjectRef = 30EF49C92108277F00620DAC /* ReactNativeExceptionHandler.xcodeproj */;
 				},
 				{
+					ProductGroup = 30D5E1A121AFDFA500CB020D /* Products */;
+					ProjectRef = 30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */;
+				},
+				{
 					ProductGroup = 30B76AC821A8949E002A5451 /* Products */;
 					ProjectRef = 30B76AC721A8949E002A5451 /* RNBackgroundTimer.xcodeproj */;
 				},
@@ -1299,6 +1330,20 @@
 			fileType = archive.ar;
 			path = libRNBackgroundTimer.a;
 			remoteRef = 30B76ACE21A8949E002A5451 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30D5E1CE21AFDFA500CB020D /* libReactNativeNavigation.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeNavigation.a;
+			remoteRef = 30D5E1CD21AFDFA500CB020D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30D5E1D021AFDFA500CB020D /* ReactNativeNavigationTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ReactNativeNavigationTests.xctest;
+			remoteRef = 30D5E1CF21AFDFA500CB020D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		30EB9EF620DB83560088F4BF /* libRNRandomBytes.a */ = {

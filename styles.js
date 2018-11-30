@@ -28,6 +28,9 @@ export const styles = StyleSheet.create({
   small: {
     fontSize: 10
   },
+  large: {
+    fontSize: 14
+  },
   background: {
     backgroundColor: colors.background
   },
@@ -42,6 +45,12 @@ export const styles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center'
+  },
+  justifyCenter: {
+    justifyContent: 'center'
+  },
+  alignCenter: {
+    alignItems: 'center'
   },
   center: {
     justifyContent: 'center',
@@ -281,6 +290,12 @@ export const styles = StyleSheet.create({
     paddingVertical: 0,
     paddingTop: 0,
     paddingBottom: 0
+  },
+  profit: {
+    color: colors.green0
+  },
+  loss: {
+    color: colors.red0
   }
 });
 

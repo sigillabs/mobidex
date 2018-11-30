@@ -14,9 +14,11 @@
 
 RCT_EXTERN_METHOD(supportsFingerPrintAuthentication:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(cancelFingerPrintAuthentication:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(doesWalletExist:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(generateMnemonics:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(importWalletByMnemonics:(NSString *)mnemonic password:(NSString *)password callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(loadWallet:(NSString *)password callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(loadWalletAddress:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(signTransaction:(NSDictionary *)tx password:(NSString *)password callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(signMessage:(NSString *)message password:(NSString *)password callback:(RCTResponseSenderBlock)callback)
 
 @end

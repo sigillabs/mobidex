@@ -5,24 +5,37 @@ import {
   addActiveTransactions,
   addTransactions,
   setAllowances,
-  setBalances
+  setBalances,
+  setWalletAddress
 } from '../actions';
 import EthereumClient from '../clients/ethereum';
 import Inf0xClient from '../clients/inf0x';
 import TokenClient from '../clients/token';
 import { MAX } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
-import NavigationService from '../services/NavigationService';
+import { showErrorModal } from './navigation';
 import { TransactionService } from '../services/TransactionService';
+import * as WalletService from '../services/WalletService';
 import { cache } from '../utils';
 import { deposit, withdraw } from './0x';
+
+export function loadWalletAddress() {
+  return async dispatch => {
+    try {
+      const address = await WalletService.getWalletAddress();
+      dispatch(setWalletAddress(address));
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+}
 
 export function loadAllowances(force = false) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       relayer: { assets }
     } = getState();
+    const web3 = WalletService.getWeb3();
     const ethereumClient = new EthereumClient(web3);
     const allowances = await Promise.all(
       assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
@@ -43,9 +56,9 @@ export function loadAllowances(force = false) {
 export function loadBalances(force = false) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       relayer: { assets }
     } = getState();
+    const web3 = WalletService.getWeb3();
     const ethereumClient = new EthereumClient(web3);
     const balances = await Promise.all(
       assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
@@ -69,9 +82,10 @@ export function loadBalances(force = false) {
 export function loadTransactions(force = false) {
   return async (dispatch, getState) => {
     let {
-      wallet: { web3 },
       settings: { inf0xEndpoint, network }
     } = getState();
+    const web3 = WalletService.getWeb3();
+
     try {
       let transactions = await cache(
         `transactions:${network}`,
@@ -137,7 +151,7 @@ export function loadTransactions(force = false) {
       );
       dispatch(addTransactions(transactions));
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -168,7 +182,7 @@ export function sendTokens(token, to, amount) {
       };
       TransactionService.instance.addActiveTransaction(activeTransaction);
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -190,7 +204,7 @@ export function sendEther(to, amount) {
       };
       TransactionService.instance.addActiveTransaction(activeTransaction);
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }

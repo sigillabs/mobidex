@@ -1,13 +1,12 @@
 import { BigNumber } from '0x.js';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
+import { getWeb3 } from './WalletService';
 
 let _store;
 
 export async function estimateMarketBuyOrders(orders, amount) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
+  const web3 = getWeb3();
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
@@ -22,9 +21,7 @@ export async function estimateMarketBuyOrders(orders, amount) {
 }
 
 export async function estimateMarketSellOrders(orders, amount) {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
+  const web3 = getWeb3();
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();

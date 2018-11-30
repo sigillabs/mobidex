@@ -3,7 +3,6 @@ import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
 
 const initialState = {
-  web3: null,
   address: null,
   balances: {},
   allowances: {},
@@ -62,6 +61,9 @@ export default handleActions(
         ...state,
         balances: { ...state.balances, ...action.payload }
       };
+    },
+    [Actions.SET_WALLET_ADDRESS]: (state, action) => {
+      return { ...state, address: action.payload };
     },
     [Actions.SET_WALLET]: (state, action) => {
       let { address, web3 } = action.payload;

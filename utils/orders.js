@@ -48,7 +48,7 @@ export function isValidSignedOrder(order) {
   const hash = orderHashUtils.getOrderHashHex(order);
   const prefixedMessage = signatureUtils.addSignedMessagePrefix(
     hash,
-    SignerType.Metamask
+    SignerType.Default
   );
   return signatureUtils.isValidECSignature(
     prefixedMessage,

@@ -1,65 +1,54 @@
 package io.mobidex;
 
-import android.app.Application;
-
-import com.facebook.react.ReactApplication;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.horcrux.svg.SvgPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.ocetnik.timer.BackgroundTimerPackage;
-import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
-import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
-import com.horcrux.svg.SvgPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
+import com.horcrux.svg.SvgPackage;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
+import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.react.NavigationReactNativeHost;
+import com.reactnativenavigation.react.ReactGateway;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+import io.github.traviskn.rnuuidgenerator.RNUUIDGeneratorPackage;
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+public class MainApplication extends NavigationApplication {
+    
     @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+    protected ReactNativeHost createReactNativeHost() {
+        return new NavigationReactNativeHost(this) {
+            @Override
+            protected String getJSMainModuleName() {
+                return "index";
+            }
+        };
     }
 
     @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-        new ReactNativeExceptionHandlerPackage(),
-        new ReactNativeRestartPackage(),
-        new RNDeviceInfo(),
-        new GoogleAnalyticsBridgePackage(),
-        new WalletManagerPackage(),
-        new SvgPackage(),
-        new VectorIconsPackage(),
-        new RandomBytesPackage(),
-        new BackgroundTimerPackage(),
-        new RNUUIDGeneratorPackage()
-      );
+    public boolean isDebug() {
+        return BuildConfig.DEBUG;
     }
-
+  
     @Override
-    protected String getJSMainModuleName() {
-      return "index";
+    public List<ReactPackage> createAdditionalReactPackages() {
+        return Arrays.<ReactPackage>asList(
+            new ReactNativeExceptionHandlerPackage(),
+            new ReactNativeRestartPackage(),
+            new RNDeviceInfo(),
+            new GoogleAnalyticsBridgePackage(),
+            new WalletManagerPackage(),
+            new SvgPackage(),
+            new VectorIconsPackage(),
+            new RandomBytesPackage(),
+            new BackgroundTimerPackage(),
+            new RNUUIDGeneratorPackage()
+          );
     }
-  };
-
-  @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-  }
 }

@@ -14,9 +14,10 @@ import RelayerClient from '../clients/relayer';
 import TokenClient from '../clients/token';
 import ZeroExClient from '../clients/0x';
 import * as AssetService from '../services/AssetService';
-import NavigationService from '../services/NavigationService';
+import { pop, push, showErrorModal } from './navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
+import * as WalletService from '../services/WalletService';
 import {
   checkAndWrapEther,
   checkAndSetUnlimitedProxyAllowance
@@ -65,7 +66,7 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
         ])
       );
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -101,7 +102,7 @@ export function loadOrders(force = false) {
       const orders = await client.getOrders(force);
       dispatch(setOrders(fixOrders(orders)));
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -123,7 +124,7 @@ export function loadOrder(orderHash) {
         ])
       );
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -151,7 +152,7 @@ export function loadProducts(force = false) {
       }));
       dispatch(setProducts(extendedPairs));
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }
@@ -159,9 +160,10 @@ export function loadProducts(force = false) {
 export function loadAssets(force = false) {
   return async (dispatch, getState) => {
     const {
-      relayer: { products },
-      wallet: { web3 }
+      relayer: { products }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
 
     try {
       const ethereumClient = new EthereumClient(web3);
@@ -193,7 +195,7 @@ export function loadAssets(force = false) {
         )
       );
     } catch (err) {
-      NavigationService.error(err);
+      showErrorModal(err);
     }
   };
 }

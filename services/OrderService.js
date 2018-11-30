@@ -7,7 +7,6 @@ import {
   orderHashUtils
 } from '0x.js';
 import * as _ from 'lodash';
-import moment from 'moment';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
 import { NULL_ADDRESS, ZERO } from '../constants/0x';
@@ -17,7 +16,8 @@ import {
   findOrdersThatCoverTakerAssetFillAmount
 } from '../utils';
 import * as AssetService from './AssetService';
-import NavigationService from './NavigationService';
+import * as WalletService from './WalletService';
+import { pop, push, showErrorModal } from '../navigation';
 
 let _store;
 
@@ -285,14 +285,17 @@ export async function getRemainingFillableTakerAssetAmounts(orders) {
 
 export async function createOrder(limitOrder) {
   const {
-    wallet: { address, web3 }
+    wallet: { address }
   } = _store.getState();
+
+  const web3 = WalletService.getWeb3();
+
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   return {
     ...convertLimitOrderToZeroExOrder(limitOrder),
     exchangeAddress: await zeroExClient.getExchangeContractAddress(),
-    makerAddress: `0x${address.toLowerCase()}`,
+    makerAddress: address.toLowerCase(),
     makerFee: ZERO,
     senderAddress: NULL_ADDRESS,
     takerAddress: NULL_ADDRESS,
@@ -303,11 +306,9 @@ export async function createOrder(limitOrder) {
 }
 
 export async function signOrder(order) {
-  try {
-    const {
-      wallet: { web3 }
-    } = _store.getState();
+  const web3 = WalletService.getWeb3();
 
+  try {
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient);
 
@@ -323,7 +324,7 @@ export async function signOrder(order) {
       signature
     };
   } catch (err) {
-    NavigationService.error(err);
+    showErrorModal(err);
     return null;
   }
 }
@@ -359,10 +360,10 @@ export async function getBuyAssetsQuoteAsync(
 
   const {
     relayer: { orderbooks },
-    wallet: { web3 },
     settings: { network }
   } = _store.getState();
 
+  const web3 = WalletService.getWeb3();
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
@@ -427,10 +428,10 @@ export async function getSellAssetsQuoteAsync(
   assetSellAmount = new BigNumber(assetSellAmount.toString());
 
   const {
-    relayer: { orderbooks },
-    wallet: { web3 }
+    relayer: { orderbooks }
   } = _store.getState();
 
+  const web3 = WalletService.getWeb3();
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();

@@ -71,7 +71,7 @@ export default class ZeroExClient {
       this.ethereumClient.getCurrentProvider(),
       orderHash,
       `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-      SignerType.Metamask
+      SignerType.Default
     );
   }
 

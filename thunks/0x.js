@@ -4,13 +4,13 @@ import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import * as AssetService from '../services/AssetService';
 import { TransactionService } from '../services/TransactionService';
+import * as WalletService from '../services/WalletService';
 import { checkAndSetUnlimitedProxyAllowance } from './wallet';
 
 export function deposit(address, amount) {
-  return async (dispatch, getState) => {
-    const {
-      wallet: { web3 }
-    } = getState();
+  return async () => {
+    const web3 = WalletService.getWeb3();
+
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient);
     const txhash = await zeroExClient.depositEther(new BigNumber(amount));
@@ -25,10 +25,9 @@ export function deposit(address, amount) {
 }
 
 export function withdraw(address, amount) {
-  return async (dispatch, getState) => {
-    const {
-      wallet: { web3 }
-    } = getState();
+  return async () => {
+    const web3 = WalletService.getWeb3();
+
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient);
     const txhash = await zeroExClient.withdrawEther(new BigNumber(amount));
@@ -45,9 +44,11 @@ export function withdraw(address, amount) {
 export function fillOrKillOrder(order, amount) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       settings: { gasLimit }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
+
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, { gasLimit });
     const txhash = await zeroExClient.fillOrKillOrder(order, amount);
@@ -64,9 +65,10 @@ export function fillOrKillOrder(order, amount) {
 export function batchFillOrKill(orders, amounts) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       settings: { gasLimit }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
 
     if (orders.length === 1) {
       await dispatch(fillOrKillOrder(orders[0], amounts[0]));
@@ -88,9 +90,10 @@ export function batchFillOrKill(orders, amounts) {
 export function marketBuyWithEth(quote) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       settings: { gasLimit }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
 
     if (quote === null) {
       throw new Error('Need a quote to sell assets.');
@@ -124,9 +127,10 @@ export function marketBuyWithEth(quote) {
 export function marketBuy(quote) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       settings: { gasLimit }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
 
     if (quote === null) {
       throw new Error('Need a quote to buy assets.');
@@ -155,9 +159,10 @@ export function marketBuy(quote) {
 export function marketSell(quote) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3 },
       settings: { gasLimit }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
 
     if (quote === null) {
       throw new Error('Need a quote to sell assets.');

@@ -23,12 +23,15 @@ import { BigNumber } from '0x.js';
 import EthTx from 'ethereumjs-tx';
 import ethUtil from 'ethereumjs-util';
 import sigUtil from 'eth-sig-util';
+import * as rlp from 'rlp';
 import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
 import { setWallet } from '../actions';
 import { ZERO, MAX } from '../constants/0x';
+import { showModal } from '../navigation';
+import { stripPrefixesFromTxParams } from '../utils';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -57,15 +60,6 @@ export async function cancelFingerPrintUnlock() {
   );
 }
 
-export async function hasWallet() {
-  return await new Promise((resolve, reject) =>
-    WalletManager.doesWalletExist((err, data) => {
-      if (err) return reject(err);
-      resolve(data);
-    })
-  );
-}
-
 export async function getPrivateKey(password) {
   return await new Promise((resolve, reject) =>
     WalletManager.loadWallet(password, (err, data) => {
@@ -75,58 +69,40 @@ export async function getPrivateKey(password) {
   );
 }
 
-export async function getAddress() {
-  return _store.getState().wallet.address;
-}
-
-export async function lock() {
-  _web3 = null;
-  await _store.dispatch(setWallet({ web3: null, address: null }));
-}
-
-export async function unlock(password = null) {
-  if (!_web3) {
-    const {
-      settings: { ethereumNodeEndpoint }
-    } = _store.getState();
-
-    const exists = await hasWallet();
-    if (!exists) throw new Error('Wallet does not exist!');
-
-    const privateKey = await getPrivateKey(password);
-    const privateKeyBuffer = new Buffer(privateKey, 'hex');
-    const addressBuffer = ethUtil.privateToAddress(`0x${privateKey}`);
-    const address = ethUtil.stripHexPrefix(addressBuffer.toString('hex'));
-
-    const engine = ZeroClientProvider({
-      rpcUrl: ethereumNodeEndpoint,
-      getAccounts: cb => {
-        cb(null, [`0x${address.toLowerCase()}`]);
-      },
-      signTransaction: (tx, cb) => {
-        let ethTx = new EthTx(tx);
-        ethTx.sign(privateKeyBuffer);
-        return cb(null, `0x${ethTx.serialize().toString('hex')}`);
-      },
-      processMessage: (params, cb) => {
-        const message = ethUtil.stripHexPrefix(params.data);
-        const msgSig = ethUtil.ecsign(
-          new Buffer(message, 'hex'),
-          privateKeyBuffer
-        );
-        const rawMsgSig = ethUtil.bufferToHex(
-          sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s)
-        );
-        cb(null, rawMsgSig);
+export async function getWalletAddress() {
+  return await new Promise((resolve, reject) =>
+    WalletManager.loadWalletAddress((err, data) => {
+      if (err) return reject(err);
+      if (data) {
+        resolve(`0x${ethUtil.stripHexPrefix(data)}`);
+      } else {
+        resolve();
       }
-    });
+    })
+  );
+}
 
-    _web3 = new Web3(engine);
+export async function signTransaction(tx, passcode) {
+  return await new Promise((resolve, reject) =>
+    WalletManager.signTransaction(tx, passcode, (err, data) => {
+      if (err) return reject(err);
+      if (!data) return resolve();
+      resolve({
+        r: `0x${ethUtil.stripHexPrefix(data.r)}`,
+        s: `0x${ethUtil.stripHexPrefix(data.s)}`,
+        v: `0x${ethUtil.stripHexPrefix(data.v)}`
+      });
+    })
+  );
+}
 
-    await _store.dispatch(setWallet({ web3: _web3, address }));
-  }
-
-  return _web3;
+export async function signMessage(message, passcode) {
+  return await new Promise((resolve, reject) =>
+    WalletManager.signMessage(message, passcode, (err, data) => {
+      if (err) return reject(err);
+      resolve(`0x${ethUtil.stripHexPrefix(data)}`);
+    })
+  );
 }
 
 export async function importMnemonics(mnemonics, password) {
@@ -136,7 +112,6 @@ export async function importMnemonics(mnemonics, password) {
       resolve(data);
     });
   });
-  return unlock(password);
 }
 
 export async function generateMnemonics() {
@@ -146,6 +121,81 @@ export async function generateMnemonics() {
       resolve(data);
     });
   });
+}
+
+export function getWeb3() {
+  if (!_web3) {
+    const {
+      settings: { ethereumNodeEndpoint },
+      wallet: { address }
+    } = _store.getState();
+
+    const addresses = [];
+
+    if (address) {
+      addresses.push(address.toLowerCase());
+    }
+
+    const engine = ZeroClientProvider({
+      rpcUrl: ethereumNodeEndpoint,
+      getAccounts: cb => {
+        cb(null, addresses);
+      },
+      signTransaction: (txParams, cb) => {
+        console.debug(`signTransaction: ${JSON.stringify(txParams, null, 2)}`);
+        showModal('modals.UnlockAndSign', {
+          tx: txParams,
+          next: (err, signature) => {
+            if (err) {
+              return cb(err);
+            }
+
+            if (signature == null) {
+              return cb(new Error('Could not unlock wallet'));
+            }
+
+            const signedTx = new EthTx({ ...txParams, ...signature });
+            return cb(null, `0x${signedTx.serialize().toString('hex')}`);
+          }
+        });
+        // let ethTx = new EthTx(tx);
+        // ethTx.sign(privateKeyBuffer);
+        // return cb(null, `0x${ethTx.serialize().toString('hex')}`);
+      },
+      signMessage: (params, cb) => {
+        console.debug('signMessage', params);
+        showModal('modals.UnlockAndSign', {
+          message: params.data,
+          next: (err, signature) => {
+            if (err) {
+              return cb(err);
+            }
+
+            if (signature == null) {
+              return cb(new Error('Could not unlock wallet'));
+            }
+
+            return cb(null, signature);
+          }
+        });
+      }
+      // processMessage: (params, cb) => {
+      //   const message = ethUtil.stripHexPrefix(params.data);
+      //   const msgSig = ethUtil.ecsign(
+      //     new Buffer(message, 'hex'),
+      //     privateKeyBuffer
+      //   );
+      //   const rawMsgSig = ethUtil.bufferToHex(
+      //     sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s)
+      //   );
+      //   cb(null, rawMsgSig);
+      // }
+    });
+
+    _web3 = new Web3(engine);
+  }
+
+  return _web3;
 }
 
 export function getBalanceByAddress(address) {
@@ -175,6 +225,7 @@ export function getBalanceBySymbol(symbol) {
     wallet: { balances },
     relayer: { assets }
   } = _store.getState();
+
   if (!symbol) return getBalanceByAddress();
 
   const asset = _.find(assets, { symbol });
@@ -290,8 +341,6 @@ export function getDecimalsBySymbol(symbol) {
 }
 
 export async function getGasPrice() {
-  const {
-    wallet: { web3 }
-  } = _store.getState();
+  const web3 = getWeb3();
   return new BigNumber(web3.utils.fromWei(await web3.eth.getGasPrice()));
 }

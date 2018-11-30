@@ -5,7 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
-import NavigationService from '../../services/NavigationService';
+import { pop, push } from '../../navigation';
 
 export default class OrdersHeader extends Component {
   static get propTypes() {
@@ -22,10 +22,7 @@ export default class OrdersHeader extends Component {
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
           this.props.showBackButton ? (
-            <TouchableOpacity
-              style={{ padding: 10 }}
-              onPress={() => NavigationService.goBack()}
-            >
+            <TouchableOpacity style={{ padding: 10 }} onPress={() => pop()}>
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
           ) : (
@@ -39,7 +36,7 @@ export default class OrdersHeader extends Component {
         rightComponent={
           <TouchableOpacity
             style={{ padding: 10 }}
-            onPress={() => NavigationService.navigate('History')}
+            onPress={() => push('navigation.tradeHistory')}
           >
             <Icon name="history" color="black" size={15} />
           </TouchableOpacity>

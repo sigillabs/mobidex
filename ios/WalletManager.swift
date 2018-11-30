@@ -9,6 +9,7 @@
 import Foundation
 import LocalAuthentication
 
+import BigInt
 import web3swift
 
 struct WalletManagerError: Error {
@@ -17,6 +18,30 @@ struct WalletManagerError: Error {
   init(message: String) {
     self.message = message
   }
+}
+
+func padToEven(_ hex: String) -> String {
+  if hex.count % 2 != 0 {
+    return "0"+hex
+  } else {
+    return hex
+  }
+}
+
+func stripHexPrefix(_ hex: String) -> String {
+  if hex.starts(with: "0x") {
+    return hex.substring(from: String.Index(2))
+  } else {
+    return hex
+  }
+}
+
+func hexToPaddedData(_ hex: String) -> Data {
+  return Data(hex: padToEven(stripHexPrefix(hex)))
+}
+
+func hexToPaddedBigUInt(_ hex: String) -> BigUInt {
+  return BigUInt(hexToPaddedData(hex))
 }
 
 @objc(WalletManager)
@@ -146,17 +171,6 @@ class WalletManager: NSObject {
     callback([NSNull(), NSNull()])
   }
   
-  @objc(doesWalletExist:) func doesWalletExist(callback: RCTResponseSenderBlock) -> Void {
-    guard let manager = KeystoreManager.managerForPath(getKeystoreDirectory(), scanForHDwallets: true),
-      let addresses = manager.addresses,
-      addresses.count > 0 else {
-        callback([NSNull(), false])
-        return;
-    }
-    
-    callback([NSNull(), true])
-  }
-  
   @objc(generateMnemonics:) func generateMnemonics(callback: RCTResponseSenderBlock) -> Void {
     let mnemonic = try! web3swift.BIP39.generateMnemonics(bitsOfEntropy: 128)
     callback([NSNull(), mnemonic as Any])
@@ -196,7 +210,7 @@ class WalletManager: NSObject {
         callback([error!, NSNull()])
         return
       }
-
+      
       guard let store = self.findWallet(),
         let addresses = store.addresses,
         addresses.count != 0
@@ -206,8 +220,8 @@ class WalletManager: NSObject {
       }
       
       guard password != nil else {
-          callback([NSNull(), NSNull()])
-          return;
+        callback([NSNull(), NSNull()])
+        return;
       }
       
       do {
@@ -217,6 +231,120 @@ class WalletManager: NSObject {
         print(error.localizedDescription);
         callback([error, NSNull()])
       }
+    })
+  }
+  
+  @objc(loadWalletAddress:) func loadWalletAddress(callback: @escaping RCTResponseSenderBlock) -> Void {
+    guard let store = self.findWallet(),
+      let addresses = store.addresses,
+      addresses.count != 0
+      else {
+        callback([NSNull(), NSNull()])
+        return;
+    }
+    callback([NSNull(), addresses[0].addressData.toHexString()])
+  }
+  
+  @objc(signTransaction:password:callback:) func signTransaction(tx: NSDictionary, password: String?, callback: @escaping RCTResponseSenderBlock) -> Void {
+    ensurePasscode(password, callback: { error, password in
+      guard error == nil else {
+        callback([error!, NSNull()])
+        return
+      }
+      
+      guard let store = self.findWallet(),
+        let addresses = store.addresses,
+        addresses.count != 0
+        else {
+          callback([NSNull(), NSNull()])
+          return;
+      }
+      
+      guard password != nil else {
+        callback([NSNull(), NSNull()])
+        return;
+      }
+
+      let data = hexToPaddedData(tx["data"] as! String)
+      let nonce = hexToPaddedBigUInt(tx["nonce"] as! String)
+      var options = Web3Options()
+      
+      options.to = EthereumAddress(tx["to"] as! String)
+      
+      if (tx.object(forKey: "from") != nil) {
+        options.from = EthereumAddress(tx["from"] as! String)
+      }
+      
+      if (tx.object(forKey: "gas") != nil) {
+        options.gasLimit = hexToPaddedBigUInt(tx["gas"] as! String)
+      }
+      
+      if (tx.object(forKey: "gasPrice") != nil) {
+        options.gasPrice = hexToPaddedBigUInt(tx["gasPrice"] as! String)
+      }
+      
+      if (tx.object(forKey: "value") != nil) {
+        options.value = hexToPaddedBigUInt(tx["value"] as! String)
+      }
+
+      var etx = EthereumTransaction(to: options.to!, data: data, options: options)
+      etx.nonce = nonce
+
+      try? web3swift.Web3Signer.signTX(transaction: &etx, keystore: store, account: addresses[0], password: password!)
+
+      if etx.r.isEqualTo(BigUInt(0) as AnyObject) && etx.s.isEqualTo(BigUInt(0) as AnyObject) {
+        callback([NSNull(), NSNull()])
+        return;
+      }
+
+      callback([NSNull(), [
+        "r": etx.r.serialize().toHexString(),
+        "s": etx.s.serialize().toHexString(),
+        "v": etx.v.serialize().toHexString(),
+      ]])
+    })
+  }
+  
+  @objc(signMessage:password:callback:) func signMessage(message: String, password: String?, callback: @escaping RCTResponseSenderBlock) -> Void {
+    ensurePasscode(password, callback: { error, password in
+      guard error == nil else {
+        callback([error!, NSNull()])
+        return
+      }
+      
+      guard let store = self.findWallet(),
+        let addresses = store.addresses,
+        addresses.count != 0
+        else {
+          callback([NSNull(), NSNull()])
+          return;
+      }
+      
+      guard password != nil else {
+        callback([NSNull(), NSNull()])
+        return;
+      }
+      
+      let data = hexToPaddedData(message)
+      var privateKey: Data? = nil
+      
+      do {
+        privateKey = try store.UNSAFE_getPrivateKeyData(password: password!, account: addresses[0])
+      } catch let error as NSError {
+        print(error.localizedDescription);
+        callback([error, NSNull()])
+        return
+      }
+
+      defer { Data.zero(&privateKey!) }
+
+      guard let signature = try? web3swift.Web3Signer.signPersonalMessage(data, keystore: store, account: addresses[0], password: password!),
+        signature != nil else {
+          callback([NSNull(), NSNull()])
+          return;
+      }
+
+      callback([NSNull(), signature!.toHexString()])
     })
   }
 }

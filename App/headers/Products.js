@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
-import NavigationService from '../../services/NavigationService';
+import { push } from '../../navigation';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import ToggleForexButton from '../views/ToggleForexButton';
@@ -28,10 +28,7 @@ class ProductsHeader extends Component {
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
           this.props.showBackButton ? (
-            <TouchableOpacity
-              style={{ padding: 10 }}
-              onPress={() => NavigationService.goBack()}
-            >
+            <TouchableOpacity style={{ padding: 10 }} onPress={() => pop()}>
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
           ) : (
