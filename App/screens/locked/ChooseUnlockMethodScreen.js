@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import * as WalletService from '../../../services/WalletService';
-import { push } from '../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 
 export default class ChooseUnlockMethodScreen extends Component {
   static get propTypes() {
@@ -14,9 +14,9 @@ export default class ChooseUnlockMethodScreen extends Component {
     const error = this.props.error || false;
     const supportsFingerPrint = await WalletService.supportsFingerPrintUnlock();
     if (supportsFingerPrint) {
-      push('navigation.tradeUnlockWithFinger', { error });
+      this.props.navigation.push('navigation.tradeUnlockWithFinger', { error });
     } else {
-      push('navigation.tradeUnlockWithPin', { error });
+      this.props.navigation.push('navigation.tradeUnlockWithPin', { error });
     }
   }
 

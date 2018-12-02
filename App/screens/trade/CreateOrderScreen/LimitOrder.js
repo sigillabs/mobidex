@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { pop, push, showErrorModal, showModal } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import {
   isValidAmount,
@@ -22,7 +22,7 @@ const EXPIRATION_VALUES = [
   365 * 24 * 60 * 60
 ];
 
-export default class CreateLimitOrder extends Component {
+class CreateLimitOrder extends Component {
   static get propTypes() {
     return {
       side: PropTypes.string.isRequired,
@@ -48,7 +48,7 @@ export default class CreateLimitOrder extends Component {
     const { side, quote, base } = this.props;
 
     if (side !== 'buy' && side !== 'sell') {
-      pop();
+      this.props.navigation.pop();
     }
 
     return (
@@ -181,11 +181,11 @@ export default class CreateLimitOrder extends Component {
         expirationTimeSeconds
       });
     } catch (error) {
-      showErrorModal(error);
+      this.props.navigation.showErrorModal(error);
       return;
     }
 
-    showModal('modals.PreviewOrder', {
+    this.props.navigation.showModal('modals.PreviewOrder', {
       type: 'limit',
       order,
       side,
@@ -194,3 +194,5 @@ export default class CreateLimitOrder extends Component {
     });
   }
 }
+
+export default connectNavigation(CreateLimitOrder);

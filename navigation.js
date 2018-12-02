@@ -1,14 +1,27 @@
+import React from 'react';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-let currentComponentId = null;
+export const NavigationContext = React.createContext();
 
-Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
-  currentComponentId = componentId;
-});
+export function connect(WrappedComponent) {
+  class ConnectedNavigation extends React.Component {
+    render() {
+      return (
+        <NavigationContext.Consumer>
+          {navigation => (
+            <WrappedComponent navigation={navigation} {...this.props} />
+          )}
+        </NavigationContext.Consumer>
+      );
+    }
+  }
 
-function buildNavigationComponent(name, props) {
+  return ConnectedNavigation;
+}
+
+export function buildNavigationComponent(name, props) {
   const component = {
     name
   };
@@ -20,16 +33,6 @@ function buildNavigationComponent(name, props) {
   return component;
 }
 
-export function push(name, props) {
-  Navigation.push(currentComponentId, {
-    component: buildNavigationComponent(name, props)
-  });
-}
-
-export function pop() {
-  Navigation.pop(currentComponentId);
-}
-
 export function showModal(name, props) {
   Navigation.showModal({
     component: buildNavigationComponent(name, props)
@@ -38,14 +41,8 @@ export function showModal(name, props) {
 
 export function showErrorModal(error) {
   Navigation.showModal({
-    component: buildNavigationComponent('modals.Error', {
-      error
-    })
+    component: buildNavigationComponent('modals.Error', { error })
   });
-}
-
-export function dismissModal() {
-  Navigation.dismissModal(currentComponentId);
 }
 
 export function setOnboardingRoot() {

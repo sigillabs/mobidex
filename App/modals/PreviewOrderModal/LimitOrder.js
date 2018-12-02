@@ -4,10 +4,9 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
-import { dismissModal, showErrorModal } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 import {
-  convertZeroExOrderToLimitOrder,
-  signOrder
+  convertZeroExOrderToLimitOrder
 } from '../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
@@ -16,7 +15,6 @@ import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import { getQuoteAsset } from '../../../services/AssetService';
-import { pop } from '../../../navigation';
 import SubmittingOrders from './SubmittingOrders';
 
 class PreviewLimitOrder extends Component {
@@ -41,7 +39,7 @@ class PreviewLimitOrder extends Component {
     const { side } = this.props;
 
     if (side !== 'buy' && side !== 'sell') {
-      return pop();
+      return this.props.navigation.dismissModal();
     }
   }
 
@@ -59,7 +57,7 @@ class PreviewLimitOrder extends Component {
     const quoteToken = getQuoteAsset();
     const receipt = this.getReceipt();
 
-    if (!receipt) return pop();
+    if (!receipt) return this.props.navigation.dismissModal();
 
     const { subtotal, fee, total } = receipt;
     const funds = getAdjustedBalanceByAddress(quoteToken.address);
@@ -184,16 +182,10 @@ class PreviewLimitOrder extends Component {
     this.setState({ submitting: true });
 
     try {
-      const signedOrder = await signOrder(order);
-      if (signedOrder) {
-        await this.props.dispatch(submitOrder(signedOrder));
-      } else {
-        showErrorModal(new Error('Order could not be signed.'));
-      }
-
-      dismissModal();
+      await this.props.dispatch(submitOrder(order));
+      this.props.navigation.dismissModal();
     } catch (err) {
-      showErrorModal(err);
+      this.props.navigation.showErrorModal(err);
     } finally {
       this.setState({ submitting: false });
     }
@@ -201,7 +193,7 @@ class PreviewLimitOrder extends Component {
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
-  PreviewLimitOrder
+  connectNavigation(PreviewLimitOrder)
 );
 
 const styles = {

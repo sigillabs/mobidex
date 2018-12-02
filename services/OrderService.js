@@ -17,7 +17,7 @@ import {
 } from '../utils';
 import * as AssetService from './AssetService';
 import * as WalletService from './WalletService';
-import { pop, push, showErrorModal } from '../navigation';
+import { showErrorModal } from '../navigation';
 
 let _store;
 

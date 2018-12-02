@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { styles } from '../../../styles';
 import PinKeyboard from '../../components/PinKeyboard';
 import PinView from '../../components/PinView';
-import { push } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 
 class UnlockWithPin extends Component {
   static get propTypes() {
@@ -86,4 +86,6 @@ class UnlockWithPin extends Component {
   };
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(UnlockWithPin);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  connectNavigation(UnlockWithPin)
+);

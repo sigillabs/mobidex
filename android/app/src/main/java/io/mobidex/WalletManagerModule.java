@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.kethereum.bip32.ExtendedKey;
@@ -31,14 +32,26 @@ import org.kethereum.wallet.WalletKt;
 
 import static java.util.Collections.emptyList;
 import static org.kethereum.bip32.BIP32.generateKey;
+import static org.kethereum.functions.TransactionRLPEncoderKt.encodeRLP;
+import static org.kethereum.keccakshortcut.KeccakKt.keccak;
 import static org.kethereum.wallet.WalletFileKt.generateWalletFile;
 import static org.kethereum.wallet.WalletFileKt.loadKeysFromWalletFile;
 import static org.kethereum.model.TransactionKt.createTransactionWithDefaults;
-import static org.kethereum.eip155.EIP155Kt.signViaEIP155;
 
 public class WalletManagerModule extends ReactContextBaseJavaModule {
     private File walletDirectory;
     private PasscodeManager passcodeManager;
+    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
 
     private static String stripHexPrefix(String s) {
         if (s.startsWith("0x")) {
@@ -274,7 +287,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         BigInteger nonce = null;
         Address from = null;
         Address to = null;
-        BigInteger value = null;
+        BigInteger value = new BigInteger("0");
         List<Byte> data = emptyList();
 
         if (tx.hasKey("data")) {
@@ -282,15 +295,15 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         }
 
         if (tx.hasKey("gas")) {
-            gasLimit = new BigInteger(tx.getString("gas"));
+            gasLimit = new BigInteger(stripHexPrefix(tx.getString("gas")), 16);
         }
 
         if (tx.hasKey("gasPrice")) {
-            gasPrice = new BigInteger(tx.getString("gasPrice"));
+            gasPrice = new BigInteger(stripHexPrefix(tx.getString("gasPrice")), 16);
         }
 
         if (tx.hasKey("nonce")) {
-            nonce = new BigInteger(tx.getString("nonce"));
+            nonce = new BigInteger(stripHexPrefix(tx.getString("nonce")), 16);
         }
 
         if (tx.hasKey("from")) {
@@ -302,10 +315,11 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         }
 
         if (tx.hasKey("value")) {
-            value = new BigInteger(tx.getString("value"));
+            value = new BigInteger(stripHexPrefix(tx.getString("value")), 16);
         }
 
-        Transaction transaction = createTransactionWithDefaults(null, null, from, gasLimit, gasPrice, data, nonce,to,null, value );
+        Transaction transaction = createTransactionWithDefaults(null, null, from, gasLimit, gasPrice, data, nonce, to,null, value );
+        byte[] rlp = encodeRLP(transaction, null);
 
         loadKeypair(password, new Callback() {
             @Override
@@ -320,11 +334,11 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
             @Override
             public void invoke(Object... args) {
                 if (args.length == 1) {
-                    SignatureData signature = signViaEIP155(transaction, ((ECKeyPair)args[0]), null);
+                    SignatureData signature = SignKt.signMessage(((ECKeyPair)args[0]), rlp);
                     WritableMap response = Arguments.createMap();
-                    response.putString("r",signature.getR().toString());
-                    response.putString("s",signature.getS().toString());
-                    response.putString("v", new Byte(signature.getV()).toString());
+                    response.putString("r",signature.getR().toString(16));
+                    response.putString("s",signature.getS().toString(16));
+                    response.putString("v", new BigInteger(Byte.valueOf(signature.getV()).toString()).toString(16));
 
                     cb.invoke(null, response);
                 } else {
@@ -349,14 +363,18 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
             @Override
             public void invoke(Object... args) {
                 if (args.length == 1) {
-                    byte[] data = hexStringToByteArray(message);
-                    SignatureData signature = SignKt.signMessage(data, (ECKeyPair)args[0]);
-                    WritableMap response = Arguments.createMap();
-                    response.putString("r",signature.getR().toString());
-                    response.putString("s",signature.getS().toString());
-                    response.putString("v", new Byte(signature.getV()).toString());
+                    byte[] messageData = hexStringToByteArray(message);
 
-                    cb.invoke(null, response);
+                    // NOTE: Without https://github.com/walleth/kethereum/issues/48 need to implement own `eth_sign` function.
+                    String message = "\u0019Ethereum Signed Message:\n" + messageData.length;
+                    byte[] data = ArrayUtils.addAll(message.getBytes(), messageData);
+
+                    SignatureData signature = SignKt.signMessage((ECKeyPair)args[0], data);
+
+                    byte[] compressedSignature = ArrayUtils.addAll(signature.getR().toByteArray(), signature.getS().toByteArray());
+                    compressedSignature = ArrayUtils.add(compressedSignature, signature.getV());
+
+                    cb.invoke(null, bytesToHex(compressedSignature));
                 } else {
                     cb.invoke(null, null);
                 }

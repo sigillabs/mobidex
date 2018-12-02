@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { dismissModal } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 import * as WalletService from '../../../services/WalletService';
 import Loading from '../../views/Loading';
 import UnlockWithTouchIdentification from './UnlockWithTouchIdentification';
 import UnlockWithPin from './UnlockWithPin';
 import Unlocking from './Unlocking';
 
-export default class UnlockAndSignModal extends Component {
+class UnlockAndSignModal extends Component {
   static get propTypes() {
     return {
       next: PropTypes.func.isRequired,
@@ -30,7 +30,7 @@ export default class UnlockAndSignModal extends Component {
 
   async componentDidMount() {
     if (!this.props.tx && !this.props.message) {
-      return dismissModal();
+      return this.props.navigation.dismissModal();
     }
 
     const supportsFingerPrint = await WalletService.supportsFingerPrintUnlock();
@@ -117,3 +117,5 @@ export default class UnlockAndSignModal extends Component {
     });
   };
 }
+
+export default connectNavigation(UnlockAndSignModal);

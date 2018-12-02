@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import { push } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import Button from '../../../components/Button';
 import Divider from '../../../components/Divider';
@@ -10,7 +10,7 @@ import Padding from '../../../components/Padding';
 import Row from '../../../components/Row';
 import ProductDetailListItem from './ProductDetailListItem';
 
-export default class ProductDetailsView extends Component {
+class ProductDetailsView extends Component {
   static get propTypes() {
     return {
       base: PropTypes.object,
@@ -43,7 +43,7 @@ export default class ProductDetailsView extends Component {
               <Icon name="arrow-with-circle-left" size={20} color="white" />
             }
             onPress={() =>
-              push('navigation.trade.CreateOrder', {
+              this.props.navigation.push('navigation.trade.CreateOrder', {
                 type: 'fill',
                 side: 'buy',
                 base,
@@ -59,7 +59,7 @@ export default class ProductDetailsView extends Component {
               <Icon name="arrow-with-circle-right" size={20} color="white" />
             }
             onPress={() =>
-              push('navigation.trade.CreateOrder', {
+              this.props.navigation.push('navigation.trade.CreateOrder', {
                 type: 'fill',
                 side: 'sell',
                 base,
@@ -85,3 +85,5 @@ export default class ProductDetailsView extends Component {
     );
   }
 }
+
+export default connectNavigation(ProductDetailsView);

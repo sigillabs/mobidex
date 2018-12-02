@@ -5,7 +5,7 @@ import { Slider, View } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as WalletService from '../../../../services/WalletService';
-import { push, showErrorModal } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { wrapEther, unwrapEther } from '../../../../thunks';
 import {
@@ -138,12 +138,12 @@ class BaseWrapEtherScreen extends Component {
       try {
         await this.props.dispatch(wrapEther(wrapAmount));
       } catch (err) {
-        return showErrorModal(err);
+        return this.props.navigation.showErrorModal(err);
       } finally {
         this.setState({ wrapping: false });
       }
 
-      push('navigation.wallet.Accounts');
+      this.props.navigation.pop();
     });
   }
 
@@ -158,12 +158,12 @@ class BaseWrapEtherScreen extends Component {
       try {
         await this.props.dispatch(unwrapEther(unwrapAmount));
       } catch (err) {
-        return showErrorModal(err);
+        return this.props.navigation.showErrorModal(err);
       } finally {
         this.setState({ unwrapping: false });
       }
 
-      push('navigation.wallet.Accounts');
+      this.props.navigation.pop();
     });
   }
 }
@@ -173,5 +173,5 @@ BaseWrapEtherScreen.propTypes = {
 };
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
-  BaseWrapEtherScreen
+  connectNavigation(BaseWrapEtherScreen)
 );

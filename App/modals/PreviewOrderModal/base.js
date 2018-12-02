@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { pop } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 import PageRoot from '../../components/PageRoot';
 import FillOrdersPreview from './FillOrders';
 import LimitOrderPreview from './LimitOrder';
 
-export default class BasePreviewOrderModal extends Component {
+class BasePreviewOrderModal extends Component {
   render() {
     const { type, ...rest } = this.props;
 
     if (type !== 'limit' && type !== 'fill') {
-      return pop();
+      return this.props.navigation.pop();
     }
 
     let subview = null;
@@ -28,6 +28,8 @@ export default class BasePreviewOrderModal extends Component {
     return <PageRoot style={{ flex: 1 }}>{subview}</PageRoot>;
   }
 }
+
+export default connectNavigation(BasePreviewOrderModal);
 
 BasePreviewOrderModal.propTypes = {
   type: PropTypes.string.isRequired,

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import NavigationProvider from '../../NavigationProvider';
-import BaseErrorModal from './base';
+import BaseConstructWalletModal from './base';
 
-export default class ErrorModal extends Component {
+export default class ConstructWalletModal extends React.Component {
   static options() {
     return {
       topBar: {
@@ -15,7 +15,7 @@ export default class ErrorModal extends Component {
   render() {
     return (
       <NavigationProvider>
-        <BaseErrorModal {...this.props} />
+        <BaseConstructWalletModal {...this.props} />
       </NavigationProvider>
     );
   }

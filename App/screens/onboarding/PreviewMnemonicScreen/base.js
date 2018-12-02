@@ -1,26 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
-import { styles } from '../../../styles';
-import { push } from '../../../navigation';
-import Button from '../../components/Button';
-import DisplayMnemonic from '../../components/DisplayMnemonic';
-import MutedText from '../../components/MutedText';
-import Row from '../../components/Row';
+import { styles } from '../../../../styles';
+import { connect as connectNavigation } from '../../../../navigation';
+import { navigationProp } from '../../../../types/props';
+import Button from '../../../components/Button';
+import DisplayMnemonic from '../../../components/DisplayMnemonic';
+import MutedText from '../../../components/MutedText';
+import Row from '../../../components/Row';
 
-export default class PreviewMnemonicScreen extends Component {
+class BasePreviewMnemonicScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
+      generated: PropTypes.bool
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       word: ''
-    };
-  }
-
-  static get propTypes() {
-    return {
-      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
-      generated: PropTypes.bool
     };
   }
 
@@ -41,31 +43,33 @@ export default class PreviewMnemonicScreen extends Component {
         />
         <Row>
           {!isGenerated ? (
-            <Button large title="Previous" onPress={() => this.previous()} />
+            <Button large title="Previous" onPress={this.previous} />
           ) : null}
-          <Button large title="Next" onPress={() => this.next()} />
+          <Button large title="Next" onPress={this.next} />
         </Row>
       </View>
     );
   }
 
-  previous() {
+  previous = () => {
     const mnemonic = this.props.mnemonic;
     InteractionManager.runAfterInteractions(() => {
-      push('navigation.onboarding.ImportMnemonic', {
+      this.props.navigation.push('navigation.onboarding.ImportMnemonic', {
         mnemonic,
         page: 11
       });
     });
-  }
+  };
 
-  next() {
+  next = () => {
     const mnemonic = this.props.mnemonic;
 
     InteractionManager.runAfterInteractions(() => {
-      push('navigation.onboarding.Pin', {
+      this.props.navigation.push('navigation.onboarding.Pin', {
         mnemonic
       });
     });
-  }
+  };
 }
+
+export default connectNavigation(BasePreviewMnemonicScreen);

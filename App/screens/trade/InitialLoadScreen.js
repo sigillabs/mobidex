@@ -1,21 +1,24 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { InteractionManager } from 'react-native';
+import React from 'react';
+import { InteractionManager, StatusBar } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { initialLoad, startWebsockets } from '../../../thunks/boot';
 import { setTabsRoot } from '../../../navigation';
+import NavigationProvider from '../../NavigationProvider';
 import BigCenter from '../../components/BigCenter';
 import Padding from '../../components/Padding';
 import RotatingView from '../../components/RotatingView';
 
-class InitialLoadScreen extends Component {
+class InitialLoadScreen extends NavigationProvider {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
+    StatusBar.setHidden(true, 'none');
+
     InteractionManager.runAfterInteractions(async () => {
       await this.props.dispatch(initialLoad(1));
       this.props.dispatch(startWebsockets());

@@ -5,7 +5,7 @@ import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as AssetService from '../../../../services/AssetService';
-import { pop, push, showErrorModal } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { colors, styles } from '../../../../styles';
 import { setNoProxyAllowance } from '../../../../thunks';
 import Button from '../../../components/Button';
@@ -70,9 +70,9 @@ class DisapproveScreen extends Component {
 
     try {
       await this.props.dispatch(setNoProxyAllowance(asset.address));
-      push('navigation.tradeAccounts');
+      this.props.navigation.pop();
     } catch (err) {
-      showErrorModal(err);
+      this.props.navigation.showErrorModal(err);
     } finally {
       this.setState({ loading: false });
     }
@@ -85,5 +85,5 @@ DisapproveScreen.propTypes = {
 };
 
 export default connect(state => ({}), dispatch => ({ dispatch }))(
-  DisapproveScreen
+  connectNavigation(DisapproveScreen)
 );

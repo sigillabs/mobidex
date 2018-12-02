@@ -11,9 +11,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { styles } from '../../../styles';
 import Button from '../../components/Button';
 import * as WalletService from '../../../services/WalletService';
-import { push } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 
-export default class UnlockWithTouchIdentification extends Component {
+class UnlockWithTouchIdentification extends Component {
   constructor(props) {
     super(props);
 
@@ -44,7 +44,9 @@ export default class UnlockWithTouchIdentification extends Component {
         </View>
         <View style={[styles.bigTop, styles.flex1]}>
           <Button
-            onPress={() => push('navigation.tradeUnlockWithPin')}
+            onPress={() =>
+              this.props.navigation.push('navigation.tradeUnlockWithPin')
+            }
             title={'Unlock with pin'}
             icon={<Ionicons name="ios-keypad" color="white" size={20} />}
           />
@@ -90,7 +92,7 @@ export default class UnlockWithTouchIdentification extends Component {
         this.setState({ showUnlocking: false });
       }
 
-      push('navigation.tradeInitial');
+      this.props.navigation.push('navigation.tradeInitial');
     });
   }
 
@@ -99,3 +101,5 @@ export default class UnlockWithTouchIdentification extends Component {
     this.setState({ showUnlocking: false });
   }
 }
+
+export default connectNavigation(UnlockWithTouchIdentification);

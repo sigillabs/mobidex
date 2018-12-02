@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { dismissModal } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 import * as WalletService from '../../../services/WalletService';
 import { colors } from '../../../styles';
 import BigCenter from '../../components/BigCenter';
 import Padding from '../../components/Padding';
 import RotatingView from '../../components/RotatingView';
 
-export default class Unlocking extends Component {
+class Unlocking extends Component {
   static get propTypes() {
     return {
       tx: PropTypes.object,
@@ -36,7 +36,7 @@ export default class Unlocking extends Component {
       } catch (err) {
         this.props.next(err);
       } finally {
-        dismissModal();
+        this.props.navigation.dismissModal();
       }
     });
   }
@@ -53,3 +53,5 @@ export default class Unlocking extends Component {
     );
   }
 }
+
+export default connectNavigation(Unlocking);

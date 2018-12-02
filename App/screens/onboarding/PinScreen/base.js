@@ -1,23 +1,25 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { showModal } from '../../../navigation';
-import MutedText from '../../components/MutedText';
-import PinKeyboard from '../../components/PinKeyboard';
-import PinView from '../../components/PinView';
+import { connect as connectNavigation } from '../../../../navigation';
+import { navigationProp } from '../../../../types/props';
+import MutedText from '../../../components/MutedText';
+import PinKeyboard from '../../../components/PinKeyboard';
+import PinView from '../../../components/PinView';
 
-export default class PinScreen extends Component {
+class BasePinScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       pin: ''
-    };
-  }
-
-  static get propTypes() {
-    return {
-      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired
     };
   }
 
@@ -80,9 +82,11 @@ export default class PinScreen extends Component {
     const mnemonic = this.props.mnemonic;
     const { pin } = this.state;
 
-    showModal('modals.ConstructWallet', {
+    this.props.navigation.showModal('modals.ConstructWallet', {
       mnemonic,
       pin
     });
   }
 }
+
+export default connectNavigation(BasePinScreen);

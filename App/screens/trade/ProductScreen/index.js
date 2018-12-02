@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import NavigationProvider from '../../../NavigationProvider';
 import BaseProductScreen from './base';
 
-export default class ProductScreen extends Component {
+export default class ProductScreen extends React.Component {
   static options() {
     return {
       topBar: {
@@ -26,6 +27,10 @@ export default class ProductScreen extends Component {
   }
 
   render() {
-    return <BaseProductScreen {...this.props} />;
+    return (
+      <NavigationProvider>
+        <BaseProductScreen {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

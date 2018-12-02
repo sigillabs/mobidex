@@ -1,6 +1,5 @@
 import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
-import SubmittingOrdersModal from './App/modals/SubmittingOrdersModal';
 import ConstructWalletModal from './App/modals/ConstructWalletModal';
 import ErrorModal from './App/modals/ErrorModal';
 import LoadingModal from './App/modals/LoadingModal';
@@ -26,13 +25,6 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.ConstructWallet',
     () => ConstructWalletModal,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'modals.SubmittingOrders',
-    () => SubmittingOrdersModal,
     Provider,
     store
   );

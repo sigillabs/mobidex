@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NavigationProvider from '../../NavigationProvider';
 import BaseUnlockAndSignModal from './base';
 
 export default class UnlockAndSignModal extends Component {
@@ -12,6 +13,10 @@ export default class UnlockAndSignModal extends Component {
   }
 
   render() {
-    return <BaseUnlockAndSignModal {...this.props} />;
+    return (
+      <NavigationProvider>
+        <BaseUnlockAndSignModal {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

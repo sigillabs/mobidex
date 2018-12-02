@@ -2,27 +2,29 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Clipboard, InteractionManager, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import { colors } from '../../../styles';
-import { push } from '../../../navigation';
-import Button from '../../components/Button';
-import MnemonicWordInput from '../../components/MnemonicWordInput';
-import MutedText from '../../components/MutedText';
-import Row from '../../components/Row';
+import { colors } from '../../../../styles';
+import { connect as connectNavigation } from '../../../../navigation';
+import { navigationProp } from '../../../../types/props';
+import Button from '../../../components/Button';
+import MnemonicWordInput from '../../../components/MnemonicWordInput';
+import MutedText from '../../../components/MutedText';
+import Row from '../../../components/Row';
 
-export default class ImportMnemonicScreen extends Component {
+class BaseImportMnemonicScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
+      page: PropTypes.number.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
       word: '',
       submitting: false
-    };
-  }
-
-  static get propTypes() {
-    return {
-      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
-      page: PropTypes.number.isRequired
     };
   }
 
@@ -125,11 +127,11 @@ export default class ImportMnemonicScreen extends Component {
 
     InteractionManager.runAfterInteractions(() => {
       if (mnemonic.length >= 12) {
-        push('navigation.onboarding.PreviewMnemonic', {
+        this.props.navigation.push('navigation.onboarding.PreviewMnemonic', {
           mnemonic
         });
       } else {
-        push('navigation.onboarding.ImportMnemonic', {
+        this.props.navigation.push('navigation.onboarding.ImportMnemonic', {
           mnemonic,
           page: mnemonic.length
         });
@@ -143,7 +145,10 @@ export default class ImportMnemonicScreen extends Component {
 
     if (page <= 0) return;
 
-    push('navigation.onboarding.ImportMnemonic', { mnemonic, page: page - 1 });
+    this.props.navigation.push('navigation.onboarding.ImportMnemonic', {
+      mnemonic,
+      page: page - 1
+    });
   }
 
   next() {
@@ -161,11 +166,11 @@ export default class ImportMnemonicScreen extends Component {
 
     InteractionManager.runAfterInteractions(() => {
       if (page >= 11) {
-        push('navigation.onboarding.PreviewMnemonic', {
+        this.props.navigation.push('navigation.onboarding.PreviewMnemonic', {
           mnemonic
         });
       } else {
-        push('navigation.onboarding.ImportMnemonic', {
+        this.props.navigation.push('navigation.onboarding.ImportMnemonic', {
           mnemonic,
           page: page + 1
         });
@@ -173,3 +178,5 @@ export default class ImportMnemonicScreen extends Component {
     });
   }
 }
+
+export default connectNavigation(BaseImportMnemonicScreen);

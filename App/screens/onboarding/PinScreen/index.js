@@ -1,8 +1,8 @@
 import React from 'react';
 import NavigationProvider from '../../../NavigationProvider';
-import BaseSendScreen from './base';
+import BasePinScreen from './base';
 
-export default class SendScreen extends React.Component {
+export default class PinScreen extends React.Component {
   static options() {
     return {
       topBar: {
@@ -15,7 +15,7 @@ export default class SendScreen extends React.Component {
   render() {
     return (
       <NavigationProvider>
-        <BaseSendScreen {...this.props} />
+        <BasePinScreen {...this.props} />
       </NavigationProvider>
     );
   }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NavigationProvider from '../../NavigationProvider';
 import BasePreviewOrderModal from './base';
 
 export default class PreviewOrderModal extends Component {
@@ -12,6 +13,10 @@ export default class PreviewOrderModal extends Component {
   }
 
   render() {
-    return <BasePreviewOrderModal {...this.props} />;
+    return (
+      <NavigationProvider>
+        <BasePreviewOrderModal {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

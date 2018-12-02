@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
+import NavigationProvider from '../../../NavigationProvider';
 import BaseProductDetailsScreen from './base';
 
-export default class ProductDetailsScreen extends Component {
+export default class ProductDetailsScreen extends React.Component {
   static options(passProps) {
     return {
       topBar: {
@@ -30,6 +31,10 @@ export default class ProductDetailsScreen extends Component {
   }
 
   render() {
-    return <BaseProductDetailsScreen {...this.props} />;
+    return (
+      <NavigationProvider>
+        <BaseProductDetailsScreen {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

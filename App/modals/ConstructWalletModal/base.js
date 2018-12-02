@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import { InteractionManager } from 'react-native';
 import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { dismissModal, push } from '../../navigation';
-import * as WalletService from '../../services/WalletService';
-import BigCenter from '../components/BigCenter';
-import Padding from '../components/Padding';
-import RotatingView from '../components/RotatingView';
+import { connect as connectNavigation } from '../../../navigation';
+import * as WalletService from '../../../services/WalletService';
+import BigCenter from '../../components/BigCenter';
+import Padding from '../../components/Padding';
+import RotatingView from '../../components/RotatingView';
 
-export default class ConstructWalletScreen extends Component {
+class BaseConstructWalletScreen extends Component {
   static get propTypes() {
     return {
       mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -22,8 +22,8 @@ export default class ConstructWalletScreen extends Component {
     const pin = this.props.pin;
     InteractionManager.runAfterInteractions(async () => {
       await WalletService.importMnemonics(mnemonic, pin);
-      push('navigation.onboarding.Initial');
-      dismissModal();
+      this.props.navigation.dismissModal();
+      this.props.navigation.push('navigation.trade.InitialLoadScreen');
     });
   }
 
@@ -39,3 +39,5 @@ export default class ConstructWalletScreen extends Component {
     );
   }
 }
+
+export default connectNavigation(BaseConstructWalletScreen);

@@ -5,7 +5,7 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
-import { pop, push, showErrorModal } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { cancelOrder, loadOrders } from '../../../../thunks';
 import * as AssetService from '../../../../services/AssetService';
 import CollapsibleButtonView from '../../../components/CollapsibleButtonView';
@@ -172,7 +172,7 @@ class OrdersScreen extends Component {
     try {
       await this.props.dispatch(cancelOrder(order));
     } catch (error) {
-      showErrorModal(error);
+      this.props.navigation.showErrorModal(error);
       return;
     } finally {
       this.setState({ showCancelling: false });

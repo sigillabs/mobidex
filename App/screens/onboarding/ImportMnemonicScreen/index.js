@@ -1,8 +1,8 @@
 import React from 'react';
 import NavigationProvider from '../../../NavigationProvider';
-import BaseSendScreen from './base';
+import BaseImportMnemonicScreen from './base';
 
-export default class SendScreen extends React.Component {
+export default class ImportMnemonicScreen extends React.Component {
   static options() {
     return {
       topBar: {
@@ -15,7 +15,7 @@ export default class SendScreen extends React.Component {
   render() {
     return (
       <NavigationProvider>
-        <BaseSendScreen {...this.props} />
+        <BaseImportMnemonicScreen {...this.props} />
       </NavigationProvider>
     );
   }

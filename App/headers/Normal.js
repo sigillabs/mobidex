@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { push } from '../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 
@@ -22,7 +22,10 @@ export default class NormalHeader extends Component {
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
           this.props.showBackButton ? (
-            <TouchableOpacity style={{ padding: 10 }} onPress={() => pop()}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={() => this.props.navigation.pop()}
+            >
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
           ) : (

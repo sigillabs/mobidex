@@ -5,7 +5,7 @@ import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import * as AssetService from '../../services/AssetService';
-import { pop, push } from '../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { colors } from '../../styles';
 import FakeHeaderButton from '../components/FakeHeaderButton';
 import LogoTicker from '../views/LogoTicker';
@@ -32,7 +32,10 @@ class ProductDetailsHeader extends Component {
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
           this.props.showBackButton ? (
-            <TouchableOpacity style={{ padding: 10 }} onPress={() => pop()}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={() => this.props.navigation.pop()}
+            >
               <Icon name="arrow-back" color="black" size={15} />
             </TouchableOpacity>
           ) : (

@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { pop, push } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import * as WalletService from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
@@ -125,28 +125,28 @@ class TokenDetails extends Component {
 
   receive() {
     const { asset } = this.props;
-    push('navigation.wallet.Receive', {
+    this.props.navigation.push('navigation.wallet.Receive', {
       asset
     });
   }
 
   send() {
     const { asset } = this.props;
-    push('navigation.wallet.Send', {
+    this.props.navigation.push('navigation.wallet.Send', {
       asset
     });
   }
 
   wrap() {
     const { asset } = this.props;
-    push('navigation.wallet.WrapEther', {
+    this.props.navigation.push('navigation.wallet.WrapEther', {
       asset
     });
   }
 
   toggleApprove() {
     const { asset } = this.props;
-    push('navigation.wallet.ToggleApprove', {
+    this.props.navigation.push('navigation.wallet.ToggleApprove', {
       asset
     });
   }
@@ -157,4 +157,4 @@ export default connect(
     ...state.wallet
   }),
   dispatch => ({ dispatch })
-)(TokenDetails);
+)(connectNavigation(TokenDetails));

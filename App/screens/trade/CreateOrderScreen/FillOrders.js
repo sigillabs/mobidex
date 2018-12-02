@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { pop, push, showModal } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import {
   formatProduct,
@@ -12,7 +12,7 @@ import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
 import TokenAmount from '../../../components/TokenAmount';
 import OrderbookPrice from '../../../views/OrderbookPrice';
 
-export default class FillOrders extends PureComponent {
+class FillOrders extends PureComponent {
   static get propTypes() {
     return {
       side: PropTypes.string.isRequired,
@@ -30,6 +30,7 @@ export default class FillOrders extends PureComponent {
   }
 
   render() {
+    const { side } = this.props;
     return (
       <FullScreen>
         <TokenAmount
@@ -83,7 +84,7 @@ export default class FillOrders extends PureComponent {
     if (isValidAmount(amount)) {
       const { side, base, quote } = this.props;
 
-      showModal('modals.PreviewOrder', {
+      this.props.navigation.showModal('modals.PreviewOrder', {
         type: 'fill',
         side,
         amount,
@@ -104,3 +105,5 @@ export default class FillOrders extends PureComponent {
     }
   };
 }
+
+export default connectNavigation(FillOrders);

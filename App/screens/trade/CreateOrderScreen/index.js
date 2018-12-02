@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NavigationProvider from '../../../NavigationProvider';
 import BaseCreateOrderScreen from './base';
 
 export default class CreateOrderScreen extends Component {
@@ -30,6 +31,10 @@ export default class CreateOrderScreen extends Component {
   }
 
   render() {
-    return <BaseCreateOrderScreen {...this.props} />;
+    return (
+      <NavigationProvider>
+        <BaseCreateOrderScreen {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

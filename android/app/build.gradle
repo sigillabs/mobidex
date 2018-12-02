@@ -186,6 +186,7 @@ dependencies {
     implementation "com.github.walleth.kethereum:eip155:0.53"
     implementation "com.github.walleth.kethereum:crypto:0.53"
     implementation "org.bouncycastle:bcprov-jdk15on:1.59"
+    implementation 'org.apache.commons:commons-lang3:3.7'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -203,4 +204,3 @@ configurations.all {
         }
     }
 }
-

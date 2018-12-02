@@ -5,8 +5,8 @@ import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as AssetService from '../../../../services/AssetService';
-import { pop, push, showErrorModal } from '../../../../navigation';
-import { colors, styles } from '../../../../styles';
+import { connect as connectNavigation } from '../../../../navigation';
+import { colors } from '../../../../styles';
 import { setUnlimitedProxyAllowance } from '../../../../thunks';
 import Button from '../../../components/Button';
 import Approving from './Approving';
@@ -56,27 +56,29 @@ class ApproveScreen extends Component {
           large
           title="Unlock"
           buttonStyle={{ borderRadius: 0 }}
-          onPress={() => this.submit()}
+          onPress={this.submit}
         />
       </View>
     );
   }
 
-  async submit() {
+  submit = () => {
     const { assetData } = this.props;
     const asset = AssetService.findAssetByData(assetData);
 
     this.setState({ loading: true });
 
-    try {
-      await this.props.dispatch(setUnlimitedProxyAllowance(asset.address));
-      push('navigation.tradeAccounts');
-    } catch (err) {
-      showErrorModal(err);
-    } finally {
-      this.setState({ loading: false });
-    }
-  }
+    requestAnimationFrame(async () => {
+      try {
+        await this.props.dispatch(setUnlimitedProxyAllowance(asset.address));
+        this.props.navigation.pop();
+      } catch (err) {
+        this.props.navigation.showErrorModal(err);
+      } finally {
+        this.setState({ loading: false });
+      }
+    });
+  };
 }
 
 ApproveScreen.propTypes = {
@@ -84,4 +86,6 @@ ApproveScreen.propTypes = {
   assetData: PropTypes.string.isRequired
 };
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(ApproveScreen);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  connectNavigation(ApproveScreen)
+);

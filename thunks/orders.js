@@ -14,7 +14,7 @@ import RelayerClient from '../clients/relayer';
 import TokenClient from '../clients/token';
 import ZeroExClient from '../clients/0x';
 import * as AssetService from '../services/AssetService';
-import { pop, push, showErrorModal } from './navigation';
+import { showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
@@ -262,14 +262,14 @@ export function submitOrder(order) {
 
     const signedOrder = await OrderService.signOrder(order);
 
-    await dispatch(
-      checkAndWrapEther(makerTokenAddress, signedOrder.makerAssetAmount, {
-        wei: true,
-        batch: false
-      })
-    );
+    // await dispatch(
+    //   checkAndWrapEther(makerTokenAddress, signedOrder.makerAssetAmount, {
+    //     wei: true,
+    //     batch: false
+    //   })
+    // );
 
-    await dispatch(checkAndSetUnlimitedProxyAllowance(takerTokenAddress));
+    // await dispatch(checkAndSetUnlimitedProxyAllowance(takerTokenAddress));
 
     // Submit
     await client.submitOrder(signedOrder);

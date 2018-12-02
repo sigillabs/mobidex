@@ -1,22 +1,27 @@
-import { Navigation } from 'react-native-navigation';
-
 import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { push } from '../../../navigation';
-import * as WalletService from '../../../services/WalletService';
-import BigCenter from '../../components/BigCenter';
-import Button from '../../components/Button';
-import Padding from '../../components/Padding';
-import Row from '../../components/Row';
+import { connect as connectNavigation } from '../../../../navigation';
+import { navigationProp } from '../../../../types/props';
+import * as WalletService from '../../../../services/WalletService';
+import BigCenter from '../../../components/BigCenter';
+import Button from '../../../components/Button';
+import Padding from '../../../components/Padding';
+import Row from '../../../components/Row';
 
-class Intro extends Component {
+class BaseIntro extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired
+    };
+  }
+
   render() {
     return (
       <BigCenter>
         <Image
-          source={require('../../../images/logo-with-text/logo-with-text-transparent.png')}
+          source={require('../../../../images/logo-with-text/logo-with-text-transparent.png')}
           style={{
             marginHorizontal: 0,
             width: '100%',
@@ -40,7 +45,9 @@ class Intro extends Component {
           <Button
             large
             title="Import"
-            onPress={() => push('navigation.onboarding.ImportMnemonic')}
+            onPress={() =>
+              this.props.navigation.push('navigation.onboarding.ImportMnemonic')
+            }
           />
         </Row>
       </BigCenter>
@@ -50,7 +57,7 @@ class Intro extends Component {
   async generateWallet() {
     try {
       const mnemonic = await WalletService.generateMnemonics();
-      push('navigation.onboarding.PreviewMnemonic', {
+      this.props.navigation.push('navigation.onboarding.PreviewMnemonic', {
         mnemonic: mnemonic.split(/\s+/),
         generated: true
       });
@@ -61,4 +68,6 @@ class Intro extends Component {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(Intro);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  connectNavigation(BaseIntro)
+);

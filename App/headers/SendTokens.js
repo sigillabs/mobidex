@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '../../styles';
-import { push } from '../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 
 export default class SendTokensHeader extends Component {
   render() {
@@ -12,7 +12,10 @@ export default class SendTokensHeader extends Component {
         backgroundColor={colors.background}
         statusBarProps={{ barStyle: 'light-content' }}
         leftComponent={
-          <TouchableOpacity style={{ padding: 10 }} onPress={() => pop()}>
+          <TouchableOpacity
+            style={{ padding: 10 }}
+            onPress={() => this.props.navigation.pop()}
+          >
             <Icon name="arrow-back" color="black" size={15} />
           </TouchableOpacity>
         }

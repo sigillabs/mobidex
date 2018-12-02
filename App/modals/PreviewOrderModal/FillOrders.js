@@ -6,7 +6,7 @@ import { InteractionManager, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
-import { dismissModal, pop } from '../../../navigation';
+import { connect as connectNavigation } from '../../../navigation';
 import * as AssetService from '../../../services/AssetService';
 import * as OrderService from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
@@ -107,7 +107,7 @@ class PreviewFillOrders extends Component {
         }
 
         if (!quote) {
-          pop();
+          this.props.navigation.dismissModal();
           return;
         }
 
@@ -135,7 +135,7 @@ class PreviewFillOrders extends Component {
         });
       } catch (err) {
         console.warn(err.message, err);
-        pop();
+        this.props.navigation.dismissModal();
       }
     });
   }
@@ -386,7 +386,7 @@ class PreviewFillOrders extends Component {
   };
 
   cancel = () => {
-    dismissModal();
+    this.props.navigation.dismissModal();
   };
 
   submit = async () => {
@@ -394,14 +394,14 @@ class PreviewFillOrders extends Component {
     const fillAction = this.getFillAction();
 
     await this.props.dispatch(fillAction(quote));
-    dismissModal();
+    this.props.navigation.dismissModal();
   };
 }
 
 export default connect(
   ({ wallet: { web3 } }) => ({ web3 }),
   dispatch => ({ dispatch })
-)(PreviewFillOrders);
+)(connectNavigation(PreviewFillOrders));
 
 const styles = {
   tokenAmountRight: {

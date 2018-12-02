@@ -4,7 +4,7 @@ import { FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import * as AssetService from '../../../../services/AssetService';
 import { initialLoad } from '../../../../thunks';
-import { push } from '../../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 import EmptyList from '../../../components/EmptyList';
 import MutedText from '../../../components/MutedText';
 import QuoteForexItem from './QuoteForexItem';
@@ -44,7 +44,10 @@ class BaseProductScreen extends Component {
           return (
             <TouchableOpacity
               onPress={() =>
-                push('navigation.trade.ProductDetails', { base, quote })
+                this.props.navigation.push('navigation.trade.ProductDetails', {
+                  base,
+                  quote
+                })
               }
             >
               <ProductItem quoteToken={quote} baseToken={base} />
@@ -82,4 +85,4 @@ export default connect(
     showForexPrices: state.settings.showForexPrices
   }),
   dispatch => ({ dispatch })
-)(BaseProductScreen);
+)(connectNavigation(BaseProductScreen));

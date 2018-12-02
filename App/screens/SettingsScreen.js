@@ -5,9 +5,10 @@ import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { clearCache } from '../../utils';
+import NavigationProvider from '../NavigationProvider';
 import MutedText from '../components/MutedText';
 
-class SettingsScreen extends Component {
+class SettingsScreen extends NavigationProvider {
   static propTypes = {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,

@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { styles } from '../../../styles';
 import PinKeyboard from '../../components/PinKeyboard';
 import PinView from '../../components/PinView';
-import { push } from '../../../navigation';
+import { connect as connectNavigation } from '../../../../navigation';
 
 class UnlockWithPinScreen extends Component {
   static get propTypes() {
@@ -80,7 +80,9 @@ class UnlockWithPinScreen extends Component {
       return;
     }
 
-    push('navigation.tradeUnlocking', { pin: pin.slice(0, 6) });
+    this.props.navigation.push('navigation.tradeUnlocking', {
+      pin: pin.slice(0, 6)
+    });
   }
 }
 
