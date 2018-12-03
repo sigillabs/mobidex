@@ -8,6 +8,7 @@ import * as WalletService from '../../../../services/WalletService';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { wrapEther, unwrapEther } from '../../../../thunks';
+import { navigationProp } from '../../../../types/props';
 import {
   formatAmount,
   isDecimalOverflow,
@@ -15,12 +16,20 @@ import {
   processVirtualKeyboardCharacter,
   reduceDecimalOverflow
 } from '../../../../utils';
+import BigCenter from '../../../components/BigCenter';
 import TokenAmount from '../../../components/TokenAmount';
 import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
 import Wrapping from './Wrapping';
 import Unwrapping from './Unwrapping';
 
 class BaseWrapEtherScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -48,25 +57,23 @@ class BaseWrapEtherScreen extends Component {
     }
 
     return (
-      <View style={{ width: '100%', height: '100%' }}>
-        <View>
-          <TokenAmount
-            label={'Wrapped Ether Amount'}
-            symbol={'ETH'}
-            containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
-            format={true}
-            cursor={true}
-            cursorProps={{ style: { marginLeft: 2 } }}
-            amount={new BigNumber(this.state.amount || 0).toString()}
-          />
-        </View>
+      <BigCenter>
+        <TokenAmount
+          label={'Wrapped Ether Amount'}
+          symbol={'ETH'}
+          containerStyle={{ marginTop: 10, marginBottom: 10, padding: 0 }}
+          format={true}
+          cursor={true}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          amount={new BigNumber(this.state.amount || 0).toString()}
+        />
         <Slider
           step={0.0001}
           minimumValue={0}
           maximumValue={this.getTotalEthereum().toNumber()}
           value={new BigNumber(this.state.amount || 0).toNumber()}
           onValueChange={this.setAmount}
-          style={[styles.mv0, styles.mh2]}
+          style={[styles.mv0, styles.mh2, styles.w100]}
         />
         <TokenAmountKeyboard
           onChange={this.onSetAmountKeyboard}
@@ -75,7 +82,7 @@ class BaseWrapEtherScreen extends Component {
           buttonTitle="Wrap/Unwrap"
           buttonIcon={<Icon name="check" size={24} color="white" />}
         />
-      </View>
+      </BigCenter>
     );
   }
 
@@ -167,10 +174,6 @@ class BaseWrapEtherScreen extends Component {
     });
   }
 }
-
-BaseWrapEtherScreen.propTypes = {
-  dispatch: PropTypes.func.isRequired
-};
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
   connectNavigation(BaseWrapEtherScreen)

@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
+import { navigationProp } from '../../../../types/props';
 import Button from '../../../components/Button';
 import Divider from '../../../components/Divider';
 import Padding from '../../../components/Padding';
@@ -13,6 +14,7 @@ import ProductDetailListItem from './ProductDetailListItem';
 class ProductDetailsView extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       base: PropTypes.object,
       quote: PropTypes.object,
       period: PropTypes.string,

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { colors, styles } from '../../styles';
+import { colors } from '../../styles';
 import Button from './Button';
 
 export default class MaxButton extends Component {

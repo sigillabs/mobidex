@@ -5,6 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect as connectNavigation } from '../../../navigation';
 import * as WalletService from '../../../services/WalletService';
 import { colors } from '../../../styles';
+import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Padding from '../../components/Padding';
 import RotatingView from '../../components/RotatingView';

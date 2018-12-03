@@ -5,8 +5,11 @@ export default class WrapEtherScreen extends Component {
   static options() {
     return {
       topBar: {
-        visible: false,
-        drawBehind: true
+        visible: true,
+        drawBehind: false,
+        backButton: {
+          color: 'black'
+        }
       }
     };
   }

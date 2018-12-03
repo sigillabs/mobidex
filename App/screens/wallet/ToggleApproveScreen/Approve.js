@@ -8,10 +8,19 @@ import * as AssetService from '../../../../services/AssetService';
 import { connect as connectNavigation } from '../../../../navigation';
 import { colors } from '../../../../styles';
 import { setUnlimitedProxyAllowance } from '../../../../thunks';
+import { navigationProp } from '../../../../types/props';
 import Button from '../../../components/Button';
 import Approving from './Approving';
 
 class ApproveScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      dispatch: PropTypes.func.isRequired,
+      assetData: PropTypes.string.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -80,11 +89,6 @@ class ApproveScreen extends Component {
     });
   };
 }
-
-ApproveScreen.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  assetData: PropTypes.string.isRequired
-};
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
   connectNavigation(ApproveScreen)

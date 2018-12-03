@@ -3,14 +3,16 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
+import { navigationProp } from '../../../types/props';
 import PinKeyboard from '../../components/PinKeyboard';
 import PinView from '../../components/PinView';
-import { connect as connectNavigation } from '../../../navigation';
 
 class UnlockWithPin extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       error: PropTypes.object,
       showUnlocking: PropTypes.func.isRequired
     };

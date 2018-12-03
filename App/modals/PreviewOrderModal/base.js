@@ -1,11 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect as connectNavigation } from '../../../navigation';
+import { navigationProp } from '../../../types/props';
 import PageRoot from '../../components/PageRoot';
 import FillOrdersPreview from './FillOrders';
 import LimitOrderPreview from './LimitOrder';
 
 class BasePreviewOrderModal extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      type: PropTypes.string.isRequired,
+      quote: PropTypes.object.isRequired,
+      base: PropTypes.object.isRequired
+    };
+  }
+
   render() {
     const { type, ...rest } = this.props;
 

@@ -19,11 +19,22 @@ export default class RelayerClient {
   }
 
   @time
-  @cache('relayer:v2:orders', 1)
+  @cache('relayer:v2:orders', 24 * 60 * 60)
   async getOrders() {
     const result = await this.client.getOrdersAsync({
       networkId: this.network,
       perPage: 1000
+    });
+    return result.records.map(record => record.order);
+  }
+
+  @time
+  @cache('relayer:v2:orders:{}', 24 * 60 * 60)
+  async getOrdersForAddress(address) {
+    const result = await this.client.getOrdersAsync({
+      networkId: this.network,
+      perPage: 1000,
+      makerAddress: address
     });
     return result.records.map(record => record.order);
   }

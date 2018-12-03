@@ -3,10 +3,10 @@ import 'node-libs-react-native/globals';
 import { I18nManager, YellowBox } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import RNRestart from 'react-native-restart';
-import { registerHeaders } from './headers';
-import { registerModals } from './modals';
 import { setInitialBootRoot, setOnboardingRoot } from './navigation';
-import { registerScreens } from './screens';
+import { registerHeaders } from './navigation/headers';
+import { registerModals } from './navigation/modals';
+import { registerScreens } from './navigation/screens';
 import { store } from './store';
 import { loadWalletAddress } from './thunks';
 import { setExceptionHandlers } from './error-handlers';
@@ -37,7 +37,7 @@ registerModals();
 Navigation.events().registerAppLaunchedListener(async () => {
   Navigation.setDefaultOptions({
     statusBar: {
-      visible: false,
+      visible: true,
       style: 'dark'
     },
     topBar: {

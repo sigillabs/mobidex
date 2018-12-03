@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect as connectNavigation } from '../../../navigation';
 import * as WalletService from '../../../services/WalletService';
+import { navigationProp } from '../../../types/props';
 import Loading from '../../views/Loading';
 import UnlockWithTouchIdentification from './UnlockWithTouchIdentification';
 import UnlockWithPin from './UnlockWithPin';
@@ -10,6 +11,7 @@ import Unlocking from './Unlocking';
 class UnlockAndSignModal extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       next: PropTypes.func.isRequired,
       tx: PropTypes.object,
       message: PropTypes.string

@@ -84,7 +84,11 @@ class BasePinScreen extends Component {
 
     this.props.navigation.showModal('modals.ConstructWallet', {
       mnemonic,
-      pin
+      pin,
+      callback: error =>
+        error
+          ? this.props.navigation.showErrorModal(error)
+          : this.props.navigation.push('navigation.trade.InitialLoadScreen')
     });
   }
 }

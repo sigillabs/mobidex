@@ -5,6 +5,7 @@ import { Text } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect as connectNavigation } from '../../../navigation';
 import { colors } from '../../../styles';
+import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Button from '../../components/Button.js';
 import RelayerError from './RelayerError';
@@ -12,6 +13,13 @@ import TokenError from './TokenError';
 import ZeroExError from './ZeroExError';
 
 class BaseErrorModal extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      error: PropTypes.object
+    };
+  }
+
   renderRelayerErrors() {
     const error = this.props.error;
     return <RelayerError error={error} />;
@@ -67,10 +75,6 @@ class BaseErrorModal extends Component {
 }
 
 export default connectNavigation(BaseErrorModal);
-
-BaseErrorModal.propTypes = {
-  error: PropTypes.object
-};
 
 const styles = {
   text: {

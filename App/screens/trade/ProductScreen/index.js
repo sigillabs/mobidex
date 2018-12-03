@@ -1,19 +1,22 @@
 import React from 'react';
+import { Navigation } from 'react-native-navigation';
+import { connect } from 'react-redux';
+import { toggleShowForex } from '../../../../actions';
 import NavigationProvider from '../../../NavigationProvider';
 import BaseProductScreen from './base';
 
-export default class ProductScreen extends React.Component {
+class ProductScreen extends React.Component {
   static options() {
     return {
       topBar: {
         visible: true,
         drawBehind: false,
         backButton: {
-          visible: true,
           color: 'black'
         },
         title: {
-          text: 'Trade'
+          text: 'Trade',
+          alignment: 'center'
         },
         rightButtons: [
           {
@@ -26,6 +29,11 @@ export default class ProductScreen extends React.Component {
     };
   }
 
+  constructor(props) {
+    super(props);
+    Navigation.events().bindComponent(this);
+  }
+
   render() {
     return (
       <NavigationProvider>
@@ -33,4 +41,12 @@ export default class ProductScreen extends React.Component {
       </NavigationProvider>
     );
   }
+
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'toggleForexButton') {
+      this.props.dispatch(toggleShowForex());
+    }
+  }
 }
+
+export default connect(() => ({}), dispatch => ({ dispatch }))(ProductScreen);

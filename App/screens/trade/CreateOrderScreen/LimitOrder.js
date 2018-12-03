@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
+import { navigationProp } from '../../../../types/props';
 import {
   isValidAmount,
   processVirtualKeyboardCharacter
@@ -25,6 +26,7 @@ const EXPIRATION_VALUES = [
 class CreateLimitOrder extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       side: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired

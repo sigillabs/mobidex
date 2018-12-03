@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { clearCache } from '../../utils';
-import NavigationProvider from '../NavigationProvider';
 import MutedText from '../components/MutedText';
 
-class SettingsScreen extends NavigationProvider {
+class SettingsScreen extends React.Component {
   static propTypes = {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,

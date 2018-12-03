@@ -62,9 +62,9 @@ export async function getWalletAddress() {
   );
 }
 
-export async function signTransaction(tx, passcode) {
+export async function signTransaction(tx, password) {
   return await new Promise((resolve, reject) =>
-    WalletManager.signTransaction(tx, passcode, (err, data) => {
+    WalletManager.signTransaction(tx, password, (err, data) => {
       if (err) return reject(err);
       if (!data) return resolve();
       resolve({
@@ -76,9 +76,9 @@ export async function signTransaction(tx, passcode) {
   );
 }
 
-export async function signMessage(message, passcode) {
+export async function signMessage(message, password) {
   return await new Promise((resolve, reject) =>
-    WalletManager.signMessage(message, passcode, (err, data) => {
+    WalletManager.signMessage(message, password, (err, data) => {
       if (err) return reject(err);
       resolve(`0x${ethUtil.stripHexPrefix(data)}`);
     })
@@ -152,7 +152,10 @@ export function getWeb3() {
               return cb(new Error('Could not unlock wallet'));
             }
 
-            return cb(null, `0x${ethUtil.stripHexPrefix(signature)}`);
+            return cb(
+              null,
+              `0x${ethUtil.stripHexPrefix(signature.toLowerCase())}`
+            );
           }
         });
       }

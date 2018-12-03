@@ -8,12 +8,19 @@ import {
 import { Text } from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
+import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import * as WalletService from '../../../services/WalletService';
-import { connect as connectNavigation } from '../../../navigation';
 
 class UnlockWithTouchIdentification extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 

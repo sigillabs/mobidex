@@ -3,6 +3,8 @@ import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// Listen to redux store for updates so we can display appropriate badge?
+
 export const NavigationContext = React.createContext();
 
 export function connect(WrappedComponent) {
@@ -72,6 +74,14 @@ export function setInitialBootRoot() {
 }
 
 export async function setTabsRoot() {
+  Navigation.setRoot({
+    root: {
+      bottomTabs: await getBottomTabs()
+    }
+  });
+}
+
+export async function getBottomTabs() {
   const icons = await Promise.all([
     FontAwesome.getImageSource('line-chart', 30),
     Ionicons.getImageSource('ios-book', 30),
@@ -79,82 +89,78 @@ export async function setTabsRoot() {
     Ionicons.getImageSource('ios-settings', 30)
   ]);
   const [trade, orders, wallet, settings] = icons;
-
-  Navigation.setRoot({
-    root: {
-      bottomTabs: {
-        children: [
-          {
-            stack: {
-              children: [
-                {
-                  component: {
-                    name: 'navigation.trade.Products'
-                  }
-                }
-              ],
-              options: {
-                bottomTab: {
-                  text: 'Trade',
-                  icon: trade
-                }
+  return {
+    children: [
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.trade.Products'
               }
             }
-          },
-          {
-            stack: {
-              children: [
-                {
-                  component: {
-                    name: 'navigation.orders.List'
-                  }
-                }
-              ],
-              options: {
-                bottomTab: {
-                  text: 'Orders',
-                  icon: orders
-                }
-              }
-            }
-          },
-          {
-            stack: {
-              children: [
-                {
-                  component: {
-                    name: 'navigation.wallet.Accounts'
-                  }
-                }
-              ],
-              options: {
-                bottomTab: {
-                  text: 'Wallet',
-                  icon: wallet
-                }
-              }
-            }
-          },
-          {
-            stack: {
-              children: [
-                {
-                  component: {
-                    name: 'navigation.Settings'
-                  }
-                }
-              ],
-              options: {
-                bottomTab: {
-                  text: 'Settings',
-                  icon: settings,
-                  badge: '1'
-                }
-              }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Trade',
+              icon: trade
             }
           }
-        ]
+        }
+      },
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                id: 'OrdersList',
+                name: 'navigation.orders.List'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Orders',
+              icon: orders,
+              badgeColor: 'red'
+            }
+          }
+        }
+      },
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.wallet.Accounts'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Wallet',
+              icon: wallet
+            }
+          }
+        }
+      },
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.Settings'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Settings',
+              icon: settings
+            }
+          }
+        }
       }
-    }
-  });
+    ]
+  };
 }

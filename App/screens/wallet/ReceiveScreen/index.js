@@ -1,15 +1,14 @@
 import React from 'react';
 import NavigationProvider from '../../../NavigationProvider';
-import BaseSendScreen from './base';
+import BaseReceiveScreen from './base';
 
-export default class SendScreen extends React.Component {
+export default class ReceiveScreen extends React.Component {
   static options() {
     return {
       topBar: {
         visible: true,
         drawBehind: false,
         backButton: {
-          visible: true,
           color: 'black'
         }
       }
@@ -19,7 +18,7 @@ export default class SendScreen extends React.Component {
   render() {
     return (
       <NavigationProvider>
-        <BaseSendScreen {...this.props} />
+        <BaseReceiveScreen {...this.props} />
       </NavigationProvider>
     );
   }

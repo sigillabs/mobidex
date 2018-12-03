@@ -1,28 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { InteractionManager, StatusBar } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { connect as connectNavigation, setTabsRoot } from '../../../navigation';
+import { registerBackgroundUpdates } from '../../../navigation/background';
 import { initialLoad, startWebsockets } from '../../../thunks/boot';
-import { setTabsRoot } from '../../../navigation';
-import NavigationProvider from '../../NavigationProvider';
+import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Padding from '../../components/Padding';
 import RotatingView from '../../components/RotatingView';
 
-class InitialLoadScreen extends NavigationProvider {
+class BaseInitialLoadScreen extends React.Component {
   static propTypes = {
+    navigation: navigationProp.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
-    StatusBar.setHidden(true, 'none');
-
-    InteractionManager.runAfterInteractions(async () => {
+    requestAnimationFrame(async () => {
       await this.props.dispatch(initialLoad(1));
       this.props.dispatch(startWebsockets());
       setTabsRoot();
+
+      // background updates have to be registered after tabs have been set.
+      registerBackgroundUpdates();
     });
   }
 
@@ -42,5 +44,5 @@ class InitialLoadScreen extends NavigationProvider {
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
-  InitialLoadScreen
+  connectNavigation(BaseInitialLoadScreen)
 );

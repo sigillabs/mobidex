@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as AssetService from '../../../../services/AssetService';
 import { initialLoad } from '../../../../thunks';
 import { connect as connectNavigation } from '../../../../navigation';
+import { navigationProp } from '../../../../types/props';
 import EmptyList from '../../../components/EmptyList';
 import MutedText from '../../../components/MutedText';
 import QuoteForexItem from './QuoteForexItem';
@@ -13,6 +14,7 @@ import QuoteTokenItem from './QuoteTokenItem';
 class BaseProductScreen extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       assets: PropTypes.array.isRequired,
       products: PropTypes.array.isRequired,
       showForexPrices: PropTypes.bool.isRequired,

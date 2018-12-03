@@ -8,10 +8,19 @@ import * as AssetService from '../../../../services/AssetService';
 import { connect as connectNavigation } from '../../../../navigation';
 import { colors, styles } from '../../../../styles';
 import { setNoProxyAllowance } from '../../../../thunks';
+import { navigationProp } from '../../../../types/props';
 import Button from '../../../components/Button';
 import Disapproving from './Disapproving';
 
 class DisapproveScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      dispatch: PropTypes.func.isRequired,
+      assetData: PropTypes.string.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -78,11 +87,6 @@ class DisapproveScreen extends Component {
     }
   }
 }
-
-DisapproveScreen.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  assetData: PropTypes.string.isRequired
-};
 
 export default connect(state => ({}), dispatch => ({ dispatch }))(
   connectNavigation(DisapproveScreen)

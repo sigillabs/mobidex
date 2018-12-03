@@ -18,10 +18,6 @@ import { showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
-import {
-  checkAndWrapEther,
-  checkAndSetUnlimitedProxyAllowance
-} from './wallet';
 
 function fixOrders(orders) {
   if (!orders) return null;
@@ -94,12 +90,13 @@ export function loadOrderbooks(force = false) {
 export function loadOrders(force = false) {
   return async (dispatch, getState) => {
     const {
+      wallet: { address },
       settings: { network, relayerEndpoint }
     } = getState();
 
     try {
       const client = new RelayerClient(relayerEndpoint, { network });
-      const orders = await client.getOrders(force);
+      const orders = await client.getOrdersForAddress(address, force);
       dispatch(setOrders(fixOrders(orders)));
     } catch (err) {
       showErrorModal(err);
@@ -252,24 +249,10 @@ export function submitOrder(order) {
     const {
       settings: { network, relayerEndpoint }
     } = getState();
+
+    // Sign
     const client = new RelayerClient(relayerEndpoint, { network });
-    const makerTokenAddress = assetDataUtils.decodeERC20AssetData(
-      order.makerAssetData
-    ).tokenAddress;
-    const takerTokenAddress = assetDataUtils.decodeERC20AssetData(
-      order.takerAssetData
-    ).tokenAddress;
-
     const signedOrder = await OrderService.signOrder(order);
-
-    // await dispatch(
-    //   checkAndWrapEther(makerTokenAddress, signedOrder.makerAssetAmount, {
-    //     wei: true,
-    //     batch: false
-    //   })
-    // );
-
-    // await dispatch(checkAndSetUnlimitedProxyAllowance(takerTokenAddress));
 
     // Submit
     await client.submitOrder(signedOrder);
@@ -281,8 +264,11 @@ export function submitOrder(order) {
 export function cancelOrder(order) {
   return async (dispatch, getState) => {
     const {
-      wallet: { web3, address }
+      wallet: { address }
     } = getState();
+
+    const web3 = WalletService.getWeb3();
+
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = await new ZeroExClient(ethereumClient);
 

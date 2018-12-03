@@ -79,6 +79,7 @@ LogoTicker.defaultProps = {
 
 const style = {
   container: {
+    backgroundColor: 'transparent',
     minWidth: 150,
     alignItems: 'center',
     justifyContent: 'center'

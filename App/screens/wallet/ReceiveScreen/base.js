@@ -5,10 +5,10 @@ import { Avatar, Text } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import ethUtil from 'ethereumjs-util';
-import { styles } from '../../../styles';
-import Button from '../../components/Button';
+import { styles } from '../../../../styles';
+import Button from '../../../components/Button';
 
-class ReceiveScreen extends Component {
+class BaseReceiveScreen extends Component {
   render() {
     let uri = `https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${ethUtil.stripHexPrefix(
       this.props.address
@@ -69,11 +69,11 @@ class ReceiveScreen extends Component {
   }
 }
 
-ReceiveScreen.propTypes = {
+BaseReceiveScreen.propTypes = {
   address: PropTypes.string
 };
 
 export default connect(
   state => ({ ...state.device.layout, ...state.wallet }),
   dispatch => ({ dispatch })
-)(ReceiveScreen);
+)(BaseReceiveScreen);

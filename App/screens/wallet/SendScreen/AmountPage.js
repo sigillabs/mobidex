@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as TickerService from '../../../../services/TickerService';
 import * as WalletService from '../../../../services/WalletService';
+import { styles } from '../../../../styles';
 import {
   formatAmount,
   getForexIcon,
@@ -50,7 +51,23 @@ export default class AmountPage extends Component {
           amount={formatAmount(balance ? balance : '0')}
           onPress={() => this.setState({ focus: 'amount' })}
         />
-        <Row>
+        {/*<TouchableTokenAmount
+          label={'Send Amount'}
+          symbol={asset.symbol}
+          containerStyle={{
+            flex: 1,
+            marginTop: 10,
+            marginBottom: 10,
+            padding: 0
+          }}
+          symbolStyle={{ marginRight: 10 }}
+          format={false}
+          cursor={this.state.focus === 'amount'}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          amount={this.state.amount}
+          onPress={() => this.setState({ focus: 'amount' })}
+        />*/}
+        <Row style={[styles.w100, styles.flex1]}>
           <TouchableTokenAmount
             label={'Send Amount'}
             symbol={asset.symbol}
@@ -66,8 +83,12 @@ export default class AmountPage extends Component {
             cursorProps={{ style: { marginLeft: 2 } }}
             amount={this.state.amount}
             onPress={() => this.setState({ focus: 'amount' })}
+            wrapperStyle={[styles.flex1]}
           />
-          <MaxButton onPress={() => this.setTokenAmount(balance.toString())} />
+          <MaxButton
+            buttonStyle={[styles.mt3]}
+            onPress={this.setMaxTokenAmount}
+          />
         </Row>
         <TouchableTokenAmount
           label={'Send Amount in Forex'}
@@ -109,34 +130,33 @@ export default class AmountPage extends Component {
     }
   }
 
-  updateColumnValue(column, value) {
-    return processVirtualKeyboardCharacter(
-      value,
-      this.state[column].toString()
-    );
-  }
-
-  setTokenAmount(amount) {
+  setTokenAmount = amount => {
     if (isValidAmount(amount)) {
       const forex = TickerService.getForexTicker(this.props.asset.symbol);
       const forexAmount =
         amount && forex && forex.price
-          ? new BigNumber(amount).mul(forex.price).toNumber()
+          ? new BigNumber(amount).mul(forex.price).toString()
           : '';
       this.setState({ amount, forex: forexAmount });
     }
-  }
+  };
 
-  updateTokenAmount(value) {
+  setMaxTokenAmount = () => {
+    const { asset } = this.props;
+    const balance = WalletService.getAdjustedBalanceByAddress(asset.address);
+    this.setTokenAmount(balance.toString());
+  };
+
+  updateTokenAmount = value => {
     const amount = processVirtualKeyboardCharacter(
       value,
       this.state.amount.toString()
     );
 
     this.setTokenAmount(amount);
-  }
+  };
 
-  updateForexAmount(value) {
+  updateForexAmount = value => {
     const forexAmount = processVirtualKeyboardCharacter(
       value,
       this.state.forex.toString()
@@ -150,7 +170,7 @@ export default class AmountPage extends Component {
           : '';
       this.setState({ amount: tokenAmount, forex: forexAmount });
     }
-  }
+  };
 }
 
 AmountPage.propTypes = {

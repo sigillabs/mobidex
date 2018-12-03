@@ -96,6 +96,9 @@ export const styles = StyleSheet.create({
   flex4: {
     flex: 4
   },
+  w100: {
+    width: '100%'
+  },
   ph0: {
     paddingHorizontal: 0,
     paddingLeft: 0,

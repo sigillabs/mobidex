@@ -5,12 +5,11 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
-import {
-  convertZeroExOrderToLimitOrder
-} from '../../../services/OrderService';
+import { convertZeroExOrderToLimitOrder } from '../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { submitOrder } from '../../../thunks';
+import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -20,6 +19,7 @@ import SubmittingOrders from './SubmittingOrders';
 class PreviewLimitOrder extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       side: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       order: PropTypes.object.isRequired,

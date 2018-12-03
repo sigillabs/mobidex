@@ -19,7 +19,7 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address;
-  }, 24 * 60 * 60)
+  }, 365 * 24 * 60 * 60)
   async get() {
     const networkId = await this.ethereumClient.getNetworkId();
     const account = await this.ethereumClient.getAccount();
@@ -121,7 +121,7 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':balance';
-  }, 24 * 60 * 60)
+  }, 365 * 24 * 60 * 60)
   async getBalance() {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient
@@ -137,7 +137,7 @@ export default class TokenClient {
   @time
   @cache(function() {
     return 'client:token:' + this.address + ':allowance';
-  }, 24 * 60 * 60)
+  }, 365 * 24 * 60 * 60)
   async getAllowance(account = null) {
     const contractWrappers = await new ZeroExClient(
       this.ethereumClient

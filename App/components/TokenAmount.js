@@ -28,7 +28,6 @@ export default class TokenAmount extends Component {
       cursorProps: PropTypes.object,
       amountStyle: PropTypes.object,
       amountContainerStyle: PropTypes.object,
-      wrapperStyle: PropTypes.object,
       nameStyle: PropTypes.object,
       symbolStyle: PropTypes.object
     };
@@ -47,12 +46,10 @@ export default class TokenAmount extends Component {
   }
 
   render() {
-    const { wrapperStyle } = this.props;
-
     return (
       <Fragment>
         {this.renderLabel()}
-        <View style={[style.wrapper, wrapperStyle]}>
+        <View style={[style.wrapper]}>
           {this.renderIcon()}
           {this.renderAmount()}
           {this.renderSymbol()}

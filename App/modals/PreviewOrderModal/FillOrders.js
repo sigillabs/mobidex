@@ -13,6 +13,7 @@ import * as WalletService from '../../../services/WalletService';
 import * as ZeroExService from '../../../services/ZeroExService';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { marketBuy, marketSell } from '../../../thunks';
+import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -23,6 +24,7 @@ import SubmittingOrders from './SubmittingOrders';
 class Order extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       limitOrder: PropTypes.object.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired,
@@ -134,8 +136,8 @@ class PreviewFillOrders extends Component {
           loading: false
         });
       } catch (err) {
-        console.warn(err.message, err);
         this.props.navigation.dismissModal();
+        this.props.navigation.showErrorModal(err);
       }
     });
   }

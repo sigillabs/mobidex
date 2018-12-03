@@ -9,7 +9,6 @@ export default class CreateOrderScreen extends Component {
         visible: true,
         drawBehind: false,
         backButton: {
-          visible: true,
           color: 'black'
         },
         title: {
@@ -18,14 +17,7 @@ export default class CreateOrderScreen extends Component {
             alignment: 'center',
             passProps
           }
-        },
-        rightButtons: [
-          {
-            id: 'toggleForexButton',
-            text: 'ETH',
-            color: 'black'
-          }
-        ]
+        }
       }
     };
   }

@@ -6,8 +6,11 @@ export default class ToggleApproveScreen extends React.Component {
   static options() {
     return {
       topBar: {
-        visible: false,
-        drawBehind: true
+        visible: true,
+        drawBehind: false,
+        backButton: {
+          color: 'black'
+        }
       }
     };
   }

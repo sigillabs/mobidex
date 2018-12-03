@@ -10,6 +10,7 @@ import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import * as WalletService from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
+import { navigationProp } from '../../../../types/props';
 import { getImage } from '../../../../utils';
 import { assetProp } from '../../../../types/props';
 import Button from '../../../components/Button';
@@ -17,6 +18,7 @@ import TokenBalanceByAssetData from '../../../views/TokenBalanceByAssetData';
 
 class TokenDetails extends Component {
   static propTypes = {
+    navigation: navigationProp.isRequired,
     asset: assetProp.isRequired
   };
 

@@ -4,13 +4,22 @@ import React, { Component } from 'react';
 import { InteractionManager, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../../constants/0x';
-import { sendEther, sendTokens } from '../../../../thunks';
 import { connect as connectNavigation } from '../../../../navigation';
+import { sendEther, sendTokens } from '../../../../thunks';
+import { navigationProp } from '../../../../types/props';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
 import Sending from './Sending';
 
 class BaseSendScreen extends Component {
+  static get propTypes() {
+    return {
+      navigation: navigationProp.isRequired,
+      asset: PropTypes.object.isRequired,
+      dispatch: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -93,8 +102,3 @@ class BaseSendScreen extends Component {
 export default connect(state => ({ ...state }), dispatch => ({ dispatch }))(
   connectNavigation(BaseSendScreen)
 );
-
-BaseSendScreen.propTypes = {
-  asset: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
-};

@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,6 +83,31 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
                     + Character.digit(stripped.charAt(i+1), 16));
         }
         return data;
+    }
+
+    public static byte[] removeLeadingZeros(byte[] arr) {
+        int start = 0;
+        while (arr[start] == 0) {
+            start++;
+        }
+        if (start > 0) {
+            return Arrays.copyOfRange(arr, start, arr.length);
+        } else {
+            return arr;
+        }
+    }
+
+    public static byte[] leftPadWithZeros(byte[] arr, int size) {
+        if (arr.length >= size) {
+            return arr;
+        }
+
+        int paddingSize = size - arr.length;
+        byte[] padding = new byte[paddingSize];
+
+        Arrays.fill(padding, (byte)0);
+
+        return ArrayUtils.addAll(padding, arr);
     }
 
     WalletManagerModule(ReactApplicationContext reactContext) {
@@ -368,10 +395,22 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
                     // NOTE: Without https://github.com/walleth/kethereum/issues/48 need to implement own `eth_sign` function.
                     String message = "\u0019Ethereum Signed Message:\n" + messageData.length;
                     byte[] data = ArrayUtils.addAll(message.getBytes(), messageData);
+//                    Log.d("HASH", bytesToHex(keccak(data)));
 
                     SignatureData signature = SignKt.signMessage((ECKeyPair)args[0], data);
 
-                    byte[] compressedSignature = ArrayUtils.addAll(signature.getR().toByteArray(), signature.getS().toByteArray());
+                    byte[] r = leftPadWithZeros(removeLeadingZeros(signature.getR().toByteArray()), 32);
+                    byte[] s = leftPadWithZeros(removeLeadingZeros(signature.getS().toByteArray()), 32);
+
+//                    Log.d("R", new Integer(signature.getR().toByteArray().length).toString());
+//                    Log.d("R", signature.getR().toString(16));
+//                    Log.d("R", bytesToHex(r));
+//                    Log.d("S", new Integer(signature.getS().toByteArray().length).toString());
+//                    Log.d("S", signature.getS().toString(16));
+//                    Log.d("S", bytesToHex(s));
+//                    Log.d("V", bytesToHex(new byte[]{signature.getV()}));
+
+                    byte[] compressedSignature = ArrayUtils.addAll(r, s);
                     compressedSignature = ArrayUtils.add(compressedSignature, signature.getV());
 
                     cb.invoke(null, bytesToHex(compressedSignature));

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
+import { navigationProp } from '../../../../types/props';
 import {
   formatProduct,
   isValidAmount,
@@ -15,6 +16,7 @@ import OrderbookPrice from '../../../views/OrderbookPrice';
 class FillOrders extends PureComponent {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       side: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired
