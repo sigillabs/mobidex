@@ -94,8 +94,10 @@ class TokenList extends Component {
 
   async onRefresh(reload = true) {
     this.setState({ refreshing: true });
-    await this.props.dispatch(loadAllowances(reload));
-    await this.props.dispatch(loadBalances(reload));
+    await Promise.all([
+      this.props.dispatch(loadAllowances(reload)),
+      this.props.dispatch(loadBalances(reload))
+    ]);
     this.setState({ refreshing: false });
   }
 }

@@ -34,27 +34,23 @@ class BaseAccountsScreen extends Component {
     );
 
     return (
-      <PageRoot>
-        <Row>
-          {asset ? (
-            <TokenDetails asset={asset} />
-          ) : (
-            <PortfolioDetails assets={this.props.assets} />
-          )}
-        </Row>
-        <Row>
-          <TokenList
-            asset={asset}
-            assets={assets}
-            onPress={asset => {
-              if (this.state.asset !== asset.symbol) {
-                this.setState({
-                  asset: asset.symbol
-                });
-              }
-            }}
-          />
-        </Row>
+      <PageRoot style={{ flex: 1 }}>
+        {asset ? (
+          <TokenDetails asset={asset} />
+        ) : (
+          <PortfolioDetails assets={this.props.assets} />
+        )}
+        <TokenList
+          asset={asset}
+          assets={assets}
+          onPress={asset => {
+            if (this.state.asset !== asset.symbol) {
+              this.setState({
+                asset: asset.symbol
+              });
+            }
+          }}
+        />
       </PageRoot>
     );
   }
