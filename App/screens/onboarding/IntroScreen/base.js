@@ -32,8 +32,7 @@ class BaseIntro extends Component {
         <Text h4>Trustlessly Trade ERC20 Tokens</Text>
         <Padding size={20} />
         <Text h6>
-          To get started, import or generate a wallet. It is the 12-word
-          mnemonic Meta Mask gives while you are generating a wallet.
+          To get started, import or generate a wallet. Remember to back this mnemonic up.
         </Text>
         <Padding size={20} />
         <Row>

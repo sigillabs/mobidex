@@ -43,6 +43,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  paddedTop: {
+    marginTop: 100,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
   textCenter: {
     textAlign: 'center'
   },
