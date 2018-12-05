@@ -7,4 +7,9 @@
         <item name="android:layoutDirection">ltr</item>
     </style>
 
+    <!-- Launcher theme. -->
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
 </resources>
