@@ -1,40 +1,17 @@
-// Stolen from https://reactnavigation.org/docs/en/navigating-without-navigation-prop.html
+import { Linking } from 'react-native';
+import EthereumClient from '../clients/ethereum';
+import * as WalletService from './WalletService';
 
-import { NavigationActions } from 'react-navigation';
-import { setError } from '../actions';
+export async function gotoEtherScan(txaddr) {
+  const web3 = WalletService.getWeb3();
 
-let _navigator;
-let _store;
+  const ethereumClient = new EthereumClient(web3);
+  const networkId = await ethereumClient.getNetworkId();
+  switch (networkId) {
+    case 42:
+      return await Linking.openURL(`https://kovan.etherscan.io/tx/${txaddr}`);
 
-export function setStore(store) {
-  _store = store;
+    default:
+      return await Linking.openURL(`https://etherscan.io/tx/${txaddr}`);
+  }
 }
-
-export function setTopLevelNavigator(navigatorRef) {
-  _navigator = navigatorRef;
-}
-
-export function navigate(routeName, params) {
-  _navigator.dispatch(
-    NavigationActions.navigate({
-      routeName,
-      params
-    })
-  );
-}
-
-export function goBack() {
-  _navigator.dispatch(NavigationActions.back());
-}
-
-export function error(error) {
-  _store.dispatch(setError(error));
-  navigate('Error', { error });
-}
-
-export default {
-  error,
-  goBack,
-  navigate,
-  setTopLevelNavigator
-};

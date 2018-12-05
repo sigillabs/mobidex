@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { SectionList } from 'react-native';
 import { connect } from 'react-redux';
-import { gotoEtherScan, loadTransactions } from '../../../../thunks';
+import { loadTransactions } from '../../../../thunks';
+import { gotoEtherScan } from '../../../../services/NavigationService';
 import EmptyList from '../../../components/EmptyList';
 import MutedText from '../../../components/MutedText';
 import AdaptTransactionItem from './AdaptTransactionItem';
@@ -68,7 +69,7 @@ class BaseTransactionHistoryScreen extends Component {
   renderItem = ({ item }, index, section) => (
     <AdaptTransactionItem
       transaction={item}
-      onPress={() => this.props.dispatch(gotoEtherScan(item.id))}
+      onPress={() => gotoEtherScan(item.id)}
     />
   );
 

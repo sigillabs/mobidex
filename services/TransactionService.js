@@ -2,6 +2,7 @@ import { addActiveTransactions, removeActiveTransactions } from '../actions';
 import { cache } from '../utils';
 import BaseService from './BaseService';
 import BaseWatchdog from './BaseWatchdog';
+import * as WalletService from './WalletService';
 
 export class ActiveTransactionWatchdog extends BaseWatchdog {
   constructor(store, timeout = 1) {
@@ -12,8 +13,10 @@ export class ActiveTransactionWatchdog extends BaseWatchdog {
 
   async exec() {
     const {
-      wallet: { activeTransactions, web3 }
+      wallet: { activeTransactions }
     } = this.store.getState();
+
+    const web3 = WalletService.getWeb3();
 
     if (web3) {
       const txhashes = activeTransactions.map(({ id }) => id);

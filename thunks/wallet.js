@@ -35,7 +35,9 @@ export function loadAllowances(force = false) {
     const {
       relayer: { assets }
     } = getState();
+
     const web3 = WalletService.getWeb3();
+
     const ethereumClient = new EthereumClient(web3);
     const allowances = await Promise.all(
       assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
@@ -86,6 +88,7 @@ export function loadTransactions(force = false) {
     let {
       settings: { inf0xEndpoint, network }
     } = getState();
+
     const web3 = WalletService.getWeb3();
 
     try {
@@ -169,8 +172,11 @@ export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
     try {
       const {
-        wallet: { web3, address }
+        wallet: { address }
       } = getState();
+
+      const web3 = WalletService.getWeb3();
+
       const ethereumClient = new EthereumClient(web3);
       const tokenClient = new TokenClient(ethereumClient, token.address);
       const txhash = await tokenClient.send(to, amount);
@@ -193,8 +199,11 @@ export function sendEther(to, amount) {
   return async (dispatch, getState) => {
     try {
       const {
-        wallet: { web3, address }
+        wallet: { address }
       } = getState();
+
+      const web3 = WalletService.getWeb3();
+
       const ethereumClient = new EthereumClient(web3);
       const txhash = await ethereumClient.send(to, amount);
       const activeTransaction = {

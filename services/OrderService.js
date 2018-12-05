@@ -228,9 +228,7 @@ export async function getFilledTakerAmounts(orders) {
   if (!orders) return null;
   if (!orders.length) return [];
 
-  const {
-    wallet: { web3 }
-  } = _store.getState();
+  const web3 = WalletService.getWeb3();
 
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);

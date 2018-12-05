@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { gotoEtherScan } from '../../../../thunks';
+import { gotoEtherScan } from '../../../../services/NavigationService';
 import { transactionProp } from '../../../../types/props';
 import { formatAmount, formatAmountWithDecimals } from '../../../../utils';
 import * as AssetService from '../../../../services/AssetService';
@@ -194,7 +194,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`active-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
@@ -216,7 +216,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`active-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
@@ -235,7 +235,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`active-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
@@ -254,7 +254,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`tx-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <FilledItem transaction={tx} />
             </TouchableOpacity>
@@ -264,7 +264,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`tx-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <CancelledItem transaction={tx} />
             </TouchableOpacity>
@@ -274,7 +274,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`tx-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
@@ -297,7 +297,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`tx-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
@@ -320,7 +320,7 @@ class TransactionsList extends Component {
           return (
             <TouchableOpacity
               key={`tx-${index}`}
-              onPress={() => this.props.dispatch(gotoEtherScan(tx.id))}
+              onPress={() => gotoEtherScan(tx.id)}
             >
               <TransactionItem
                 action={txtype}
