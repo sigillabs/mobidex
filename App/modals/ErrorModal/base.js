@@ -8,6 +8,7 @@ import { colors } from '../../../styles';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Button from '../../components/Button.js';
+import AssetBuyerError from './AssetBuyerError';
 import RelayerError from './RelayerError';
 import TokenError from './TokenError';
 import ZeroExError from './ZeroExError';
@@ -18,6 +19,11 @@ class BaseErrorModal extends Component {
       navigation: navigationProp.isRequired,
       error: PropTypes.object
     };
+  }
+
+  renderAssetBuyerErrors() {
+    const error = this.props.error;
+    return <AssetBuyerError error={error} />;
   }
 
   renderRelayerErrors() {
@@ -42,7 +48,9 @@ class BaseErrorModal extends Component {
     }
     const message = error.message;
 
-    if (RelayerError.test(error)) {
+    if (AssetBuyerError.test(error)) {
+      return this.renderAssetBuyerErrors();
+    } else if (RelayerError.test(error)) {
       return this.renderRelayerErrors();
     } else if (TokenError.test(error)) {
       return this.renderTokenError();
