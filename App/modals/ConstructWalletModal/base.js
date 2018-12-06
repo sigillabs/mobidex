@@ -26,12 +26,12 @@ class BaseConstructWalletScreen extends Component {
       try {
         await WalletService.importMnemonics(mnemonic, pin);
       } catch (err) {
+        this.props.navigation.dismissModal();
         this.props.callback(err);
         return;
-      } finally {
-        this.props.navigation.dismissModal();
       }
 
+      this.props.navigation.dismissModal();
       this.props.callback();
     });
   }

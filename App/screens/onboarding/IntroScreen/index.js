@@ -14,7 +14,7 @@ export default class IntroScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseIntroScreen {...this.props} />
       </NavigationProvider>
     );

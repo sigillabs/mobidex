@@ -18,7 +18,7 @@ export default class SendScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseSendScreen {...this.props} />
       </NavigationProvider>
     );

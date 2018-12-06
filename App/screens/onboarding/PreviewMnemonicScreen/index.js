@@ -14,7 +14,7 @@ export default class PreviewMnemonicScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BasePreviewMnemonicScreen {...this.props} />
       </NavigationProvider>
     );

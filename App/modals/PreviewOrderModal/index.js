@@ -14,7 +14,7 @@ export default class PreviewOrderModal extends Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BasePreviewOrderModal {...this.props} />
       </NavigationProvider>
     );

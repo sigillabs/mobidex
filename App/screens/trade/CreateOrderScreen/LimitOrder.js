@@ -192,7 +192,16 @@ class CreateLimitOrder extends Component {
       order,
       side,
       base,
-      quote
+      quote,
+      callback: error => {
+        if (error) {
+          this.props.navigation.waitForAppear(() =>
+            this.props.navigation.showErrorModal(error)
+          );
+        } else {
+          this.props.navigation.pop();
+        }
+      }
     });
   }
 }

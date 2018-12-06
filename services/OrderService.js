@@ -306,25 +306,20 @@ export async function createOrder(limitOrder) {
 export async function signOrder(order) {
   const web3 = WalletService.getWeb3();
 
-  try {
-    const ethereumClient = new EthereumClient(web3);
-    const zeroExClient = new ZeroExClient(ethereumClient);
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
 
-    if (!order.salt) order.salt = generatePseudoRandomSalt();
+  if (!order.salt) order.salt = generatePseudoRandomSalt();
 
-    const orderHash = orderHashUtils.getOrderHashHex(order);
-    // Halting at signature -- seems like a performance or network issue.
-    const signature = await zeroExClient.signOrderHash(orderHash);
+  const orderHash = orderHashUtils.getOrderHashHex(order);
+  // Halting at signature -- seems like a performance or network issue.
+  const signature = await zeroExClient.signOrderHash(orderHash);
 
-    return {
-      ...order,
-      orderHash,
-      signature
-    };
-  } catch (err) {
-    showErrorModal(err);
-    return null;
-  }
+  return {
+    ...order,
+    orderHash,
+    signature
+  };
 }
 
 export async function getBuyAssetsQuoteAsync(

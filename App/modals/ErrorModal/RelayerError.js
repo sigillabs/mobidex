@@ -13,12 +13,24 @@ export default class RelayerError extends Component {
   }
 
   render() {
-    const { code, validationErrors } = this.parseMessage();
+    const {
+      source,
+      data: { code, validationErrors }
+    } = this.parseMessage();
 
     if (code === 100) {
-      return validationErrors.map((ve, index) =>
-        this.renderValidationError(ve, index)
-      );
+      if (validationErrors.length > 0) {
+        return validationErrors.map((ve, index) =>
+          this.renderValidationError(ve, index)
+        );
+      } else if (
+        ~source.toLowerCase().indexOf('post') &&
+        ~source.toLowerCase().indexOf('order')
+      ) {
+        return <Text style={styles.text}>Your wallet is either locked or you do not have enough tokens to create the order.</Text>;
+      } else {
+        return <Text style={styles.text}>Error posting to relayer</Text>;
+      }
     }
 
     return <Text style={styles.text}>Relayer failed for some reason</Text>;
@@ -47,7 +59,7 @@ export default class RelayerError extends Component {
     const message = error.message;
     const lines = message.split('\n');
     const json = lines[lines.length - 1];
-    return JSON.parse(json);
+    return { source: lines[lines.length - 2], data: JSON.parse(json) };
   }
 }
 

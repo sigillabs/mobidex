@@ -5,18 +5,19 @@ import {
   buildNavigationComponent,
   NavigationContext,
   showModal,
-  showErrorModal
+  showErrorModal,
+  waitForComponentAppear
 } from '../navigation';
 
 export default class NavigationProvider extends React.Component {
   static get propTypes() {
     return {
+      componentId: PropTypes.string.isRequired,
       children: PropTypes.node.isRequired
     };
   }
 
   render() {
-    const child = React.Children.only(this.props.children);
     return (
       <NavigationContext.Provider
         value={{
@@ -24,28 +25,30 @@ export default class NavigationProvider extends React.Component {
           pop: this.pop,
           showModal: showModal,
           showErrorModal: showErrorModal,
-          dismissModal: this.dismissModal
+          dismissModal: this.dismissModal,
+          waitForAppear: this.waitForAppear
         }}
       >
-        {child}
+        {this.props.children}
       </NavigationContext.Provider>
     );
   }
 
   push = (name, props) => {
-    const child = React.Children.only(this.props.children);
-    Navigation.push(child.props.componentId, {
-      component: buildNavigationComponent(name, props)
+    Navigation.push(this.props.componentId, {
+      component: buildNavigationComponent(null, name, props)
     });
   };
 
   pop = () => {
-    const child = React.Children.only(this.props.children);
-    Navigation.pop(child.props.componentId);
+    Navigation.pop(this.props.componentId);
   };
 
   dismissModal = () => {
-    const child = React.Children.only(this.props.children);
-    Navigation.dismissModal(child.props.componentId);
+    Navigation.dismissModal(this.props.componentId);
+  };
+
+  waitForAppear = (fn, wait = 50, attempts = 20) => {
+    waitForComponentAppear(this.props.componentId, fn, wait, attempts);
   };
 }

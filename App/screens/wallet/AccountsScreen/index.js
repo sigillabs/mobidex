@@ -14,7 +14,7 @@ export default class AccountsScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseAccountsScreen {...this.props} />
       </NavigationProvider>
     );

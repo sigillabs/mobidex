@@ -14,7 +14,7 @@ export default class ImportMnemonicScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseImportMnemonicScreen {...this.props} />
       </NavigationProvider>
     );

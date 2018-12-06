@@ -29,7 +29,7 @@ export default class OrdersScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseOrdersScreen {...this.props} />
       </NavigationProvider>
     );

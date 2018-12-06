@@ -24,7 +24,7 @@ export default class CreateOrderScreen extends Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseCreateOrderScreen {...this.props} />
       </NavigationProvider>
     );

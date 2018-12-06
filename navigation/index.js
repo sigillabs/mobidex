@@ -3,7 +3,15 @@ import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-// Listen to redux store for updates so we can display appropriate badge?
+let history = [];
+
+Navigation.events().registerComponentDidDisappearListener(({ componentId }) => {
+  history.splice(history.indexOf(componentId), 1);
+});
+
+Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
+  history.push(componentId);
+});
 
 export const NavigationContext = React.createContext();
 
@@ -23,10 +31,30 @@ export function connect(WrappedComponent) {
   return ConnectedNavigation;
 }
 
-export function buildNavigationComponent(name, props) {
+export function waitForComponentAppear(
+  componentId,
+  fn,
+  wait = 50,
+  attempts = 20
+) {
+  let watcher = () => {
+    if (~history.indexOf(componentId)) {
+      fn();
+    } else if (attempts-- > 0) {
+      setTimeout(watcher, wait);
+    }
+  };
+  watcher();
+}
+
+export function buildNavigationComponent(id, name, props) {
   const component = {
     name
   };
+
+  if (id) {
+    component.id = id;
+  }
 
   if (props) {
     component.passProps = props;
@@ -37,13 +65,13 @@ export function buildNavigationComponent(name, props) {
 
 export function showModal(name, props) {
   Navigation.showModal({
-    component: buildNavigationComponent(name, props)
+    component: buildNavigationComponent(null, name, props)
   });
 }
 
 export function showErrorModal(error) {
   Navigation.showModal({
-    component: buildNavigationComponent('modals.Error', { error })
+    component: buildNavigationComponent(null, 'modals.Error', { error })
   });
 }
 

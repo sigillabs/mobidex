@@ -65,7 +65,7 @@ export async function getWalletAddress() {
 export async function signTransaction(tx, password) {
   return await new Promise((resolve, reject) =>
     WalletManager.signTransaction(tx, password, (err, data) => {
-      if (err) return reject(err);
+      if (err) return reject(new Error('Could not sign transaction'));
       if (!data) return resolve();
       resolve({
         r: `0x${ethUtil.stripHexPrefix(data.r)}`,
@@ -79,7 +79,7 @@ export async function signTransaction(tx, password) {
 export async function signMessage(message, password) {
   return await new Promise((resolve, reject) =>
     WalletManager.signMessage(message, password, (err, data) => {
-      if (err) return reject(err);
+      if (err) return reject(new Error('Could not sign message'));
       resolve(`0x${ethUtil.stripHexPrefix(data)}`);
     })
   );

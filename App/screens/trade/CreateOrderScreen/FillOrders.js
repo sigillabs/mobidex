@@ -33,6 +33,7 @@ class FillOrders extends PureComponent {
 
   render() {
     const { side } = this.props;
+
     return (
       <FullScreen>
         <TokenAmount
@@ -91,7 +92,14 @@ class FillOrders extends PureComponent {
         side,
         amount,
         base,
-        quote
+        quote,
+        callback: error => {
+          if (error) {
+            this.props.navigation.showErrorModal(error);
+          } else {
+            this.props.navigation.pop();
+          }
+        }
       });
     }
   };

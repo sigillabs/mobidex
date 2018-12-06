@@ -21,7 +21,7 @@ export default class TransactionHistoryScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseTransactionHistoryScreen {...this.props} />
       </NavigationProvider>
     );

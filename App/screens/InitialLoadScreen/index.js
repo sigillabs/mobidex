@@ -14,7 +14,7 @@ export default class InitialLoadScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseInitialLoadScreen {...this.props} />
       </NavigationProvider>
     );

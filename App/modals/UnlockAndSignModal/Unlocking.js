@@ -13,6 +13,7 @@ import RotatingView from '../../components/RotatingView';
 class Unlocking extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       tx: PropTypes.object,
       message: PropTypes.string,
       pin: PropTypes.string.isRequired,
@@ -23,17 +24,18 @@ class Unlocking extends Component {
   componentDidMount() {
     const { pin, tx, message } = this.props;
     requestAnimationFrame(async () => {
+      let data = null;
+
       try {
         if (tx) {
-          const data = await WalletService.signTransaction(tx, pin.slice(0, 6));
-          this.props.next(null, data);
+          data = await WalletService.signTransaction(tx, pin.slice(0, 6));
         } else if (message) {
-          const data = await WalletService.signMessage(
-            message,
-            pin.slice(0, 6)
-          );
-          this.props.next(null, data);
+          data = await WalletService.signMessage(message, pin.slice(0, 6));
+        } else {
+          throw new Error('No transaction or message provided to sign');
         }
+
+        this.props.next(null, data);
       } catch (err) {
         this.props.next(err);
       } finally {

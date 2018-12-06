@@ -14,7 +14,7 @@ export default class ConstructWalletModal extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseConstructWalletModal {...this.props} />
       </NavigationProvider>
     );

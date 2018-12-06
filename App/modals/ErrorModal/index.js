@@ -14,7 +14,7 @@ export default class ErrorModal extends Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseErrorModal {...this.props} />
       </NavigationProvider>
     );

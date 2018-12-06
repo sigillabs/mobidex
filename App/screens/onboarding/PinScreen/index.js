@@ -14,7 +14,7 @@ export default class PinScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BasePinScreen {...this.props} />
       </NavigationProvider>
     );

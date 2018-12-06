@@ -14,7 +14,7 @@ export default class UnlockAndSignModal extends Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseUnlockAndSignModal {...this.props} />
       </NavigationProvider>
     );

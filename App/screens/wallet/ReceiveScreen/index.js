@@ -17,7 +17,7 @@ export default class ReceiveScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseReceiveScreen {...this.props} />
       </NavigationProvider>
     );

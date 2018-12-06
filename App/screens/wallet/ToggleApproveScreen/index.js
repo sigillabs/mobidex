@@ -17,7 +17,7 @@ export default class ToggleApproveScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseToggleApproveScreen {...this.props} />
       </NavigationProvider>
     );

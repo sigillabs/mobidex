@@ -195,11 +195,9 @@ class WalletManager: NSObject {
       let privateKey = try store.UNSAFE_getPrivateKeyData(password: password, account: addresses[0])
       callback([NSNull(), privateKey.toHexString()])
     } catch let error as WalletManagerError {
-      print(error.message);
-      callback([error, NSNull()])
+      callback([error.localizedDescription, NSNull()])
     } catch let error as NSError {
-      print(error.localizedDescription);
-      callback([error, NSNull()])
+      callback([error.localizedDescription, NSNull()])
     }
   }
 
@@ -228,8 +226,7 @@ class WalletManager: NSObject {
         let privateKey = try store.UNSAFE_getPrivateKeyData(password: password!, account: addresses[0])
         callback([NSNull(), privateKey.toHexString()])
       } catch let error {
-        print(error.localizedDescription);
-        callback([error, NSNull()])
+        callback([error.localizedDescription, NSNull()])
       }
     })
   }
@@ -327,12 +324,11 @@ class WalletManager: NSObject {
       
       let data = hexToPaddedData(message)
       var privateKey: Data? = nil
-      
+
       do {
         privateKey = try store.UNSAFE_getPrivateKeyData(password: password!, account: addresses[0])
       } catch let error as NSError {
-        print(error.localizedDescription);
-        callback([error, NSNull()])
+        callback([error.localizedDescription, NSNull()])
         return
       }
 

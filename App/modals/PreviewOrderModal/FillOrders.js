@@ -24,7 +24,6 @@ import SubmittingOrders from './SubmittingOrders';
 class Order extends Component {
   static get propTypes() {
     return {
-      navigation: navigationProp.isRequired,
       limitOrder: PropTypes.object.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired,
@@ -56,11 +55,13 @@ class Order extends Component {
 class PreviewFillOrders extends Component {
   static get propTypes() {
     return {
+      navigation: navigationProp.isRequired,
       side: PropTypes.string.isRequired,
       amount: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired,
-      dispatch: PropTypes.func.isRequired
+      dispatch: PropTypes.func.isRequired,
+      callback: PropTypes.func.isRequired
     };
   }
 
@@ -148,7 +149,7 @@ class PreviewFillOrders extends Component {
     }
 
     if (this.state.submitting) {
-      return <SubmittingOrders text={'Fill Orders'} />;
+      return <SubmittingOrders text={'Filling Orders'} />;
     }
 
     const receipt = this.getReceipt();
@@ -395,8 +396,20 @@ class PreviewFillOrders extends Component {
     const { quote } = this.state;
     const fillAction = this.getFillAction();
 
-    await this.props.dispatch(fillAction(quote));
+    this.setState({ submitting: true });
+
+    try {
+      await this.props.dispatch(fillAction(quote));
+    } catch (err) {
+      this.props.navigation.dismissModal();
+      this.props.callback(err);
+      return;
+    } finally {
+      this.setState({ submitting: false });
+    }
+
     this.props.navigation.dismissModal();
+    this.props.callback();
   };
 }
 

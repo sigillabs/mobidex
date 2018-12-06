@@ -36,7 +36,7 @@ class ProductScreen extends React.Component {
 
   render() {
     return (
-      <NavigationProvider>
+      <NavigationProvider componentId={this.props.componentId}>
         <BaseProductScreen {...this.props} />
       </NavigationProvider>
     );

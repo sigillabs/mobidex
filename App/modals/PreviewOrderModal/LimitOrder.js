@@ -23,7 +23,8 @@ class PreviewLimitOrder extends Component {
       side: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       order: PropTypes.object.isRequired,
-      dispatch: PropTypes.func.isRequired
+      dispatch: PropTypes.func.isRequired,
+      callback: PropTypes.func.isRequired
     };
   }
 
@@ -183,11 +184,12 @@ class PreviewLimitOrder extends Component {
 
     try {
       await this.props.dispatch(submitOrder(order));
-      this.props.navigation.dismissModal();
+      this.props.callback();
     } catch (err) {
-      this.props.navigation.showErrorModal(err);
+      this.props.callback(err);
+      return;
     } finally {
-      this.setState({ submitting: false });
+      this.props.navigation.dismissModal();
     }
   }
 }
