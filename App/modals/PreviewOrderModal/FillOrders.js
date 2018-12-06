@@ -14,6 +14,7 @@ import * as ZeroExService from '../../../services/ZeroExService';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { marketBuy, marketSell } from '../../../thunks';
 import { navigationProp } from '../../../types/props';
+import { totalTakerFee } from '../../../utils/orders';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
@@ -138,7 +139,9 @@ class PreviewFillOrders extends Component {
         });
       } catch (err) {
         this.props.navigation.dismissModal();
-        this.props.navigation.showErrorModal(err);
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
       }
     });
   }
@@ -320,7 +323,10 @@ class PreviewFillOrders extends Component {
   };
 
   getTotalFee = () => {
-    return ZERO.toString();
+    return totalTakerFee(
+      this.state.quote.orders,
+      new BigNumber(this.props.amount)
+    );
   };
 
   getTotalGasCost = () => {

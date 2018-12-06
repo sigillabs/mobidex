@@ -47,6 +47,22 @@ export function waitForComponentAppear(
   watcher();
 }
 
+export function waitForComponentDisappear(
+  componentId,
+  fn,
+  wait = 50,
+  attempts = 20
+) {
+  let watcher = () => {
+    if (!~history.indexOf(componentId)) {
+      fn();
+    } else if (attempts-- > 0) {
+      setTimeout(watcher, wait);
+    }
+  };
+  watcher();
+}
+
 export function buildNavigationComponent(id, name, props) {
   const component = {
     name

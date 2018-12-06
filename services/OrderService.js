@@ -9,6 +9,7 @@ import {
 import * as _ from 'lodash';
 import EthereumClient from '../clients/ethereum';
 import ZeroExClient from '../clients/0x';
+import RelayerClient from '../clients/relayer';
 import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import {
   averagePriceByMakerAmount,
@@ -17,7 +18,6 @@ import {
 } from '../utils';
 import * as AssetService from './AssetService';
 import * as WalletService from './WalletService';
-import { showErrorModal } from '../navigation';
 
 let _store;
 
@@ -319,6 +319,21 @@ export async function signOrder(order) {
     ...order,
     orderHash,
     signature
+  };
+}
+
+export async function configureOrder(order) {
+  let {
+    settings: { network, relayerEndpoint }
+  } = _store.getState();
+
+  const relayerClient = new RelayerClient(relayerEndpoint, { network });
+
+  const config = await relayerClient.getOrderConfig(order);
+
+  return {
+    ...order,
+    ...config
   };
 }
 

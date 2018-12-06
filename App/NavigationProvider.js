@@ -6,7 +6,8 @@ import {
   NavigationContext,
   showModal,
   showErrorModal,
-  waitForComponentAppear
+  waitForComponentAppear,
+  waitForComponentDisappear
 } from '../navigation';
 
 export default class NavigationProvider extends React.Component {
@@ -26,7 +27,8 @@ export default class NavigationProvider extends React.Component {
           showModal: showModal,
           showErrorModal: showErrorModal,
           dismissModal: this.dismissModal,
-          waitForAppear: this.waitForAppear
+          waitForAppear: this.waitForAppear,
+          waitForDisappear: this.waitForDisappear
         }}
       >
         {this.props.children}
@@ -50,5 +52,9 @@ export default class NavigationProvider extends React.Component {
 
   waitForAppear = (fn, wait = 50, attempts = 20) => {
     waitForComponentAppear(this.props.componentId, fn, wait, attempts);
+  };
+
+  waitForDisappear = (fn, wait = 50, attempts = 20) => {
+    waitForComponentDisappear(this.props.componentId, fn, wait, attempts);
   };
 }

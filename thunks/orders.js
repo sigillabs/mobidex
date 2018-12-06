@@ -251,10 +251,10 @@ export function submitOrder(order) {
     } = getState();
 
     // Sign
-    const client = new RelayerClient(relayerEndpoint, { network });
     const signedOrder = await OrderService.signOrder(order);
 
     // Submit
+    const client = new RelayerClient(relayerEndpoint, { network });
     await client.submitOrder(signedOrder);
 
     dispatch(loadOrder(signedOrder.orderHash));

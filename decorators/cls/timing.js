@@ -4,21 +4,21 @@ export function time(target, name, descriptor) {
     descriptor.value = async function(...args) {
       const start = new Date();
       try {
-        console.info(
+        console.debug(
           `Timing ${name}(${JSON.stringify(
             Array.prototype.slice.call(args, 0)
           )})`
         );
         return await original.apply(this, args);
       } catch (err) {
-        console.warn(
+        console.debug(
           `Timing Error ${name}(${JSON.stringify(
             Array.prototype.slice.call(args, 0)
           )}): ${err.message}`
         );
         throw err;
       } finally {
-        console.info(
+        console.debug(
           `Timed ${name}(${JSON.stringify(
             Array.prototype.slice.call(args, 0)
           )}): Duration: ${new Date() - start}`

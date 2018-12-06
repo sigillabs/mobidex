@@ -346,3 +346,4 @@ export function getProfitLossStyle(number) {
     color: getProfitLossColor(number)
   };
 }
+

@@ -71,6 +71,13 @@ export default class RelayerClient {
   }
 
   @time
+  async getOrderConfig(order) {
+    return this.client.getOrderConfigAsync(order, {
+      networkId: this.network
+    });
+  }
+
+  @time
   async submitOrder(order) {
     return this.client.submitOrderAsync(order, {
       networkId: this.network

@@ -159,3 +159,81 @@ export function averagePriceByTakerAmount(
 
   return prices.reduce((acc, price) => acc.add(price), ZERO).div(prices.length);
 }
+
+export function totalMakerFee(
+  orders,
+  makerAmount = null,
+  options = { remainingFillableMakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableMakerAssetAmounts: null };
+  if (!options.remainingFillableMakerAssetAmounts)
+    options.remainingFillableMakerAssetAmounts = orders.map(
+      ({ makerAssetAmount }) => new BigNumber(makerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+  if (!makerAmount)
+    makerAmount = options.remainingFillableMakerAssetAmounts.reduce(
+      (acc, amount) => acc.add(amount),
+      ZERO
+    );
+
+  makerAmount = new BigNumber(makerAmount);
+
+  const fees = [];
+
+  for (const [order, remainingMakerAssetAmount] of _.zip(
+    orders,
+    options.remainingFillableMakerAssetAmounts
+  )) {
+    if (makerAmount.lt(remainingMakerAssetAmount)) {
+      fees.push(makerAmount.div(order.makerAssetAmount).mul(order.takerFee));
+    } else {
+      fees.push(
+        remainingMakerAssetAmount
+          .div(order.makerAssetAmount)
+          .mul(order.takerFee)
+      );
+    }
+  }
+
+  return fees.reduce((acc, fee) => acc.add(fee), ZERO);
+}
+
+export function totalTakerFee(
+  orders,
+  takerAmount = null,
+  options = { remainingFillableTakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableTakerAssetAmounts: null };
+  if (!options.remainingFillableTakerAssetAmounts)
+    options.remainingFillableTakerAssetAmounts = orders.map(
+      ({ takerAssetAmount }) => new BigNumber(takerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+  if (!takerAmount)
+    takerAmount = options.remainingFillableTakerAssetAmounts.reduce(
+      (acc, amount) => acc.add(amount),
+      ZERO
+    );
+
+  takerAmount = new BigNumber(takerAmount);
+
+  const fees = [];
+
+  for (const [order, remainingTakerAssetAmount] of _.zip(
+    orders,
+    options.remainingFillableTakerAssetAmounts
+  )) {
+    if (takerAmount.lt(remainingTakerAssetAmount)) {
+      fees.push(takerAmount.div(order.takerAssetAmount).mul(order.takerFee));
+    } else {
+      fees.push(
+        remainingTakerAssetAmount
+          .div(order.takerAssetAmount)
+          .mul(order.takerFee)
+      );
+    }
+  }
+
+  return fees.reduce((acc, fee) => acc.add(fee), ZERO);
+}

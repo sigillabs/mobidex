@@ -1,11 +1,15 @@
 import { BigNumber } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
-import { convertZeroExOrderToLimitOrder } from '../../../services/OrderService';
+import {
+  configureOrder,
+  convertZeroExOrderToLimitOrder
+} from '../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { submitOrder } from '../../../thunks';
@@ -13,7 +17,8 @@ import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
-import { getQuoteAsset } from '../../../services/AssetService';
+import { findAssetByData, getQuoteAsset } from '../../../services/AssetService';
+import Loading from './Loading';
 import SubmittingOrders from './SubmittingOrders';
 
 class PreviewLimitOrder extends Component {
@@ -32,19 +37,41 @@ class PreviewLimitOrder extends Component {
     super(props);
 
     this.state = {
-      submitting: false
+      submitting: false,
+      loading: true,
+      configuredOrder: null
     };
   }
 
   componentDidMount() {
     const { side } = this.props;
 
+    this.setState({ loading: true });
+
     if (side !== 'buy' && side !== 'sell') {
       return this.props.navigation.dismissModal();
     }
+
+    InteractionManager.runAfterInteractions(async () => {
+      try {
+        const configuredOrder = await configureOrder(this.props.order);
+        this.setState({ configuredOrder });
+      } catch (err) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
+      } finally {
+        this.setState({ loading: false });
+      }
+    });
   }
 
   render() {
+    if (this.state.loading) {
+      return <Loading />;
+    }
+
     if (this.state.submitting) {
       return <SubmittingOrders text={'Creating Order'} />;
     }
@@ -63,6 +90,10 @@ class PreviewLimitOrder extends Component {
     const { subtotal, fee, total } = receipt;
     const funds = getAdjustedBalanceByAddress(quoteToken.address);
     const fundsAfterOrder = funds.add(total);
+
+    const profitStyle = getProfitLossStyle(
+      side === 'buy' ? total.negated() : total
+    );
 
     return (
       <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
@@ -97,7 +128,7 @@ class PreviewLimitOrder extends Component {
             <FormattedTokenAmount
               amount={total}
               symbol={quoteToken.symbol}
-              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
+              style={[styles.tokenAmountRight, profitStyle]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -124,7 +155,7 @@ class PreviewLimitOrder extends Component {
             <FormattedTokenAmount
               amount={fundsAfterOrder}
               symbol={quoteToken.symbol}
-              style={[styles.tokenAmountRight, getProfitLossStyle(total)]}
+              style={[styles.tokenAmountRight, profitStyle]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -155,20 +186,21 @@ class PreviewLimitOrder extends Component {
   }
 
   getReceipt() {
-    const { order, side } = this.props;
+    const { side } = this.props;
+    const { configuredOrder } = this.state;
 
-    const limitOrder = convertZeroExOrderToLimitOrder(order, side);
+    const limitOrder = convertZeroExOrderToLimitOrder(configuredOrder, side);
 
     if (!limitOrder) return null;
 
-    let subtotal = new BigNumber(limitOrder.amount).mul(limitOrder.price);
-    let fee = ZERO;
-    let total = subtotal.add(fee);
+    const makerAsset = findAssetByData(configuredOrder.makerAssetData);
+    const fee = Web3Wrapper.toUnitAmount(
+      new BigNumber(configuredOrder.makerFee),
+      makerAsset.decimals
+    );
 
-    if (side === 'buy') {
-      subtotal = subtotal.negated();
-      total = total.negated();
-    }
+    let subtotal = new BigNumber(limitOrder.amount).mul(limitOrder.price);
+    let total = subtotal.add(fee);
 
     return {
       subtotal,
