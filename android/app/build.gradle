@@ -113,8 +113,8 @@ android {
         applicationId "io.mobidex"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 41
-        versionName "0.7.3"
+        versionCode 42
+        versionName "0.7.6"
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative55"
         ndk {
             abiFilters "armeabi-v7a", "x86"
