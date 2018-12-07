@@ -1,5 +1,5 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
+import { assetDataUtils, BigNumber } from '0x.js';
 import * as _ from 'lodash';
 import {
   addActiveTransactions,
@@ -16,7 +16,6 @@ import * as AssetService from '../services/AssetService';
 import { showErrorModal } from '../navigation';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
-import { cache } from '../utils';
 import { deposit, withdraw } from './0x';
 
 export function loadWalletAddress() {
@@ -55,6 +54,18 @@ export function loadAllowances(force = false) {
   };
 }
 
+export function loadAllowance(assetData, force = false) {
+  return async dispatch => {
+    const web3 = WalletService.getWeb3();
+    const ethereumClient = new EthereumClient(web3);
+    const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
+    const tokenClient = new TokenClient(ethereumClient, address);
+    const allowance = await tokenClient.getAllowance(null, force);
+
+    dispatch(setAllowances({ [address]: allowance }));
+  };
+}
+
 export function loadBalances(force = false) {
   return async (dispatch, getState) => {
     const {
@@ -80,6 +91,30 @@ export function loadBalances(force = false) {
         null: ethereumBalance
       })
     );
+  };
+}
+
+export function loadBalance(assetData, force = false) {
+  return async dispatch => {
+    const web3 = WalletService.getWeb3();
+    const ethereumClient = new EthereumClient(web3);
+
+    if (assetData !== null) {
+      const address = assetDataUtils.decodeERC20AssetData(assetData)
+        .tokenAddress;
+      const tokenClient = new TokenClient(ethereumClient, address);
+      const balance = await tokenClient.getBalance(force);
+
+      dispatch(setBalances({ [address]: balance }));
+    } else {
+      const ethereumBalance = await ethereumClient.getBalance(force);
+
+      dispatch(
+        setBalances({
+          null: ethereumBalance
+        })
+      );
+    }
   };
 }
 

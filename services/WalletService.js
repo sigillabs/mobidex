@@ -1,17 +1,13 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
+import { assetDataUtils, BigNumber } from '0x.js';
 import EthTx from 'ethereumjs-tx';
 import ethUtil from 'ethereumjs-util';
-import sigUtil from 'eth-sig-util';
-import * as rlp from 'rlp';
 import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
-import { setWallet } from '../actions';
 import { ZERO, MAX } from '../constants/0x';
 import { showModal } from '../navigation';
-import { stripPrefixesFromTxParams } from '../utils';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -227,6 +223,11 @@ export function getFullEthereumBalance() {
   return getBalanceBySymbol('ETH').add(getBalanceBySymbol('WETH'));
 }
 
+export function getAllowanceByAssetData(assetData) {
+  const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
+  return getAllowanceByAddress(address);
+}
+
 export function getAllowanceByAddress(address) {
   const {
     wallet: { allowances },
@@ -259,6 +260,11 @@ export function getAllowanceBySymbol(symbol) {
     new BigNumber(allowances[asset.address]),
     asset.decimals
   );
+}
+
+export function isUnlockedByAssetData(assetData) {
+  const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
+  return isUnlockedByAddress(address);
 }
 
 export function isUnlockedByAddress(address) {

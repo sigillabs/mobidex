@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
 import {
+  loadAllowance,
+  loadBalance,
   loadOrderbook,
   updateForexTickers,
   updateTokenTickers
@@ -68,6 +70,8 @@ class BaseProductDetailsScreen extends Component {
     await Promise.all([
       this.props.dispatch(updateForexTickers(reload)),
       this.props.dispatch(updateTokenTickers(reload)),
+      this.props.dispatch(loadAllowance(base.assetData, reload)),
+      this.props.dispatch(loadBalance(base.assetData, reload)),
       this.props.dispatch(
         loadOrderbook(base.assetData, quote.assetData, reload)
       )

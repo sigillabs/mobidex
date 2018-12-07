@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
@@ -9,6 +10,7 @@ import Button from '../../../components/Button';
 import Divider from '../../../components/Divider';
 import Padding from '../../../components/Padding';
 import Row from '../../../components/Row';
+import ActionOrUnlockButton from '../../../views/ActionOrUnlockButton';
 import ProductDetailListItem from './ProductDetailListItem';
 
 class ProductDetailsView extends Component {
@@ -39,37 +41,34 @@ class ProductDetailsView extends Component {
         {graph}
         <Divider style={[styles.mt0]} />
         <Row style={[styles.justifyCenter]}>
-          <Button
-            large
+          <ActionOrUnlockButton
+            assetData={quote.assetData}
+            containerStyle={[{ width: 150 }, styles.justifyCenter]}
             icon={
-              <Icon name="arrow-with-circle-left" size={20} color="white" />
+              <Entypo name="arrow-with-circle-left" size={20} color="white" />
             }
-            onPress={() =>
-              this.props.navigation.push('navigation.trade.CreateOrder', {
-                type: 'fill',
-                side: 'buy',
-                base,
-                quote
-              })
-            }
+            large
+            onPress={this.buy}
             title="Buy"
-            containerStyle={[{ width: 150 }, styles.justifyCenter]}
+            unlockProps={{
+              icon: <FontAwesome name="lock" size={20} color="white" />,
+              title: 'Unlock Buy'
+            }}
           />
-          <Button
-            large
-            icon={
-              <Icon name="arrow-with-circle-right" size={20} color="white" />
-            }
-            onPress={() =>
-              this.props.navigation.push('navigation.trade.CreateOrder', {
-                type: 'fill',
-                side: 'sell',
-                base,
-                quote
-              })
-            }
-            title="Sell"
+          <ActionOrUnlockButton
+            assetData={base.assetData}
             containerStyle={[{ width: 150 }, styles.justifyCenter]}
+            icon={
+              <Entypo name="arrow-with-circle-right" size={20} color="white" />
+            }
+            iconRight
+            large
+            onPress={this.sell}
+            title="Sell"
+            unlockProps={{
+              icon: <FontAwesome name="lock" size={20} color="white" />,
+              title: 'Unlock Sell'
+            }}
           />
         </Row>
         <Padding size={10} />
@@ -86,6 +85,26 @@ class ProductDetailsView extends Component {
       </View>
     );
   }
+
+  buy = () => {
+    const { base, quote } = this.props;
+    this.props.navigation.push('navigation.trade.CreateOrder', {
+      type: 'fill',
+      side: 'buy',
+      base,
+      quote
+    });
+  };
+
+  sell = () => {
+    const { base, quote } = this.props;
+    this.props.navigation.push('navigation.trade.CreateOrder', {
+      type: 'fill',
+      side: 'sell',
+      base,
+      quote
+    });
+  };
 }
 
 export default connectNavigation(ProductDetailsView);

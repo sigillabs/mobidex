@@ -76,7 +76,7 @@ class TokenDetails extends Component {
                 style={[styles.margin1]}
               />
             }
-            onPress={() => this.receive()}
+            onPress={this.receive}
           />
           {symbol === 'ETH' ? (
             <Button
@@ -90,7 +90,7 @@ class TokenDetails extends Component {
                   style={[styles.margin1]}
                 />
               }
-              onPress={() => this.wrap()}
+              onPress={this.wrap}
             />
           ) : null}
           <Button
@@ -104,7 +104,7 @@ class TokenDetails extends Component {
                 style={[styles.margin1]}
               />
             }
-            onPress={() => this.toggleApprove()}
+            onPress={this.toggleApprove}
           />
           <Button
             large
@@ -118,40 +118,40 @@ class TokenDetails extends Component {
               />
             }
             iconRight={true}
-            onPress={() => this.send()}
+            onPress={this.send}
           />
         </View>
       </View>
     );
   }
 
-  receive() {
+  receive = () => {
     const { asset } = this.props;
     this.props.navigation.push('navigation.wallet.Receive', {
       asset
     });
-  }
+  };
 
-  send() {
+  send = () => {
     const { asset } = this.props;
     this.props.navigation.push('navigation.wallet.Send', {
       asset
     });
-  }
+  };
 
-  wrap() {
+  wrap = () => {
     const { asset } = this.props;
     this.props.navigation.push('navigation.wallet.WrapEther', {
       asset
     });
-  }
+  };
 
-  toggleApprove() {
+  toggleApprove = () => {
     const { asset } = this.props;
     this.props.navigation.push('navigation.wallet.ToggleApprove', {
       asset
     });
-  }
+  };
 }
 
 export default connect(
