@@ -20,7 +20,7 @@ export default class TokenAmountKeyboard extends PureComponent {
           title={this.props.buttonTitle}
           icon={this.props.buttonIcon}
           onPress={this.onSubmit}
-          containerStyle={{ marginHorizontal: 50, marginTop: 10 }}
+          containerStyle={[styles.fluff0]}
           iconRight={this.props.buttonIconRight}
           disabled={this.props.disableButton}
           loading={this.props.buttonLoading}

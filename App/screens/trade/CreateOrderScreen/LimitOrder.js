@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React, { Component, Fragment } from 'react';
+import { ScrollView, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
@@ -54,44 +54,50 @@ class CreateLimitOrder extends Component {
     }
 
     return (
-      <View style={{ width: '100%', height: '100%' }}>
-        <TouchableTokenAmount
-          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
-          symbol={base.symbol}
-          label={side === 'buy' ? 'Buying' : 'Selling'}
-          amount={this.state.amount.toString()}
-          cursor={this.state.focus === 'amount'}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          format={false}
-          onPress={this.selectAmountTokenAmount}
-        />
-        <TouchableTokenAmount
-          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
-          symbol={quote.symbol}
-          label={'price'}
-          amount={this.state.price.toString()}
-          format={false}
-          cursor={this.state.focus === 'price'}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          onPress={this.selectPriceTokenAmount}
-        />
-        <SelectableCirclesRow
-          labels={EXPIRATION_LABELS}
-          selectedIndex={this.state.expirationIndex}
-          onSelect={this.selectExpirationIndex}
-        />
-        <TokenAmountKeyboard
-          onChange={c => this.onSetValue(this.state.focus, c)}
-          onSubmit={() =>
-            this.state.focus === 'amount'
-              ? this.setState({ focus: 'price' })
-              : this.submit()
-          }
-          pressMode="char"
-          buttonTitle={this.getButtonTitle()}
-          buttonIcon={this.getButtonIcon()}
-          buttonIconRight={this.getButtonIconRight()}
-        />
+      <View style={[styles.flex1]}>
+        <View style={[styles.flex1, styles.fluff0, styles.w100]}>
+          <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
+            <TouchableTokenAmount
+              containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
+              symbol={base.symbol}
+              label={side === 'buy' ? 'Buying' : 'Selling'}
+              amount={this.state.amount.toString()}
+              cursor={this.state.focus === 'amount'}
+              cursorProps={{ style: { marginLeft: 2 } }}
+              format={false}
+              onPress={this.selectAmountTokenAmount}
+            />
+            <TouchableTokenAmount
+              containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
+              symbol={quote.symbol}
+              label={'price'}
+              amount={this.state.price.toString()}
+              format={false}
+              cursor={this.state.focus === 'price'}
+              cursorProps={{ style: { marginLeft: 2 } }}
+              onPress={this.selectPriceTokenAmount}
+            />
+            <SelectableCirclesRow
+              labels={EXPIRATION_LABELS}
+              selectedIndex={this.state.expirationIndex}
+              onSelect={this.selectExpirationIndex}
+            />
+          </ScrollView>
+        </View>
+        <View style={[styles.flex0, styles.fluff0]}>
+          <TokenAmountKeyboard
+            onChange={c => this.onSetValue(this.state.focus, c)}
+            onSubmit={() =>
+              this.state.focus === 'amount'
+                ? this.setState({ focus: 'price' })
+                : this.submit()
+            }
+            pressMode="char"
+            buttonTitle={this.getButtonTitle()}
+            buttonIcon={this.getButtonIcon()}
+            buttonIconRight={this.getButtonIconRight()}
+          />
+        </View>
       </View>
     );
   }

@@ -43,6 +43,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  positionBottom: {
+    position: 'absolute',
+    bottom: 0
+  },
   paddedTop: {
     marginTop: 100,
     flexDirection: 'column',
@@ -102,8 +106,26 @@ export const styles = StyleSheet.create({
   flex4: {
     flex: 4
   },
+  mh100: {
+    minHeight: '100%'
+  },
+  h100: {
+    height: '100%'
+  },
   w100: {
     width: '100%'
+  },
+  pb0: {
+    paddingBottom: 0
+  },
+  pb1: {
+    paddingBottom: 5
+  },
+  pb2: {
+    paddingBottom: 10
+  },
+  pb3: {
+    paddingBottom: 15
   },
   ph0: {
     paddingHorizontal: 0,
@@ -346,4 +368,3 @@ export function getProfitLossStyle(number) {
     color: getProfitLossColor(number)
   };
 }
-

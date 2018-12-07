@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ScrollView } from 'react-native';
+import { styles } from '../../../../styles';
 import PageRoot from '../../../components/PageRoot';
 import Tabs from '../../../components/Tabs';
 import FillOrders from './FillOrders';
@@ -34,11 +35,9 @@ export default class BaseCreateOrderScreen extends Component {
     }
 
     return (
-      <PageRoot>
+      <PageRoot style={[styles.flex1]}>
         <Tabs onPress={this.changeTab} selectedIndex={type} buttons={BUTTONS} />
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          {subview}
-        </ScrollView>
+        {subview}
       </PageRoot>
     );
   }
