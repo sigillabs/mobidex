@@ -92,69 +92,62 @@ export function loadTransactions(force = false) {
     const web3 = WalletService.getWeb3();
 
     try {
-      let transactions = await cache(
-        `transactions:${network}`,
-        async () => {
-          const ethereumClient = new EthereumClient(web3);
-          const inf0xClient = new Inf0xClient(inf0xEndpoint, { network });
-          const account = await ethereumClient.getAccount(force);
-          const {
-            makerFills,
-            takerFills,
-            makerCancels,
-            deposits,
-            withdrawals,
-            approvals
-          } = await inf0xClient.getEvents(account, force);
-          const filltxs = makerFills
-            .map(log => ({
-              ...log,
-              id: log.transactionHash,
-              status: 'FILL'
-            }))
-            .concat(
-              takerFills.map(log => ({
-                ...log,
-                id: log.transactionHash,
-                status: 'FILL'
-              }))
-            );
-          const canceltxs = makerCancels.map(log => ({
+      const ethereumClient = new EthereumClient(web3);
+      const inf0xClient = new Inf0xClient(inf0xEndpoint, { network });
+      const account = await ethereumClient.getAccount(force);
+      const {
+        makerFills,
+        takerFills,
+        makerCancels,
+        deposits,
+        withdrawals,
+        approvals
+      } = await inf0xClient.getEvents(account, force);
+      const filltxs = makerFills
+        .map(log => ({
+          ...log,
+          id: log.transactionHash,
+          status: 'FILL'
+        }))
+        .concat(
+          takerFills.map(log => ({
             ...log,
             id: log.transactionHash,
-            status: 'CANCEL'
-          }));
-          const depositstxs = deposits.map(log => ({
-            ...log,
-            id: log.transactionHash,
-            status: 'DEPOSIT'
-          }));
-          const withdrawalstxs = withdrawals.map(log => ({
-            ...log,
-            id: log.transactionHash,
-            status: 'WITHDRAWAL'
-          }));
-          const approvalstxs = approvals.map(log => ({
-            ...log,
-            id: log.transactionHash,
-            type: 'APPROVAL',
-            amount: 'UNLIMITED',
-            address: log.address
-          }));
+            status: 'FILL'
+          }))
+        );
+      const canceltxs = makerCancels.map(log => ({
+        ...log,
+        id: log.transactionHash,
+        status: 'CANCEL'
+      }));
+      const depositstxs = deposits.map(log => ({
+        ...log,
+        id: log.transactionHash,
+        status: 'DEPOSIT'
+      }));
+      const withdrawalstxs = withdrawals.map(log => ({
+        ...log,
+        id: log.transactionHash,
+        status: 'WITHDRAWAL'
+      }));
+      const approvalstxs = approvals.map(log => ({
+        ...log,
+        id: log.transactionHash,
+        type: 'APPROVAL',
+        amount: 'UNLIMITED',
+        address: log.address
+      }));
 
-          const alltx = filltxs
-            .concat(canceltxs)
-            .concat(depositstxs)
-            .concat(withdrawalstxs)
-            .concat(approvalstxs);
+      const alltx = filltxs
+        .concat(canceltxs)
+        .concat(depositstxs)
+        .concat(withdrawalstxs)
+        .concat(approvalstxs);
 
-          alltx.sort((txa, txb) => txb.timestamp - txa.timestamp);
+      alltx.sort((txa, txb) => txb.timestamp - txa.timestamp);
 
-          return alltx;
-        },
-        force ? 0 : 10 * 60
-      );
-      dispatch(addTransactions(transactions));
+      dispatch(addTransactions(alltx));
     } catch (err) {
       showErrorModal(err);
     }
