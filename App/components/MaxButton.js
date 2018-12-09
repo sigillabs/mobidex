@@ -1,9 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { colors } from '../../styles';
+import { styleProp } from '../../types/props';
 import Button from './Button';
 
 export default class MaxButton extends Component {
+  static get propTypes() {
+    return {
+      onPress: PropTypes.func,
+      containerProps: PropTypes.object,
+      containerStyle: styleProp,
+      buttonProps: PropTypes.object,
+      buttonStyle: styleProp,
+      titleStyle: styleProp
+    };
+  }
+
   render() {
     const { buttonProps, buttonStyle, onPress, titleStyle } = this.props;
     return (
@@ -40,13 +52,4 @@ const style = {
     backgroundColor: colors.transparent,
     color: colors.primary
   }
-};
-
-MaxButton.propTypes = {
-  onPress: PropTypes.func,
-  containerProps: PropTypes.object,
-  containerStyle: PropTypes.object,
-  buttonProps: PropTypes.object,
-  buttonStyle: PropTypes.object,
-  titleStyle: PropTypes.object
 };

@@ -38,29 +38,31 @@ class BaseSendScreen extends Component {
       return <Sending />;
     }
 
-    return (
-      <ScrollView
-        style={{
-          width: '100%',
-          height: '100%',
-          flex: 1
-        }}
-      >
-        {this.state.page === 0 ? (
+    switch (this.state.page) {
+      case 0:
+        return (
           <AmountPage
             asset={asset}
             onSubmit={amount => this.submitAmount(amount)}
           />
-        ) : null}
-        {this.state.page === 1 ? (
-          <AccountPage
-            asset={asset}
-            amount={this.state.amount}
-            onSubmit={address => this.submitAddress(address)}
-          />
-        ) : null}
-      </ScrollView>
-    );
+        );
+      case 1:
+        return (
+          <ScrollView
+            style={{
+              width: '100%',
+              height: '100%',
+              flex: 1
+            }}
+          >
+            <AccountPage
+              asset={asset}
+              amount={this.state.amount}
+              onSubmit={address => this.submitAddress(address)}
+            />
+          </ScrollView>
+        );
+    }
   }
 
   submitAmount(amount) {

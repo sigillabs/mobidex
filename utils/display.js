@@ -589,22 +589,25 @@ export function getImage(symbol) {
   }
 }
 
-export function processVirtualKeyboardCharacter(character, string) {
-  let text = null;
+export function processVirtualKeyboardCharacter(character, stringOrArray) {
+  const isString = typeof stringOrArray === 'string';
+  const array = isString ? stringOrArray.split('') : stringOrArray.slice();
 
   if (isNaN(character)) {
     if (character === 'back') {
-      text = string.slice(0, -1);
-    } else if (character === '.') {
-      text = string + character;
-    } else {
-      text = string;
+      array.pop();
+    } else if (character === '.' && !~array.indexOf('.')) {
+      array.push(character);
     }
   } else {
-    text = string + character;
+    array.push(character);
   }
 
-  return text;
+  if (isString) {
+    return array.join('');
+  } else {
+    return array;
+  }
 }
 
 export function isValidAmount(amount) {

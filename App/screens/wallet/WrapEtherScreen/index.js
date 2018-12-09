@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import NavigationProvider from '../../../NavigationProvider';
 import BaseWrapEtherScreen from './base';
 
 export default class WrapEtherScreen extends Component {
@@ -15,6 +16,10 @@ export default class WrapEtherScreen extends Component {
   }
 
   render() {
-    return <BaseWrapEtherScreen {...this.props} />;
+    return (
+      <NavigationProvider componentId={this.props.componentId}>
+        <BaseWrapEtherScreen {...this.props} />
+      </NavigationProvider>
+    );
   }
 }

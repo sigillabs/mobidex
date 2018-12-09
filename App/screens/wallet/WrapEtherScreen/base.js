@@ -1,7 +1,7 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Slider, View } from 'react-native';
+import React from 'react';
+import { Slider } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as WalletService from '../../../../services/WalletService';
@@ -13,16 +13,14 @@ import {
   formatAmount,
   isDecimalOverflow,
   isValidAmount,
-  processVirtualKeyboardCharacter,
   reduceDecimalOverflow
 } from '../../../../utils';
-import BigCenter from '../../../components/BigCenter';
 import TokenAmount from '../../../components/TokenAmount';
-import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
+import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
 import Wrapping from './Wrapping';
 import Unwrapping from './Unwrapping';
 
-class BaseWrapEtherScreen extends Component {
+class BaseWrapEtherScreen extends TokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -34,7 +32,8 @@ class BaseWrapEtherScreen extends Component {
     super(props);
 
     this.state = {
-      amount: '',
+      amount: [],
+      focus: 'amount',
       amountError: false,
       wrapping: false,
       unwrapping: false
@@ -43,7 +42,9 @@ class BaseWrapEtherScreen extends Component {
 
   componentDidMount() {
     this.setState({
-      amount: WalletService.getBalanceBySymbol('WETH').toString()
+      amount: WalletService.getBalanceBySymbol('WETH')
+        .toString()
+        .split('')
     });
   }
 
@@ -56,8 +57,12 @@ class BaseWrapEtherScreen extends Component {
       return <Unwrapping />;
     }
 
+    return super.render();
+  }
+
+  renderTop() {
     return (
-      <BigCenter>
+      <React.Fragment>
         <TokenAmount
           label={'Wrapped Ether Amount'}
           symbol={'ETH'}
@@ -65,60 +70,60 @@ class BaseWrapEtherScreen extends Component {
           format={true}
           cursor={true}
           cursorProps={{ style: { marginLeft: 2 } }}
-          amount={new BigNumber(this.state.amount || 0).toString()}
+          amount={new BigNumber(this.state.amount.join('') || 0).toString()}
         />
         <Slider
           step={0.0001}
           minimumValue={0}
           maximumValue={this.getTotalEthereum().toNumber()}
-          value={new BigNumber(this.state.amount || 0).toNumber()}
-          onValueChange={this.setAmount}
+          value={new BigNumber(this.state.amount.join('') || 0).toNumber()}
+          onValueChange={this.onSliderChange}
           style={[styles.mv0, styles.mh2, styles.w100]}
         />
-        <TokenAmountKeyboard
-          onChange={this.onSetAmountKeyboard}
-          onSubmit={this.submit}
-          pressMode="char"
-          buttonTitle="Wrap/Unwrap"
-          buttonIcon={<Icon name="check" size={24} color="white" />}
-        />
-      </BigCenter>
+      </React.Fragment>
     );
   }
 
-  setAmount = amount => {
-    amount = reduceDecimalOverflow(amount, 6);
+  onSliderChange = value => {
+    this.setState({ amount: value.toString().split('') });
+  };
+
+  getDerivedAmount(column, newAmount, oldAmount) {
+    const amount = reduceDecimalOverflow(newAmount.join(''), 6);
     if (this.getTotalEthereum().lt(amount || 0)) {
-      amount = this.getTotalEthereum().toString();
-    }
-    if (isValidAmount(amount)) {
-      if (isDecimalOverflow(amount)) {
-        this.setState({
-          amount: formatAmount(amount).toString(),
-          amountError: false
-        });
-      } else {
-        this.setState({
-          amount: amount,
-          amountError: false
-        });
-      }
+      return this.getTotalEthereum()
+        .toString()
+        .split('');
     } else {
-      this.setState({ amountError: true });
+      return amount.split('');
     }
-  };
+  }
 
-  onSetAmountKeyboard = value => {
-    const text = processVirtualKeyboardCharacter(
-      value,
-      this.state.amount.toString()
-    );
+  getKeyboardProps() {
+    return {
+      decimal: this.state.amount.indexOf('.') !== -1
+    };
+  }
 
-    this.setAmount(text);
-  };
+  getButtonProps() {
+    return {
+      icon: <Icon name="check" size={24} color="white" />,
+      title: 'Wrap/Unwrap'
+    };
+  }
 
-  submit = () => {
-    const { amount } = this.state;
+  async press() {
+    let amount = this.state.amount.join('');
+
+    if (!isValidAmount(amount)) {
+      this.setState({ amountError: true });
+      return;
+    }
+
+    if (!isDecimalOverflow(amount)) {
+      amount = formatAmount(amount).toString();
+    }
+
     const weth = WalletService.getBalanceBySymbol('WETH');
 
     if (weth.gt(amount || 0)) {
@@ -126,7 +131,7 @@ class BaseWrapEtherScreen extends Component {
     } else if (weth.lt(amount || 0)) {
       this.wrap();
     }
-  };
+  }
 
   getTotalEthereum() {
     const eth = WalletService.getBalanceBySymbol('ETH');
