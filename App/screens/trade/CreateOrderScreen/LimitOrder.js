@@ -1,17 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
-import { ScrollView, View } from 'react-native';
+import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
-import {
-  isValidAmount,
-  processVirtualKeyboardCharacter
-} from '../../../../utils';
+import { isValidAmount } from '../../../../utils';
 import SelectableCirclesRow from '../../../components/SelectableCirclesRow';
 import TouchableTokenAmount from '../../../components/TouchableTokenAmount';
-import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
+import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
 import { createOrder } from '../../../../services/OrderService';
 
 const EXPIRATION_LABELS = ['1 min', '1 hour', '1 day', '1 mon', '1 year'];
@@ -23,7 +19,7 @@ const EXPIRATION_VALUES = [
   365 * 24 * 60 * 60
 ];
 
-class CreateLimitOrder extends Component {
+class CreateLimitOrder extends TokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -37,68 +33,43 @@ class CreateLimitOrder extends Component {
     super(props);
 
     this.state = {
-      amount: '',
-      amountError: false,
-      price: '',
-      priceError: false,
+      amount: [],
+      price: [],
       focus: 'amount',
       expirationIndex: 2
     };
   }
 
-  render() {
-    const { side, quote, base } = this.props;
-
-    if (side !== 'buy' && side !== 'sell') {
-      this.props.navigation.pop();
-    }
-
+  renderTop() {
+    const { base, quote, side } = this.props;
     return (
-      <View style={[styles.flex1]}>
-        <View style={[styles.flex1, styles.fluff0, styles.w100]}>
-          <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
-            <TouchableTokenAmount
-              containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
-              symbol={base.symbol}
-              label={side === 'buy' ? 'Buying' : 'Selling'}
-              amount={this.state.amount.toString()}
-              cursor={this.state.focus === 'amount'}
-              cursorProps={{ style: { marginLeft: 2 } }}
-              format={false}
-              onPress={this.selectAmountTokenAmount}
-            />
-            <TouchableTokenAmount
-              containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
-              symbol={quote.symbol}
-              label={'price'}
-              amount={this.state.price.toString()}
-              format={false}
-              cursor={this.state.focus === 'price'}
-              cursorProps={{ style: { marginLeft: 2 } }}
-              onPress={this.selectPriceTokenAmount}
-            />
-            <SelectableCirclesRow
-              labels={EXPIRATION_LABELS}
-              selectedIndex={this.state.expirationIndex}
-              onSelect={this.selectExpirationIndex}
-            />
-          </ScrollView>
-        </View>
-        <View style={[styles.flex0, styles.fluff0]}>
-          <TokenAmountKeyboard
-            onChange={c => this.onSetValue(this.state.focus, c)}
-            onSubmit={() =>
-              this.state.focus === 'amount'
-                ? this.setState({ focus: 'price' })
-                : this.submit()
-            }
-            pressMode="char"
-            buttonTitle={this.getButtonTitle()}
-            buttonIcon={this.getButtonIcon()}
-            buttonIconRight={this.getButtonIconRight()}
-          />
-        </View>
-      </View>
+      <React.Fragment>
+        <TouchableTokenAmount
+          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
+          symbol={base.symbol}
+          label={side === 'buy' ? 'Buying' : 'Selling'}
+          amount={this.state.amount.join('')}
+          cursor={this.state.focus === 'amount'}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          format={false}
+          onPress={this.selectAmountTokenAmount}
+        />
+        <TouchableTokenAmount
+          containerStyle={[styles.flex4, styles.mv2, styles.mr2, styles.p0]}
+          symbol={quote.symbol}
+          label={'price'}
+          amount={this.state.price.join('')}
+          format={false}
+          cursor={this.state.focus === 'price'}
+          cursorProps={{ style: { marginLeft: 2 } }}
+          onPress={this.selectPriceTokenAmount}
+        />
+        <SelectableCirclesRow
+          labels={EXPIRATION_LABELS}
+          selectedIndex={this.state.expirationIndex}
+          onSelect={this.selectExpirationIndex}
+        />
+      </React.Fragment>
     );
   }
 
@@ -143,21 +114,25 @@ class CreateLimitOrder extends Component {
     }
   }
 
-  getButtonIconRight() {
-    return this.state.focus === 'amount';
+  getKeyboardProps() {
+    return {
+      decimal: this.state.amount.indexOf('.') !== -1
+    };
   }
 
-  onSetValue(column, value) {
-    const errorColumn = `${column}Error`;
-    const text = processVirtualKeyboardCharacter(
-      value,
-      this.state[column].toString()
-    );
+  getButtonProps() {
+    return {
+      title: this.getButtonTitle(),
+      icon: this.getButtonIcon(),
+      iconRight: this.state.focus === 'amount'
+    };
+  }
 
-    if (isValidAmount(text)) {
-      this.setState({ [column]: text, [errorColumn]: false });
+  press() {
+    if (this.state.focus === 'amount') {
+      this.setState({ focus: 'price' });
     } else {
-      this.setState({ [errorColumn]: true });
+      this.submit();
     }
   }
 

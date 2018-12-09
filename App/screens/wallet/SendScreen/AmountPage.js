@@ -1,41 +1,42 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as TickerService from '../../../../services/TickerService';
 import * as WalletService from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
-import {
-  formatAmount,
-  getForexIcon,
-  isValidAmount,
-  processVirtualKeyboardCharacter
-} from '../../../../utils';
+import { formatAmount, getForexIcon, isValidAmount } from '../../../../utils';
 import MaxButton from '../../../components/MaxButton';
 import Row from '../../../components/Row';
 import TokenAmount from '../../../components/TokenAmount';
 import TouchableTokenAmount from '../../../components/TouchableTokenAmount';
-import TokenAmountKeyboard from '../../../components/TokenAmountKeyboard';
+import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
 
-export default class AmountPage extends Component {
+export default class AmountPage extends TokenAmountKeyboardLayout {
+  static get propTypes() {
+    return {
+      asset: PropTypes.object.isRequired,
+      onSubmit: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      amount: '',
-      forex: '',
+      amount: [],
+      forex: [],
       focus: 'amount',
       error: false
     };
   }
 
-  render() {
+  renderTop() {
     const { asset } = this.props;
     const balance = WalletService.getAdjustedBalanceByAddress(asset.address);
 
     return (
-      <View style={{ padding: 20, flex: 1, width: '100%' }}>
+      <React.Fragment>
         <TokenAmount
           label={'Wallet Amount'}
           symbol={asset.symbol}
@@ -51,22 +52,6 @@ export default class AmountPage extends Component {
           amount={formatAmount(balance ? balance : '0')}
           onPress={() => this.setState({ focus: 'amount' })}
         />
-        {/*<TouchableTokenAmount
-          label={'Send Amount'}
-          symbol={asset.symbol}
-          containerStyle={{
-            flex: 1,
-            marginTop: 10,
-            marginBottom: 10,
-            padding: 0
-          }}
-          symbolStyle={{ marginRight: 10 }}
-          format={false}
-          cursor={this.state.focus === 'amount'}
-          cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.amount}
-          onPress={() => this.setState({ focus: 'amount' })}
-        />*/}
         <Row style={[styles.w100, styles.flex1]}>
           <TouchableTokenAmount
             label={'Send Amount'}
@@ -81,7 +66,7 @@ export default class AmountPage extends Component {
             format={false}
             cursor={this.state.focus === 'amount'}
             cursorProps={{ style: { marginLeft: 2 } }}
-            amount={this.state.amount}
+            amount={this.state.amount.join('')}
             onPress={() => this.setState({ focus: 'amount' })}
             wrapperStyle={[styles.flex1]}
           />
@@ -103,25 +88,26 @@ export default class AmountPage extends Component {
           format={false}
           cursor={this.state.focus === 'forex'}
           cursorProps={{ style: { marginLeft: 2 } }}
-          amount={this.state.forex}
+          amount={this.state.forex.join('')}
           onPress={() => this.setState({ focus: 'forex' })}
         />
-        <TokenAmountKeyboard
-          onChange={v =>
-            this.state.focus === 'forex'
-              ? this.updateForexAmount(v)
-              : this.updateTokenAmount(v)
-          }
-          onSubmit={() => this.submit()}
-          pressMode="char"
-          buttonTitle={'Next'}
-          disabled={new BigNumber(this.state.amount || 0).lte(0)}
-        />
-      </View>
+      </React.Fragment>
     );
   }
 
-  async submit() {
+  getKeyboardProps() {
+    return {
+      decimal: this.state.amount.indexOf('.') !== -1
+    };
+  }
+
+  getButtonProps() {
+    return {
+      title: 'Next'
+    };
+  }
+
+  async press() {
     try {
       new BigNumber(this.state.amount);
       this.props.onSubmit(this.state.amount);
@@ -130,50 +116,47 @@ export default class AmountPage extends Component {
     }
   }
 
-  setTokenAmount = amount => {
-    if (isValidAmount(amount)) {
-      const forex = TickerService.getForexTicker(this.props.asset.symbol);
-      const forexAmount =
-        amount && forex && forex.price
-          ? new BigNumber(amount).mul(forex.price).toString()
-          : '';
-      this.setState({ amount, forex: forexAmount });
+  setColumn(column, valueArray) {
+    if (!valueArray || !valueArray.length) {
+      return;
     }
-  };
+
+    const valueText = valueArray.join('');
+
+    if (!isValidAmount(valueText)) {
+      return;
+    }
+
+    const forexTicker = TickerService.getForexTicker(this.props.asset.symbol);
+    const hasForexTicker = forexTicker && forexTicker.price;
+
+    let amount = null;
+    let forex = null;
+
+    if (column === 'amount') {
+      amount = valueArray;
+      forex = hasForexTicker
+        ? new BigNumber(valueText)
+            .mul(forexTicker.price)
+            .toString()
+            .split('')
+        : [];
+    } else {
+      amount = hasForexTicker
+        ? formatAmount(new BigNumber(valueText).div(forexTicker.price)).split()
+        : [];
+      forex = valueArray;
+    }
+
+    this.setState({
+      amount,
+      forex
+    });
+  }
 
   setMaxTokenAmount = () => {
     const { asset } = this.props;
-    const balance = WalletService.getAdjustedBalanceByAddress(asset.address);
-    this.setTokenAmount(balance.toString());
-  };
-
-  updateTokenAmount = value => {
-    const amount = processVirtualKeyboardCharacter(
-      value,
-      this.state.amount.toString()
-    );
-
-    this.setTokenAmount(amount);
-  };
-
-  updateForexAmount = value => {
-    const forexAmount = processVirtualKeyboardCharacter(
-      value,
-      this.state.forex.toString()
-    );
-
-    if (isValidAmount(forexAmount)) {
-      const forex = TickerService.getForexTicker(this.props.asset.symbol);
-      const tokenAmount =
-        forexAmount && forex
-          ? formatAmount(new BigNumber(forexAmount).div(forex.price))
-          : '';
-      this.setState({ amount: tokenAmount, forex: forexAmount });
-    }
+    const balance = WalletService.getBalanceByAddress(asset.address || null);
+    this.setColumn('amount', balance.toString().split(''));
   };
 }
-
-AmountPage.propTypes = {
-  asset: PropTypes.object.isRequired,
-  onSubmit: PropTypes.func.isRequired
-};
