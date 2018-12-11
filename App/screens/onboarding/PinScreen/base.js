@@ -1,7 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
+import * as WalletService from '../../../../services/WalletService';
+import { loadWalletAddress } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
 import PinKeyboard from '../../../components/PinKeyboard';
@@ -11,7 +15,8 @@ class BasePinScreen extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
-      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired
+      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
+      dispatch: PropTypes.func.isRequired
     };
   }
 
@@ -79,18 +84,29 @@ class BasePinScreen extends Component {
       return;
     }
 
-    const mnemonic = this.props.mnemonic;
+    const mnemonic = this.props.mnemonic.join(' ');
     const { pin } = this.state;
 
-    this.props.navigation.showModal('modals.ConstructWallet', {
-      mnemonic,
-      pin,
-      callback: error =>
-        error
-          ? this.props.navigation.showErrorModal(error)
-          : this.props.navigation.push('navigation.trade.InitialLoadScreen')
+    this.props.navigation.showModal('modals.Action', {
+      action: async () => {
+        await WalletService.importMnemonics(mnemonic, pin);
+        await this.props.dispatch(loadWalletAddress());
+      },
+      callback: error => {
+        if (error) {
+          this.props.navigation.waitForAppear(() =>
+            this.props.navigation.showErrorModal(error)
+          );
+        } else {
+          this.props.navigation.push('navigation.trade.InitialLoadScreen');
+        }
+      },
+      icon: <FontAwesome name="gear" size={100} />,
+      label: 'Constructing Wallet...'
     });
   }
 }
 
-export default connectNavigation(BasePinScreen);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  connectNavigation(BasePinScreen)
+);

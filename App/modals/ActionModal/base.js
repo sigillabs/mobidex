@@ -1,30 +1,27 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { Text } from 'react-native-elements';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect as connectNavigation } from '../../../navigation';
-import * as WalletService from '../../../services/WalletService';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Padding from '../../components/Padding';
 import RotatingView from '../../components/RotatingView';
 
-class BaseConstructWalletScreen extends Component {
+class BaseActionModal extends React.PureComponent {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
-      mnemonic: PropTypes.arrayOf(PropTypes.string).isRequired,
-      pin: PropTypes.string.isRequired,
-      callback: PropTypes.func.isRequired
+      action: PropTypes.func.isRequired,
+      callback: PropTypes.func.isRequired,
+      icon: PropTypes.node.isRequired,
+      label: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired
     };
   }
 
   componentDidMount() {
-    const mnemonic = this.props.mnemonic.join(' ');
-    const pin = this.props.pin;
     requestAnimationFrame(async () => {
       try {
-        await WalletService.importMnemonics(mnemonic, pin);
+        await this.props.action();
       } catch (err) {
         this.props.navigation.dismissModal();
         this.props.callback(err);
@@ -37,16 +34,20 @@ class BaseConstructWalletScreen extends Component {
   }
 
   render() {
+    const label =
+      typeof this.props.label === 'string' ? (
+        <Text>{this.props.label}</Text>
+      ) : (
+        this.props.label
+      );
     return (
       <BigCenter>
-        <RotatingView>
-          <FontAwesome name="gear" size={100} />
-        </RotatingView>
+        <RotatingView>{this.props.icon}</RotatingView>
         <Padding size={25} />
-        <Text>Constructing Wallet...</Text>
+        {label}
       </BigCenter>
     );
   }
 }
 
-export default connectNavigation(BaseConstructWalletScreen);
+export default connectNavigation(BaseActionModal);

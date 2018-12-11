@@ -1,7 +1,8 @@
 import { assetDataUtils } from '0x.js';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Avatar } from 'react-native-elements';
+import { Avatar, Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,7 +10,11 @@ import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import * as WalletService from '../../../../services/WalletService';
-import { styles } from '../../../../styles';
+import { colors, styles } from '../../../../styles';
+import {
+  setNoProxyAllowance,
+  setUnlimitedProxyAllowance
+} from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import { getImage } from '../../../../utils';
 import { assetProp } from '../../../../types/props';
@@ -19,7 +24,8 @@ import TokenBalanceByAssetData from '../../../views/TokenBalanceByAssetData';
 class TokenDetails extends Component {
   static propTypes = {
     navigation: navigationProp.isRequired,
-    asset: assetProp.isRequired
+    asset: assetProp.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   render() {
@@ -148,8 +154,107 @@ class TokenDetails extends Component {
 
   toggleApprove = () => {
     const { asset } = this.props;
-    this.props.navigation.push('navigation.wallet.ToggleApprove', {
-      asset
+    const assetOrWETH =
+      asset.assetData !== null
+        ? AssetService.findAssetByData(asset.assetData)
+        : AssetService.getWETHAsset();
+    const isUnlocked = WalletService.isUnlockedByAddress(
+      assetDataUtils.decodeERC20AssetData(assetOrWETH.assetData).tokenAddress
+    );
+
+    if (isUnlocked) {
+      this.disapprove(assetOrWETH);
+    } else {
+      this.approve(assetOrWETH);
+    }
+  };
+
+  approve = asset => {
+    this.props.navigation.showModal('modals.Confirmation', {
+      confirm: () =>
+        this.props.navigation.showModal('modals.Action', {
+          action: () =>
+            this.props.dispatch(setUnlimitedProxyAllowance(asset.address)),
+          callback: error => {
+            if (error) {
+              this.props.navigation.waitForAppear(() =>
+                this.props.navigation.showErrorModal(error)
+              );
+            }
+          },
+          icon: <FontAwesome name="lock" size={100} />,
+          label: (
+            <Text
+              style={{
+                fontSize: 18,
+                color: colors.primary,
+                paddingBottom: 10,
+                textAlign: 'center'
+              }}
+            >
+              Locking...
+            </Text>
+          )
+        }),
+      label: (
+        <View style={[styles.center, styles.flex1]}>
+          <FontAwesome name="unlock" size={100} />
+          <Text
+            style={{
+              fontSize: 18,
+              color: colors.primary,
+              paddingBottom: 10,
+              textAlign: 'center'
+            }}
+          >
+            Unlock {asset.name} for trading.
+          </Text>
+        </View>
+      )
+    });
+  };
+
+  disapprove = asset => {
+    this.props.navigation.showModal('modals.Confirmation', {
+      confirm: () =>
+        this.props.navigation.showModal('modals.Action', {
+          action: () => this.props.dispatch(setNoProxyAllowance(asset.address)),
+          callback: error => {
+            if (error) {
+              this.props.navigation.waitForAppear(() =>
+                this.props.navigation.showErrorModal(error)
+              );
+            }
+          },
+          icon: <FontAwesome name="unlock" size={100} />,
+          label: (
+            <Text
+              style={{
+                fontSize: 18,
+                color: colors.primary,
+                paddingBottom: 10,
+                textAlign: 'center'
+              }}
+            >
+              Unlocking...
+            </Text>
+          )
+        }),
+      label: (
+        <View style={[styles.center, styles.flex1]}>
+          <FontAwesome name="lock" size={100} />
+          <Text
+            style={{
+              fontSize: 18,
+              color: colors.primary,
+              paddingBottom: 10,
+              textAlign: 'center'
+            }}
+          >
+            Lock {asset.name} to stop trading.
+          </Text>
+        </View>
+      )
     });
   };
 }

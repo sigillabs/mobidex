@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
 import { connect } from 'react-redux';
-import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
 import {
   configureOrder,

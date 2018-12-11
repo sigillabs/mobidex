@@ -60,8 +60,8 @@ class TokenPriceGraph extends Component {
     return client.getTokenPrices(
       this.props.baseSymbol,
       this.props.quoteSymbol,
-      this.props.interval,
-      this.props.ticks
+      this.state.interval,
+      this.state.n
     );
   }
 }

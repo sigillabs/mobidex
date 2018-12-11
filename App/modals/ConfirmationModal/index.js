@@ -1,8 +1,8 @@
 import React from 'react';
 import NavigationProvider from '../../NavigationProvider';
-import BaseConstructWalletModal from './base';
+import BaseConfirmationModal from './base';
 
-export default class ConstructWalletModal extends React.Component {
+export default class ConfirmationModal extends React.Component {
   static options() {
     return {
       topBar: {
@@ -15,7 +15,7 @@ export default class ConstructWalletModal extends React.Component {
   render() {
     return (
       <NavigationProvider componentId={this.props.componentId}>
-        <BaseConstructWalletModal {...this.props} />
+        <BaseConfirmationModal {...this.props} />
       </NavigationProvider>
     );
   }
