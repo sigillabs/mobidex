@@ -20,6 +20,7 @@ EventEmitter.defaultMaxListeners = 32000;
 
 if (__DEV__) {
   YellowBox.ignoreWarnings([
+    'Setting a timer',
     'Class RCTCxxModule',
     'Warning:',
     'Method',

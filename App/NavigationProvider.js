@@ -22,6 +22,7 @@ export default class NavigationProvider extends React.Component {
     return (
       <NavigationContext.Provider
         value={{
+          componentId: this.props.componentId,
           push: this.push,
           pop: this.pop,
           showModal: showModal,

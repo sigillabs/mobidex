@@ -3,9 +3,12 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
-import { connect as connectNavigation } from '../../../../navigation';
+import {
+  checkOrRequestExternalStorageWrite,
+  connect as connectNavigation
+} from '../../../../navigation';
 import * as WalletService from '../../../../services/WalletService';
-import { loadWalletAddress } from '../../../../thunks';
+import { ActionErrorSuccessFlow, loadWalletAddress } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
 import PinKeyboard from '../../../components/PinKeyboard';
@@ -87,23 +90,22 @@ class BasePinScreen extends Component {
     const mnemonic = this.props.mnemonic.join(' ');
     const { pin } = this.state;
 
-    this.props.navigation.showModal('modals.Action', {
-      action: async () => {
-        await WalletService.importMnemonics(mnemonic, pin);
-        await this.props.dispatch(loadWalletAddress());
-      },
-      callback: error => {
-        if (error) {
-          this.props.navigation.waitForAppear(() =>
-            this.props.navigation.showErrorModal(error)
-          );
-        } else {
-          this.props.navigation.push('navigation.trade.InitialLoadScreen');
-        }
-      },
-      icon: <FontAwesome name="gear" size={100} />,
-      label: 'Constructing Wallet...'
-    });
+    this.props.dispatch(
+      ActionErrorSuccessFlow(
+        this.props.navigation.componentId,
+        {
+          action: async () => {
+            await checkOrRequestExternalStorageWrite();
+            await WalletService.importMnemonics(mnemonic, pin);
+            await this.props.dispatch(loadWalletAddress());
+          },
+          icon: <FontAwesome name="gear" size={100} />,
+          label: 'Constructing Wallet...'
+        },
+        'Wallet secured',
+        () => this.props.navigation.push('navigation.trade.InitialLoadScreen')
+      )
+    );
   }
 }
 

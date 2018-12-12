@@ -2,6 +2,7 @@ import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
 import ActionModal from '../App/modals/ActionModal';
 import ConfirmationModal from '../App/modals/ConfirmationModal';
+import NotificationModal from '../App/modals/NotificationModal';
 import ErrorModal from '../App/modals/ErrorModal';
 import LoadingModal from '../App/modals/LoadingModal';
 import PreviewOrderModal from '../App/modals/PreviewOrderModal';
@@ -19,6 +20,13 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.Confirmation',
     () => ConfirmationModal,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'modals.Notification',
+    () => NotificationModal,
     Provider,
     store
   );

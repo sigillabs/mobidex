@@ -2,7 +2,7 @@ import { assetDataUtils } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Avatar, Text } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,11 +10,8 @@ import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import * as WalletService from '../../../../services/WalletService';
-import { colors, styles } from '../../../../styles';
-import {
-  setNoProxyAllowance,
-  setUnlimitedProxyAllowance
-} from '../../../../thunks';
+import { styles } from '../../../../styles';
+import { approve, disapprove } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import { getImage } from '../../../../utils';
 import { assetProp } from '../../../../types/props';
@@ -163,99 +160,14 @@ class TokenDetails extends Component {
     );
 
     if (isUnlocked) {
-      this.disapprove(assetOrWETH);
+      this.props.dispatch(
+        disapprove(this.props.navigation.componentId, assetOrWETH.assetData)
+      );
     } else {
-      this.approve(assetOrWETH);
+      this.props.dispatch(
+        approve(this.props.navigation.componentId, assetOrWETH.assetData)
+      );
     }
-  };
-
-  approve = asset => {
-    this.props.navigation.showModal('modals.Confirmation', {
-      confirm: () =>
-        this.props.navigation.showModal('modals.Action', {
-          action: () =>
-            this.props.dispatch(setUnlimitedProxyAllowance(asset.address)),
-          callback: error => {
-            if (error) {
-              this.props.navigation.waitForAppear(() =>
-                this.props.navigation.showErrorModal(error)
-              );
-            }
-          },
-          icon: <FontAwesome name="lock" size={100} />,
-          label: (
-            <Text
-              style={{
-                fontSize: 18,
-                color: colors.primary,
-                paddingBottom: 10,
-                textAlign: 'center'
-              }}
-            >
-              Locking...
-            </Text>
-          )
-        }),
-      label: (
-        <View style={[styles.center, styles.flex1]}>
-          <FontAwesome name="unlock" size={100} />
-          <Text
-            style={{
-              fontSize: 18,
-              color: colors.primary,
-              paddingBottom: 10,
-              textAlign: 'center'
-            }}
-          >
-            Unlock {asset.name} for trading.
-          </Text>
-        </View>
-      )
-    });
-  };
-
-  disapprove = asset => {
-    this.props.navigation.showModal('modals.Confirmation', {
-      confirm: () =>
-        this.props.navigation.showModal('modals.Action', {
-          action: () => this.props.dispatch(setNoProxyAllowance(asset.address)),
-          callback: error => {
-            if (error) {
-              this.props.navigation.waitForAppear(() =>
-                this.props.navigation.showErrorModal(error)
-              );
-            }
-          },
-          icon: <FontAwesome name="unlock" size={100} />,
-          label: (
-            <Text
-              style={{
-                fontSize: 18,
-                color: colors.primary,
-                paddingBottom: 10,
-                textAlign: 'center'
-              }}
-            >
-              Unlocking...
-            </Text>
-          )
-        }),
-      label: (
-        <View style={[styles.center, styles.flex1]}>
-          <FontAwesome name="lock" size={100} />
-          <Text
-            style={{
-              fontSize: 18,
-              color: colors.primary,
-              paddingBottom: 10,
-              textAlign: 'center'
-            }}
-          >
-            Lock {asset.name} to stop trading.
-          </Text>
-        </View>
-      )
-    });
   };
 }
 

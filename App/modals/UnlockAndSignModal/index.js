@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { checkOrRequestExternalStorageRead } from '../../../navigation';
 import NavigationProvider from '../../NavigationProvider';
 import BaseUnlockAndSignModal from './base';
 
@@ -10,6 +11,10 @@ export default class UnlockAndSignModal extends Component {
         drawBehind: true
       }
     };
+  }
+
+  componentDidMount() {
+    checkOrRequestExternalStorageRead();
   }
 
   render() {

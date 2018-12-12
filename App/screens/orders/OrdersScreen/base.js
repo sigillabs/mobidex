@@ -167,8 +167,9 @@ class BaseOrdersScreen extends Component {
   filterOrders = () => {
     const orders = this.props.orders.filter(
       o =>
+        o.makerAddress &&
         ethUtil.stripHexPrefix(o.makerAddress).toLowerCase() ===
-        ethUtil.stripHexPrefix(this.props.address).toLowerCase()
+          ethUtil.stripHexPrefix(this.props.address).toLowerCase()
     );
     return orders;
   };

@@ -31,6 +31,9 @@ export const styles = StyleSheet.create({
   large: {
     fontSize: 14
   },
+  xlarge: {
+    fontSize: 18
+  },
   background: {
     backgroundColor: colors.background
   },
@@ -321,6 +324,9 @@ export const styles = StyleSheet.create({
     paddingVertical: 0,
     paddingTop: 0,
     paddingBottom: 0
+  },
+  normal: {
+    color: colors.primary
   },
   profit: {
     color: colors.green0
