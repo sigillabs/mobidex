@@ -66,14 +66,15 @@ class FillOrders extends TokenAmountKeyboardLayout {
 
   press() {
     const { amount } = this.state;
+    const amountString = amount.join('');
 
-    if (isValidAmount(amount)) {
+    if (isValidAmount(amountString)) {
       const { side, base, quote } = this.props;
 
       this.props.navigation.showModal('modals.PreviewOrder', {
         type: 'fill',
         side,
-        amount,
+        amount: amountString,
         base,
         quote,
         callback: error => {

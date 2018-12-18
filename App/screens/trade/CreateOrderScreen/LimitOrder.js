@@ -139,13 +139,15 @@ class CreateLimitOrder extends TokenAmountKeyboardLayout {
   async submit() {
     const { side, quote, base } = this.props;
     const { amount, price, expirationIndex } = this.state;
+    const amountString = amount.join('');
+    const priceString = price.join('');
 
-    if (!isValidAmount(amount) || !amount) {
+    if (!isValidAmount(amountString) || !amountString) {
       this.setState({ amountError: true });
       return;
     }
 
-    if (!isValidAmount(price) || !price) {
+    if (!isValidAmount(priceString) || !priceString) {
       this.setState({ priceError: true });
       return;
     }
@@ -158,8 +160,8 @@ class CreateLimitOrder extends TokenAmountKeyboardLayout {
       order = await createOrder({
         baseAddress: base.address,
         quoteAddress: quote.address,
-        price,
-        amount,
+        price: priceString,
+        amount: amountString,
         side,
         expirationTimeSeconds
       });
