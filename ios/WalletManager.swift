@@ -142,6 +142,13 @@ class WalletManager: NSObject {
       kSecAttrAccessControl as String: access as Any,
       kSecUseAuthenticationContext as String: context
     ]
+    let deleteQuery: [String: Any] = [
+      kSecClass as String: kSecClassGenericPassword,
+      kSecAttrAccount as String: "mobidex",
+      kSecAttrService as String: "io.mobidex.app.password"
+    ]
+    
+    SecItemDelete(deleteQuery as CFDictionary)
     
     let status = SecItemAdd(query as CFDictionary, nil)
     guard status == errSecSuccess else { throw WalletManagerError(message: "Could not store passcode in keychain. Status code: " + String(status)) }
@@ -195,7 +202,7 @@ class WalletManager: NSObject {
       let privateKey = try store.UNSAFE_getPrivateKeyData(password: password, account: addresses[0])
       callback([NSNull(), privateKey.toHexString()])
     } catch let error as WalletManagerError {
-      callback([error.localizedDescription, NSNull()])
+      callback([error.message, NSNull()])
     } catch let error as NSError {
       callback([error.localizedDescription, NSNull()])
     }

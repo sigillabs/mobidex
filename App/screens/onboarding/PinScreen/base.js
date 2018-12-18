@@ -1,20 +1,21 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
+import RNRestart from 'react-native-restart';
 import {
   checkOrRequestExternalStorageWrite,
   connect as connectNavigation
 } from '../../../../navigation';
+import { styles } from '../../../../styles';
 import * as WalletService from '../../../../services/WalletService';
 import { ActionErrorSuccessFlow, loadWalletAddress } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
-import PinKeyboard from '../../../components/PinKeyboard';
-import PinView from '../../../components/PinView';
+import Padding from '../../../components/Padding';
+import PinKeyboardLayout from '../../../layouts/PinKeyboardLayout';
 
-class BasePinScreen extends Component {
+class BasePinScreen extends PinKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -23,72 +24,23 @@ class BasePinScreen extends Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      pin: ''
-    };
-  }
-
-  render() {
+  renderTop() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <View style={{ flex: 1, marginHorizontal: 50 }}>
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <MutedText>Provide a PIN to secure your wallet.</MutedText>
-          </View>
-          <PinView
-            value={this.state.pin}
-            containerStyle={{
-              flex: 3,
-              alignItems: 'flex-end',
-              marginBottom: 50
-            }}
-          />
-        </View>
-        <PinKeyboard onChange={this.setPin} buttonTitle={'Import'} />
-      </View>
+      <React.Fragment>
+        <Padding size={50} />
+        <MutedText style={[styles.textCenter]}>
+          Provide a PIN to secure your wallet.
+        </MutedText>
+      </React.Fragment>
     );
   }
 
-  setPin = async value => {
-    let current = this.state.pin.slice();
-    if (current.length > 6) {
-      this.setState({ pin: '' });
-    } else {
-      if (isNaN(value)) {
-        if (value === 'back') {
-          current = current.slice(0, -1);
-        } else {
-          current += value;
-        }
-      } else {
-        current += value;
-      }
+  getKeyboardProps() {
+    return {};
+  }
 
-      this.setState({ pin: current });
-
-      if (current.length === 6) {
-        this.state.pin = current;
-        this.submit();
-      }
-    }
-  };
-
-  submit() {
-    if (this.state.pin.length < 6) {
-      return;
-    }
-
+  finish(pin) {
     const mnemonic = this.props.mnemonic.join(' ');
-    const { pin } = this.state;
 
     this.props.dispatch(
       ActionErrorSuccessFlow(
@@ -96,14 +48,13 @@ class BasePinScreen extends Component {
         {
           action: async () => {
             await checkOrRequestExternalStorageWrite();
-            await WalletService.importMnemonics(mnemonic, pin);
-            await this.props.dispatch(loadWalletAddress());
+            await WalletService.importMnemonics(mnemonic, pin.join(''));
           },
           icon: <FontAwesome name="gear" size={100} />,
           label: 'Constructing Wallet...'
         },
         'Wallet secured',
-        () => this.props.navigation.push('navigation.trade.InitialLoadScreen')
+        () => RNRestart.Restart()
       )
     );
   }

@@ -97,7 +97,7 @@ export default class AmountPage extends TokenAmountKeyboardLayout {
 
   getKeyboardProps() {
     return {
-      decimal: this.state.amount.indexOf('.') !== -1
+      decimal: this.state.amount.indexOf('.') === -1
     };
   }
 

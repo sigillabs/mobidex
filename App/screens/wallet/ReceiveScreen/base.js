@@ -45,6 +45,7 @@ class BaseReceiveScreen extends Component {
   }
 
   copy() {
+    console.info(`0x${ethUtil.stripHexPrefix(this.props.address.toString())}`);
     Clipboard.setString(
       `0x${ethUtil.stripHexPrefix(this.props.address.toString())}`
     );

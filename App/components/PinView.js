@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../../styles';
 

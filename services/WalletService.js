@@ -84,7 +84,7 @@ export async function signMessage(message, password) {
 export async function importMnemonics(mnemonics, password) {
   await new Promise((resolve, reject) => {
     WalletManager.importWalletByMnemonics(mnemonics, password, (err, data) => {
-      if (err) return reject(reject);
+      if (err) return reject(err);
       resolve(data);
     });
   });
@@ -93,7 +93,7 @@ export async function importMnemonics(mnemonics, password) {
 export async function generateMnemonics() {
   return await new Promise((resolve, reject) => {
     WalletManager.generateMnemonics((err, data) => {
-      if (err) return reject(reject);
+      if (err) return reject(err);
       resolve(data);
     });
   });
