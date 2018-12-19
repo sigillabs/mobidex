@@ -7,9 +7,7 @@ import ProductDetailsScreen from '../App/screens/trade/ProductDetailsScreen';
 import OrdersScreen from '../App/screens/orders/OrdersScreen';
 import TransactionHistoryScreen from '../App/screens/orders/TransactionHistoryScreen';
 import AccountsScreen from '../App/screens/wallet/AccountsScreen';
-import ToggleApproveScreen from '../App/screens/wallet/ToggleApproveScreen';
 import ReceiveScreen from '../App/screens/wallet/ReceiveScreen';
-import SendScreen from '../App/screens/wallet/SendScreen';
 import WrapEtherScreen from '../App/screens/wallet/WrapEtherScreen';
 import IntroScreen from '../App/screens/onboarding/IntroScreen';
 import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen';
@@ -104,22 +102,8 @@ export function registerScreens() {
   );
 
   Navigation.registerComponentWithRedux(
-    'navigation.wallet.Send',
-    () => SendScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
     'navigation.wallet.Receive',
     () => ReceiveScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.wallet.ToggleApprove',
-    () => ToggleApproveScreen,
     Provider,
     store
   );

@@ -137,7 +137,7 @@ class TokenDetails extends Component {
 
   send = () => {
     const { asset } = this.props;
-    this.props.navigation.push('navigation.wallet.Send', {
+    this.props.navigation.showModal('modals.Send', {
       asset
     });
   };

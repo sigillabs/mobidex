@@ -9,7 +9,7 @@ import {
 } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import * as WalletService from '../../../../services/WalletService';
-import { ActionErrorSuccessFlow, loadWalletAddress } from '../../../../thunks';
+import { ActionErrorSuccessFlow } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
 import Padding from '../../../components/Padding';

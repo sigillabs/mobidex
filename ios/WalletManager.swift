@@ -269,7 +269,13 @@ class WalletManager: NSObject {
         return;
       }
 
-      let data = hexToPaddedData(tx["data"] as! String)
+      let data: Data;
+      if (tx.object(forKey: "data") != nil) {
+        data = hexToPaddedData(tx["data"] as! String)
+      } else {
+        data = hexToPaddedData("0x0")
+      }
+
       let nonce = hexToPaddedBigUInt(tx["nonce"] as! String)
       var options = Web3Options()
       

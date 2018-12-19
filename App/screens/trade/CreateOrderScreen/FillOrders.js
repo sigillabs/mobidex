@@ -5,10 +5,10 @@ import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
 import { formatProduct, isValidAmount } from '../../../../utils';
 import TokenAmount from '../../../components/TokenAmount';
-import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
+import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';
 import OrderbookPrice from '../../../views/OrderbookPrice';
 
-class FillOrders extends TokenAmountKeyboardLayout {
+class FillOrders extends OneButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,

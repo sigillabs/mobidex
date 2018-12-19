@@ -198,53 +198,45 @@ export function loadActiveTransactions() {
 
 export function sendTokens(token, to, amount) {
   return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { address }
-      } = getState();
+    const {
+      wallet: { address }
+    } = getState();
 
-      const web3 = WalletService.getWeb3();
+    const web3 = WalletService.getWeb3();
 
-      const ethereumClient = new EthereumClient(web3);
-      const tokenClient = new TokenClient(ethereumClient, token.address);
-      const txhash = await tokenClient.send(to, amount);
-      const activeTransaction = {
-        id: txhash,
-        type: 'SEND_TOKENS',
-        from: address,
-        to,
-        amount,
-        token
-      };
-      TransactionService.instance.addActiveTransaction(activeTransaction);
-    } catch (err) {
-      showErrorModal(err);
-    }
+    const ethereumClient = new EthereumClient(web3);
+    const tokenClient = new TokenClient(ethereumClient, token.address);
+    const txhash = await tokenClient.send(to, amount);
+    const activeTransaction = {
+      id: txhash,
+      type: 'SEND_TOKENS',
+      from: address,
+      to,
+      amount,
+      token
+    };
+    TransactionService.instance.addActiveTransaction(activeTransaction);
   };
 }
 
 export function sendEther(to, amount) {
   return async (dispatch, getState) => {
-    try {
-      const {
-        wallet: { address }
-      } = getState();
+    const {
+      wallet: { address }
+    } = getState();
 
-      const web3 = WalletService.getWeb3();
+    const web3 = WalletService.getWeb3();
 
-      const ethereumClient = new EthereumClient(web3);
-      const txhash = await ethereumClient.send(to, amount);
-      const activeTransaction = {
-        id: txhash,
-        type: 'SEND_ETHER',
-        address,
-        to,
-        amount
-      };
-      TransactionService.instance.addActiveTransaction(activeTransaction);
-    } catch (err) {
-      showErrorModal(err);
-    }
+    const ethereumClient = new EthereumClient(web3);
+    const txhash = await ethereumClient.send(to, amount);
+    const activeTransaction = {
+      id: txhash,
+      type: 'SEND_ETHER',
+      address,
+      to,
+      amount
+    };
+    TransactionService.instance.addActiveTransaction(activeTransaction);
   };
 }
 

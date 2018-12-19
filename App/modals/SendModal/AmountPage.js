@@ -2,21 +2,22 @@ import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
-import * as TickerService from '../../../../services/TickerService';
-import * as WalletService from '../../../../services/WalletService';
-import { styles } from '../../../../styles';
-import { formatAmount, getForexIcon, isValidAmount } from '../../../../utils';
-import MaxButton from '../../../components/MaxButton';
-import Row from '../../../components/Row';
-import TokenAmount from '../../../components/TokenAmount';
-import TouchableTokenAmount from '../../../components/TouchableTokenAmount';
-import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
+import * as TickerService from '../../../services/TickerService';
+import * as WalletService from '../../../services/WalletService';
+import { styles } from '../../../styles';
+import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
+import MaxButton from '../../components/MaxButton';
+import Row from '../../components/Row';
+import TokenAmount from '../../components/TokenAmount';
+import TouchableTokenAmount from '../../components/TouchableTokenAmount';
+import TwoButtonTokenAmountKeyboardLayout from '../../layouts/TwoButtonTokenAmountKeyboardLayout';
 
-export default class AmountPage extends TokenAmountKeyboardLayout {
+export default class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       asset: PropTypes.object.isRequired,
-      onSubmit: PropTypes.func.isRequired
+      onPrevious: PropTypes.func.isRequired,
+      onNext: PropTypes.func.isRequired
     };
   }
 
@@ -101,16 +102,26 @@ export default class AmountPage extends TokenAmountKeyboardLayout {
     };
   }
 
-  getButtonProps() {
+  getButtonLeftProps() {
+    return {
+      title: 'Cancel'
+    };
+  }
+
+  getButtonRightProps() {
     return {
       title: 'Next'
     };
   }
 
-  async press() {
+  async pressLeft() {
+    this.props.onPrevious();
+  }
+
+  async pressRight() {
     try {
-      new BigNumber(this.state.amount);
-      this.props.onSubmit(this.state.amount);
+      new BigNumber(this.state.amount.join(''));
+      this.props.onNext(this.state.amount.join(''));
     } catch (err) {
       this.setState({ error: true });
     }

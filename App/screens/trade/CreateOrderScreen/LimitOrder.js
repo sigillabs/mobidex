@@ -7,7 +7,7 @@ import { navigationProp } from '../../../../types/props';
 import { isValidAmount } from '../../../../utils';
 import SelectableCirclesRow from '../../../components/SelectableCirclesRow';
 import TouchableTokenAmount from '../../../components/TouchableTokenAmount';
-import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
+import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';
 import { createOrder } from '../../../../services/OrderService';
 
 const EXPIRATION_LABELS = ['1 min', '1 hour', '1 day', '1 mon', '1 year'];
@@ -19,7 +19,7 @@ const EXPIRATION_VALUES = [
   365 * 24 * 60 * 60
 ];
 
-class CreateLimitOrder extends TokenAmountKeyboardLayout {
+class CreateLimitOrder extends OneButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,

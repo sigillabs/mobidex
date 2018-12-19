@@ -16,11 +16,11 @@ import {
   reduceDecimalOverflow
 } from '../../../../utils';
 import TokenAmount from '../../../components/TokenAmount';
-import TokenAmountKeyboardLayout from '../../../layouts/TokenAmountKeyboardLayout';
+import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';
 import Wrapping from './Wrapping';
 import Unwrapping from './Unwrapping';
 
-class BaseWrapEtherScreen extends TokenAmountKeyboardLayout {
+class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,

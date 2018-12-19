@@ -1,16 +1,24 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { formatAmount, formatMoney } from '../../../../utils';
-import AddressInput from '../../../components/AddressInput';
-import Button from '../../../components/Button';
-import TwoColumnListItem from '../../../components/TwoColumnListItem';
-import * as TickerService from '../../../../services/TickerService';
+import * as TickerService from '../../../services/TickerService';
+import { formatAmount, formatMoney } from '../../../utils';
+import AddressInput from '../../components/AddressInput';
+import TwoColumnListItem from '../../components/TwoColumnListItem';
+import ConfirmationView from '../../views/ConfirmationView';
 
-class AccountPage extends Component {
+class AccountPage extends React.Component {
+  static get propTypes() {
+    return {
+      asset: PropTypes.object.isRequired,
+      amount: PropTypes.string.isRequired,
+      onPrevious: PropTypes.func.isRequired,
+      onNext: PropTypes.func.isRequired
+    };
+  }
+
   constructor(props) {
     super(props);
 
@@ -29,7 +37,18 @@ class AccountPage extends Component {
         : null;
 
     return (
-      <View style={{ padding: 20, flex: 1, width: '100%' }}>
+      <ConfirmationView
+        buttonPropsRight={{
+          title: 'Next',
+          icon: <Icon name="check" size={24} color="white" />,
+          disabled: !/^(0x)?[a-fA-F0-9]{40}$/.test(this.state.address)
+        }}
+        buttonPropsLeft={{
+          title: 'Previous'
+        }}
+        pressLeft={this.pressLeft}
+        pressRight={this.pressRight}
+      >
         <TwoColumnListItem
           left="Amount"
           right={`${formatAmount(amount)} ${asset.symbol}`}
@@ -54,32 +73,19 @@ class AccountPage extends Component {
           keyboardType="ascii-capable"
           containerStyle={{ width: '100%', marginBottom: 10 }}
         />
-        <Button
-          large
-          onPress={() => this.submit()}
-          icon={<Icon name="check" size={24} color="white" />}
-          title={'Send'}
-          style={{ width: '100%' }}
-          disabled={!/^(0x)?[a-fA-F0-9]{40}$/.test(this.state.address)}
-        />
-      </View>
+      </ConfirmationView>
     );
   }
 
-  async submit() {
+  pressLeft = () => this.props.onPrevious();
+  pressRight = () => {
     if (/^(0x)?[a-fA-F0-9]{40}$/.test(this.state.address)) {
-      this.props.onSubmit(this.state.address);
+      this.props.onNext(this.state.address);
     } else {
       this.setState({ error: true });
     }
-  }
+  };
 }
-
-AccountPage.propTypes = {
-  asset: PropTypes.object.isRequired,
-  amount: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired
-};
 
 export default connect(
   state => ({

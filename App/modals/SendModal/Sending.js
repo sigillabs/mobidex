@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, ActivityIndicator } from 'react-native';
-import { colors } from '../../../../styles';
+import { colors } from '../../../styles';
 
 export default class SendingScreen extends Component {
   render() {
@@ -18,7 +18,7 @@ export default class SendingScreen extends Component {
         }}
       >
         <Image
-          source={require('../../../../images/logo-with-text/logo-with-text-transparent.png')}
+          source={require('../../../images/logo-with-text/logo-with-text-transparent.png')}
           style={{
             marginHorizontal: 0,
             width: '100%',

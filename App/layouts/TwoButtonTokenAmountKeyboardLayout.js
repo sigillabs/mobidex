@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { View, ScrollView } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import { styles } from '../../styles';
 import { processVirtualKeyboardCharacter } from '../../utils';
 import Button from '../components/Button';
+import Row from '../components/Row';
 
-export default class TokenAmountKeyboardLayout extends PureComponent {
+export default class OneButtonTokenAmountKeyboardLayout extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -31,13 +31,22 @@ export default class TokenAmountKeyboardLayout extends PureComponent {
             onPress={this.onChange.bind(this)}
             {...this.getKeyboardProps()}
           />
-          <Button
-            large
-            onPress={this.press.bind(this)}
-            containerStyle={[styles.fluff0]}
-            loadingStyle={styles.p2}
-            {...this.getButtonProps()}
-          />
+          <Row style={[styles.flex0, styles.fluff0]}>
+            <Button
+              large
+              onPress={this.pressLeft.bind(this)}
+              containerStyle={[styles.fluff0, styles.flex1]}
+              loadingStyle={styles.p2}
+              {...this.getButtonLeftProps()}
+            />
+            <Button
+              large
+              onPress={this.pressRight.bind(this)}
+              containerStyle={[styles.fluff0, styles.flex1]}
+              loadingStyle={styles.p2}
+              {...this.getButtonRightProps()}
+            />
+          </Row>
         </View>
       </View>
     );
@@ -62,15 +71,23 @@ export default class TokenAmountKeyboardLayout extends PureComponent {
     throw new Error('getKeyboardProps must be implemented.');
   }
 
-  getButtonProps() {
-    throw new Error('getButtonProps must be implemented.');
+  getButtonLeftProps() {
+    throw new Error('getButtonLeftProps must be implemented.');
+  }
+
+  getButtonRightProps() {
+    throw new Error('getButtonRightProps must be implemented.');
   }
 
   renderTop() {
     throw new Error('renderTop must be implemented.');
   }
 
-  press() {
-    throw new Error('submit must be implemented.');
+  pressLeft() {
+    throw new Error('pressLeft must be implemented.');
+  }
+
+  pressRight() {
+    throw new Error('pressRight must be implemented.');
   }
 }
