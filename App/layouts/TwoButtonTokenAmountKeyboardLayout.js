@@ -31,7 +31,7 @@ export default class OneButtonTokenAmountKeyboardLayout extends PureComponent {
             onPress={this.onChange.bind(this)}
             {...this.getKeyboardProps()}
           />
-          <Row style={[styles.flex0, styles.fluff0]}>
+          <Row style={[styles.flex0, styles.fluff0, styles.mt1]}>
             <Button
               large
               onPress={this.pressLeft.bind(this)}

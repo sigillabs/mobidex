@@ -144,7 +144,7 @@ class TokenDetails extends Component {
 
   wrap = () => {
     const { asset } = this.props;
-    this.props.navigation.push('navigation.wallet.WrapEther', {
+    this.props.navigation.showModal('modals.WrapEther', {
       asset
     });
   };

@@ -34,7 +34,7 @@ export default class OneButtonTokenAmountKeyboardLayout extends PureComponent {
           <Button
             large
             onPress={this.press.bind(this)}
-            containerStyle={[styles.fluff0]}
+            containerStyle={[styles.fluff0, styles.mt1]}
             loadingStyle={styles.p2}
             {...this.getButtonProps()}
           />

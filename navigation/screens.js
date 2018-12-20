@@ -8,7 +8,6 @@ import OrdersScreen from '../App/screens/orders/OrdersScreen';
 import TransactionHistoryScreen from '../App/screens/orders/TransactionHistoryScreen';
 import AccountsScreen from '../App/screens/wallet/AccountsScreen';
 import ReceiveScreen from '../App/screens/wallet/ReceiveScreen';
-import WrapEtherScreen from '../App/screens/wallet/WrapEtherScreen';
 import IntroScreen from '../App/screens/onboarding/IntroScreen';
 import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen';
 import PreviewMnemonicScreen from '../App/screens/onboarding/PreviewMnemonicScreen';
@@ -90,13 +89,6 @@ export function registerScreens() {
   Navigation.registerComponentWithRedux(
     'navigation.wallet.Accounts',
     () => AccountsScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.wallet.WrapEther',
-    () => WrapEtherScreen,
     Provider,
     store
   );

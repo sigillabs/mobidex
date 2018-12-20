@@ -8,6 +8,7 @@ import LoadingModal from '../App/modals/LoadingModal';
 import PreviewOrderModal from '../App/modals/PreviewOrderModal';
 import SendModal from '../App/modals/SendModal';
 import UnlockAndSignModal from '../App/modals/UnlockAndSignModal';
+import WrapEtherModal from '../App/modals/WrapEtherModal';
 import { store } from '../store';
 
 export function registerModals() {
@@ -63,6 +64,13 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.Send',
     () => SendModal,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'modals.WrapEther',
+    () => WrapEtherModal,
     Provider,
     store
   );

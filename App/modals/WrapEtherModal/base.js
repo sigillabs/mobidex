@@ -3,24 +3,27 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Slider } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import * as WalletService from '../../../../services/WalletService';
-import { connect as connectNavigation } from '../../../../navigation';
-import { styles } from '../../../../styles';
-import { wrapEther, unwrapEther } from '../../../../thunks';
-import { navigationProp } from '../../../../types/props';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import * as WalletService from '../../../services/WalletService';
+import { connect as connectNavigation } from '../../../navigation';
+import { styles } from '../../../styles';
+import {
+  ActionErrorSuccessFlow,
+  wrapEther,
+  unwrapEther
+} from '../../../thunks';
+import { navigationProp } from '../../../types/props';
 import {
   formatAmount,
   isDecimalOverflow,
   isValidAmount,
   reduceDecimalOverflow
-} from '../../../../utils';
-import TokenAmount from '../../../components/TokenAmount';
-import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';
-import Wrapping from './Wrapping';
-import Unwrapping from './Unwrapping';
+} from '../../../utils';
+import TokenAmount from '../../components/TokenAmount';
+import TwoButtonTokenAmountKeyboardLayout from '../../layouts/TwoButtonTokenAmountKeyboardLayout';
 
-class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
+class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -34,9 +37,7 @@ class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
     this.state = {
       amount: [],
       focus: 'amount',
-      amountError: false,
-      wrapping: false,
-      unwrapping: false
+      amountError: false
     };
   }
 
@@ -46,18 +47,6 @@ class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
         .toString()
         .split('')
     });
-  }
-
-  render() {
-    if (this.state.wrapping) {
-      return <Wrapping />;
-    }
-
-    if (this.state.unwrapping) {
-      return <Unwrapping />;
-    }
-
-    return super.render();
   }
 
   renderTop() {
@@ -105,14 +94,24 @@ class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
     };
   }
 
-  getButtonProps() {
+  getButtonLeftProps() {
     return {
-      icon: <Icon name="check" size={24} color="white" />,
-      title: 'Wrap/Unwrap'
+      title: 'Cancel'
     };
   }
 
-  async press() {
+  getButtonRightProps() {
+    return {
+      icon: <FontAwesome name="check" size={24} color="white" />,
+      title: '(Un)Wrap'
+    };
+  }
+
+  pressLeft() {
+    this.props.navigation.dismissModal();
+  }
+
+  async pressRight() {
     let amount = this.state.amount.join('');
 
     if (!isValidAmount(amount)) {
@@ -127,9 +126,31 @@ class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
     const weth = WalletService.getBalanceBySymbol('WETH');
 
     if (weth.gt(amount || 0)) {
-      this.unwrap();
+      this.props.dispatch(
+        ActionErrorSuccessFlow(
+          this.props.navigation.componentId,
+          {
+            action: async () => this.unwrap,
+            icon: <Entypo name="chevron-with-circle-down" size={100} />,
+            label: 'Unwrapping ETH...'
+          },
+          'Unwrapped ETH',
+          () => this.props.navigation.dismissModal()
+        )
+      );
     } else if (weth.lt(amount || 0)) {
-      this.wrap();
+      this.props.dispatch(
+        ActionErrorSuccessFlow(
+          this.props.navigation.componentId,
+          {
+            action: async () => this.wrap,
+            icon: <Entypo name="chevron-with-circle-up" size={100} />,
+            label: 'Wrapping ETH...'
+          },
+          'Wrapped ETH',
+          () => this.props.navigation.dismissModal()
+        )
+      );
     }
   }
 
@@ -139,45 +160,21 @@ class BaseWrapEtherScreen extends OneButtonTokenAmountKeyboardLayout {
     return eth.add(weth);
   }
 
-  wrap() {
+  wrap = async () => {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
     const wrapAmount = new BigNumber(amount || 0).sub(weth);
 
-    this.setState({ wrapping: true });
+    await this.props.dispatch(wrapEther(wrapAmount));
+  };
 
-    requestAnimationFrame(async () => {
-      try {
-        await this.props.dispatch(wrapEther(wrapAmount));
-      } catch (err) {
-        return this.props.navigation.showErrorModal(err);
-      } finally {
-        this.setState({ wrapping: false });
-      }
-
-      this.props.navigation.pop();
-    });
-  }
-
-  unwrap() {
+  unwrap = async () => {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
     const unwrapAmount = weth.sub(amount || 0);
 
-    this.setState({ unwrapping: true });
-
-    requestAnimationFrame(async () => {
-      try {
-        await this.props.dispatch(unwrapEther(unwrapAmount));
-      } catch (err) {
-        return this.props.navigation.showErrorModal(err);
-      } finally {
-        this.setState({ unwrapping: false });
-      }
-
-      this.props.navigation.pop();
-    });
-  }
+    await this.props.dispatch(unwrapEther(unwrapAmount));
+  };
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(
