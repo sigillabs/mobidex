@@ -131,7 +131,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
         ActionErrorSuccessFlow(
           this.props.navigation.componentId,
           {
-            action: async () => this.unwrap,
+            action: this.unwrap,
             icon: <Entypo name="chevron-with-circle-down" size={100} />,
             label: 'Unwrapping ETH...'
           },
@@ -144,7 +144,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
         ActionErrorSuccessFlow(
           this.props.navigation.componentId,
           {
-            action: async () => this.wrap,
+            action: this.wrap,
             icon: <Entypo name="chevron-with-circle-up" size={100} />,
             label: 'Wrapping ETH...'
           },
@@ -164,7 +164,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   wrap = async () => {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    const wrapAmount = new BigNumber(amount || 0).sub(weth);
+    const wrapAmount = new BigNumber(amount.join('') || 0).sub(weth);
 
     await this.props.dispatch(wrapEther(wrapAmount));
   };
@@ -172,7 +172,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   unwrap = async () => {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    const unwrapAmount = weth.sub(amount || 0);
+    const unwrapAmount = weth.sub(amount.join('') || 0);
 
     await this.props.dispatch(unwrapEther(unwrapAmount));
   };
