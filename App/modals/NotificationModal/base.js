@@ -27,7 +27,15 @@ class BaseNotificationModal extends React.PureComponent {
       );
     return (
       <View style={[styles.flex1]}>
-        <View style={[styles.flex1, styles.fluff0, styles.w100, styles.center]}>
+        <View
+          style={[
+            styles.flex1,
+            styles.fluff0,
+            styles.p2,
+            styles.w100,
+            styles.center
+          ]}
+        >
           {this.props.icon}
           <Padding size={25} />
           {label}

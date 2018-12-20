@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../navigation';
+import { approve } from '../../thunks';
 import * as AssetService from '../../services/AssetService';
 import * as WalletService from '../../services/WalletService';
 import Button from '../components/Button';
@@ -8,7 +10,8 @@ import Button from '../components/Button';
 class ActionOrUnlockButton extends React.Component {
   static propTypes = {
     assetData: PropTypes.string.isRequired,
-    unlockProps: PropTypes.object.isRequired
+    unlockProps: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   render() {
@@ -34,11 +37,18 @@ class ActionOrUnlockButton extends React.Component {
   }
 
   toggleApprove = () => {
-    const asset = AssetService.findAssetByData(this.props.assetData);
-    this.props.navigation.push('navigation.wallet.ToggleApprove', {
-      asset
-    });
+    const { assetData } = this.props;
+    const assetOrWETH =
+      assetData !== null
+        ? AssetService.findAssetByData(assetData)
+        : AssetService.getWETHAsset();
+
+    this.props.dispatch(
+      approve(this.props.navigation.componentId, assetOrWETH.assetData)
+    );
   };
 }
 
-export default connectNavigation(ActionOrUnlockButton);
+export default connect(() => ({}), dispatch => ({ dispatch }))(
+  connectNavigation(ActionOrUnlockButton)
+);
