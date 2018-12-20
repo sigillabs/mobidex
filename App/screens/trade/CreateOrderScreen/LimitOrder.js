@@ -115,8 +115,10 @@ class CreateLimitOrder extends OneButtonTokenAmountKeyboardLayout {
   }
 
   getKeyboardProps() {
+    const { focus } = this.state;
     return {
-      decimal: this.state.amount.indexOf('.') === -1
+      decimal:
+        this.state[focus].indexOf('.') === -1 && this.state[focus].length > 0
     };
   }
 

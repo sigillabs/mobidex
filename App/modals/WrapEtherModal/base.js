@@ -90,7 +90,8 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
 
   getKeyboardProps() {
     return {
-      decimal: this.state.amount.indexOf('.') === -1
+      decimal:
+        this.state.amount.indexOf('.') === -1 && this.state.amount.length > 0
     };
   }
 
