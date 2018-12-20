@@ -88,11 +88,7 @@ export default class TokenProductDetailsView extends Component {
       }
     ];
     const graph = (
-      <TokenPriceGraph
-        height={200}
-        baseSymbol={base.symbol}
-        quoteSymbol={quote.symbol}
-      />
+      <TokenPriceGraph baseSymbol={base.symbol} quoteSymbol={quote.symbol} />
     );
 
     return (

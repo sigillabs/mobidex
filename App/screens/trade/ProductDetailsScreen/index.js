@@ -5,7 +5,7 @@ import { toggleShowForex } from '../../../../actions';
 import NavigationProvider from '../../../NavigationProvider';
 import BaseProductDetailsScreen from './base';
 
-class ProductDetailsScreen extends React.Component {
+class ProductDetailsScreen extends React.PureComponent {
   static options(passProps) {
     return {
       topBar: {
@@ -37,6 +37,20 @@ class ProductDetailsScreen extends React.Component {
     Navigation.events().bindComponent(this);
   }
 
+  componentDidUpdate() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'toggleForexButton',
+            text: this.props.showForexPrices ? 'USD' : 'ETH',
+            color: 'black'
+          }
+        ]
+      }
+    });
+  }
+
   render() {
     return (
       <NavigationProvider componentId={this.props.componentId}>
@@ -52,6 +66,7 @@ class ProductDetailsScreen extends React.Component {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  ProductDetailsScreen
-);
+export default connect(
+  ({ settings: { showForexPrices } }) => ({ showForexPrices }),
+  dispatch => ({ dispatch })
+)(ProductDetailsScreen);

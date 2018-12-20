@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { Dimensions, View } from 'react-native';
 import { connect } from 'react-redux';
+import { colors } from '../../styles';
 import { formatMoney } from '../../utils';
 import Inf0xClient from '../../clients/inf0x';
 import PriceGraph from '../components/PriceGraph';
+import Tabs from '../components/Tabs';
+
+const TABS = ['Day', 'Week', 'Month'];
+const INTERVALS = ['HOUR', 'HOUR', 'DAY'];
+const SAMPLES = [24, 24 * 7, 30];
 
 class ForexPriceGraph extends Component {
   static propTypes = {
@@ -19,8 +26,7 @@ class ForexPriceGraph extends Component {
     this.state = {
       loading: false,
       data: [],
-      interval: 'DAY',
-      n: 30
+      graphWindow: 1
     };
   }
 
@@ -28,24 +34,45 @@ class ForexPriceGraph extends Component {
     this.updatePrices();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.baseSymbol !== this.props.baseSymbol &&
-      prevProps.quoteSymbol !== this.props.quoteSymbol
+      prevProps.baseSymbol !== this.props.baseSymbol ||
+      prevProps.quoteSymbol !== this.props.quoteSymbol ||
+      prevState.graphWindow !== this.state.graphWindow
     ) {
       this.updatePrices();
     }
   }
 
   render() {
+    const { graphWindow, ...restOfState } = this.state;
+    const { height } = Dimensions.get('window');
+
     return (
-      <PriceGraph
-        {...this.props}
-        {...this.state}
-        formatAmount={v => formatMoney(v)}
-      />
+      <View>
+        <PriceGraph
+          height={height - 230}
+          {...this.props}
+          {...restOfState}
+          interval={INTERVALS[graphWindow]}
+          n={SAMPLES[graphWindow]}
+          formatAmount={v => formatMoney(v)}
+        />
+        <Tabs
+          onPress={this.changeInterval}
+          selectedIndex={graphWindow}
+          buttons={TABS}
+          containerStyle={{
+            height: 35,
+            borderTopWidth: 0.5,
+            borderTopColor: colors.grey3
+          }}
+        />
+      </View>
     );
   }
+
+  changeInterval = index => this.setState({ graphWindow: index });
 
   async updatePrices() {
     this.setState({ loading: true });
@@ -60,8 +87,9 @@ class ForexPriceGraph extends Component {
     return client.getForexPrices(
       this.props.baseSymbol,
       this.props.forexCurrency,
-      this.props.interval,
-      this.props.ticks
+      INTERVALS[this.state.graphWindow],
+      SAMPLES[this.state.graphWindow],
+      true
     );
   }
 }

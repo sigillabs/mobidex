@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import React from 'react';
 import { Navigation } from 'react-native-navigation';
 import { connect } from 'react-redux';
@@ -5,7 +6,7 @@ import { toggleShowForex } from '../../../../actions';
 import NavigationProvider from '../../../NavigationProvider';
 import BaseProductScreen from './base';
 
-class ProductScreen extends React.Component {
+class ProductScreen extends React.PureComponent {
   static options() {
     return {
       topBar: {
@@ -34,10 +35,24 @@ class ProductScreen extends React.Component {
     Navigation.events().bindComponent(this);
   }
 
+  componentDidUpdate() {
+    Navigation.mergeOptions(this.props.componentId, {
+      topBar: {
+        rightButtons: [
+          {
+            id: 'toggleForexButton',
+            text: this.props.showForexPrices ? 'USD' : 'ETH',
+            color: 'black'
+          }
+        ]
+      }
+    });
+  }
+
   render() {
     return (
       <NavigationProvider componentId={this.props.componentId}>
-        <BaseProductScreen {...this.props} />
+        <BaseProductScreen {..._.omit(this.props, ['showForexPrices'])} />
       </NavigationProvider>
     );
   }
@@ -49,4 +64,7 @@ class ProductScreen extends React.Component {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(ProductScreen);
+export default connect(
+  ({ settings: { showForexPrices } }) => ({ showForexPrices }),
+  dispatch => ({ dispatch })
+)(ProductScreen);

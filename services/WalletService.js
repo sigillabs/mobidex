@@ -263,7 +263,6 @@ export function getAllowanceBySymbol(symbol) {
 }
 
 export function isUnlockedByAssetData(assetData) {
-  return true;
   const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
   return isUnlockedByAddress(address);
 }

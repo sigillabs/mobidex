@@ -4,6 +4,13 @@ import { ButtonGroup } from 'react-native-elements';
 import { colors } from '../../styles';
 
 export default class Tabs extends Component {
+  static get propTypes() {
+    return {
+      containerStyle: PropTypes.object,
+      buttonStyle: PropTypes.object,
+      selectedButtonStyle: PropTypes.object
+    };
+  }
   render() {
     let {
       containerStyle,
@@ -23,12 +30,6 @@ export default class Tabs extends Component {
     );
   }
 }
-
-Tabs.propTypes = {
-  containerStyle: PropTypes.object,
-  buttonStyle: PropTypes.object,
-  selectedButtonStyle: PropTypes.object
-};
 
 const styles = {
   container: {

@@ -86,11 +86,7 @@ export default class ForexProductDetailsView extends Component {
       }
     ];
     const graph = (
-      <ForexPriceGraph
-        height={200}
-        baseSymbol={base.symbol}
-        quoteSymbol={quote.symbol}
-      />
+      <ForexPriceGraph baseSymbol={base.symbol} quoteSymbol={quote.symbol} />
     );
 
     return (
