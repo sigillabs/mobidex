@@ -129,7 +129,7 @@ class PreviewFillOrders extends Component {
         }
 
         // 3. Load gas price
-        const gasPrice = await WalletService.getGasPrice();
+        const gasPrice = await WalletService.getGasPriceInEth();
 
         this.setState({
           quote,

@@ -58,7 +58,10 @@ class BaseSendScreen extends Component {
   previous = () => this.setState({ page: 0 });
 
   submitAmount = amount =>
-    this.setState({ amount: amount ? new BigNumber(amount) : ZERO, page: 1 });
+    this.setState({
+      amount: amount ? new BigNumber(amount) : ZERO,
+      page: 1
+    });
 
   submitAddress = address => {
     this.setState({ address });

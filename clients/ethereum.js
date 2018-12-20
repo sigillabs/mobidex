@@ -3,8 +3,9 @@ import { BigNumber } from '0x.js';
 import { cache, time } from '../decorators/cls';
 
 export default class EthereumClient {
-  constructor(web3) {
+  constructor(web3, options = null) {
     this.web3 = web3;
+    this.options = options;
   }
 
   getCurrentProvider() {
@@ -58,11 +59,21 @@ export default class EthereumClient {
   async send(to, amount) {
     const sender = await this.getAccount();
     const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), 18);
+    const gasPrice = this.options ? this.options.gasPrice : undefined;
     return await new Promise((resolve, reject) => {
+      console.debug(
+        JSON.stringify({
+          from: sender,
+          to,
+          value,
+          gasPrice
+        })
+      );
       const response = this.web3.eth.sendTransaction({
         from: sender,
         to,
-        value
+        value,
+        gasPrice
       });
       response.on('transactionHash', hash => resolve(hash));
       response.on('error', error => reject(error));

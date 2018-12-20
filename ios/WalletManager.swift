@@ -273,7 +273,7 @@ class WalletManager: NSObject {
       if (tx.object(forKey: "data") != nil) {
         data = hexToPaddedData(tx["data"] as! String)
       } else {
-        data = hexToPaddedData("0x0")
+        data = Data()
       }
 
       let nonce = hexToPaddedBigUInt(tx["nonce"] as! String)

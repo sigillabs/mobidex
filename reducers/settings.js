@@ -1,5 +1,7 @@
+import { BigNumber } from '0x.js';
 import { handleActions } from 'redux-actions';
 import * as Actions from '../constants/actions';
+import { ZERO } from '../constants/0x';
 
 const initialState = {
   network: 1,
@@ -20,8 +22,8 @@ const initialState = {
   quoteSymbol: 'WETH',
   feeSymbol: 'ZRX',
   showForexPrices: false,
-  gasPrice: 3000000000,
-  gasLimit: 8000029000,
+  gasPrice: ZERO,
+  gasLimit: ZERO,
   minimumBalance: 10 ** 16
 };
 
@@ -35,6 +37,12 @@ export default handleActions(
     },
     [Actions.SET_NETWORK]: (state, action) => {
       return { ...state, network: action.payload };
+    },
+    [Actions.SET_GAS_PRICE]: (state, action) => {
+      return { ...state, gasPrice: new BigNumber(action.payload) };
+    },
+    [Actions.SET_GAS_LIMIT]: (state, action) => {
+      return { ...state, gasLimit: new BigNumber(action.payload) };
     }
   },
   initialState

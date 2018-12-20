@@ -3,7 +3,6 @@ import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { setStore as setStoreForAssetService } from './services/AssetService';
 import { setStore as setStoreForOrderService } from './services/OrderService';
-import { setStore as setStoreForProductService } from './services/ProductService';
 import { setStore as setStoreForTickerService } from './services/TickerService';
 import TimerService from './services/TimerService';
 import {
@@ -19,7 +18,6 @@ TimerService.getInstance(60 * 1000).start();
 
 setStoreForAssetService(store);
 setStoreForOrderService(store);
-setStoreForProductService(store);
 setStoreForTickerService(store);
 setStoreForWalletService(store);
 setStoreForZeroExService(store);

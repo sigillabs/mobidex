@@ -6,7 +6,8 @@ import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
-import { ZERO, MAX } from '../constants/0x';
+import EthereumClient from '../clients/ethereum';
+import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { showModal } from '../navigation';
 
 const WalletManager = NativeModules.WalletManager;
@@ -317,5 +318,21 @@ export function getDecimalsBySymbol(symbol) {
 
 export async function getGasPrice() {
   const web3 = getWeb3();
-  return new BigNumber(web3.utils.fromWei(await web3.eth.getGasPrice()));
+  return new BigNumber(await web3.eth.getGasPrice());
+}
+
+export async function getGasPriceInEth() {
+  const gasPrice = await getGasPrice();
+  return convertGasPriceToEth(gasPrice);
+}
+
+export function convertGasPriceToEth(gasPrice) {
+  const web3 = getWeb3();
+  return new BigNumber(web3.utils.fromWei(gasPrice.toString()));
+}
+
+export async function estimateEthSend() {
+  const web3 = getWeb3();
+  const ethereumClient = new EthereumClient(web3);
+  return await ethereumClient.estimateGas(NULL_ADDRESS, undefined);
 }

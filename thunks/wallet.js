@@ -222,12 +222,13 @@ export function sendTokens(token, to, amount) {
 export function sendEther(to, amount) {
   return async (dispatch, getState) => {
     const {
-      wallet: { address }
+      wallet: { address },
+      settings: { gasPrice }
     } = getState();
 
     const web3 = WalletService.getWeb3();
 
-    const ethereumClient = new EthereumClient(web3);
+    const ethereumClient = new EthereumClient(web3, { gasPrice });
     const txhash = await ethereumClient.send(to, amount);
     const activeTransaction = {
       id: txhash,

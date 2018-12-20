@@ -2,9 +2,11 @@ import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { connect } from 'react-redux';
 import * as TickerService from '../../../services/TickerService';
 import * as WalletService from '../../../services/WalletService';
 import { styles } from '../../../styles';
+import { refreshGasPrice } from '../../../thunks';
 import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
 import MaxButton from '../../components/MaxButton';
 import Row from '../../components/Row';
@@ -12,9 +14,10 @@ import TokenAmount from '../../components/TokenAmount';
 import TouchableTokenAmount from '../../components/TouchableTokenAmount';
 import TwoButtonTokenAmountKeyboardLayout from '../../layouts/TwoButtonTokenAmountKeyboardLayout';
 
-export default class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
+class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
+      gasPrice: PropTypes.instanceOf(BigNumber),
       asset: PropTypes.object.isRequired,
       onPrevious: PropTypes.func.isRequired,
       onNext: PropTypes.func.isRequired
@@ -27,9 +30,12 @@ export default class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
     this.state = {
       amount: [],
       forex: [],
-      focus: 'amount',
-      error: false
+      focus: 'amount'
     };
+  }
+
+  async componentDidMount() {
+    this.props.dispatch(refreshGasPrice());
   }
 
   renderTop() {
@@ -123,7 +129,7 @@ export default class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
       new BigNumber(this.state.amount.join(''));
       this.props.onNext(this.state.amount.join(''));
     } catch (err) {
-      this.setState({ error: true });
+      console.warn('Should never get here', err);
     }
   }
 
@@ -166,9 +172,26 @@ export default class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
     });
   }
 
-  setMaxTokenAmount = () => {
+  setMaxTokenAmount = async () => {
     const { asset } = this.props;
     const balance = WalletService.getBalanceByAddress(asset.address || null);
-    this.setColumn('amount', balance.toString().split(''));
+    let amount = balance;
+
+    if (!asset.address) {
+      const gasAmount = await WalletService.estimateEthSend();
+      const gasPrice = WalletService.convertGasPriceToEth(this.props.gasPrice);
+      const gasFee = gasPrice.mul(gasAmount);
+
+      amount = amount.sub(gasFee);
+    }
+
+    this.setColumn('amount', amount.toString().split(''));
   };
 }
+
+export default connect(
+  state => ({
+    gasPrice: state.settings.gasPrice
+  }),
+  dispatch => ({ dispatch })
+)(AmountPage);
