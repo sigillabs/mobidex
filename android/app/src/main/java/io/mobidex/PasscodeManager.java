@@ -17,10 +17,20 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.UnrecoverableEntryException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.spec.MGF1ParameterSpec;
 
 import javax.crypto.Cipher;
@@ -38,6 +48,7 @@ public class PasscodeManager extends BaseActivityEventListener {
 
 //    private static final int REQUEST_CODE_CONFIRM_CREDENTIALS_ENCRYPT = 10;
     private static final int REQUEST_CODE_CONFIRM_CREDENTIALS_DECRYPT = 20;
+    private static final String ALIAS = "io.mobidex";
 
     private ReactApplicationContext context;
     private String path;
@@ -83,6 +94,56 @@ public class PasscodeManager extends BaseActivityEventListener {
         }
     }
 
+    private boolean hasPasscode() throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+
+        return keyStore.containsAlias(ALIAS);
+    }
+
+    private void deletePasscode() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+
+        if (hasPasscode()) {
+            keyStore.deleteEntry(ALIAS);
+        }
+    }
+
+    private KeyPair generateKeyPair() throws InvalidAlgorithmParameterException, NoSuchProviderException, NoSuchAlgorithmException {
+        KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(
+                KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+        keyGenerator.initialize(new KeyGenParameterSpec.Builder(
+                ALIAS,
+                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
+                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                .setKeySize(2048)
+                .setUserAuthenticationRequired(true)
+                .build());
+        return keyGenerator.generateKeyPair();
+    }
+
+    private PrivateKey getPrivateKey() throws CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException, KeyStoreException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+
+        return (PrivateKey) keyStore.getKey(ALIAS, null);
+    }
+
+    private PublicKey getPublicKey() throws CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableEntryException, KeyStoreException {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        Certificate cert = keyStore.getCertificate(ALIAS);
+        return cert.getPublicKey();
+    }
+
+    private KeyPair getKeyPair() throws UnrecoverableEntryException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        PrivateKey privateKey = getPrivateKey();
+        PublicKey publicKey = getPublicKey();
+        return new KeyPair(publicKey, privateKey);
+    }
+
     void savePasscode(String passcode, SavePasscodeCallback callback) {
         if (!supportsFingerPrintAuthentication()) {
             callback.invoke(null, false);
@@ -90,22 +151,12 @@ public class PasscodeManager extends BaseActivityEventListener {
         }
 
         try {
-            KeyStore keyStore
-                    = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
+            if (!hasPasscode()) {
+                generateKeyPair();
+            }
 
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(
-                    KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
-            keyGenerator.initialize(new KeyGenParameterSpec.Builder(
-                    "io.mobidex",
-                    KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_OAEP)
-                    .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                    .setKeySize(2048)
-                    .setUserAuthenticationRequired(true)
-                    .build());
+            KeyPair kp = getKeyPair();
 
-            KeyPair kp = keyGenerator.generateKeyPair();
             OAEPParameterSpec spec = new OAEPParameterSpec("SHA-256", "MGF1",
                     MGF1ParameterSpec.SHA1, PSource.PSpecified.DEFAULT);
 
@@ -139,9 +190,7 @@ public class PasscodeManager extends BaseActivityEventListener {
             final File file = new File(path);
             final byte[] bytes = new byte[(int) file.length()];
 
-            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-            keyStore.load(null);
-            PrivateKey key = (PrivateKey) keyStore.getKey("io.mobidex", null);
+            PrivateKey key = getPrivateKey();
 
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);

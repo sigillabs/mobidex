@@ -194,22 +194,22 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
         final PasscodeManager.SavePasscodeCallback passcodeCallback = new PasscodeManager.SavePasscodeCallback() {
             public void invoke(Exception error, boolean success) {
-            if (error != null) {
-                cb.invoke(error.getMessage());
-                return;
-            }
+                if (error != null) {
+                    cb.invoke(error.getMessage());
+                    return;
+                }
 
-            if (!success) {
-                Log.d("WalletManager", "Skipped finger print authentication setup.");
-            }
+                if (!success) {
+                    Log.d("WalletManager", "Skipped finger print authentication setup.");
+                }
 
-            try {
-                generateWalletFile(pair, password, walletDirectory, WalletKt.getLIGHT_SCRYPT_CONFIG());
-                cb.invoke(null, pair.getPrivateKey().toString(16));
-            } catch(Exception e) {
-                Log.e("WalletManager", e.getMessage());
-                cb.invoke(e.getMessage());
-            }
+                try {
+                    generateWalletFile(pair, password, walletDirectory, WalletKt.getLIGHT_SCRYPT_CONFIG());
+                    cb.invoke(null, pair.getPrivateKey().toString(16));
+                } catch(Exception e) {
+                    Log.e("WalletManager", e.getMessage());
+                    cb.invoke(e.getMessage());
+                }
             }
         };
 
@@ -221,6 +221,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
         if (walletFile == null) {
             successCallback.invoke();
+            return;
         }
 
         final PasscodeManager.GetPasscodeCallback passcodeCallback = new PasscodeManager.GetPasscodeCallback() {

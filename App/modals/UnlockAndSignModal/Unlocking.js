@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { connect as connectNavigation } from '../../../navigation';
 import * as WalletService from '../../../services/WalletService';
 import { colors } from '../../../styles';
@@ -28,9 +29,15 @@ class Unlocking extends Component {
 
       try {
         if (tx) {
-          data = await WalletService.signTransaction(tx, pin.slice(0, 6));
+          data = await WalletService.signTransaction(
+            tx,
+            pin ? pin.slice(0, 6) : null
+          );
         } else if (message) {
-          data = await WalletService.signMessage(message, pin.slice(0, 6));
+          data = await WalletService.signMessage(
+            message,
+            pin ? pin.slice(0, 6) : null
+          );
         } else {
           throw new Error('No transaction or message provided to sign');
         }
@@ -45,6 +52,14 @@ class Unlocking extends Component {
   }
 
   render() {
+    if (this.props.pin) {
+      return this.renderForPin();
+    } else {
+      return this.renderForTouchId();
+    }
+  }
+
+  renderForPin() {
     return (
       <BigCenter>
         <RotatingView>
@@ -52,6 +67,16 @@ class Unlocking extends Component {
         </RotatingView>
         <Padding size={25} />
         <Text>Unlocking Mobidex...</Text>
+      </BigCenter>
+    );
+  }
+
+  renderForTouchId() {
+    return (
+      <BigCenter>
+        <MaterialIcon name="fingerprint" color="green" size={100} />
+        <Padding size={25} />
+        <Text>Start scanning your fingerprint</Text>
       </BigCenter>
     );
   }

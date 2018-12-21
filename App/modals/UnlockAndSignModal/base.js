@@ -24,6 +24,7 @@ class UnlockAndSignModal extends Component {
     this.state = {
       loading: true,
       previousScreen: null,
+      forceShowPin: false,
       screen: null,
       error: null,
       pin: null
@@ -36,7 +37,7 @@ class UnlockAndSignModal extends Component {
     }
 
     const supportsFingerPrint = await WalletService.supportsFingerPrintUnlock();
-    if (supportsFingerPrint) {
+    if (supportsFingerPrint && !this.forceShowPin) {
       this.showTouchIdentification();
     } else {
       this.showPin();
@@ -66,6 +67,7 @@ class UnlockAndSignModal extends Component {
             {...this.props}
             error={error}
             showUnlocking={this.showUnlocking}
+            showPin={this.showPin}
           />
         );
 

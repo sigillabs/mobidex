@@ -137,7 +137,7 @@ class WalletManager: NSObject {
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrAccount as String: "mobidex",
-      kSecAttrService as String: "io.mobidex.app.password",
+      kSecAttrService as String: "io.mobidex.wallet.password",
       kSecValueData as String: password.data(using: .utf8)!,
       kSecAttrAccessControl as String: access as Any,
       kSecUseAuthenticationContext as String: context
@@ -145,7 +145,7 @@ class WalletManager: NSObject {
     let deleteQuery: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrAccount as String: "mobidex",
-      kSecAttrService as String: "io.mobidex.app.password"
+      kSecAttrService as String: "io.mobidex.wallet.password"
     ]
     
     SecItemDelete(deleteQuery as CFDictionary)
