@@ -1,16 +1,13 @@
 import React from 'react';
-import NavigationProvider from '../../../NavigationProvider';
+import NavigationProvider from '../../NavigationProvider';
 import BaseReceiveScreen from './base';
 
-export default class ReceiveScreen extends React.Component {
+export default class ReceiveModal extends React.Component {
   static options() {
     return {
       topBar: {
-        visible: true,
-        drawBehind: false,
-        backButton: {
-          color: 'black'
-        }
+        visible: false,
+        drawBehind: true
       }
     };
   }

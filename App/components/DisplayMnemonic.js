@@ -1,49 +1,39 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from 'react-native-elements';
 import { TextInputMask } from 'react-native-masked-text';
 import { colors } from '../../styles';
 import { styleProp } from '../../types/props';
 import Row from './Row';
 
 class Cell extends Component {
+  static get propTypes() {
+    return {
+      index: PropTypes.number.isRequired,
+      word: PropTypes.string,
+      cellStyle: PropTypes.object
+    };
+  }
   render() {
-    const { cellStyle, word, ...rest } = this.props;
+    const { cellStyle, index, word, ...rest } = this.props;
     return (
-      <TouchableOpacity
-        style={[styles.cell, cellStyle]}
-        onPress={() => this.input.focus()}
-      >
-        <TextInputMask
-          {...rest}
-          type={'custom'}
-          autoCapitalize={'none'}
-          keyboardType={'ascii-capable'}
-          value={word}
-          inputStyle={{ height: 20, width: 100 }}
-          options={{
-            mask: 'AAAAAAAA',
-            validator: () => true,
-            getRawValue: value => value.replace(/\s+/gi, '')
-          }}
-          underlineColorAndroid="white"
-          disabled={true}
-        />
-      </TouchableOpacity>
+      <View style={[styles.cell, cellStyle]} {...rest}>
+        <Text>
+          {index + 1}
+          {'. '}
+          {word}
+        </Text>
+      </View>
     );
   }
 }
-
-Cell.propTypes = {
-  word: PropTypes.string,
-  cellStyle: PropTypes.object
-};
 
 export default class DisplayMnemonic extends Component {
   render() {
     const { mnemonic, cellStyle, containerStyle } = this.props;
     const cells = mnemonic.map((w, i) => (
-      <Cell key={`cell-${i}`} word={w} cellStyle={cellStyle} />
+      <Cell key={`cell-${i}`} word={w} cellStyle={cellStyle} index={i} />
     ));
     const parts = [
       cells.slice(0, 3),

@@ -208,14 +208,21 @@ public class PasscodeManager extends BaseActivityEventListener {
                     new FingerprintManager.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationError(int errorCode, CharSequence errString) {
-                            fingerprintCancelSignal = null;
-                            callback.invoke(new Exception("Authentication error (" + errorCode + "): " + errString), null);
+                            Log.w("PasscodeManager", new Integer(errorCode).toString());
+                            Log.w("PasscodeManager", errString.toString());
+                            if (fingerprintCancelSignal != null) {
+                                fingerprintCancelSignal = null;
+                                callback.invoke(new Exception("Authentication error (" + errorCode + "): " + errString), null);
+                            }
                         }
 
                         @Override
                         public void onAuthenticationFailed() {
-                            fingerprintCancelSignal = null;
-                            callback.invoke(new Exception("Authentication failed"), null);
+                            if (fingerprintCancelSignal != null) {
+                                fingerprintCancelSignal.cancel();
+                                fingerprintCancelSignal = null;
+                                callback.invoke(new Exception("Authentication failed"), null);
+                            }
                         }
 
                         @Override

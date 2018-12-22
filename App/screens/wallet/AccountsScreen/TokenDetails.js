@@ -130,7 +130,7 @@ class TokenDetails extends Component {
 
   receive = () => {
     const { asset } = this.props;
-    this.props.navigation.push('navigation.wallet.Receive', {
+    this.props.navigation.showModal('modals.Receive', {
       asset
     });
   };

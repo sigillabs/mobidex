@@ -6,6 +6,7 @@ import NotificationModal from '../App/modals/NotificationModal';
 import ErrorModal from '../App/modals/ErrorModal';
 import LoadingModal from '../App/modals/LoadingModal';
 import PreviewOrderModal from '../App/modals/PreviewOrderModal';
+import ReceiveModal from '../App/modals/ReceiveModal';
 import SendModal from '../App/modals/SendModal';
 import UnlockAndSignModal from '../App/modals/UnlockAndSignModal';
 import WrapEtherModal from '../App/modals/WrapEtherModal';
@@ -57,6 +58,13 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.UnlockAndSign',
     () => UnlockAndSignModal,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'modals.Receive',
+    () => ReceiveModal,
     Provider,
     store
   );
