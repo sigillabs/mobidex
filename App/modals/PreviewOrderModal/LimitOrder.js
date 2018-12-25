@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { InteractionManager, SafeAreaView } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../navigation';
@@ -91,7 +91,9 @@ class PreviewLimitOrder extends Component {
     );
 
     return (
-      <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
+      <SafeAreaView
+        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
+      >
         <TwoColumnListItem
           left="Sub-Total"
           right={
@@ -170,7 +172,7 @@ class PreviewLimitOrder extends Component {
             containerStyle={{ flex: 1 }}
           />
         </Row>
-      </View>
+      </SafeAreaView>
     );
   }
 

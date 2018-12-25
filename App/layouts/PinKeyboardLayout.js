@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import { styles } from '../../styles';
 import { processVirtualKeyboardCharacter } from '../../utils';
@@ -16,19 +16,15 @@ export default class PinKeyboardLayout extends PureComponent {
 
   render() {
     return (
-      <View style={[styles.flex1]}>
-        <View style={[styles.flex1, styles.fluff0, styles.w100]}>
+      <SafeAreaView style={[styles.flex1]}>
+        <View style={[styles.flex1, styles.fluff0, styles.w100, styles.center]}>
           {this.renderTop()}
           <PinView
             value={this.state.pin.join('')}
-            containerStyle={{
-              flex: 3,
-              alignItems: 'flex-end',
-              marginBottom: 50
-            }}
+            containerStyle={[styles.mv2]}
           />
         </View>
-        <View style={[styles.flex1, styles.fluff0]}>
+        <View style={[styles.flex0, styles.fluff0]}>
           <VirtualKeyboard
             color="black"
             pressMode="char"
@@ -36,8 +32,9 @@ export default class PinKeyboardLayout extends PureComponent {
             {...this.getKeyboardProps()}
             decimal={false}
           />
+          {this.renderBottom()}
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -63,6 +60,10 @@ export default class PinKeyboardLayout extends PureComponent {
 
   renderTop() {
     throw new Error('renderTop must be implemented.');
+  }
+
+  renderBottom() {
+    throw new Error('renderBottom must be implemented.');
   }
 
   finish(pin) {

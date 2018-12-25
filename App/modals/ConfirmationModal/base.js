@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
@@ -26,7 +26,7 @@ class BaseConfirmationModal extends React.PureComponent {
         this.props.label
       );
     return (
-      <View style={[styles.flex1]}>
+      <SafeAreaView style={[styles.flex1]}>
         <View style={[styles.flex1, styles.fluff0, styles.w100]}>{label}</View>
         <Row style={[styles.flex0, styles.fluff0]}>
           <Button
@@ -42,7 +42,7 @@ class BaseConfirmationModal extends React.PureComponent {
             title="Confirm"
           />
         </Row>
-      </View>
+      </SafeAreaView>
     );
   }
 

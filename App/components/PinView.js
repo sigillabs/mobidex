@@ -76,7 +76,7 @@ const styles = {
     marginHorizontal: 3
   },
   container: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'

@@ -127,7 +127,7 @@ export function getWeb3() {
               return cb(err);
             }
 
-            if (signature == null) {
+            if (signature === null || signature === undefined) {
               return cb(new Error('Could not unlock wallet'));
             }
 
@@ -145,7 +145,7 @@ export function getWeb3() {
               return cb(err);
             }
 
-            if (signature == null) {
+            if (signature === null || signature === undefined) {
               return cb(new Error('Could not unlock wallet'));
             }
 

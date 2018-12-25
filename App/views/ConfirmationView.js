@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import { styles } from '../../styles';
 import { styleProp } from '../../types/props/styles';
 import Button from '../components/Button';
@@ -48,7 +48,7 @@ export default class ConfirmationView extends React.Component {
 
   render() {
     return (
-      <View style={[styles.flex1]}>
+      <SafeAreaView style={[styles.flex1]}>
         <View style={[styles.flex1, styles.fluff0, styles.w100]}>
           <ScrollView
             contentContainerStyle={[
@@ -76,7 +76,7 @@ export default class ConfirmationView extends React.Component {
             {...this.props.buttonPropsRight}
           />
         </Row>
-      </View>
+      </SafeAreaView>
     );
   }
 }

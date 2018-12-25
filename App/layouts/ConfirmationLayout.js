@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import { styles } from '../../styles';
 import Button from '../components/Button';
 import Row from '../components/Row';
@@ -7,7 +7,7 @@ import Row from '../components/Row';
 export default class ConfirmationLayout extends React.PureComponent {
   render() {
     return (
-      <View style={[styles.flex1]}>
+      <SafeAreaView style={[styles.flex1]}>
         <View style={[styles.flex1, styles.fluff0, styles.w100]}>
           <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
             {this.renderTop()}
@@ -29,7 +29,7 @@ export default class ConfirmationLayout extends React.PureComponent {
             {...this.getButtonRightProps()}
           />
         </Row>
-      </View>
+      </SafeAreaView>
     );
   }
 

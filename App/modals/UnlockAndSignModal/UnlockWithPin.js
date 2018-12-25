@@ -1,20 +1,21 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-elements';
+import React from 'react';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import { navigationProp } from '../../../types/props';
-import PinKeyboard from '../../components/PinKeyboard';
-import PinView from '../../components/PinView';
+import Button from '../../components/Button';
+import MutedText from '../../components/MutedText';
+import VerticalPadding from '../../components/VerticalPadding';
+import PinKeyboardLayout from '../../layouts/PinKeyboardLayout';
 
-class UnlockWithPin extends Component {
+class UnlockWithPin extends PinKeyboardLayout {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
       error: PropTypes.object,
-      showUnlocking: PropTypes.func.isRequired
+      showUnlocking: PropTypes.func.isRequired,
+      cancel: PropTypes.func.isRequired
     };
   }
 
@@ -22,70 +23,42 @@ class UnlockWithPin extends Component {
     super(props);
 
     this.state = {
-      pin: '',
-      pinError: false
+      pin: [],
+      focus: 'pin'
     };
   }
 
-  render() {
-    const error = this.props.error || this.state.pinError;
-
+  renderTop() {
     return (
-      <View style={{ flex: 1 }}>
-        <View
-          style={[styles.bigCenter, { marginHorizontal: 50, marginBottom: 30 }]}
-        >
-          <PinView
-            value={this.state.pin}
-            containerStyle={{
-              alignItems: 'flex-end',
-              marginBottom: 20
-            }}
-          />
-          {error ? (
-            <Text style={[styles.top, { color: 'red' }]}>
-              Pin incorrect. Try again.
-            </Text>
-          ) : (
-            <Text style={[styles.top, { color: 'red' }]}> </Text>
-          )}
-        </View>
-        <PinKeyboard onChange={this.setPin} />
-      </View>
+      <React.Fragment>
+        <VerticalPadding size={50} />
+        <MutedText style={[styles.textCenter]}>
+          Unlock your wallet using your PIN.
+        </MutedText>
+      </React.Fragment>
     );
   }
 
-  setPin = value => {
-    let current = this.state.pin.slice();
-    if (current.length > 6) {
-      this.setState({ pin: '', pinError: false });
-    } else {
-      if (isNaN(value)) {
-        if (value === 'back') {
-          current = current.slice(0, -1);
-        } else {
-          current += value;
-        }
-      } else {
-        current += value;
-      }
-      this.setState({ pin: current, pinError: false });
+  renderBottom() {
+    return <Button title={'Cancel'} onPress={this.press} />;
+  }
 
-      if (current.length === 6) {
-        this.setState({ pin: current });
-        this.unlock(current);
-      }
-    }
+  press = () => {
+    console.warn(this.props.navigation);
+    this.props.navigation.dismissModal();
+    this.props.cancel();
   };
 
-  unlock = pin => {
-    if (pin.length < 6) {
-      this.setState({ pinError: true });
-      return;
-    }
+  getKeyboardProps() {
+    return {
+      decimal: false
+    };
+  }
 
-    this.props.showUnlocking(pin.slice(0, 6));
-  };
+  finish(pin) {
+    console.warn(pin);
+    this.props.showUnlocking(pin.join(''));
+  }
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(

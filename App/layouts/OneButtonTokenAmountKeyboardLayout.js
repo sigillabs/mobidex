@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { View, ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import { styles } from '../../styles';
 import { processVirtualKeyboardCharacter } from '../../utils';
@@ -18,7 +18,7 @@ export default class OneButtonTokenAmountKeyboardLayout extends PureComponent {
 
   render() {
     return (
-      <View style={[styles.flex1]}>
+      <SafeAreaView style={[styles.flex1]}>
         <View style={[styles.flex1, styles.fluff0, styles.w100]}>
           <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
             {this.renderTop()}
@@ -39,7 +39,7 @@ export default class OneButtonTokenAmountKeyboardLayout extends PureComponent {
             {...this.getButtonProps()}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 

@@ -57,6 +57,7 @@ class UnlockAndSignModal extends Component {
           <UnlockWithPin
             {...this.props}
             error={error}
+            cancel={this.cancel}
             showUnlocking={this.showUnlocking}
           />
         );
@@ -66,6 +67,7 @@ class UnlockAndSignModal extends Component {
           <UnlockWithTouchIdentification
             {...this.props}
             error={error}
+            cancel={this.cancel}
             showUnlocking={this.showUnlocking}
             showPin={this.showPin}
           />
@@ -84,6 +86,8 @@ class UnlockAndSignModal extends Component {
         return null;
     }
   }
+
+  cancel = () => this.props.next();
 
   showPin = () => {
     this.setState({

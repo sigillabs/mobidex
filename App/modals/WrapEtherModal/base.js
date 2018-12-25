@@ -1,7 +1,7 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Slider } from 'react-native';
+import { Dimensions, Slider, View } from 'react-native';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -51,7 +51,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
 
   renderTop() {
     return (
-      <React.Fragment>
+      <View style={[styles.center, styles.mv3]}>
         <TokenAmount
           label={'Wrapped Ether Amount'}
           symbol={'ETH'}
@@ -69,7 +69,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
           onValueChange={this.onSliderChange}
           style={[styles.mv0, styles.mh2, styles.w100]}
         />
-      </React.Fragment>
+      </View>
     );
   }
 

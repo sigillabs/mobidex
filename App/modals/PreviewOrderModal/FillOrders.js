@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { InteractionManager, SafeAreaView } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
@@ -166,7 +166,9 @@ class PreviewFillOrders extends Component {
     const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
 
     return (
-      <View style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}>
+      <SafeAreaView
+        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
+      >
         <TwoColumnListItem
           left="Average Price"
           leftStyle={{ height: 30 }}
@@ -301,7 +303,7 @@ class PreviewFillOrders extends Component {
             highlight={true}
           />
         ))}
-      </View>
+      </SafeAreaView>
     );
   }
 

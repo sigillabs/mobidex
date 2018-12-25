@@ -35,6 +35,10 @@ class BasePinScreen extends PinKeyboardLayout {
     );
   }
 
+  renderBottom() {
+    return null;
+  }
+
   getKeyboardProps() {
     return {};
   }
