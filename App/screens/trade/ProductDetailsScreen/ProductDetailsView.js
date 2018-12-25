@@ -36,7 +36,7 @@ class ProductDetailsView extends Component {
     const { base, quote, infolist, graph } = this.props;
 
     return (
-      <View style={[styles.flex1, styles.mt2]}>
+      <View style={[styles.flex1, styles.fluff0]}>
         {graph}
         <Divider style={[styles.mt0]} />
         <Row style={[styles.justifyCenter]}>

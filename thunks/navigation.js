@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MajorText from '../App/components/MajorText';
 import MajorTextWithVectorIcon from '../App/components/MajorTextWithVectorIcon';
@@ -80,7 +81,10 @@ export function approve(parentComponentId, assetData) {
         parentComponentId,
         confirmationOptions,
         actionOptions,
-        'Unlock transaction successfully sent to the Ethereum network. It takes a few minutes for Ethereum to confirm the transaction.'
+        <Text>
+          Unlock transaction successfully sent to the Ethereum network. It takes
+          a few minutes for Ethereum to confirm the transaction.
+        </Text>
       )
     );
   };
@@ -107,7 +111,10 @@ export function disapprove(parentComponentId, assetData) {
         parentComponentId,
         confirmationOptions,
         actionOptions,
-        'Lock transaction successfully sent to the Ethereum network. It takes a few minutes for Ethereum to confirm the transaction.'
+        <Text>
+          Lock transaction successfully sent to the Ethereum network. It takes a
+          few minutes for Ethereum to confirm the transaction.
+        </Text>
       )
     );
   };

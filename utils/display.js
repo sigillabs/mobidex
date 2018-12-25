@@ -62,7 +62,7 @@ export function formatAmount(amount) {
     amount = reduceDecimalOverflow(amount);
   }
   const amountBN = new BigNumber(amount);
-  return amountBN.toFixed(4);
+  return amountBN.toFixed(6);
 }
 
 export function formatMoney(n) {
@@ -78,7 +78,7 @@ export function formatPercent(n) {
   return (Math.round(n * 10000) / 100).toString() + '%';
 }
 
-export function isDecimalOverflow(amount, decimals = 4) {
+export function isDecimalOverflow(amount, decimals = 6) {
   if (!amount) return false;
   try {
     const stringAmount = new BigNumber(amount).toString();
@@ -89,7 +89,7 @@ export function isDecimalOverflow(amount, decimals = 4) {
   }
 }
 
-export function reduceDecimalOverflow(amount, decimals = 4) {
+export function reduceDecimalOverflow(amount, decimals = 6) {
   if (!amount) return false;
   const stringAmount = amount.toString();
   const index = stringAmount.indexOf('.');

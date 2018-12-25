@@ -45,9 +45,7 @@ class QuoteTokenItem extends Component {
         price={TickerService.getCurrentPrice(tokenTicker)
           .abs()
           .toNumber()}
-        change={TickerService.get24HRChangePercent(tokenTicker)
-          .abs()
-          .toNumber()}
+        change={TickerService.get24HRChangePercent(tokenTicker).toNumber()}
         priceFormatter={v => (
           <OrderbookPrice
             product={formatProduct(baseToken.symbol, quoteToken.symbol)}

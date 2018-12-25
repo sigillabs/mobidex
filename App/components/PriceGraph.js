@@ -1,14 +1,16 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { ActivityIndicator, Dimensions, Platform, View } from 'react-native';
 import { G, Line, Text as SVGText } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
-import { colors } from '../../styles';
+import { colors, styles } from '../../styles';
 import { styleProp } from '../../types/props/styles';
 import { colorWithAlpha } from '../../utils';
 import MutedText from './MutedText';
+import Tabs from './Tabs';
+
+const TABS = ['Day', 'Week', 'Month'];
 
 class SVGHorizontalLine extends React.PureComponent {
   static get propTypes() {
@@ -42,6 +44,7 @@ class SVGHorizontalLine extends React.PureComponent {
 export default class PriceGraph extends React.PureComponent {
   static get propTypes() {
     return {
+      selectedTab: PropTypes.number.isRequired,
       loading: PropTypes.bool,
       height: PropTypes.number.isRequired,
       interval: PropTypes.string.isRequired,
@@ -53,7 +56,7 @@ export default class PriceGraph extends React.PureComponent {
         })
       ).isRequired,
       formatAmount: PropTypes.func.isRequired,
-      label: PropTypes.string,
+      onChangeTab: PropTypes.func.isRequired,
       containerStyle: styleProp,
       chartStyle: styleProp
     };
@@ -104,14 +107,13 @@ export default class PriceGraph extends React.PureComponent {
         style={[
           {
             flex: 1,
-            height: this.props.height,
+            height: this.getHeight(),
             padding: 0,
             marginHorizontal: 0
           },
           containerStyle
         ]}
       >
-        <Text style={{ textAlign: 'center' }}>{this.props.label}</Text>
         <AreaChart
           style={[{ flex: 1, marginHorizontal: 0 }, chartStyle]}
           data={data}
@@ -131,6 +133,16 @@ export default class PriceGraph extends React.PureComponent {
           <MaximumHorizontalLine />
           <MiddleHorizontalLine />
         </AreaChart>
+        <Tabs
+          onPress={this.props.onChangeTab}
+          selectedIndex={this.props.selectedTab}
+          buttons={TABS}
+          containerStyle={{
+            height: 35,
+            borderTopWidth: 0.5,
+            borderTopColor: colors.grey3
+          }}
+        />
       </View>
     );
   }
@@ -140,13 +152,12 @@ export default class PriceGraph extends React.PureComponent {
     return (
       <View
         style={[
+          styles.flex1,
+          styles.fluff0,
+          styles.mh2,
+          styles.center,
           {
-            flex: 1,
-            height: this.props.height,
-            padding: 0,
-            marginHorizontal: 10,
-            justifyContent: 'center',
-            alignItems: 'center'
+            height: this.getHeight()
           },
           containerStyle
         ]}
@@ -163,7 +174,7 @@ export default class PriceGraph extends React.PureComponent {
         style={[
           {
             flex: 1,
-            height: this.props.height,
+            height: this.getHeight(),
             padding: 0,
             marginHorizontal: 10,
             justifyContent: 'center',
@@ -175,5 +186,35 @@ export default class PriceGraph extends React.PureComponent {
         <ActivityIndicator />
       </View>
     );
+  }
+
+  getHeight() {
+    let { height } = Dimensions.get('window');
+
+    if (Platform.OS === 'ios') {
+      const dim = Dimensions.get('window');
+
+      // iPhone 5 -- 568x320
+      // iPhone 8 plus -- 736x414
+      // iPhone X -- 812x375
+      // iPhone XR -- 896x375
+      const isIphoneX =
+        Platform.OS === 'ios' &&
+        !Platform.isPad &&
+        !Platform.isTVOS &&
+        (dim.height === 812 ||
+          dim.width === 812 ||
+          (dim.height === 896 || dim.width === 896));
+
+      if (isIphoneX) {
+        height = height - 172;
+      } else {
+        height = height - 114;
+      }
+    } else {
+      height = height - 138;
+    }
+
+    return height;
   }
 }

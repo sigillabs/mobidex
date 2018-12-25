@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Dimensions, View } from 'react-native';
 import { connect } from 'react-redux';
-import { colors } from '../../styles';
-import { formatAmount } from '../../utils';
+import { formatAmount, formatSymbol } from '../../utils';
 import Inf0xClient from '../../clients/inf0x';
 import PriceGraph from '../components/PriceGraph';
-import Tabs from '../components/Tabs';
 
-const TABS = ['Day', 'Week', 'Month'];
 const INTERVALS = ['HOUR', 'HOUR', 'DAY'];
 const SAMPLES = [24, 24 * 7, 30];
 
@@ -26,7 +22,9 @@ class TokenPriceGraph extends Component {
     this.state = {
       loading: false,
       data: [],
-      graphWindow: 1
+      selectedTab: 1,
+      topBarHeight: 0,
+      statusBarHeight: 0
     };
   }
 
@@ -38,41 +36,31 @@ class TokenPriceGraph extends Component {
     if (
       prevProps.baseSymbol !== this.props.baseSymbol ||
       prevProps.quoteSymbol !== this.props.quoteSymbol ||
-      prevState.graphWindow !== this.state.graphWindow
+      prevState.selectedTab !== this.state.selectedTab
     ) {
       this.updatePrices();
     }
   }
 
   render() {
-    const { graphWindow, ...restOfState } = this.state;
-    const { height } = Dimensions.get('window');
+    const { selectedTab, ...restOfState } = this.state;
 
     return (
-      <View>
-        <PriceGraph
-          height={height - 230}
-          {...this.props}
-          {...restOfState}
-          interval={INTERVALS[graphWindow]}
-          n={SAMPLES[graphWindow]}
-          formatAmount={v => `${formatAmount(v)} ${this.props.quoteSymbol}`}
-        />
-        <Tabs
-          onPress={this.changeInterval}
-          selectedIndex={graphWindow}
-          buttons={TABS}
-          containerStyle={{
-            height: 35,
-            borderTopWidth: 0.5,
-            borderTopColor: colors.grey3
-          }}
-        />
-      </View>
+      <PriceGraph
+        {...this.props}
+        {...restOfState}
+        interval={INTERVALS[selectedTab]}
+        n={SAMPLES[selectedTab]}
+        formatAmount={v =>
+          `${formatAmount(v)} ${formatSymbol(this.props.quoteSymbol)}`
+        }
+        selectedTab={selectedTab}
+        onChangeTab={this.changeInterval}
+      />
     );
   }
 
-  changeInterval = index => this.setState({ graphWindow: index });
+  changeInterval = index => this.setState({ selectedTab: index });
 
   async updatePrices() {
     this.setState({ loading: true });
@@ -87,8 +75,8 @@ class TokenPriceGraph extends Component {
     return client.getTokenPrices(
       this.props.baseSymbol,
       this.props.quoteSymbol,
-      INTERVALS[this.state.graphWindow],
-      SAMPLES[this.state.graphWindow],
+      INTERVALS[this.state.selectedTab],
+      SAMPLES[this.state.selectedTab],
       true
     );
   }

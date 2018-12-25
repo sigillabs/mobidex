@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ScrollView, RefreshControl } from 'react-native';
 import { connect } from 'react-redux';
+import { styles } from '../../../../styles';
 import {
   loadAllowance,
   loadBalance,
@@ -36,6 +37,7 @@ class BaseProductDetailsScreen extends Component {
 
     return (
       <ScrollView
+        contentContainerStyle={[styles.flex0, styles.fluff0]}
         contentInsetAdjustmentBehavior={'never'}
         refreshControl={
           <RefreshControl

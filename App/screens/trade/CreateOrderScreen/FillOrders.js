@@ -77,14 +77,7 @@ class FillOrders extends OneButtonTokenAmountKeyboardLayout {
         side,
         amount: amountString,
         base,
-        quote,
-        callback: error => {
-          if (error) {
-            this.props.navigation.showErrorModal(error);
-          } else {
-            this.props.navigation.pop();
-          }
-        }
+        quote
       });
     }
   }

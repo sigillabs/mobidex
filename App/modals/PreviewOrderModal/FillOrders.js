@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
-import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
 import * as AssetService from '../../../services/AssetService';
 import * as OrderService from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
 import * as ZeroExService from '../../../services/ZeroExService';
 import { colors, getProfitLossStyle } from '../../../styles';
-import { marketBuy, marketSell } from '../../../thunks';
+import { ActionErrorSuccessFlow, marketBuy, marketSell } from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import { totalTakerFee } from '../../../utils/orders';
 import Button from '../../components/Button';
@@ -20,7 +20,6 @@ import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import Row from '../../components/Row';
 import Loading from './Loading';
-import SubmittingOrders from './SubmittingOrders';
 
 class Order extends Component {
   static get propTypes() {
@@ -61,8 +60,7 @@ class PreviewFillOrders extends Component {
       amount: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired,
-      dispatch: PropTypes.func.isRequired,
-      callback: PropTypes.func.isRequired
+      dispatch: PropTypes.func.isRequired
     };
   }
 
@@ -73,7 +71,6 @@ class PreviewFillOrders extends Component {
       gas: 0,
       gasPrice: 0,
       loading: true,
-      submitting: false,
       quote: null
     };
   }
@@ -149,10 +146,6 @@ class PreviewFillOrders extends Component {
   render() {
     if (this.state.loading) {
       return <Loading />;
-    }
-
-    if (this.state.submitting) {
-      return <SubmittingOrders text={'Filling Orders'} />;
     }
 
     const receipt = this.getReceipt();
@@ -394,28 +387,24 @@ class PreviewFillOrders extends Component {
     };
   };
 
-  cancel = () => {
-    this.props.navigation.dismissModal();
-  };
+  cancel = () => this.props.navigation.dismissModal();
 
-  submit = async () => {
+  submit = () => {
     const { quote } = this.state;
     const fillAction = this.getFillAction();
 
-    this.setState({ submitting: true });
-
-    try {
-      await this.props.dispatch(fillAction(quote));
-    } catch (err) {
-      this.props.navigation.dismissModal();
-      this.props.callback(err);
-      return;
-    } finally {
-      this.setState({ submitting: false });
-    }
-
-    this.props.navigation.dismissModal();
-    this.props.callback();
+    this.props.dispatch(
+      ActionErrorSuccessFlow(
+        this.props.navigation.componentId,
+        {
+          action: async () => this.props.dispatch(fillAction(quote)),
+          icon: <Entypo name="chevron-with-circle-up" size={100} />,
+          label: 'Filling Orders...'
+        },
+        'Filled Orders',
+        () => this.props.navigation.dismissModal()
+      )
+    );
   };
 }
 

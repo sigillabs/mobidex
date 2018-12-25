@@ -3,22 +3,23 @@ import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, View } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../navigation';
+import { findAssetByData, getQuoteAsset } from '../../../services/AssetService';
 import {
   configureOrder,
   convertZeroExOrderToLimitOrder
 } from '../../../services/OrderService';
 import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
-import { submitOrder } from '../../../thunks';
+import { ActionErrorSuccessFlow, submitOrder } from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
-import { findAssetByData, getQuoteAsset } from '../../../services/AssetService';
+import Row from '../../components/Row';
 import Loading from './Loading';
-import SubmittingOrders from './SubmittingOrders';
 
 class PreviewLimitOrder extends Component {
   static get propTypes() {
@@ -27,8 +28,7 @@ class PreviewLimitOrder extends Component {
       side: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       order: PropTypes.object.isRequired,
-      dispatch: PropTypes.func.isRequired,
-      callback: PropTypes.func.isRequired
+      dispatch: PropTypes.func.isRequired
     };
   }
 
@@ -69,10 +69,6 @@ class PreviewLimitOrder extends Component {
   render() {
     if (this.state.loading) {
       return <Loading />;
-    }
-
-    if (this.state.submitting) {
-      return <SubmittingOrders text={'Creating Order'} />;
     }
 
     const { side } = this.props;
@@ -160,11 +156,20 @@ class PreviewLimitOrder extends Component {
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
         />
-        <Button
-          large
-          onPress={() => this.submit()}
-          title={this.getButtonTitle()}
-        />
+        <Row style={{ width: '100%' }}>
+          <Button
+            large
+            onPress={this.cancel}
+            title={'Cancel'}
+            containerStyle={{ flex: 1 }}
+          />
+          <Button
+            large
+            onPress={this.submit}
+            title={this.getButtonTitle()}
+            containerStyle={{ flex: 1 }}
+          />
+        </Row>
       </View>
     );
   }
@@ -208,21 +213,24 @@ class PreviewLimitOrder extends Component {
     };
   }
 
-  async submit() {
+  submit = async () => {
     const { order } = this.props;
 
-    this.setState({ submitting: true });
+    this.props.dispatch(
+      ActionErrorSuccessFlow(
+        this.props.navigation.componentId,
+        {
+          action: async () => await this.props.dispatch(submitOrder(order)),
+          icon: <Entypo name="chevron-with-circle-up" size={100} />,
+          label: 'Creating Order...'
+        },
+        'Created Order',
+        () => this.props.navigation.dismissModal()
+      )
+    );
+  };
 
-    try {
-      await this.props.dispatch(submitOrder(order));
-      this.props.callback();
-    } catch (err) {
-      this.props.callback(err);
-      return;
-    } finally {
-      this.props.navigation.dismissModal();
-    }
-  }
+  cancel = () => this.props.navigation.dismissModal();
 }
 
 export default connect(() => ({}), dispatch => ({ dispatch }))(

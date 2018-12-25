@@ -177,16 +177,7 @@ class CreateLimitOrder extends OneButtonTokenAmountKeyboardLayout {
       order,
       side,
       base,
-      quote,
-      callback: error => {
-        if (error) {
-          this.props.navigation.waitForAppear(() =>
-            this.props.navigation.showErrorModal(error)
-          );
-        } else {
-          this.props.navigation.pop();
-        }
-      }
+      quote
     });
   }
 }
