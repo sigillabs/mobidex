@@ -12,7 +12,7 @@ import * as WalletService from '../../../../services/WalletService';
 import { ActionErrorSuccessFlow } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
-import Padding from '../../../components/Padding';
+import VerticalPadding from '../../../components/VerticalPadding';
 import PinKeyboardLayout from '../../../layouts/PinKeyboardLayout';
 
 class BasePinScreen extends PinKeyboardLayout {
@@ -27,7 +27,7 @@ class BasePinScreen extends PinKeyboardLayout {
   renderTop() {
     return (
       <React.Fragment>
-        <Padding size={50} />
+        <VerticalPadding size={50} />
         <MutedText style={[styles.textCenter]}>
           Provide a PIN to secure your wallet.
         </MutedText>

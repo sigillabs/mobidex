@@ -7,7 +7,7 @@ import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
 import Divider from '../../../components/Divider';
-import Padding from '../../../components/Padding';
+import VerticalPadding from '../../../components/VerticalPadding';
 import Row from '../../../components/Row';
 import ActionOrUnlockButton from '../../../views/ActionOrUnlockButton';
 import ProductDetailListItem from './ProductDetailListItem';
@@ -70,7 +70,7 @@ class ProductDetailsView extends Component {
             }}
           />
         </Row>
-        <Padding size={10} />
+        <VerticalPadding size={10} />
         {infolist.map(({ key, left, right, leftStyle, rightStyle }, index) => (
           <ProductDetailListItem
             key={key}

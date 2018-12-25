@@ -8,6 +8,7 @@ import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
+import VerticalPadding from '../../components/VerticalPadding';
 
 class UnlockWithTouchIdentification extends Component {
   static get propTypes() {
@@ -22,7 +23,7 @@ class UnlockWithTouchIdentification extends Component {
     return (
       <View style={styles.bigCenter}>
         <TouchableOpacity
-          onPress={() => this.unlock()}
+          onPress={this.props.showUnlocking}
           style={[styles.bigBottom, styles.flex1]}
         >
           <View>
@@ -30,9 +31,11 @@ class UnlockWithTouchIdentification extends Component {
             <Text>Press to unlock</Text>
           </View>
         </TouchableOpacity>
+        <VerticalPadding size={25} />
         <View style={[styles.padding2, styles.flex0]}>
           <Text>Or</Text>
         </View>
+        <VerticalPadding size={25} />
         <View style={[styles.bigTop, styles.flex1]}>
           <Button
             onPress={this.props.showPin}
@@ -43,10 +46,6 @@ class UnlockWithTouchIdentification extends Component {
       </View>
     );
   }
-
-  unlock = () => {
-    this.props.showUnlocking();
-  };
 }
 
 export default connectNavigation(UnlockWithTouchIdentification);

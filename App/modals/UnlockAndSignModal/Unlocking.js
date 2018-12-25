@@ -8,7 +8,7 @@ import * as WalletService from '../../../services/WalletService';
 import { colors } from '../../../styles';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
-import Padding from '../../components/Padding';
+import VerticalPadding from '../../components/VerticalPadding';
 import RotatingView from '../../components/RotatingView';
 
 class Unlocking extends Component {
@@ -65,7 +65,7 @@ class Unlocking extends Component {
         <RotatingView>
           <FontAwesome name="unlock" color={colors.yellow0} size={100} />
         </RotatingView>
-        <Padding size={25} />
+        <VerticalPadding size={25} />
         <Text>Unlocking Mobidex...</Text>
       </BigCenter>
     );
@@ -75,7 +75,7 @@ class Unlocking extends Component {
     return (
       <BigCenter>
         <MaterialIcon name="fingerprint" color="green" size={100} />
-        <Padding size={25} />
+        <VerticalPadding size={25} />
         <Text>Start scanning your fingerprint</Text>
       </BigCenter>
     );

@@ -6,7 +6,7 @@ import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
-import Padding from '../../components/Padding';
+import VerticalPadding from '../../components/VerticalPadding';
 
 class BaseNotificationModal extends React.PureComponent {
   static get propTypes() {
@@ -37,7 +37,7 @@ class BaseNotificationModal extends React.PureComponent {
           ]}
         >
           {this.props.icon}
-          <Padding size={25} />
+          <VerticalPadding size={25} />
           {label}
         </View>
         <Button

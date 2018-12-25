@@ -6,9 +6,9 @@ import * as AssetService from '../../services/AssetService';
 import * as WalletService from '../../services/WalletService';
 import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
-export default class TokenBalanceByAssetData extends Component {
+export default class TokenBalanceBySymbol extends Component {
   static propTypes = {
-    assetData: PropTypes.string,
+    symbol: PropTypes.string,
     showSymbol: PropTypes.bool,
     adjusted: PropTypes.bool
   };
@@ -19,9 +19,9 @@ export default class TokenBalanceByAssetData extends Component {
   };
 
   render() {
-    const { adjusted, assetData, showSymbol } = this.props;
-    const asset = assetData
-      ? AssetService.findAssetByData(assetData)
+    const { adjusted, symbol, showSymbol } = this.props;
+    const asset = symbol
+      ? AssetService.findAssetBySymbol(symbol)
       : AssetService.getWETHAsset();
 
     if (!asset) {

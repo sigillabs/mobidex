@@ -8,7 +8,7 @@ import * as WalletService from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
 import BigCenter from '../../../components/BigCenter';
 import Button from '../../../components/Button';
-import Padding from '../../../components/Padding';
+import VerticalPadding from '../../../components/VerticalPadding';
 import Row from '../../../components/Row';
 
 class BaseIntro extends Component {
@@ -29,16 +29,16 @@ class BaseIntro extends Component {
             resizeMode: Image.resizeMode.contain
           }}
         />
-        <Padding size={20} />
+        <VerticalPadding size={20} />
         <Text h4 style={[styles.textCenter]}>
           Trustlessly Trade ERC20 Tokens
         </Text>
-        <Padding size={20} />
+        <VerticalPadding size={20} />
         <Text h6 style={[styles.textCenter]}>
           To get started, import or generate a wallet. Remember to back this
           mnemonic up.
         </Text>
-        <Padding size={20} />
+        <VerticalPadding size={20} />
         <Row>
           <Button
             large

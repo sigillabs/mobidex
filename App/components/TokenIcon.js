@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { styles } from '../../styles';
+import { fonts, styles } from '../../styles';
 import { getImage } from '../../utils';
 
 export default class TokenIcon extends Component {
@@ -24,10 +24,10 @@ export default class TokenIcon extends Component {
           overlayContainerStyle={styles.background}
         />
         {showName ? (
-          <Text style={[styles.small, styles.textCenter]}>{name}</Text>
+          <Text style={[fonts.small, styles.textCenter]}>{name}</Text>
         ) : null}
         {showSymbol ? (
-          <Text style={[styles.small, styles.textCenter]}>
+          <Text style={[fonts.small, styles.textCenter]}>
             {amount} {symbol}
           </Text>
         ) : null}

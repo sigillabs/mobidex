@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ListItem, Text } from 'react-native-elements';
-import { styles } from '../../../../styles';
+import { fonts, styles } from '../../../../styles';
 import { formatPercent } from '../../../../utils';
 import Col from '../../../components/Col';
 import Row from '../../../components/Row';
@@ -39,10 +39,7 @@ export default class TokenItem extends Component {
           <Row style={[styles.flex1, styles.center, styles.mh2]}>
             <Col style={[styles.flex1]}>
               <Text
-                style={[
-                  styles.large,
-                  change >= 0 ? styles.profit : styles.loss
-                ]}
+                style={[fonts.large, change >= 0 ? styles.profit : styles.loss]}
               >
                 {priceFormatter(price)}
               </Text>
@@ -50,10 +47,7 @@ export default class TokenItem extends Component {
             </Col>
             <Col style={{ flex: 1 }}>
               <Text
-                style={[
-                  styles.large,
-                  change >= 0 ? styles.profit : styles.loss
-                ]}
+                style={[fonts.large, change >= 0 ? styles.profit : styles.loss]}
               >
                 {formatPercent(change)}
               </Text>

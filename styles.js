@@ -24,7 +24,7 @@ export const colors = {
   transparent: 'transparent'
 };
 
-export const styles = StyleSheet.create({
+export const fonts = {
   small: {
     fontSize: 10
   },
@@ -33,7 +33,10 @@ export const styles = StyleSheet.create({
   },
   xlarge: {
     fontSize: 18
-  },
+  }
+};
+
+export const styles = StyleSheet.create({
   background: {
     backgroundColor: colors.background
   },

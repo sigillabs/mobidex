@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 import { connect as connectNavigation } from '../../../navigation';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
-import Padding from '../../components/Padding';
+import VerticalPadding from '../../components/VerticalPadding';
 import RotatingView from '../../components/RotatingView';
 
 class BaseActionModal extends React.PureComponent {
@@ -43,7 +43,7 @@ class BaseActionModal extends React.PureComponent {
     return (
       <BigCenter>
         <RotatingView>{this.props.icon}</RotatingView>
-        <Padding size={25} />
+        <VerticalPadding size={25} />
         {label}
       </BigCenter>
     );

@@ -13,9 +13,14 @@ export default class CreateOrderScreen extends Component {
         },
         title: {
           component: {
-            name: 'header.LogoTicker',
+            name: 'header.LogoBalance',
             alignment: 'center',
-            passProps
+            passProps: {
+              symbol:
+                passProps.side === 'buy'
+                  ? passProps.quote.symbol
+                  : passProps.base.symbol
+            }
           }
         }
       }

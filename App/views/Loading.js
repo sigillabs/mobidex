@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-elements';
 import BigCenter from '../components/BigCenter';
-import Padding from '../components/Padding';
+import VerticalPadding from '../components/VerticalPadding';
 
 export default class Loading extends Component {
   static get propTypes() {
@@ -26,7 +26,7 @@ export default class Loading extends Component {
 
     return (
       <Fragment>
-        <Padding size={25} />
+        <VerticalPadding size={25} />
         <Text>{this.props.label}</Text>
       </Fragment>
     );

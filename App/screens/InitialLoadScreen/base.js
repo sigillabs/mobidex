@@ -8,7 +8,7 @@ import { registerBackgroundUpdates } from '../../../navigation/background';
 import { initialLoad, startWebsockets } from '../../../thunks/boot';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
-import Padding from '../../components/Padding';
+import VerticalPadding from '../../components/VerticalPadding';
 import RotatingView from '../../components/RotatingView';
 
 class BaseInitialLoadScreen extends React.Component {
@@ -34,10 +34,10 @@ class BaseInitialLoadScreen extends React.Component {
         <RotatingView>
           <Entypo name="chevron-with-circle-down" size={100} />
         </RotatingView>
-        <Padding size={25} />
+        <VerticalPadding size={25} />
         <Text>Loading assets, orders, and every thing else...</Text>
-        <Padding size={25} />
-        <Padding size={25} />
+        <VerticalPadding size={25} />
+        <VerticalPadding size={25} />
       </BigCenter>
     );
   }

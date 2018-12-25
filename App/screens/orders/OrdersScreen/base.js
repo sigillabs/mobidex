@@ -6,6 +6,7 @@ import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
+import { fonts } from '../../../../styles';
 import { cancelOrder, loadOrders } from '../../../../thunks';
 import * as AssetService from '../../../../services/AssetService';
 import { navigationProp } from '../../../../types/props';
@@ -48,19 +49,14 @@ class BaseTokenOrder extends Component {
                 amount={order.makerAssetAmount}
                 symbol={makerToken.symbol}
                 decimals={makerToken.decimals || 18}
-                style={([styles.left, styles.large], { flex: 1 })}
+                style={([styles.left, fonts.large], { flex: 1 })}
               />
               <Icon name="swap" color="black" size={24} />
               <FormattedTokenAmount
                 amount={order.takerAssetAmount}
                 symbol={takerToken.symbol}
                 decimals={takerToken.decimals || 18}
-                style={[
-                  styles.right,
-                  styles.large,
-                  styles.padLeft,
-                  { flex: 1 }
-                ]}
+                style={[styles.right, fonts.large, styles.padLeft, { flex: 1 }]}
               />
             </Row>
           </View>
@@ -209,12 +205,6 @@ const styles = {
   },
   padLeft: {
     marginLeft: 10
-  },
-  small: {
-    fontSize: 10
-  },
-  large: {
-    fontSize: 14
   },
   right: {
     flex: 1,
