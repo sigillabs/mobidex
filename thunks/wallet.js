@@ -138,35 +138,35 @@ export function loadTransactions(force = false) {
         withdrawals,
         approvals
       } = await inf0xClient.getEvents(account, force);
-      const filltxs = makerFills
+      const filltxs = (makerFills || [])
         .map(log => ({
           ...log,
           id: log.transactionHash,
           status: 'FILL'
         }))
         .concat(
-          takerFills.map(log => ({
+          (takerFills || []).map(log => ({
             ...log,
             id: log.transactionHash,
             status: 'FILL'
           }))
         );
-      const canceltxs = makerCancels.map(log => ({
+      const canceltxs = (makerCancels || []).map(log => ({
         ...log,
         id: log.transactionHash,
         status: 'CANCEL'
       }));
-      const depositstxs = deposits.map(log => ({
+      const depositstxs = (deposits || []).map(log => ({
         ...log,
         id: log.transactionHash,
         status: 'DEPOSIT'
       }));
-      const withdrawalstxs = withdrawals.map(log => ({
+      const withdrawalstxs = (withdrawals || []).map(log => ({
         ...log,
         id: log.transactionHash,
         status: 'WITHDRAWAL'
       }));
-      const approvalstxs = approvals.map(log => ({
+      const approvalstxs = (approvals || []).map(log => ({
         ...log,
         id: log.transactionHash,
         type: 'APPROVAL',

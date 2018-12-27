@@ -44,7 +44,6 @@ class UnlockWithPin extends PinKeyboardLayout {
   }
 
   press = () => {
-    console.warn(this.props.navigation);
     this.props.navigation.dismissModal();
     this.props.cancel();
   };
@@ -56,7 +55,6 @@ class UnlockWithPin extends PinKeyboardLayout {
   }
 
   finish(pin) {
-    console.warn(pin);
     this.props.showUnlocking(pin.join(''));
   }
 }
