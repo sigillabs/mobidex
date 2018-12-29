@@ -19,7 +19,8 @@ export default class CreateOrderScreen extends Component {
               symbol:
                 passProps.side === 'buy'
                   ? passProps.quote.symbol
-                  : passProps.base.symbol
+                  : passProps.base.symbol,
+              adjusted: false
             }
           }
         }

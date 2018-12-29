@@ -52,6 +52,7 @@ export default class AdaptTransactionItem extends Component {
     const timestamp = this.props.transaction.timestamp
       ? this.props.transaction.timestamp.toString()
       : undefined;
+    const decimals = token ? token.decimals : 18;
 
     if (txtype === 'DEPOSITED') txtype = 'DEPOSIT';
     else if (txtype === 'FILLED') txtype = 'FILL';
@@ -157,15 +158,22 @@ export default class AdaptTransactionItem extends Component {
           <TransactionItem
             action={txtype}
             label={LABEL_LOOKUP[txtype]}
+            address={this.props.transaction.address}
             source={{
-              address: this.props.transaction.address,
-              amount: formatAmount(this.props.transaction.amount),
-              symbol: this.props.transaction.token.symbol
+              address: this.props.transaction.from,
+              amount: formatAmountWithDecimals(
+                this.props.transaction.amount,
+                decimals
+              ),
+              symbol: token ? token.symbol : 'Token'
             }}
             destination={{
               address: this.props.transaction.to,
-              amount: formatAmount(this.props.transaction.amount),
-              symbol: this.props.transaction.token.symbol
+              amount: formatAmountWithDecimals(
+                this.props.transaction.amount,
+                decimals
+              ),
+              symbol: token ? token.symbol : 'Token'
             }}
           />
         );

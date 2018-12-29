@@ -136,7 +136,8 @@ export function loadTransactions(force = false) {
         makerCancels,
         deposits,
         withdrawals,
-        approvals
+        approvals,
+        transfers
       } = await inf0xClient.getEvents(account, force);
       const filltxs = (makerFills || [])
         .map(log => ({
@@ -173,12 +174,22 @@ export function loadTransactions(force = false) {
         amount: 'UNLIMITED',
         address: log.address
       }));
+      const transferstxs = (transfers || []).map(log => ({
+        ...log,
+        id: log.transactionHash,
+        type: 'SEND_TOKENS',
+        amount: log.value,
+        address: log.address,
+        from: log.from,
+        to: log.to
+      }));
 
       const alltx = filltxs
         .concat(canceltxs)
         .concat(depositstxs)
         .concat(withdrawalstxs)
-        .concat(approvalstxs);
+        .concat(approvalstxs)
+        .concat(transferstxs);
 
       alltx.sort((txa, txb) => txb.timestamp - txa.timestamp);
 
@@ -213,7 +224,7 @@ export function sendTokens(token, to, amount) {
       from: address,
       to,
       amount,
-      token
+      address: token.address
     };
     TransactionService.instance.addActiveTransaction(activeTransaction);
   };

@@ -17,7 +17,8 @@ class LogoBalance extends Component {
         medium: PropTypes.bool,
         large: PropTypes.bool,
         xlarge: PropTypes.bool
-      })
+      }),
+      adjusted: PropTypes.bool
     };
   }
 
@@ -28,7 +29,8 @@ class LogoBalance extends Component {
         rounded: true,
         activeOpacity: 0.7,
         overlayContainerStyle: { backgroundColor: 'transparent' }
-      }
+      },
+      adjusted: true
     };
   }
 
@@ -39,7 +41,11 @@ class LogoBalance extends Component {
       <Row style={[style.container]}>
         <Avatar source={getImage(symbol)} {...avatarProps || {}} />
         <HorizontalPadding size={10} />
-        <TokenBalanceBySymbol symbol={symbol} style={[fonts.xlarge]} />
+        <TokenBalanceBySymbol
+          symbol={symbol}
+          style={[fonts.xlarge]}
+          adjusted={this.props.adjusted}
+        />
       </Row>
     );
   }

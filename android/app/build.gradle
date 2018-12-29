@@ -113,7 +113,7 @@ android {
         applicationId "io.mobidex"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 50
+        versionCode 000712
         versionName "0.7.12"
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative55"
         ndk {
