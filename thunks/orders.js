@@ -250,6 +250,19 @@ export function submitOrder(order) {
       settings: { network, relayerEndpoint }
     } = getState();
 
+    const web3 = WalletService.getWeb3();
+
+    const ethereumClient = new EthereumClient(web3);
+    const zeroExClient = await new ZeroExClient(ethereumClient);
+
+    // Set sender address
+    order.senderAddress = await ZeroExClient.getMembershipContractAddress(
+      network
+    );
+
+    // Allow validator
+    await zeroExClient.approveValidatorContract(order.senderAddress);
+
     // Sign
     const signedOrder = await OrderService.signOrder(order);
 

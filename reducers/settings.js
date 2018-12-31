@@ -6,10 +6,12 @@ import { ZERO } from '../constants/0x';
 const initialState = {
   // network: 1,
   network: 42,
+  // network: 50,
   // ethereumNodeEndpoint:
   //   'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   ethereumNodeEndpoint:
     'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  // ethereumNodeEndpoint: 'http://localhost:8545',
   // relayerEndpoint: 'https://mobidex.io/relayer/v2',
   relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
   // relayerWSS: 'wss://mobidex.io/relayer/v2/',
@@ -23,7 +25,7 @@ const initialState = {
   feeSymbol: 'ZRX',
   showForexPrices: false,
   gasPrice: ZERO,
-  gasLimit: ZERO,
+  gasLimit: new BigNumber(45000),
   minimumBalance: 10 ** 16
 };
 

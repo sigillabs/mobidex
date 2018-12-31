@@ -43,6 +43,7 @@ class BaseErrorModal extends Component {
 
   renderMessage() {
     const error = this.props.error;
+    console.warn(error.message, error);
     if (!error || !error.message) {
       return this.renderGeneral();
     }

@@ -1,7 +1,7 @@
 import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
-import { ZERO } from '../constants/0x';
+import { ORDER_FIELDS, ZERO } from '../constants/0x';
 
 export function findOrdersThatCoverTakerAssetFillAmount(
   orders,
@@ -236,4 +236,18 @@ export function totalTakerFee(
   }
 
   return fees.reduce((acc, fee) => acc.add(fee), ZERO);
+}
+
+export function convertBigNumberToHexString(bn) {
+  return `0x${ethUtil.stripHexPrefix(new BigNumber(bn).toString(16))}`;
+}
+
+export function convertOrderBigNumberFieldsToHexStrings(order) {
+  const newOrder = { ...order };
+  for (const field of ORDER_FIELDS) {
+    if (newOrder[field]) {
+      newOrder[field] = convertBigNumberToHexString(newOrder[field]);
+    }
+  }
+  return newOrder;
 }
