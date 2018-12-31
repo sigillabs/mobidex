@@ -10,7 +10,6 @@ import {
   TransactionService
 } from './services/TransactionService';
 import { setStore as setStoreForWalletService } from './services/WalletService';
-import { setStore as setStoreForZeroExService } from './services/ZeroExService';
 
 const store = createStore(rootReducer, undefined, applyMiddleware(thunk));
 
@@ -20,7 +19,6 @@ setStoreForAssetService(store);
 setStoreForOrderService(store);
 setStoreForTickerService(store);
 setStoreForWalletService(store);
-setStoreForZeroExService(store);
 
 new TransactionService(store);
 new ActiveTransactionWatchdog(store).start();
