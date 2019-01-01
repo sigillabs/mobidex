@@ -1,25 +1,25 @@
-import { AssetBuyer } from '@0xproject/asset-buyer';
-import { marketUtils } from '@0xproject/order-utils';
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import { AssetBuyer } from "@0xproject/asset-buyer";
+import { marketUtils } from "@0xproject/order-utils";
+import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import {
   assetDataUtils,
   BigNumber,
   generatePseudoRandomSalt,
   orderHashUtils
-} from '0x.js';
-import * as _ from 'lodash';
-import EthereumClient from '../clients/ethereum';
-import ZeroExClient from '../clients/0x';
-import RelayerClient from '../clients/relayer';
-import { NULL_ADDRESS, ZERO } from '../constants/0x';
+} from "0x.js";
+import * as _ from "lodash";
+import EthereumClient from "../clients/ethereum";
+import ZeroExClient from "../clients/0x";
+import RelayerClient from "../clients/relayer";
+import { NULL_ADDRESS, ZERO } from "../constants/0x";
 import {
   averagePriceByMakerAmount,
   averagePriceByTakerAmount,
   filterFillableOrders,
   findOrdersThatCoverTakerAssetFillAmount
-} from '../utils';
-import * as AssetService from './AssetService';
-import * as WalletService from './WalletService';
+} from "../utils";
+import * as AssetService from "./AssetService";
+import * as WalletService from "./WalletService";
 
 let _store;
 
@@ -34,11 +34,11 @@ export function getOrderbook(baseAsset, quoteAsset = null) {
 
   if (!quoteAsset) {
     quoteAsset = AssetService.getQuoteAsset();
-  } else if (typeof quoteToken === 'string') {
+  } else if (typeof quoteToken === "string") {
     quoteAsset = AssetService.findAssetByAddress(quoteAsset);
   }
 
-  if (typeof baseAsset === 'string') {
+  if (typeof baseAsset === "string") {
     baseAsset = AssetService.findAssetByAddress(baseAsset);
   }
 
@@ -84,26 +84,26 @@ export function getAveragePrice(orders) {
   }
 
   const makerTokenAddresses = _.chain(orders)
-    .map('makerTokenAddress')
+    .map("makerTokenAddress")
     .uniq()
     .value();
 
   if (makerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different maker token addresses');
+    throw new Error("Orders contain different maker token addresses");
   }
   if (makerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
+    throw new Error("Need at least 1 order");
   }
 
   const takerTokenAddresses = _.chain(orders)
-    .map('takerTokenAddress')
+    .map("takerTokenAddress")
     .uniq()
     .value();
   if (takerTokenAddresses.length > 1) {
-    throw new Error('Orders contain different taker token addresses');
+    throw new Error("Orders contain different taker token addresses");
   }
   if (takerTokenAddresses.length < 1) {
-    throw new Error('Need at least 1 order');
+    throw new Error("Need at least 1 order");
   }
 
   return orders
@@ -132,7 +132,7 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
   };
 
   switch (limitOrder.side) {
-    case 'buy':
+    case "buy":
       order.makerAssetData = assetDataUtils.encodeERC20AssetData(
         quoteToken.address
       );
@@ -149,7 +149,7 @@ export function convertLimitOrderToZeroExOrder(limitOrder) {
       );
       break;
 
-    case 'sell':
+    case "sell":
       order.makerAssetData = assetDataUtils.encodeERC20AssetData(
         baseToken.address
       );
@@ -208,7 +208,7 @@ export function convertZeroExOrderToLimitOrder(order) {
     ).tokenAddress;
     limitOrder.price = makerTokenUnitAmount.div(takerTokenUnitAmount);
     limitOrder.amount = takerTokenUnitAmount;
-    limitOrder.side = 'buy';
+    limitOrder.side = "buy";
     return limitOrder;
   } else if (quoteToken.address === takerToken.address) {
     limitOrder.baseAddress = assetDataUtils.decodeERC20AssetData(
@@ -219,7 +219,7 @@ export function convertZeroExOrderToLimitOrder(order) {
     ).tokenAddress;
     limitOrder.price = takerTokenUnitAmount.div(makerTokenUnitAmount);
     limitOrder.amount = makerTokenUnitAmount;
-    limitOrder.side = 'sell';
+    limitOrder.side = "sell";
     return limitOrder;
   } else {
     return null;
@@ -393,7 +393,7 @@ export async function getBuyAssetsQuoteAsync(
     orders,
     assetBuyAmount,
     {
-      slippageBufferAmount: assetSellAmount
+      slippageBufferAmount: assetBuyAmount
         .mul(options.slippagePercentage)
         .round()
     }
@@ -473,7 +473,6 @@ export async function getSellAssetsQuoteAsync(
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
-
   const quoteAsset = AssetService.getQuoteAsset();
   const baseAsset = AssetService.findAssetByData(assetData);
   const orderbook = orderbooks[baseAsset.assetData][quoteAsset.assetData];
@@ -516,6 +515,7 @@ export async function getSellAssetsQuoteAsync(
     )
   );
 
+  // Average prices
   const worstCasePrice = averagePriceByMakerAmount(
     worstCaseOrders.resultOrders
   );

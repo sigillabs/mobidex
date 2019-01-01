@@ -1,25 +1,25 @@
-import { BigNumber } from '0x.js';
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { InteractionManager, SafeAreaView } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
-import Entypo from 'react-native-vector-icons/Entypo';
-import { connect } from 'react-redux';
-import { connect as connectNavigation } from '../../../navigation';
-import * as AssetService from '../../../services/AssetService';
-import * as OrderService from '../../../services/OrderService';
-import * as WalletService from '../../../services/WalletService';
-import * as ZeroExService from '../../../services/ZeroExService';
-import { colors, getProfitLossStyle } from '../../../styles';
-import { ActionErrorSuccessFlow, marketBuy, marketSell } from '../../../thunks';
-import { navigationProp } from '../../../types/props';
-import { totalTakerFee } from '../../../utils/orders';
-import Button from '../../components/Button';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
-import FormattedTokenAmount from '../../components/FormattedTokenAmount';
-import Row from '../../components/Row';
-import Loading from './Loading';
+import { BigNumber } from "0x.js";
+import { Web3Wrapper } from "@0xproject/web3-wrapper";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { InteractionManager, SafeAreaView } from "react-native";
+import { ListItem, Text } from "react-native-elements";
+import Entypo from "react-native-vector-icons/Entypo";
+import { connect } from "react-redux";
+import { connect as connectNavigation } from "../../../navigation";
+import * as AssetService from "../../../services/AssetService";
+import * as OrderService from "../../../services/OrderService";
+import * as WalletService from "../../../services/WalletService";
+import * as ZeroExService from "../../../services/ZeroExService";
+import { colors, getProfitLossStyle } from "../../../styles";
+import { ActionErrorSuccessFlow, marketBuy, marketSell } from "../../../thunks";
+import { navigationProp } from "../../../types/props";
+import { totalTakerFee } from "../../../utils/orders";
+import Button from "../../components/Button";
+import TwoColumnListItem from "../../components/TwoColumnListItem";
+import FormattedTokenAmount from "../../components/FormattedTokenAmount";
+import Row from "../../components/Row";
+import Loading from "./Loading";
 
 class Order extends Component {
   static get propTypes() {
@@ -87,7 +87,7 @@ class PreviewFillOrders extends Component {
         let quote, gas;
 
         // 1. Load quote
-        if (side === 'buy') {
+        if (side === "buy") {
           quote = await OrderService.getBuyAssetsQuoteAsync(
             base.assetData,
             baseUnitAmount,
@@ -106,7 +106,6 @@ class PreviewFillOrders extends Component {
             }
           );
         }
-        console.warn(JSON.stringify(quote));
 
         if (!quote) {
           this.props.navigation.dismissModal();
@@ -114,7 +113,7 @@ class PreviewFillOrders extends Component {
         }
 
         // 2. Load gas estimatation
-        if (side === 'buy') {
+        if (side === "buy") {
           gas = await ZeroExService.estimateMarketBuyOrders(
             quote.orders,
             quote.assetBuyAmount
@@ -164,11 +163,11 @@ class PreviewFillOrders extends Component {
     const fundsAfterOrder = funds.add(total);
 
     const priceInWEI = web3.utils.toWei(gasPrice.toString());
-    const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
+    const priceInGWEI = web3.utils.fromWei(priceInWEI, "gwei");
 
     return (
       <SafeAreaView
-        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
+        style={{ width: "100%", height: "100%", flex: 1, marginTop: 50 }}
       >
         <TwoColumnListItem
           left="Average Price"
@@ -212,7 +211,7 @@ class PreviewFillOrders extends Component {
           right={
             <FormattedTokenAmount
               amount={priceInGWEI}
-              symbol={'GWEI'}
+              symbol={"GWEI"}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -226,7 +225,7 @@ class PreviewFillOrders extends Component {
           right={
             <FormattedTokenAmount
               amount={this.getTotalGasCost()}
-              symbol={'ETH'}
+              symbol={"ETH"}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -241,7 +240,7 @@ class PreviewFillOrders extends Component {
               symbol={quoteAsset.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(side === 'buy' ? -1 : 1)
+                getProfitLossStyle(side === "buy" ? -1 : 1)
               ]}
             />
           }
@@ -273,7 +272,7 @@ class PreviewFillOrders extends Component {
               symbol={quoteAsset.symbol}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(side === 'buy' ? -1 : 1)
+                getProfitLossStyle(side === "buy" ? -1 : 1)
               ]}
             />
           }
@@ -281,11 +280,11 @@ class PreviewFillOrders extends Component {
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
         />
-        <Row style={{ width: '100%' }}>
+        <Row style={{ width: "100%" }}>
           <Button
             large
             onPress={this.cancel}
-            title={'Cancel'}
+            title={"Cancel"}
             containerStyle={{ flex: 1 }}
           />
           <Button
@@ -311,10 +310,10 @@ class PreviewFillOrders extends Component {
   getButtonTitle = () => {
     const { side } = this.props;
 
-    if (side === 'buy') {
-      return 'Buy';
+    if (side === "buy") {
+      return "Buy";
     } else {
-      return 'Sell';
+      return "Sell";
     }
   };
 
@@ -335,7 +334,7 @@ class PreviewFillOrders extends Component {
     const { quote } = this.state;
     const asset = AssetService.findAssetByData(quote.assetData);
     let amount = null;
-    if (side === 'buy') {
+    if (side === "buy") {
       amount = Web3Wrapper.toUnitAmount(
         quote.assetBuyAmount,
         asset.decimals
@@ -363,7 +362,7 @@ class PreviewFillOrders extends Component {
   getFillAction = () => {
     const { side } = this.props;
 
-    if (side === 'buy') {
+    if (side === "buy") {
       return marketBuy;
     } else {
       return marketSell;
@@ -402,9 +401,9 @@ class PreviewFillOrders extends Component {
         {
           action: async () => this.props.dispatch(fillAction(quote)),
           icon: <Entypo name="chevron-with-circle-up" size={100} />,
-          label: 'Filling Orders...'
+          label: "Filling Orders..."
         },
-        'Filled Orders',
+        "Filled Orders",
         () => this.props.navigation.dismissModal()
       )
     );
@@ -419,7 +418,7 @@ export default connect(
 const styles = {
   tokenAmountRight: {
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
     height: 30,
     color: colors.primary
   }
