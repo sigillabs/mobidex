@@ -6,6 +6,7 @@ import { InteractionManager, SafeAreaView } from "react-native";
 import { ListItem, Text } from "react-native-elements";
 import Entypo from "react-native-vector-icons/Entypo";
 import { connect } from "react-redux";
+import { ZERO } from "../../../constants/0x";
 import { connect as connectNavigation } from "../../../navigation";
 import * as AssetService from "../../../services/AssetService";
 import * as OrderService from "../../../services/OrderService";
@@ -14,7 +15,6 @@ import * as ZeroExService from "../../../services/ZeroExService";
 import { colors, getProfitLossStyle } from "../../../styles";
 import { ActionErrorSuccessFlow, marketBuy, marketSell } from "../../../thunks";
 import { navigationProp } from "../../../types/props";
-import { totalTakerFee } from "../../../utils/orders";
 import Button from "../../components/Button";
 import TwoColumnListItem from "../../components/TwoColumnListItem";
 import FormattedTokenAmount from "../../components/FormattedTokenAmount";
@@ -157,10 +157,15 @@ class PreviewFillOrders extends Component {
     const { side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
+    const feeAsset = AssetService.getFeeAsset();
 
     const { priceAverage, subtotal, fee, total } = receipt;
     const funds = WalletService.getAdjustedBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder = funds.add(total);
+    const feeFunds = WalletService.getAdjustedBalanceByAddress(
+      feeAsset.address
+    );
+    const feeFundsAfterOrder = feeFunds.sub(fee);
 
     const priceInWEI = web3.utils.toWei(gasPrice.toString());
     const priceInGWEI = web3.utils.fromWei(priceInWEI, "gwei");
@@ -194,12 +199,12 @@ class PreviewFillOrders extends Component {
           bottomDivider={false}
         />
         <TwoColumnListItem
-          left="Fee"
+          left="Maximum Fee"
           leftStyle={{ height: 30 }}
           right={
             <FormattedTokenAmount
               amount={fee}
-              symbol={quoteAsset.symbol}
+              symbol={feeAsset.symbol}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -262,7 +267,6 @@ class PreviewFillOrders extends Component {
           rowStyle={{ marginTop: 10 }}
           bottomDivider={true}
         />
-
         <TwoColumnListItem
           left="Funds After Filling Orders"
           leftStyle={{ height: 30 }}
@@ -278,6 +282,19 @@ class PreviewFillOrders extends Component {
           }
           rightStyle={{ height: 30 }}
           rowStyle={{ marginTop: 10 }}
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Fee Funds After Filling Orders"
+          leftStyle={{ height: 30 }}
+          right={
+            <FormattedTokenAmount
+              amount={feeFundsAfterOrder}
+              symbol={feeAsset.symbol}
+              style={[styles.tokenAmountRight, getProfitLossStyle(-1)]}
+            />
+          }
+          rightStyle={{ height: 30 }}
           bottomDivider={true}
         />
         <Row style={{ width: "100%" }}>
@@ -317,11 +334,12 @@ class PreviewFillOrders extends Component {
     }
   };
 
-  getTotalFee = () => {
-    return totalTakerFee(
-      this.state.quote.orders,
-      new BigNumber(this.props.amount)
-    );
+  getMaxFee = () => {
+    const asset = AssetService.getFeeAsset();
+    const fee = this.state.quote.orders
+      .map(o => o.takerFee)
+      .reduce((total, fee) => total.add(fee), ZERO);
+    return Web3Wrapper.toUnitAmount(fee, asset.decimals);
   };
 
   getTotalGasCost = () => {
@@ -350,13 +368,9 @@ class PreviewFillOrders extends Component {
 
   getTotal = () => {
     const { quote } = this.state;
-    const fee = this.getTotalFee();
     const subtotal = this.getSubtotal(quote);
     const gas = this.getTotalGasCost();
-    return new BigNumber(subtotal)
-      .add(gas)
-      .add(fee)
-      .toString();
+    return new BigNumber(subtotal).add(gas).toString();
   };
 
   getFillAction = () => {
@@ -372,7 +386,7 @@ class PreviewFillOrders extends Component {
   getReceipt = () => {
     const subtotal = this.getSubtotal();
     const total = this.getTotal();
-    const fee = this.getTotalFee();
+    const fee = this.getMaxFee();
     const { quote } = this.state;
 
     if (!quote) {
