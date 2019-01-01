@@ -20,7 +20,7 @@ export default class TokenIcon extends Component {
         <Avatar
           rounded
           source={getImage(symbol)}
-          containerStyle={[showName || showSymbol ? styles.pb1 : null]}
+          containerStyle={[showName || showSymbol ? styles.mb1 : null]}
           overlayContainerStyle={styles.background}
         />
         {showName ? (

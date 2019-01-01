@@ -1,26 +1,28 @@
-import { BigNumber } from '0x.js';
-import { handleActions } from 'redux-actions';
-import * as Actions from '../constants/actions';
-import { ZERO } from '../constants/0x';
+import { BigNumber } from "0x.js";
+import { handleActions } from "redux-actions";
+import * as Actions from "../constants/actions";
+import { ZERO } from "../constants/0x";
 
 const initialState = {
-  // network: 1,
-  network: 42,
-  // ethereumNodeEndpoint:
-  //   'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  network: 1,
+  // network: 42,
+  // network: 50,
   ethereumNodeEndpoint:
-    'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
-  // relayerEndpoint: 'https://mobidex.io/relayer/v2',
-  relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
-  // relayerWSS: 'wss://mobidex.io/relayer/v2/',
-  relayerWSS: 'wss://mobidex.io:9443/relayer/v2/',
-  // inf0xEndpoint: 'https://mobidex.io/inf0x/2.0/',
-  inf0xEndpoint: 'https://mobidex.io:9443/inf0x/2.0/',
-  // inf0xWSS: 'wss://mobidex.io/inf0x/2.0/',
-  inf0xWSS: 'wss://mobidex.io:9443/inf0x/2.0/',
-  forexCurrency: 'USD',
-  quoteSymbol: 'WETH',
-  feeSymbol: 'ZRX',
+    "https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787",
+  // ethereumNodeEndpoint:
+  //   'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  // ethereumNodeEndpoint: 'http://localhost:8545',
+  relayerEndpoint: "https://mobidex.io/relayer/v2",
+  // relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
+  relayerWSS: "wss://mobidex.io/relayer/v2/",
+  // relayerWSS: 'wss://mobidex.io:9443/relayer/v2/',
+  inf0xEndpoint: "https://mobidex.io/inf0x/2.0/",
+  // inf0xEndpoint: 'https://mobidex.io:9443/inf0x/2.0/',
+  inf0xWSS: "wss://mobidex.io/inf0x/2.0/",
+  // inf0xWSS: 'wss://mobidex.io:9443/inf0x/2.0/',
+  forexCurrency: "USD",
+  quoteSymbol: "WETH",
+  feeSymbol: "ZRX",
   showForexPrices: false,
   gasPrice: ZERO,
   gasLimit: ZERO,

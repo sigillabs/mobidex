@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import * as TickerService from '../../../../services/TickerService';
-import { formatAmount, formatProduct } from '../../../../utils';
-import OrderbookPrice from '../../../views/OrderbookPrice';
-import TokenItem from './TokenItem';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import * as TickerService from "../../../../services/TickerService";
+import { formatAmount, formatProduct } from "../../../../utils";
+import OrderbookPrice from "../../../views/OrderbookPrice";
+import TokenItem from "./TokenItem";
 
 class QuoteTokenItem extends Component {
   static get propTypes() {
@@ -30,11 +30,7 @@ class QuoteTokenItem extends Component {
         <TokenItem
           price={0}
           change={0}
-          priceFormatter={v =>
-            `${formatAmount(v)} ${
-              quoteToken.symbol === 'WETH' ? 'ETH' : quoteToken.symbol
-            }`
-          }
+          priceFormatter={v => formatAmount(v)}
           {...this.props}
         />
       );
@@ -50,7 +46,7 @@ class QuoteTokenItem extends Component {
           <OrderbookPrice
             product={formatProduct(baseToken.symbol, quoteToken.symbol)}
             default={v}
-            side={'buy'}
+            side={"buy"}
           />
         )}
         {...this.props}
