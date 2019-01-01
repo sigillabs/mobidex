@@ -1,4 +1,5 @@
 import { AssetBuyer } from '@0xproject/asset-buyer';
+import { marketUtils } from '@0xproject/order-utils';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import {
   assetDataUtils,
@@ -13,6 +14,7 @@ import RelayerClient from '../clients/relayer';
 import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import {
   averagePriceByMakerAmount,
+  averagePriceByTakerAmount,
   filterFillableOrders,
   findOrdersThatCoverTakerAssetFillAmount
 } from '../utils';
@@ -375,16 +377,10 @@ export async function getBuyAssetsQuoteAsync(
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
-
   const quoteAsset = AssetService.getQuoteAsset();
-  const feeAsset = AssetService.getFeeAsset();
   const baseAsset = AssetService.findAssetByData(assetData);
   const orderbook = orderbooks[baseAsset.assetData][quoteAsset.assetData];
   if (!orderbook) {
-    return null;
-  }
-  const feeOrderbook = orderbooks[feeAsset.assetData][quoteAsset.assetData];
-  if (!feeOrderbook) {
     return null;
   }
   const orders = options.filterInvalidOrders
@@ -393,20 +389,54 @@ export async function getBuyAssetsQuoteAsync(
   if (!orders.length) {
     return null;
   }
-  const feeOrders = options.filterInvalidOrders
-    ? await filterFillableOrders(wrappers, feeOrderbook.asksArray())
-    : feeOrderbook.asksArray();
-  const buyer = AssetBuyer.getAssetBuyerForProvidedOrders(
-    ethereumClient.getCurrentProvider(),
+  const worstCaseOrders = marketUtils.findOrdersThatCoverMakerAssetFillAmount(
     orders,
-    feeOrders,
+    assetBuyAmount,
     {
-      expiryBufferSeconds: options.expiryBufferSeconds,
-      networkId: network
+      slippageBufferAmount: assetSellAmount
+        .mul(options.slippagePercentage)
+        .round()
+    }
+  );
+  const bestCaseOrders = marketUtils.findOrdersThatCoverMakerAssetFillAmount(
+    orders,
+    assetBuyAmount,
+    {
+      slippageBufferAmount: ZERO
     }
   );
 
-  return buyer.getBuyQuoteAsync(assetData, assetBuyAmount, options);
+  // Filter expired.
+  const earliestExperiationTimeInSeconds =
+    Math.ceil(new Date().getTime() / 1000) - options.expiryBufferSeconds;
+  worstCaseOrders.resultOrders = worstCaseOrders.resultOrders.filter(order =>
+    new BigNumber(order.expirationTimeSeconds).gt(
+      earliestExperiationTimeInSeconds
+    )
+  );
+  bestCaseOrders.resultOrders = bestCaseOrders.resultOrders.filter(order =>
+    new BigNumber(order.expirationTimeSeconds).gt(
+      earliestExperiationTimeInSeconds
+    )
+  );
+
+  // Prices
+  const worstCasePrice = averagePriceByTakerAmount(
+    worstCaseOrders.resultOrders
+  );
+  const bestCasePrice = averagePriceByTakerAmount(bestCaseOrders.resultOrders);
+
+  return {
+    assetBuyAmount,
+    assetData,
+    bestCaseQuoteInfo: {
+      ethPerAssetPrice: bestCasePrice
+    },
+    orders: worstCaseOrders.resultOrders,
+    worstCaseQuoteInfo: {
+      ethPerAssetPrice: worstCasePrice
+    }
+  };
 }
 
 export async function getSellAssetsQuoteAsync(
@@ -474,7 +504,7 @@ export async function getSellAssetsQuoteAsync(
 
   // Filter expired.
   const earliestExperiationTimeInSeconds =
-    Math.ceil(new Date().getTime() / 1000) + options.expiryBufferSeconds;
+    Math.ceil(new Date().getTime() / 1000) - options.expiryBufferSeconds;
   worstCaseOrders.resultOrders = worstCaseOrders.resultOrders.filter(order =>
     new BigNumber(order.expirationTimeSeconds).gt(
       earliestExperiationTimeInSeconds

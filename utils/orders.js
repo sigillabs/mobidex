@@ -3,6 +3,47 @@ import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import { ZERO } from '../constants/0x';
 
+// export function findOrdersThatCoverMakerAssetFillAmount(
+//   orders,
+//   makerAssetAmount,
+//   options
+// ) {
+//   if (!orders || !orders.length) return [];
+//   if (!options) options = {};
+//   let remainingFillAmount = new BigNumber(makerAssetAmount);
+
+//   const remainingFillableMakerAssetAmounts =
+//     options.remainingFillableMakerAssetAmounts || [];
+//   const resultOrders = [];
+//   const ordersRemainingFillableMakerAssetAmounts = [];
+
+//   for (let i = 0; i < orders.length; ++i) {
+//     if (remainingFillAmount.lte(0)) {
+//       break;
+//     }
+
+//     if (remainingFillableMakerAssetAmounts[i]) {
+//       ordersRemainingFillableMakerAssetAmounts.push(
+//         remainingFillableMakerAssetAmounts[i]
+//       );
+//       remainingFillAmount = remainingFillAmount.sub(
+//         remainingFillableMakerAssetAmounts[i]
+//       );
+//     } else {
+//       ordersRemainingFillableMakerAssetAmounts.push(orders[i].makerAssetAmount);
+//       remainingFillAmount = remainingFillAmount.sub(orders[i].makerAssetAmount);
+//     }
+
+//     resultOrders.push(orders[i]);
+//   }
+
+//   return {
+//     ordersRemainingFillableMakerAssetAmounts,
+//     remainingFillAmount,
+//     resultOrders
+//   };
+// }
+
 export function findOrdersThatCoverTakerAssetFillAmount(
   orders,
   takerAssetAmount,
