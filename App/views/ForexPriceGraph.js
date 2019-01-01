@@ -1,13 +1,13 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
-import { connect } from 'react-redux';
-import { formatMoney } from '../../utils';
-import Inf0xClient from '../../clients/inf0x';
-import PriceGraph from '../components/PriceGraph';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Dimensions } from "react-native";
+import { connect } from "react-redux";
+import { formatMoney } from "../../utils";
+import Inf0xClient from "../../clients/inf0x";
+import PriceGraph from "../components/PriceGraph";
 
-const INTERVALS = ['HOUR', 'HOUR', 'DAY'];
-const SAMPLES = [24, 24 * 7, 30];
+const INTERVALS = ["MINUTE", "HOUR", "DAY"];
+const SAMPLES = [24 * 60, 24 * 7, 30];
 
 class ForexPriceGraph extends Component {
   static propTypes = {
@@ -43,7 +43,7 @@ class ForexPriceGraph extends Component {
 
   render() {
     const { selectedTab, ...restOfState } = this.state;
-    const { height } = Dimensions.get('window');
+    const { height } = Dimensions.get("window");
 
     return (
       <PriceGraph

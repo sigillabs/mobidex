@@ -12,6 +12,7 @@ export default class ZeroExError extends Component {
       case 'ORDER_ALREADY_CANCELLED_OR_FILLED':
       case 'INSUFFICIENT_TAKER_ALLOWANCE':
       case 'INSUFFICIENT_TAKER_BALANCE':
+      case 'INSUFFICIENT_ZRX_LIQUIDITY':
       case 'ORDER_FILL_AMOUNT_ZERO':
       case 'ORDER_REMAINING_FILL_AMOUNT_ZERO':
       case 'ERC20_TOKEN_CONTRACT_DOES_NOT_EXIST':
@@ -69,6 +70,13 @@ export default class ZeroExError extends Component {
         return (
           <Text style={styles.text}>
             There is not enough liquidity to fill your order.
+          </Text>
+        );
+
+      case 'INSUFFICIENT_ZRX_LIQUIDITY':
+        return (
+          <Text style={styles.text}>
+            You don't have enough ZRX to cover the fees. Go buy some!
           </Text>
         );
     }
