@@ -10,38 +10,24 @@ import { navigationProp } from "../../types/props";
 import { formatSymbol } from "../../utils";
 import Button from "../components/Button";
 
-class ActionOrUnlockButton extends React.Component {
+class UnlockButton extends React.Component {
   static propTypes = {
+    navigation: navigationProp.isRequired,
     assetData: PropTypes.string.isRequired,
-    unlockProps: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   render() {
-    if (WalletService.isUnlockedByAssetData(this.props.assetData)) {
-      return this.renderBuy();
-    } else {
-      return this.renderUnlock();
-    }
-  }
-
-  renderBuy() {
-    return <Button {...this.props} />;
-  }
-
-  renderUnlock() {
-    const { assetData } = this.props;
+    const { assetData, dispatch, ...rest } = this.props;
     const assetOrWETH =
       assetData !== null
         ? AssetService.findAssetByData(assetData)
         : AssetService.getWETHAsset();
-
     return (
       <Button
         icon={<FontAwesome name="lock" size={20} color="white" />}
         title={`Unlock ${formatSymbol(assetOrWETH.symbol)}`}
-        {...this.props}
-        {...this.props.unlockProps}
+        {...rest}
         onPress={this.toggleApprove}
       />
     );
@@ -63,4 +49,4 @@ class ActionOrUnlockButton extends React.Component {
 export default connect(
   () => ({}),
   dispatch => ({ dispatch })
-)(connectNavigation(ActionOrUnlockButton));
+)(connectNavigation(UnlockButton));

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
 let _store;
 
@@ -47,5 +47,5 @@ export function getWETHAsset() {
   const {
     relayer: { assets }
   } = _store.getState();
-  return _.find(assets, { symbol: 'WETH' });
+  return _.find(assets, { symbol: "WETH" });
 }

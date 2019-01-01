@@ -106,6 +106,7 @@ class PreviewFillOrders extends Component {
             }
           );
         }
+        console.warn(JSON.stringify(quote));
 
         if (!quote) {
           this.props.navigation.dismissModal();

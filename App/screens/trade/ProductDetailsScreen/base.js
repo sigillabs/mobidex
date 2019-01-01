@@ -1,19 +1,20 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { ScrollView, RefreshControl } from 'react-native';
-import { connect } from 'react-redux';
-import { styles } from '../../../../styles';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { ScrollView, RefreshControl } from "react-native";
+import { connect } from "react-redux";
+import * as AssetService from "../../../../services/AssetService";
+import { styles } from "../../../../styles";
 import {
   loadAllowance,
   loadBalance,
   loadOrderbook,
   updateForexTickers,
   updateTokenTickers
-} from '../../../../thunks';
-import ForexProductDetailsView from './ForexProductDetailsView';
-import TokenProductDetailsView from './TokenProductDetailsView';
+} from "../../../../thunks";
+import ForexProductDetailsView from "./ForexProductDetailsView";
+import TokenProductDetailsView from "./TokenProductDetailsView";
 
-const periods = ['Day', 'Month', 'Year'];
+const periods = ["Day", "Month", "Year"];
 
 class BaseProductDetailsScreen extends Component {
   static propTypes = {
@@ -38,7 +39,7 @@ class BaseProductDetailsScreen extends Component {
     return (
       <ScrollView
         contentContainerStyle={[styles.flex0, styles.fluff0]}
-        contentInsetAdjustmentBehavior={'never'}
+        contentInsetAdjustmentBehavior={"never"}
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
@@ -67,12 +68,15 @@ class BaseProductDetailsScreen extends Component {
 
   async onRefresh(reload = true) {
     const { base, quote } = this.props;
+    const feeAsset = AssetService.getFeeAsset();
 
     this.setState({ refreshing: true });
     await Promise.all([
       this.props.dispatch(updateForexTickers(reload)),
       this.props.dispatch(updateTokenTickers(reload)),
       this.props.dispatch(loadAllowance(base.assetData, reload)),
+      this.props.dispatch(loadAllowance(quote.assetData, reload)),
+      this.props.dispatch(loadAllowance(feeAsset.assetData, reload)),
       this.props.dispatch(loadBalance(base.assetData, reload)),
       this.props.dispatch(
         loadOrderbook(base.assetData, quote.assetData, reload)

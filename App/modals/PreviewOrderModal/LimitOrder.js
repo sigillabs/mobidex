@@ -216,13 +216,13 @@ class PreviewLimitOrder extends Component {
   }
 
   submit = async () => {
-    const { order } = this.props;
+    const { configuredOrder } = this.state;
 
     this.props.dispatch(
       ActionErrorSuccessFlow(
         this.props.navigation.componentId,
         {
-          action: async () => await this.props.dispatch(submitOrder(order)),
+          action: async () => await this.props.dispatch(submitOrder(configuredOrder)),
           icon: <Entypo name="chevron-with-circle-up" size={100} />,
           label: 'Creating Order...'
         },
