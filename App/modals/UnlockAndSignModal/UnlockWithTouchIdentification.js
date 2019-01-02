@@ -1,14 +1,14 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-elements';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { connect as connectNavigation } from '../../../navigation';
-import { styles } from '../../../styles';
-import { navigationProp } from '../../../types/props';
-import Button from '../../components/Button';
-import VerticalPadding from '../../components/VerticalPadding';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { TouchableOpacity, View } from "react-native";
+import { Text } from "react-native-elements";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { connect as connectNavigation } from "../../../navigation";
+import { styles } from "../../../styles";
+import { navigationProp } from "../../../types/props";
+import Button from "../../components/Button";
+import VerticalPadding from "../../components/VerticalPadding";
 
 class UnlockWithTouchIdentification extends Component {
   static get propTypes() {
@@ -23,7 +23,7 @@ class UnlockWithTouchIdentification extends Component {
     return (
       <View style={styles.bigCenter}>
         <TouchableOpacity
-          onPress={this.props.showUnlocking}
+          onPress={this.finish}
           style={[styles.bigBottom, styles.flex1]}
         >
           <View>
@@ -39,13 +39,17 @@ class UnlockWithTouchIdentification extends Component {
         <View style={[styles.bigTop, styles.flex1]}>
           <Button
             onPress={this.props.showPin}
-            title={'Unlock with pin'}
+            title={"Unlock with pin"}
             icon={<Ionicons name="ios-keypad" color="white" size={20} />}
           />
         </View>
       </View>
     );
   }
+
+  finish = pin => {
+    this.props.showUnlocking(null);
+  };
 }
 
 export default connectNavigation(UnlockWithTouchIdentification);

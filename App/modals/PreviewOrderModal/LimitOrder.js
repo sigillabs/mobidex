@@ -1,25 +1,25 @@
-import { BigNumber } from '0x.js';
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { InteractionManager, SafeAreaView } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import { connect } from 'react-redux';
-import { connect as connectNavigation } from '../../../navigation';
-import { findAssetByData, getQuoteAsset } from '../../../services/AssetService';
+import { BigNumber } from "0x.js";
+import { Web3Wrapper } from "@0xproject/web3-wrapper";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { InteractionManager, SafeAreaView } from "react-native";
+import Entypo from "react-native-vector-icons/Entypo";
+import { connect } from "react-redux";
+import { connect as connectNavigation } from "../../../navigation";
+import { getFeeAsset, getQuoteAsset } from "../../../services/AssetService";
 import {
   configureOrder,
   convertZeroExOrderToLimitOrder
-} from '../../../services/OrderService';
-import { getAdjustedBalanceByAddress } from '../../../services/WalletService';
-import { colors, getProfitLossStyle } from '../../../styles';
-import { ActionErrorSuccessFlow, submitOrder } from '../../../thunks';
-import { navigationProp } from '../../../types/props';
-import Button from '../../components/Button';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
-import FormattedTokenAmount from '../../components/FormattedTokenAmount';
-import Row from '../../components/Row';
-import Loading from './Loading';
+} from "../../../services/OrderService";
+import * as WalletService from "../../../services/WalletService";
+import { colors, getProfitLossStyle } from "../../../styles";
+import { ActionErrorSuccessFlow, submitOrder } from "../../../thunks";
+import { navigationProp } from "../../../types/props";
+import Button from "../../components/Button";
+import TwoColumnListItem from "../../components/TwoColumnListItem";
+import FormattedTokenAmount from "../../components/FormattedTokenAmount";
+import Row from "../../components/Row";
+import Loading from "./Loading";
 
 class PreviewLimitOrder extends Component {
   static get propTypes() {
@@ -47,7 +47,7 @@ class PreviewLimitOrder extends Component {
 
     this.setState({ loading: true });
 
-    if (side !== 'buy' && side !== 'sell') {
+    if (side !== "buy" && side !== "sell") {
       return this.props.navigation.dismissModal();
     }
 
@@ -73,33 +73,37 @@ class PreviewLimitOrder extends Component {
 
     const { side } = this.props;
 
-    if (side !== 'buy' && side !== 'sell') {
+    if (side !== "buy" && side !== "sell") {
       return null;
     }
 
-    const quoteToken = getQuoteAsset();
     const receipt = this.getReceipt();
 
     if (!receipt) return this.props.navigation.dismissModal();
 
     const { subtotal, fee, total } = receipt;
-    const funds = getAdjustedBalanceByAddress(quoteToken.address);
-    const fundsAfterOrder = funds.add(total);
+    const quoteAsset = getQuoteAsset();
+    const feeAsset = getFeeAsset();
+    const funds = WalletService.getBalanceByAddress(quoteAsset.address);
+    const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
+    const fundsAfterOrder =
+      side === "buy" ? funds.sub(total) : funds.add(total);
+    const feeFundsAfterOrder = feeFunds.sub(fee);
 
     const profitStyle = getProfitLossStyle(
-      side === 'buy' ? total.negated() : total
+      side === "buy" ? total.negated() : total
     );
 
     return (
       <SafeAreaView
-        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
+        style={{ width: "100%", height: "100%", flex: 1, marginTop: 50 }}
       >
         <TwoColumnListItem
           left="Sub-Total"
           right={
             <FormattedTokenAmount
               amount={subtotal}
-              symbol={quoteToken.symbol}
+              symbol={quoteAsset.symbol}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -111,7 +115,7 @@ class PreviewLimitOrder extends Component {
           right={
             <FormattedTokenAmount
               amount={fee}
-              symbol={quoteToken.symbol}
+              symbol={feeAsset.symbol}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -124,7 +128,7 @@ class PreviewLimitOrder extends Component {
           right={
             <FormattedTokenAmount
               amount={total}
-              symbol={quoteToken.symbol}
+              symbol={quoteAsset.symbol}
               style={[styles.tokenAmountRight, profitStyle]}
             />
           }
@@ -138,11 +142,23 @@ class PreviewLimitOrder extends Component {
           right={
             <FormattedTokenAmount
               amount={funds}
-              symbol={quoteToken.symbol}
+              symbol={quoteAsset.symbol}
               style={[styles.tokenAmountRight]}
             />
           }
           rowStyle={{ marginTop: 10 }}
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Fee Funds Available"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={feeFunds}
+              symbol={feeAsset.symbol}
+              style={[styles.tokenAmountRight]}
+            />
+          }
           bottomDivider={true}
         />
         <TwoColumnListItem
@@ -151,18 +167,33 @@ class PreviewLimitOrder extends Component {
           right={
             <FormattedTokenAmount
               amount={fundsAfterOrder}
-              symbol={quoteToken.symbol}
+              symbol={quoteAsset.symbol}
               style={[styles.tokenAmountRight, profitStyle]}
             />
           }
           rowStyle={{ marginTop: 10 }}
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Fee Funds After Order"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={feeFundsAfterOrder}
+              symbol={feeAsset.symbol}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(fee.gt(0) ? -1 : 0)
+              ]}
+            />
+          }
           bottomDivider={true}
         />
-        <Row style={{ width: '100%' }}>
+        <Row style={{ width: "100%" }}>
           <Button
             large
             onPress={this.cancel}
-            title={'Cancel'}
+            title={"Cancel"}
             containerStyle={{ flex: 1 }}
           />
           <Button
@@ -180,11 +211,11 @@ class PreviewLimitOrder extends Component {
     const { side } = this.props;
 
     switch (side) {
-      case 'buy':
-        return 'Confirm Buy Order';
+      case "buy":
+        return "Confirm Buy Order";
 
-      case 'sell':
-        return 'Confirm Sell Order';
+      case "sell":
+        return "Confirm Sell Order";
 
       default:
         return null;
@@ -199,14 +230,14 @@ class PreviewLimitOrder extends Component {
 
     if (!limitOrder) return null;
 
-    const makerAsset = findAssetByData(configuredOrder.makerAssetData);
+    const feeAsset = getFeeAsset();
     const fee = Web3Wrapper.toUnitAmount(
       new BigNumber(configuredOrder.makerFee),
-      makerAsset.decimals
+      feeAsset.decimals
     );
 
     let subtotal = new BigNumber(limitOrder.amount).mul(limitOrder.price);
-    let total = subtotal.add(fee);
+    let total = subtotal;
 
     return {
       subtotal,
@@ -222,11 +253,12 @@ class PreviewLimitOrder extends Component {
       ActionErrorSuccessFlow(
         this.props.navigation.componentId,
         {
-          action: async () => await this.props.dispatch(submitOrder(configuredOrder)),
+          action: async () =>
+            await this.props.dispatch(submitOrder(configuredOrder)),
           icon: <Entypo name="chevron-with-circle-up" size={100} />,
-          label: 'Creating Order...'
+          label: "Creating Order..."
         },
-        'Created Order',
+        "Created Order",
         () => this.props.navigation.dismissModal()
       )
     );
@@ -235,9 +267,10 @@ class PreviewLimitOrder extends Component {
   cancel = () => this.props.navigation.dismissModal();
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  connectNavigation(PreviewLimitOrder)
-);
+export default connect(
+  () => ({}),
+  dispatch => ({ dispatch })
+)(connectNavigation(PreviewLimitOrder));
 
 const styles = {
   tokenAmountLeft: {
@@ -246,7 +279,7 @@ const styles = {
   },
   tokenAmountRight: {
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
     height: 30,
     color: colors.primary
   }

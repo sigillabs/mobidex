@@ -160,8 +160,9 @@ class PreviewFillOrders extends Component {
     const feeAsset = AssetService.getFeeAsset();
 
     const { priceAverage, subtotal, fee, total } = receipt;
-    const funds = WalletService.getAdjustedBalanceByAddress(quoteAsset.address);
-    const fundsAfterOrder = funds.add(total);
+    const funds = WalletService.getBalanceByAddress(quoteAsset.address);
+    const fundsAfterOrder =
+      side === "buy" ? funds.sub(total) : funds.add(total);
     const feeFunds = WalletService.getAdjustedBalanceByAddress(
       feeAsset.address
     );
@@ -291,7 +292,10 @@ class PreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={feeFundsAfterOrder}
               symbol={feeAsset.symbol}
-              style={[styles.tokenAmountRight, getProfitLossStyle(-1)]}
+              style={[
+                styles.tokenAmountRight,
+                getProfitLossStyle(fee.gt(0) ? -1 : 0)
+              ]}
             />
           }
           rightStyle={{ height: 30 }}
