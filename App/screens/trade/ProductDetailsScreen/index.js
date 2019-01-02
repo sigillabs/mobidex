@@ -16,9 +16,13 @@ class ProductDetailsScreen extends React.PureComponent {
         },
         title: {
           component: {
-            name: 'header.LogoTicker',
+            name: 'header.LogoProductBalance',
             alignment: 'center',
-            passProps
+            passProps: {
+              quoteSymbol: passProps.quote.symbol,
+              baseSymbol: passProps.base.symbol,
+              adjusted: false
+            }
           }
         },
         rightButtons: [

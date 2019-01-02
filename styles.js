@@ -1,30 +1,30 @@
-import { BigNumber } from "0x.js";
-import { StyleSheet } from "react-native";
+import { BigNumber } from '0x.js';
+import { StyleSheet } from 'react-native';
 
-export const colors = {
-  primary: "black",
-  secondary: "#8F0CE8",
-  background: "white",
-  success: "green",
+export const colors = StyleSheet.create({
+  primary: 'black',
+  secondary: '#8F0CE8',
+  background: 'white',
+  success: 'green',
 
-  error: "#ff190c",
-  green0: "green",
-  grey0: "#393e42",
-  grey1: "#43484d",
-  grey2: "#5e6977",
-  grey3: "#86939e",
-  grey4: "#bdc6cf",
-  grey5: "#e1e8ee",
-  grey6: "#EFEFEF",
-  orange0: "#ff9200",
-  orange1: "#F37438",
-  red0: "#ff190c",
-  yellow0: "#ffb22c",
-  white: "white",
-  transparent: "transparent"
-};
+  error: '#ff190c',
+  green0: 'green',
+  grey0: '#393e42',
+  grey1: '#43484d',
+  grey2: '#5e6977',
+  grey3: '#86939e',
+  grey4: '#bdc6cf',
+  grey5: '#e1e8ee',
+  grey6: '#EFEFEF',
+  orange0: '#ff9200',
+  orange1: '#F37438',
+  red0: '#ff190c',
+  yellow0: '#ffb22c',
+  white: 'white',
+  transparent: 'transparent'
+});
 
-export const fonts = {
+export const fonts = StyleSheet.create({
   small: {
     fontSize: 10
   },
@@ -34,7 +34,15 @@ export const fonts = {
   xlarge: {
     fontSize: 18
   }
-};
+});
+
+export const images = StyleSheet.create({
+  smallRounded: {
+    borderRadius: 20 / 2,
+    height: 20,
+    width: 20
+  }
+});
 
 export const styles = StyleSheet.create({
   background: {
@@ -45,60 +53,70 @@ export const styles = StyleSheet.create({
   },
   bigCenter: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   positionBottom: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0
   },
   paddedTop: {
     marginTop: 100,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   textCenter: {
-    textAlign: "center"
+    textAlign: 'center'
   },
   justifyCenter: {
-    justifyContent: "center"
+    justifyContent: 'center'
   },
   alignCenter: {
-    alignItems: "center"
+    alignItems: 'center'
   },
   alignLeft: {
-    alignItems: "flex-start"
+    alignItems: 'flex-start'
   },
   center: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   bigBottom: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   bigTop: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
-  top: {
-    justifyContent: "flex-start",
-    alignItems: "center"
-  },
-  bottom: {
-    justifyContent: "flex-end",
-    alignItems: "center"
+  col: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  top: {
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  bottom: {
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   flex0: {
     flex: 0
@@ -116,13 +134,13 @@ export const styles = StyleSheet.create({
     flex: 4
   },
   mh100: {
-    minHeight: "100%"
+    minHeight: '100%'
   },
   h100: {
-    height: "100%"
+    height: '100%'
   },
   w100: {
-    width: "100%"
+    width: '100%'
   },
   pb0: {
     paddingBottom: 0

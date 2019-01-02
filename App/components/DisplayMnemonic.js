@@ -15,6 +15,7 @@ class Cell extends Component {
       cellStyle: PropTypes.object
     };
   }
+
   render() {
     const { cellStyle, index, word, ...rest } = this.props;
     return (

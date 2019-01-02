@@ -8,7 +8,7 @@ import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
 import TokenBalanceBySymbol from './TokenBalanceBySymbol';
 
-class LogoBalance extends Component {
+export default class LogoBalance extends Component {
   static get propTypes() {
     return {
       symbol: PropTypes.string.isRequired,
@@ -57,19 +57,5 @@ const style = {
     minWidth: 150,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  avatarWrapper: {
-    flex: 0,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    marginHorizontal: 5
   }
 };
-
-export default connect(
-  state => ({
-    showForexPrices: state.settings.showForexPrices
-  }),
-  dispatch => ({ dispatch })
-)(LogoBalance);
