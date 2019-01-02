@@ -1,14 +1,13 @@
-import PropTypes from "prop-types";
-import React from "react";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { connect } from "react-redux";
-import { connect as connectNavigation } from "../../navigation";
-import * as AssetService from "../../services/AssetService";
-import * as WalletService from "../../services/WalletService";
-import { approve } from "../../thunks";
-import { navigationProp } from "../../types/props";
-import { formatSymbol } from "../../utils";
-import Button from "../components/Button";
+import PropTypes from 'prop-types';
+import React from 'react';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { connect } from 'react-redux';
+import { connect as connectNavigation } from '../../navigation';
+import * as AssetService from '../../services/AssetService';
+import { approve } from '../../thunks';
+import { navigationProp } from '../../types/props';
+import { formatSymbol } from '../../utils';
+import Button from './Button';
 
 class UnlockButton extends React.Component {
   static propTypes = {

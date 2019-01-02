@@ -1,7 +1,7 @@
 import { BigNumber } from '0x.js';
 import { StyleSheet } from 'react-native';
 
-export const colors = StyleSheet.create({
+export const colors = {
   primary: 'black',
   secondary: '#8F0CE8',
   background: 'white',
@@ -22,7 +22,7 @@ export const colors = StyleSheet.create({
   yellow0: '#ffb22c',
   white: 'white',
   transparent: 'transparent'
-});
+};
 
 export const fonts = StyleSheet.create({
   small: {

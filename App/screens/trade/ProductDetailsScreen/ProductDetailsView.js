@@ -1,20 +1,18 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { View } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Entypo from "react-native-vector-icons/Entypo";
-import { connect as connectNavigation } from "../../../../navigation";
-import * as AssetService from "../../../../services/AssetService";
-import * as WalletService from "../../../../services/WalletService";
-import { styles } from "../../../../styles";
-import { navigationProp } from "../../../../types/props";
-import { formatSymbol } from "../../../../utils";
-import Divider from "../../../components/Divider";
-import VerticalPadding from "../../../components/VerticalPadding";
-import Row from "../../../components/Row";
-import ActionOrUnlockButton from "../../../views/ActionOrUnlockButton";
-import UnlockButton from "../../../views/UnlockButton";
-import ProductDetailListItem from "./ProductDetailListItem";
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import { connect as connectNavigation } from '../../../../navigation';
+import * as AssetService from '../../../../services/AssetService';
+import * as WalletService from '../../../../services/WalletService';
+import { styles } from '../../../../styles';
+import { navigationProp } from '../../../../types/props';
+import Button from '../../../components/Button';
+import Divider from '../../../components/Divider';
+import VerticalPadding from '../../../components/VerticalPadding';
+import Row from '../../../components/Row';
+import UnlockButton from '../../../components/UnlockButton';
+import ProductDetailListItem from './ProductDetailListItem';
 
 class ProductDetailsView extends Component {
   static get propTypes() {
@@ -75,42 +73,64 @@ class ProductDetailsView extends Component {
   }
 
   renderActionButtons() {
-    const { base, quote } = this.props;
     return (
       <React.Fragment>
-        <ActionOrUnlockButton
-          assetData={quote.assetData}
-          containerStyle={[{ width: 150 }, styles.justifyCenter]}
-          icon={
-            <Entypo name="arrow-with-circle-left" size={20} color="white" />
-          }
-          large
-          onPress={this.buy}
-          title="Buy"
-        />
-        <ActionOrUnlockButton
-          assetData={base.assetData}
-          containerStyle={[{ width: 150 }, styles.justifyCenter]}
-          icon={
-            <Entypo name="arrow-with-circle-right" size={20} color="white" />
-          }
-          iconRight
-          large
-          onPress={this.sell}
-          title="Sell"
-          unlockProps={{
-            iconRight: true
-          }}
-        />
+        {this.renderBuyButton()}
+        {this.renderSellButton()}
       </React.Fragment>
     );
   }
 
+  renderBuyButton() {
+    const { quote } = this.props;
+    if (WalletService.isUnlockedByAssetData(quote.assetData)) {
+      return (
+        <Button
+          containerStyle={[{ width: 150 }, styles.justifyCenter]}
+          icon={{
+            name: 'arrow-with-circle-left',
+            size: 20,
+            color: 'white',
+            type: 'entypo'
+          }}
+          large
+          onPress={this.buy}
+          title="Buy"
+        />
+      );
+    } else {
+      return <UnlockButton assetData={quote.assetData} />;
+    }
+  }
+
+  renderSellButton() {
+    const { base } = this.props;
+    if (WalletService.isUnlockedByAssetData(base.assetData)) {
+      return (
+        <Button
+          containerStyle={[{ width: 150 }, styles.justifyCenter]}
+          icon={{
+            name: 'arrow-with-circle-right',
+            size: 20,
+            color: 'white',
+            type: 'entypo'
+          }}
+          large
+          onPress={this.buy}
+          title="Sell"
+          iconRight
+        />
+      );
+    } else {
+      return <UnlockButton assetData={base.assetData} />;
+    }
+  }
+
   buy = () => {
     const { base, quote } = this.props;
-    this.props.navigation.push("navigation.trade.CreateOrder", {
-      type: "fill",
-      side: "buy",
+    this.props.navigation.push('navigation.trade.CreateOrder', {
+      type: 'fill',
+      side: 'buy',
       base,
       quote
     });
@@ -118,9 +138,9 @@ class ProductDetailsView extends Component {
 
   sell = () => {
     const { base, quote } = this.props;
-    this.props.navigation.push("navigation.trade.CreateOrder", {
-      type: "fill",
-      side: "sell",
+    this.props.navigation.push('navigation.trade.CreateOrder', {
+      type: 'fill',
+      side: 'sell',
       base,
       quote
     });
