@@ -3,7 +3,7 @@ import { BigNumber } from '0x.js';
 import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { ZERO } from '../constants/0x';
-import { cache, time } from '../decorators/cls';
+import { cache, time } from '../lib/decorators/cls';
 import { hex2a } from '../utils';
 import ZeroExClient from './0x.js';
 

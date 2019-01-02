@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { formatAmount, formatSymbol } from "../../utils";
-import Inf0xClient from "../../clients/inf0x";
-import PriceGraph from "../components/PriceGraph";
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { formatAmount, formatSymbol } from '../../utils';
+import Inf0xClient from '../../clients/inf0x';
+import PriceGraph from '../components/PriceGraph';
 
-const INTERVALS = ["MINUTE", "HOUR", "DAY"];
+const INTERVALS = ['MINUTE', 'HOUR', 'DAY'];
 const SAMPLES = [24 * 60, 24 * 7, 30];
 
 class TokenPriceGraph extends Component {

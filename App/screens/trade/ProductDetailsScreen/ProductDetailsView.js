@@ -116,7 +116,7 @@ class ProductDetailsView extends Component {
             type: 'entypo'
           }}
           large
-          onPress={this.buy}
+          onPress={this.sell}
           title="Sell"
           iconRight
         />

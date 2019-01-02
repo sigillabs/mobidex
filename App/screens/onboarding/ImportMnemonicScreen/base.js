@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Clipboard, InteractionManager, View } from 'react-native';
+import { Clipboard, InteractionManager, SafeAreaView } from 'react-native';
 import { Text } from 'react-native-elements';
 import { colors, styles } from '../../../../styles';
 import { connect as connectNavigation } from '../../../../navigation';
@@ -8,7 +8,6 @@ import { navigationProp } from '../../../../types/props';
 import Button from '../../../components/Button';
 import MnemonicWordInput from '../../../components/MnemonicWordInput';
 import MutedText from '../../../components/MutedText';
-import PageRoot from '../../../components/PageRoot';
 import Row from '../../../components/Row';
 
 class BaseImportMnemonicScreen extends Component {
@@ -45,7 +44,7 @@ class BaseImportMnemonicScreen extends Component {
     const page = this.props.page || 0;
 
     return (
-      <PageRoot style={styles.paddedTop}>
+      <SafeAreaView style={styles.paddedTop}>
         <MutedText>
           Enter word {page + 1} of your 12 word seed phrase.
         </MutedText>
@@ -81,7 +80,7 @@ class BaseImportMnemonicScreen extends Component {
             disabled={!this.validateWord() || this.state.submitting}
           />
         </Row>
-      </PageRoot>
+      </SafeAreaView>
     );
   }
 

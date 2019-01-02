@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Avatar, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fonts } from '../../styles';
-import { formatProduct, formatSymbol, getImage } from '../../utils';
+import { formatSymbol, getImage } from '../../utils';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
 import * as TickerService from '../../services/TickerService';
@@ -62,14 +62,16 @@ class LogoTicker extends Component {
         {showForexPrices ? (
           <OrderbookForexPrice
             style={[fonts.xlarge, priceStyle]}
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'buy'}
           />
         ) : (
           <OrderbookPrice
             style={[fonts.xlarge, priceStyle]}
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'buy'}
           />

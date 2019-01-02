@@ -1,5 +1,5 @@
 import { HttpClient } from '@0xproject/connect';
-import { cache, time } from '../decorators/cls';
+import { cache, time } from '../lib/decorators/cls';
 
 export default class RelayerClient {
   constructor(relayerEndpoint, options = { network: null }) {

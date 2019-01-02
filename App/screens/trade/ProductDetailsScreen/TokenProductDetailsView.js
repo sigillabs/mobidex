@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import { getProfitLossStyle } from '../../../../styles';
-import { formatAmount, formatProduct } from '../../../../utils';
+import { formatAmount } from '../../../../utils';
 import FormattedPercent from '../../../components/FormattedPercent';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
 import * as TickerService from '../../../../services/TickerService';
@@ -38,7 +38,8 @@ export default class TokenProductDetailsView extends Component {
         left: 'Highest Bid',
         right: (
           <OrderbookPrice
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'sell'}
             symbol={quote.symbol}
@@ -50,7 +51,8 @@ export default class TokenProductDetailsView extends Component {
         left: 'Lowest Ask',
         right: (
           <OrderbookPrice
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'buy'}
             symbol={quote.symbol}
@@ -60,14 +62,16 @@ export default class TokenProductDetailsView extends Component {
       {
         key: '24hrprice',
         left: '24 Hour Price Average',
-        right: <FormattedTokenAmount amount={average} symbol={quote.symbol} />
+        right: (
+          <FormattedTokenAmount amount={average} assetData={quote.assetData} />
+        )
       },
       {
         key: '24hrpricechange',
         left: '24 Hour Price Change',
         right: (
           <Text>
-            <FormattedTokenAmount amount={change} symbol={quote.symbol} />
+            <FormattedTokenAmount amount={change} assetData={quote.assetData} />
             <Text> </Text>
             <Text>(</Text>
             <FormattedPercent percent={changePercent} />
@@ -79,12 +83,12 @@ export default class TokenProductDetailsView extends Component {
       {
         key: '24hrmax',
         left: '24 Hour Max',
-        right: <FormattedTokenAmount amount={max} symbol={quote.symbol} />
+        right: <FormattedTokenAmount amount={max} assetData={quote.assetData} />
       },
       {
         key: '24hrmin',
         left: '24 Hour Min',
-        right: <FormattedTokenAmount amount={min} symbol={quote.symbol} />
+        right: <FormattedTokenAmount amount={min} assetData={quote.assetData} />
       }
     ];
     const graph = (

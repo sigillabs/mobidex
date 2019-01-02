@@ -5,16 +5,18 @@ import { Text } from 'react-native-elements';
 import { formatPercent } from '../../utils';
 
 export default class FormattedPercent extends Component {
+  static get propTypes() {
+    return {
+      percent: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired
+    };
+  }
+
   render() {
-    const { percent } = this.props;
-    return <Text {...this.props}>{formatPercent(percent)}</Text>;
+    const { percent, ...rest } = this.props;
+    return <Text {...rest}>{formatPercent(percent)}</Text>;
   }
 }
-
-FormattedPercent.propTypes = {
-  percent: PropTypes.oneOfType([
-    PropTypes.instanceOf(BigNumber),
-    PropTypes.number,
-    PropTypes.string
-  ])
-};

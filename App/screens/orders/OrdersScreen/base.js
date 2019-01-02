@@ -1,12 +1,12 @@
 import ethUtil from 'ethereumjs-util';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { RefreshControl, SafeAreaView, ScrollView, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
-import { fonts } from '../../../../styles';
+import { fonts, styles } from '../../../../styles';
 import { cancelOrder, loadOrders } from '../../../../thunks';
 import * as AssetService from '../../../../services/AssetService';
 import { navigationProp } from '../../../../types/props';
@@ -14,7 +14,6 @@ import CollapsibleButtonView from '../../../components/CollapsibleButtonView';
 import EmptyList from '../../../components/EmptyList';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
 import MutedText from '../../../components/MutedText';
-import PageRoot from '../../../components/PageRoot';
 import Row from '../../../components/Row';
 import Cancelling from './Cancelling';
 import Cancelled from './Cancelled';
@@ -43,29 +42,34 @@ class BaseTokenOrder extends Component {
         roundAvatar
         bottomDivider
         title={
-          <View style={styles.itemContainer}>
+          <View style={extraStyles.itemContainer}>
             <Row>
               <FormattedTokenAmount
                 amount={order.makerAssetAmount}
-                symbol={makerToken.symbol}
-                decimals={makerToken.decimals || 18}
-                style={([styles.left, fonts.large], { flex: 1 })}
+                assetData={makerToken.assetData}
+                style={([extraStyles.left, fonts.large], { flex: 1 })}
+                isUnitAmount={false}
               />
               <Icon name="swap" color="black" size={24} />
               <FormattedTokenAmount
                 amount={order.takerAssetAmount}
-                symbol={takerToken.symbol}
-                decimals={takerToken.decimals || 18}
-                style={[styles.right, fonts.large, styles.padLeft, { flex: 1 }]}
+                assetData={takerToken.assetData}
+                style={[
+                  extraStyles.right,
+                  fonts.large,
+                  extraStyles.padLeft,
+                  { flex: 1 }
+                ]}
+                isUnitAmount={false}
               />
             </Row>
           </View>
         }
         subtitle={
-          <View style={styles.itemContainer}>
+          <View style={extraStyles.itemContainer}>
             <Row>
-              <MutedText style={[styles.left]}>Maker</MutedText>
-              <MutedText style={[styles.right, styles.padLeft]}>
+              <MutedText style={[extraStyles.left]}>Maker</MutedText>
+              <MutedText style={[extraStyles.right, extraStyles.padLeft]}>
                 Taker
               </MutedText>
             </Row>
@@ -124,7 +128,7 @@ class BaseOrdersScreen extends Component {
     const orders = this.filterOrders();
 
     return (
-      <PageRoot>
+      <SafeAreaView style={[styles.flex1]}>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -134,7 +138,7 @@ class BaseOrdersScreen extends Component {
           }
         >
           {orders.length > 0 ? (
-            <View style={{ width: '100%', backgroundColor: 'white' }}>
+            <View style={[styles.w100, styles.background]}>
               {orders.map((order, index) => {
                 return (
                   <CollapsibleButtonView
@@ -149,14 +153,14 @@ class BaseOrdersScreen extends Component {
               })}
             </View>
           ) : (
-            <EmptyList style={{ height: '100%', width: '100%' }}>
+            <EmptyList style={[styles.w100, styles.h100]}>
               <MutedText style={{ marginTop: 25 }}>
                 No active orders to show.
               </MutedText>
             </EmptyList>
           )}
         </ScrollView>
-      </PageRoot>
+      </SafeAreaView>
     );
   }
 
@@ -191,7 +195,7 @@ class BaseOrdersScreen extends Component {
   };
 }
 
-const styles = {
+const extraStyles = {
   itemContainer: {
     alignItems: 'center',
     marginHorizontal: 10,

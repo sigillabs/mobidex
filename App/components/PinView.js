@@ -1,10 +1,10 @@
-import * as _ from "lodash";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { View } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { colors } from "../../styles";
-import { stylesProp } from "../../types/props";
+import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { colors } from '../../styles';
+import { stylesProp } from '../../types/props';
 
 class Cell extends Component {
   render() {
@@ -45,10 +45,10 @@ Cell.defaultProps = {
 export default class PinView extends Component {
   render() {
     const { cellStyle, containerStyle, value } = this.props;
-    let characters = (value || "").split("");
+    let characters = (value || '').split('');
     if (characters.length < 6) {
       characters = characters.concat(
-        _.times(6 - characters.length, _.constant(""))
+        _.times(6 - characters.length, _.constant(''))
       );
     } else if (characters.length > 6) {
       characters = characters.slice(0, 6);
@@ -68,7 +68,7 @@ PinView.propTypes = {
 };
 
 PinView.defaultProps = {
-  value: ""
+  value: ''
 };
 
 const styles = {
@@ -78,8 +78,8 @@ const styles = {
   },
   container: {
     flex: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 };

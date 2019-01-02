@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
-import PageRoot from '../../../components/PageRoot';
-import Row from '../../../components/Row';
+import { styles } from '../../../../styles';
 import TokenList from './TokenList';
 import PortfolioDetails from './PortfolioDetails';
 import TokenDetails from './TokenDetails';
@@ -34,7 +34,7 @@ class BaseAccountsScreen extends Component {
     );
 
     return (
-      <PageRoot style={{ flex: 1 }}>
+      <SafeAreaView style={styles.flex1}>
         {asset ? (
           <TokenDetails asset={asset} />
         ) : (
@@ -51,7 +51,7 @@ class BaseAccountsScreen extends Component {
             }
           }}
         />
-      </PageRoot>
+      </SafeAreaView>
     );
   }
 }

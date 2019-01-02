@@ -29,7 +29,8 @@ export default class TokenBalanceByAssetData extends Component {
         <FormattedTokenAmount
           {...this.props}
           amount={ZERO}
-          symbol={showSymbol ? 'N/A' : undefined}
+          assetData={null}
+          showSymbol={false}
         />
       );
     }
@@ -45,7 +46,8 @@ export default class TokenBalanceByAssetData extends Component {
       <FormattedTokenAmount
         {...this.props}
         amount={balance}
-        symbol={showSymbol ? asset.symbol : undefined}
+        assetData={assetData}
+        showSymbol={showSymbol}
       />
     );
   }

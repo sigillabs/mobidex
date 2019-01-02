@@ -4,12 +4,14 @@ import { Text } from 'react-native-elements';
 import { formatSymbol } from '../../utils';
 
 export default class FormattedSymbol extends Component {
+  static get propTypes() {
+    return {
+      symbol: PropTypes.string.isRequired
+    };
+  }
+
   render() {
-    const { symbol } = this.props;
-    return <Text {...this.props}>{formatSymbol(symbol)}</Text>;
+    const { symbol, ...rest } = this.props;
+    return <Text {...rest}>{formatSymbol(symbol)}</Text>;
   }
 }
-
-FormattedSymbol.propTypes = {
-  symbol: PropTypes.string.isRequired
-};

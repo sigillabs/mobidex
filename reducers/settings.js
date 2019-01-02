@@ -33,12 +33,13 @@ const DEV = {
 };
 
 const initialState = {
-  // ...PROD,
-  ...STAGE,
+  ...PROD,
+  // ...STAGE,
   // ...DEV,
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',
   feeSymbol: 'ZRX',
+  networkFeeSymbol: 'ETH',
   showForexPrices: false,
   gasPrice: ZERO,
   gasLimit: ZERO,

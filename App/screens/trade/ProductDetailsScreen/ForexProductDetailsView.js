@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import * as TickerService from '../../../../services/TickerService';
 import { getProfitLossStyle } from '../../../../styles';
-import { formatMoney, formatProduct } from '../../../../utils';
+import { formatMoney } from '../../../../utils';
 import FormattedForexAmount from '../../../components/FormattedForexAmount';
 import FormattedPercent from '../../../components/FormattedPercent';
 import OrderbookForexPrice from '../../../views/OrderbookForexPrice';
@@ -38,7 +38,8 @@ export default class ForexProductDetailsView extends Component {
         left: 'Highest Bid',
         right: (
           <OrderbookForexPrice
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'buy'}
           />
@@ -49,7 +50,8 @@ export default class ForexProductDetailsView extends Component {
         left: 'Lowest Ask',
         right: (
           <OrderbookForexPrice
-            product={formatProduct(base.symbol, quote.symbol)}
+            quoteAssetData={quote.assetData}
+            baseAssetData={base.assetData}
             default={0}
             side={'sell'}
           />

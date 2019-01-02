@@ -1,6 +1,6 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
-import { cache, time } from '../decorators/cls';
+import { cache, time } from '../lib/decorators/cls';
 
 export default class EthereumClient {
   constructor(web3, options = null) {

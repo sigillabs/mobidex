@@ -1,41 +1,60 @@
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Text } from 'react-native-elements';
+import * as AssetService from '../../services/AssetService';
 import { formatAmount, formatAmountWithDecimals } from '../../utils';
 import FormattedSymbol from './FormattedSymbol';
 
-export default class FormattedTokenAmount extends PureComponent {
+export default class FormattedTokenAmount extends React.PureComponent {
+  static get propTypes() {
+    return {
+      assetData: PropTypes.string,
+      amount: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      children: PropTypes.node,
+      isUnitAmount: PropTypes.bool.isRequired,
+      showSymbol: PropTypes.bool.isRequired,
+      symbol: PropTypes.string
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      isUnitAmount: true,
+      showSymbol: true
+    };
+  }
+
   render() {
-    const { amount, percent, decimals, symbol } = this.props;
-    const showPercent = percent !== null && percent !== undefined;
+    const {
+      amount,
+      assetData,
+      children,
+      isUnitAmount,
+      showSymbol,
+      symbol,
+      ...rest
+    } = this.props;
+    const asset = AssetService.findAssetByData(assetData || null);
 
     return (
-      <Text {...this.props}>
+      <Text {...rest}>
         <Text>
-          {decimals
-            ? formatAmountWithDecimals(amount, decimals)
-            : formatAmount(amount)}
+          {isUnitAmount
+            ? formatAmount(amount)
+            : formatAmountWithDecimals(amount, asset.decimals)}
         </Text>
-        {symbol || showPercent ? <Text> </Text> : null}
-        {symbol ? <FormattedSymbol symbol={symbol} /> : null}
-        {showPercent ? <Text>({percent})</Text> : null}
+        {showSymbol ? <Text> </Text> : null}
+        {showSymbol ? (
+          <FormattedSymbol symbol={symbol || asset.symbol} />
+        ) : null}
+        {React.Children.count(children || []) > 0 ? <Text> </Text> : null}
+        {React.Children.count(children || []) > 0 ? children : null}
       </Text>
     );
   }
 }
-
-FormattedTokenAmount.propTypes = {
-  amount: PropTypes.oneOfType([
-    PropTypes.instanceOf(BigNumber),
-    PropTypes.number,
-    PropTypes.string
-  ]).isRequired,
-  percent: PropTypes.oneOfType([
-    PropTypes.instanceOf(BigNumber),
-    PropTypes.number,
-    PropTypes.string
-  ]),
-  decimals: PropTypes.number,
-  symbol: PropTypes.string
-};

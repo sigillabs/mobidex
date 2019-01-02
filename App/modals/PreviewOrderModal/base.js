@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { SafeAreaView } from 'react-native';
 import { connect as connectNavigation } from '../../../navigation';
 import { navigationProp } from '../../../types/props';
-import PageRoot from '../../components/PageRoot';
 import FillOrdersPreview from './FillOrders';
 import LimitOrderPreview from './LimitOrder';
 
@@ -35,7 +35,7 @@ class BasePreviewOrderModal extends Component {
         break;
     }
 
-    return <PageRoot style={{ flex: 1 }}>{subview}</PageRoot>;
+    return <SafeAreaView style={{ flex: 1 }}>{subview}</SafeAreaView>;
   }
 }
 

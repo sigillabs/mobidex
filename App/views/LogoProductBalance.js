@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Image, View } from 'react-native';
-import { Avatar } from 'react-native-elements';
-import { connect } from 'react-redux';
+import { Image } from 'react-native';
 import { fonts, images, styles } from '../../styles';
 import { getImage } from '../../utils';
-import HorizontalPadding from '../components/HorizontalPadding';
 import Col from '../components/Col';
 import Row from '../components/Row';
 import TokenBalanceBySymbol from './TokenBalanceBySymbol';
@@ -26,7 +23,7 @@ export default class LogoProductBalance extends Component {
   }
 
   render() {
-    const { avatarProps, baseSymbol, quoteSymbol } = this.props;
+    const { baseSymbol, quoteSymbol } = this.props;
 
     return (
       <Col>
@@ -35,7 +32,7 @@ export default class LogoProductBalance extends Component {
             <Image
               source={getImage(baseSymbol)}
               style={[images.smallRounded, styles.mr1]}
-              overlayColor={[styles.background]}
+              overlayColor={styles.background}
             />
           </Col>
           <Col style={styles.flex3} right>
@@ -51,7 +48,7 @@ export default class LogoProductBalance extends Component {
             <Image
               source={getImage(quoteSymbol)}
               style={[images.smallRounded, styles.mr1]}
-              overlayColor={[styles.background]}
+              overlayColor={styles.background}
             />
           </Col>
           <Col style={styles.flex3} right>

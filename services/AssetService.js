@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 let _store;
 
@@ -35,6 +35,14 @@ export function getFeeAsset() {
   return _.find(assets, { symbol: feeSymbol });
 }
 
+export function getNetworkFeeAsset() {
+  const {
+    relayer: { assets },
+    settings: { networkFeeSymbol }
+  } = _store.getState();
+  return _.find(assets, { symbol: networkFeeSymbol });
+}
+
 export function getQuoteAsset() {
   const {
     relayer: { assets },
@@ -47,5 +55,5 @@ export function getWETHAsset() {
   const {
     relayer: { assets }
   } = _store.getState();
-  return _.find(assets, { symbol: "WETH" });
+  return _.find(assets, { symbol: 'WETH' });
 }

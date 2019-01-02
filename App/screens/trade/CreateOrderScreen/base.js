@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { styles } from '../../../../styles';
-import PageRoot from '../../../components/PageRoot';
 import Tabs from '../../../components/Tabs';
 import FillOrders from './FillOrders';
 import LimitOrder from './LimitOrder';
@@ -35,10 +34,10 @@ export default class BaseCreateOrderScreen extends Component {
     }
 
     return (
-      <PageRoot style={[styles.flex1]}>
+      <SafeAreaView style={[styles.flex1]}>
         <Tabs onPress={this.changeTab} selectedIndex={type} buttons={BUTTONS} />
         {subview}
-      </PageRoot>
+      </SafeAreaView>
     );
   }
 

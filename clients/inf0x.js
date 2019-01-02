@@ -1,7 +1,7 @@
 import ethUtil from 'ethereumjs-util';
 import { stringify } from 'qs';
 import UUIDGenerator from 'react-native-uuid-generator';
-import { cache, time } from '../decorators/cls';
+import { cache, time } from '../lib/decorators/cls';
 
 export default class Inf0xClient {
   constructor(endpoint, options = { network: null }) {

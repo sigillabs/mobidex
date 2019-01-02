@@ -5,17 +5,19 @@ import { Text } from 'react-native-elements';
 import { formatMoney } from '../../utils';
 
 export default class FormattedForexAmount extends Component {
-  render() {
-    const { amount } = this.props;
+  static get propTypes() {
+    return {
+      amount: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired
+    };
+  }
 
-    return <Text {...this.props}>{formatMoney(amount)}</Text>;
+  render() {
+    const { amount, ...rest } = this.props;
+
+    return <Text {...rest}>{formatMoney(amount)}</Text>;
   }
 }
-
-FormattedForexAmount.propTypes = {
-  amount: PropTypes.oneOfType([
-    PropTypes.instanceOf(BigNumber),
-    PropTypes.number,
-    PropTypes.string
-  ]).isRequired
-};
