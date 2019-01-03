@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { colors } from '../../styles';
-import { stylesProp } from '../../types/props';
+import { styleProp } from '../../types/props';
 
 class Cell extends Component {
   render() {
@@ -64,7 +64,7 @@ export default class PinView extends Component {
 PinView.propTypes = {
   value: PropTypes.string,
   cellStyle: PropTypes.object,
-  containerStyle: stylesProp
+  containerStyle: styleProp
 };
 
 PinView.defaultProps = {

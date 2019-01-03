@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as TickerService from '../../../../services/TickerService';
-import { formatMoney } from '../../../../utils';
+import { fonts, styles } from '../../../../styles';
+import DayChange from '../../../components/DayChange';
+import OrderbookForexPrice from '../../../views/OrderbookForexPrice';
 import TokenItem from './TokenItem';
 
 class ForexTokenItem extends Component {
@@ -19,37 +21,33 @@ class ForexTokenItem extends Component {
     if (!quoteToken) return null;
     if (!baseToken) return null;
 
-    const forexTicker = TickerService.getForexTicker(baseToken.symbol);
     const tokenTicker = TickerService.getQuoteTicker(
       baseToken.symbol,
       quoteToken.symbol
     );
 
-    if (
-      !forexTicker ||
-      !tokenTicker ||
-      !forexTicker.price ||
-      !tokenTicker.price
-    ) {
-      return (
-        <TokenItem
-          price={0}
-          change={0}
-          priceFormatter={formatMoney}
-          {...this.props}
-        />
-      );
-    }
+    const change = tokenTicker
+      ? TickerService.get24HRChangePercent(tokenTicker).toNumber()
+      : 0;
+    const profitLossStyle = change >= 0 ? styles.profit : styles.loss;
 
     return (
       <TokenItem
-        price={TickerService.getCurrentPrice(forexTicker)
-          .abs()
-          .toNumber()}
-        change={TickerService.get24HRChangePercent(forexTicker)
-          .abs()
-          .toNumber()}
-        priceFormatter={formatMoney}
+        price={
+          <OrderbookForexPrice
+            quoteAssetData={quoteToken.assetData}
+            baseAssetData={baseToken.assetData}
+            side={'buy'}
+            style={[fonts.large, profitLossStyle]}
+          />
+        }
+        change={
+          <DayChange
+            quoteAssetData={quoteToken.assetData}
+            baseAssetData={baseToken.assetData}
+            style={[fonts.large, profitLossStyle]}
+          />
+        }
         {...this.props}
       />
     );

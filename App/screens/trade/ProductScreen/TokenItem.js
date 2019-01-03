@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ListItem, Text } from 'react-native-elements';
-import { fonts, styles } from '../../../../styles';
-import { formatPercent } from '../../../../utils';
+import { ListItem } from 'react-native-elements';
+import { styles } from '../../../../styles';
 import Col from '../../../components/Col';
 import Row from '../../../components/Row';
 import MutedText from '../../../components/MutedText';
@@ -13,14 +12,13 @@ export default class TokenItem extends Component {
     return {
       baseToken: PropTypes.object.isRequired,
       quoteToken: PropTypes.object.isRequired,
-      price: PropTypes.number.isRequired,
-      change: PropTypes.number.isRequired,
-      priceFormatter: PropTypes.func.isRequired
+      change: PropTypes.node.isRequired,
+      price: PropTypes.node.isRequired
     };
   }
 
   render() {
-    const { baseToken, price, change, priceFormatter } = this.props;
+    const { baseToken } = this.props;
 
     return (
       <ListItem
@@ -37,19 +35,11 @@ export default class TokenItem extends Component {
               />
             </Col>
             <Col style={[styles.flex2]}>
-              <Text
-                style={[fonts.large, change >= 0 ? styles.profit : styles.loss]}
-              >
-                {priceFormatter(price)}
-              </Text>
+              {this.props.price}
               <MutedText>Price</MutedText>
             </Col>
             <Col style={[styles.flex2]}>
-              <Text
-                style={[fonts.large, change >= 0 ? styles.profit : styles.loss]}
-              >
-                {formatPercent(change)}
-              </Text>
+              {this.props.change}
               <MutedText>24 Hour Change</MutedText>
             </Col>
           </Row>

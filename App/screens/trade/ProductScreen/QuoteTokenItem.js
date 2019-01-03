@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as TickerService from '../../../../services/TickerService';
-import { formatAmount } from '../../../../utils';
+import { fonts, styles } from '../../../../styles';
+import DayChange from '../../../components/DayChange';
 import OrderbookPrice from '../../../views/OrderbookPrice';
 import TokenItem from './TokenItem';
 
@@ -24,32 +25,28 @@ class QuoteTokenItem extends Component {
       baseToken.symbol,
       quoteToken.symbol
     );
-
-    if (!tokenTicker || !tokenTicker.price) {
-      return (
-        <TokenItem
-          price={0}
-          change={0}
-          priceFormatter={v => formatAmount(v)}
-          {...this.props}
-        />
-      );
-    }
+    const change = tokenTicker
+      ? TickerService.get24HRChangePercent(tokenTicker).toNumber()
+      : 0;
+    const profitLossStyle = change >= 0 ? styles.profit : styles.loss;
 
     return (
       <TokenItem
-        price={TickerService.getCurrentPrice(tokenTicker)
-          .abs()
-          .toNumber()}
-        change={TickerService.get24HRChangePercent(tokenTicker).toNumber()}
-        priceFormatter={v => (
+        change={
+          <DayChange
+            quoteAssetData={quoteToken.assetData}
+            baseAssetData={baseToken.assetData}
+            style={[fonts.large, profitLossStyle]}
+          />
+        }
+        price={
           <OrderbookPrice
             quoteAssetData={quoteToken.assetData}
             baseAssetData={baseToken.assetData}
-            default={v}
             side={'buy'}
+            style={[fonts.large, profitLossStyle]}
           />
-        )}
+        }
         {...this.props}
       />
     );
