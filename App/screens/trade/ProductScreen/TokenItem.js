@@ -1,12 +1,12 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { ListItem, Text } from "react-native-elements";
-import { fonts, styles } from "../../../../styles";
-import { formatPercent } from "../../../../utils";
-import Col from "../../../components/Col";
-import Row from "../../../components/Row";
-import MutedText from "../../../components/MutedText";
-import TokenIcon from "../../../components/TokenIcon";
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { ListItem, Text } from 'react-native-elements';
+import { fonts, styles } from '../../../../styles';
+import { formatPercent } from '../../../../utils';
+import Col from '../../../components/Col';
+import Row from '../../../components/Row';
+import MutedText from '../../../components/MutedText';
+import TokenIcon from '../../../components/TokenIcon';
 
 export default class TokenItem extends Component {
   static get propTypes() {

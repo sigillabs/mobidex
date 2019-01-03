@@ -533,6 +533,9 @@ export function getImage(symbol) {
     case 'TIX':
       return require('../images/tokens/TIX.png');
 
+    case 'TUSD':
+      return require('../images/tokens/TUSD.png');
+
     case 'UFR':
       return require('../images/tokens/UFR.png');
 
