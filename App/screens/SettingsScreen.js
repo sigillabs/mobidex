@@ -8,7 +8,7 @@ import { styles } from '../../styles';
 import { clearCache } from '../../utils';
 import MutedText from '../components/MutedText';
 
-export default class SettingsScreen extends React.Component {
+class SettingsScreen extends React.Component {
   static options() {
     return {
       topBar: {
@@ -24,6 +24,7 @@ export default class SettingsScreen extends React.Component {
       }
     };
   }
+  
   static propTypes = {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,
