@@ -13,7 +13,12 @@ import * as OrderService from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
 import * as ZeroExService from '../../../services/ZeroExService';
 import { colors, getProfitLossStyle } from '../../../styles';
-import { ActionErrorSuccessFlow, marketBuy, marketSell } from '../../../thunks';
+import {
+  ActionErrorSuccessFlow,
+  loadOrderbook,
+  marketBuy,
+  marketSell
+} from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
@@ -76,20 +81,25 @@ class PreviewFillOrders extends Component {
   }
 
   componentDidMount() {
-    const { side, amount, base } = this.props;
+    const { side, amount } = this.props;
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
-      base.decimals
+      this.props.base.decimals
     );
 
     InteractionManager.runAfterInteractions(async () => {
       try {
         let quote, gas;
 
-        // 1. Load quote
+        // 1. Reload orderbook
+        await this.props.dispatch(
+          loadOrderbook(this.props.base.assetData, this.props.quote.assetData)
+        );
+
+        // 2. Load quote
         if (side === 'buy') {
           quote = await OrderService.getBuyAssetsQuoteAsync(
-            base.assetData,
+            this.props.base.assetData,
             baseUnitAmount,
             {
               slippagePercentage: 0.2,
@@ -98,7 +108,7 @@ class PreviewFillOrders extends Component {
           );
         } else {
           quote = await OrderService.getSellAssetsQuoteAsync(
-            base.assetData,
+            this.props.base.assetData,
             baseUnitAmount,
             {
               slippagePercentage: 0.2,
@@ -112,7 +122,7 @@ class PreviewFillOrders extends Component {
           return;
         }
 
-        // 2. Load gas estimatation
+        // 3. Load gas estimatation
         if (side === 'buy') {
           gas = await ZeroExService.estimateMarketBuyOrders(
             quote.orders,
@@ -125,7 +135,7 @@ class PreviewFillOrders extends Component {
           );
         }
 
-        // 3. Load gas price
+        // 4. Load gas price
         const gasPrice = await WalletService.getGasPriceInEth();
 
         this.setState({
