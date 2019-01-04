@@ -3,8 +3,8 @@ import NavigationProvider from '../../../NavigationProvider';
 import BaseImportMnemonicScreen from './base';
 
 export default class ImportMnemonicScreen extends React.Component {
-  static navigationOptions = { 
-    header: null
+  static navigatorStyle = { 
+    navBarHidden: true
   }; 
 
   static options() {
