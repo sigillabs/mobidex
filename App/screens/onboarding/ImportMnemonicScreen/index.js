@@ -1,8 +1,13 @@
 import React from 'react';
 import NavigationProvider from '../../../NavigationProvider';
 import BaseImportMnemonicScreen from './base';
+import { StackNavigator } from 'react-navigation';
 
 export default class ImportMnemonicScreen extends React.Component {
+  static navigationOptions = { 
+    header: null
+  }; 
+
   static options() {
     return {
       topBar: {
