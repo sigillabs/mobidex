@@ -15,7 +15,7 @@ class SettingsScreen extends React.Component {
         visible: true,
         drawBehind: false,
         backButton: {
-          color: 'black'
+          visible: false
         },
         title: {
           text: 'Mobidex Settings',
