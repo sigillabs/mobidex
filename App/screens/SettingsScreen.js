@@ -18,7 +18,7 @@ class SettingsScreen extends React.Component {
           visible: false
         },
         title: {
-          text: 'Mobidex Settings',
+          text: 'Settings',
           alignment: 'center'
         }
       }
