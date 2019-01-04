@@ -26,7 +26,7 @@ export default class LogoProductBalance extends Component {
     const { baseSymbol, quoteSymbol } = this.props;
 
     return (
-      <Col>
+      <Col style={{ backgroundColor: 'transparent', width: 120 }}>
         <Row>
           <Col style={styles.flex0}>
             <Image
