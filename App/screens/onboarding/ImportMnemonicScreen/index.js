@@ -4,7 +4,7 @@ import BaseImportMnemonicScreen from './base';
 
 export default class ImportMnemonicScreen extends React.Component {
   static navigationOptions = { 
-    header: null
+    headerLeft: " "
   }; 
 
   static options() {
