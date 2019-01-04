@@ -34,11 +34,11 @@ export default class TokenItem extends Component {
                 showSymbol={true}
               />
             </Col>
-            <Col style={[styles.flex2]}>
+            <Col style={[styles.flex3]}>
               {this.props.price}
               <MutedText>Price</MutedText>
             </Col>
-            <Col style={[styles.flex2]}>
+            <Col style={[styles.flex3]}>
               {this.props.change}
               <MutedText>24 Hour Change</MutedText>
             </Col>
