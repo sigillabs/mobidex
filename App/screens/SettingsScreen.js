@@ -8,7 +8,22 @@ import { styles } from '../../styles';
 import { clearCache } from '../../utils';
 import MutedText from '../components/MutedText';
 
-class SettingsScreen extends React.Component {
+export default class SettingsScreen extends React.Component {
+  static options() {
+    return {
+      topBar: {
+        visible: true,
+        drawBehind: false,
+        backButton: {
+          color: 'black'
+        },
+        title: {
+          text: 'Mobidex Settings',
+          alignment: 'center'
+        }
+      }
+    };
+  }
   static propTypes = {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,
