@@ -38,8 +38,7 @@ export const fonts = StyleSheet.create({
 
 export const images = StyleSheet.create({
   fixAndroid: {
-    backgroundColor: colors.background,
-    overlayColor: colors.background
+    backgroundColor: colors.background
   },
   smallRounded: {
     borderRadius: 20 / 2,

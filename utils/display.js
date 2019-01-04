@@ -431,6 +431,9 @@ export function getImage(symbol) {
     case 'OMG':
       return require('../images/tokens/OMG.png');
 
+    case 'PAX':
+      return require('../images/tokens/PAX.png');
+
     case 'PCL':
       return require('../images/tokens/PCL.png');
 
@@ -541,6 +544,9 @@ export function getImage(symbol) {
 
     case 'UKG':
       return require('../images/tokens/UKG.png');
+
+    case 'USDC':
+      return require('../images/tokens/USDC.png');
 
     case 'VEE':
       return require('../images/tokens/VEE.png');
