@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Image } from 'react-native';
-import { fonts, images, styles } from '../../styles';
-import { getImage } from '../../utils';
+import { fonts, styles } from '../../styles';
 import Col from '../components/Col';
 import Row from '../components/Row';
+import TokenIcon from '../components/TokenIcon';
 import TokenBalanceBySymbol from './TokenBalanceBySymbol';
 
 export default class LogoProductBalance extends Component {
@@ -26,13 +25,14 @@ export default class LogoProductBalance extends Component {
     const { baseSymbol, quoteSymbol } = this.props;
 
     return (
-      <Col style={{ backgroundColor: 'transparent', width: 120 }}>
+      <Col style={{ backgroundColor: 'transparent', width: 150 }}>
         <Row>
           <Col style={styles.flex0}>
-            <Image
-              source={getImage(baseSymbol)}
-              style={[images.smallRounded, styles.mr1]}
-              overlayColor={styles.background}
+            <TokenIcon
+              symbol={baseSymbol}
+              size={20}
+              showName={false}
+              showSymbol={false}
             />
           </Col>
           <Col style={styles.flex3} right>
@@ -45,10 +45,11 @@ export default class LogoProductBalance extends Component {
         </Row>
         <Row>
           <Col style={styles.flex0}>
-            <Image
-              source={getImage(quoteSymbol)}
-              style={[images.smallRounded, styles.mr1]}
-              overlayColor={styles.background}
+            <TokenIcon
+              symbol={quoteSymbol}
+              size={20}
+              showName={false}
+              showSymbol={false}
             />
           </Col>
           <Col style={styles.flex3} right>

@@ -6,6 +6,7 @@ export const colors = {
   secondary: '#8F0CE8',
   background: 'white',
   success: 'green',
+  transparent: 'transparent',
 
   error: '#ff190c',
   green0: 'green',
@@ -20,8 +21,7 @@ export const colors = {
   orange1: '#F37438',
   red0: '#ff190c',
   yellow0: '#ffb22c',
-  white: 'white',
-  transparent: 'transparent'
+  white: 'white'
 };
 
 export const fonts = StyleSheet.create({
@@ -37,6 +37,10 @@ export const fonts = StyleSheet.create({
 });
 
 export const images = StyleSheet.create({
+  fixAndroid: {
+    backgroundColor: colors.background,
+    overlayColor: colors.background
+  },
   smallRounded: {
     borderRadius: 20 / 2,
     height: 20,

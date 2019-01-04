@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Avatar, Text } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fonts } from '../../styles';
-import { formatSymbol, getImage } from '../../utils';
+import { formatSymbol } from '../../utils';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
+import TokenIcon from '../components/TokenIcon';
 import * as TickerService from '../../services/TickerService';
 import OrderbookPrice from './OrderbookPrice';
 import OrderbookForexPrice from './OrderbookForexPrice';
@@ -57,7 +58,12 @@ class LogoTicker extends Component {
 
     return (
       <Row style={[style.container, rowStyle]}>
-        <Avatar source={getImage(base.symbol)} {...avatarProps || {}} />
+        <TokenIcon
+          symbol={base.symbol}
+          showName={false}
+          showSymbol={false}
+          {...avatarProps}
+        />
         <HorizontalPadding size={10} />
         {showForexPrices ? (
           <OrderbookForexPrice

@@ -47,7 +47,7 @@ class TokenList extends Component {
               bottomDivider
               leftElement={
                 <TokenIcon
-                  token={item}
+                  symbol={item.symbol}
                   style={{ flex: 0 }}
                   numberOfLines={1}
                   showSymbol={false}
@@ -102,7 +102,10 @@ class TokenList extends Component {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(TokenList);
+export default connect(
+  () => ({}),
+  dispatch => ({ dispatch })
+)(TokenList);
 
 const styles = {
   highlight: {

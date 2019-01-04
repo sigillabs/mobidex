@@ -28,7 +28,7 @@ export default class TokenItem extends Component {
           <Row style={[styles.flex1, styles.center, styles.mh2]}>
             <Col style={[styles.flex1, styles.alignLeft]}>
               <TokenIcon
-                token={baseToken}
+                symbol={baseToken.symbol}
                 style={{ flex: 0 }}
                 showName={false}
                 showSymbol={true}

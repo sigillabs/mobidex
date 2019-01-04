@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Avatar } from 'react-native-elements';
-import { connect } from 'react-redux';
 import { fonts } from '../../styles';
-import { getImage } from '../../utils';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
+import TokenIcon from '../components/TokenIcon';
 import TokenBalanceBySymbol from './TokenBalanceBySymbol';
 
 export default class LogoBalance extends Component {
@@ -39,7 +37,12 @@ export default class LogoBalance extends Component {
 
     return (
       <Row style={[style.container]}>
-        <Avatar source={getImage(symbol)} {...avatarProps || {}} />
+        <TokenIcon
+          symbol={symbol}
+          showName={false}
+          showSymbol={false}
+          {...avatarProps}
+        />
         <HorizontalPadding size={10} />
         <TokenBalanceBySymbol
           symbol={symbol}
