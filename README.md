@@ -50,6 +50,20 @@ npm install -g --production windows-build-tools
 > Hint: Don't forget to install node-cli, node-gyp packages using ```npm install -g node-cli node-gyp``` if it's not installed.
 
 
+### Mac OS X Specific Setup
+
+Install xcode command line tools:
+
+```
+xcode-select --install
+```
+
+Using [homebrew](https://brew.sh/), run the following:
+
+```
+brew install node
+```
+
 ### Linux Specific Setup
 
 For the node package manager, I suggest you to use [Linuxbrew](https://linuxbrew.sh/).
@@ -84,20 +98,6 @@ $ sudo dnf -y install nodejs
 
 > Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
 
-
-### Mac OS X Specific Setup
-
-Install xcode command line tools:
-
-```
-xcode-select --install
-```
-
-Using [homebrew](https://brew.sh/), run the following:
-
-```
-brew install node
-```
 
 ### iOS
 
