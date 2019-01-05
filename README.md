@@ -5,9 +5,9 @@
 ## Table of Contents
 
 * [Setup](#setup)
-  * [Windows Specific Setup]($windows-specific-setup)
-  * [Mac OS X Specific Setup]($mac-os-x-specific-setup)
-  * [Linux Specific Setup]($linux-specific-setup)
+  * [Windows Specific Setup](#windows-specific-setup)
+  * [Mac OS X Specific Setup](#mac-os-x-specific-setup)
+  * [Linux Specific Setup](#linux-specific-setup)
 * [Available Scripts](#available-scripts)
   * [npm start](#npm-start)
   * [npm patch](#npm-test)
@@ -49,6 +49,7 @@ npm install -g --production windows-build-tools
 
 > Hint: Don't forget to install node-cli, node-gyp packages using ```npm install -g node-cli node-gyp``` if it's not installed.
 
+
 ### Linux Specific Setup
 
 For the node package manager, I suggest you to use [Linuxbrew](https://linuxbrew.sh/).
@@ -82,6 +83,7 @@ $ sudo dnf -y install nodejs
 ```
 
 > Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
+
 
 ### Mac OS X Specific Setup
 
