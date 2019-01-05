@@ -98,7 +98,7 @@ $ sudo dnf -y install nodejs
 
 
 > Hints:<br />
-> Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
+> Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.<br />
 > Don't forget to do ```npm init``` to generate profile.json.
 
 ### iOS
