@@ -5,7 +5,9 @@
 ## Table of Contents
 
 * [Setup](#setup)
+  * [Windows Specific Setup]($windows-specific-setup)
   * [Mac OS X Specific Setup]($mac-os-x-specific-setup)
+  * [Linux Specific Setup]($linux-specific-setup)
 * [Available Scripts](#available-scripts)
   * [npm start](#npm-start)
   * [npm patch](#npm-test)
@@ -20,10 +22,66 @@ npm i
 
 System Dependencies:
 
-* node 8.6.0 or newer
+* node 8.6.0 or newer (Unfortunately node 11+ are not supported currenctly.)
 * g++
 * Android Studio
 * XCode
+
+### Windows Specific Setup
+
+Install git:
+- Download it from the [official site.](https://git-scm.com/download/win)
+
+Install chocolatey as package manager:
+- Please Follow the official guide in [Install page.](https://chocolatey.org/install)
+
+Using [chocolatey](https://chocolatey.org/install), run the following:
+```
+cinst nodejs.install --version 8.6.0
+```
+
+> Hint: Don't forget to do ```npm init``` to generate profile.json.
+
+after the install process being completed, run the following into the command line with **administration execution**:
+```
+npm install -g --production windows-build-tools
+```
+
+> Hint: Don't forget to install node-cli, node-gyp packages using ```npm install -g node-cli node-gyp``` if it's not installed.
+
+### Linux Specific Setup
+
+For the node package manager, I suggest you to use [Linuxbrew](https://linuxbrew.sh/).
+
+#### For Ubuntu, debian distros/based distros:
+
+You will need to install build tools and curl, git because you want to compile and install native add-ons from npm:
+```
+$ sudo apt-get install -y build-essential curl git
+```
+
+Install node 8.x using [NodeSource](https://nodesource.com/) repository:
+```
+$ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
+```
+
+> Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
+
+#### For RHEL, CentOS and Fedora distros/based distros:
+
+You will need to install build tools and curl, git because you want to compile and install native add-ons from npm:
+```
+$ sudo dnf -y groupinstall 'Development Tools' && sudo dnf -y install curl git
+```
+
+Install node 8.x using [NodeSource](https://nodesource.com/) repository:
+```
+$ curl -sL https://rpm.nodesource.com/setup_8.x | sudo -E bash -
+$ sudo dnf -y install nodejs
+```
+
+> Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
 
 ### Mac OS X Specific Setup
 
