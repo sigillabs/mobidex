@@ -66,7 +66,9 @@ brew install node
 
 ### Linux Specific Setup
 
+
 For the node package manager, I suggest you to use [Linuxbrew](https://linuxbrew.sh/).
+
 
 #### For Ubuntu, debian distros/based distros:
 
@@ -81,8 +83,6 @@ $ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
 ```
 
-> Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
-
 #### For RHEL, CentOS and Fedora distros/based distros:
 
 You will need to install build tools and curl, git because you want to compile and install native add-ons from npm:
@@ -96,8 +96,10 @@ $ curl -sL https://rpm.nodesource.com/setup_8.x | sudo -E bash -
 $ sudo dnf -y install nodejs
 ```
 
-> Hint: Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
 
+> Hints:
+> Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.
+> Don't forget to do ```npm init``` to generate profile.json.
 
 ### iOS
 
