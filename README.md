@@ -22,7 +22,7 @@ npm i
 
 System Dependencies:
 
-* node 8.6.0 or newer (Unfortunately node 11+ are not supported currenctly.)
+* node > 8.6.0 and < 11
 * g++
 * Android Studio
 * XCode
@@ -30,10 +30,10 @@ System Dependencies:
 ### Windows Specific Setup
 
 Install git:
-- Download it from the [official site.](https://git-scm.com/download/win)
+- Download from the [official site.](https://git-scm.com/download/win)
 
-Install chocolatey as package manager:
-- Please Follow the official guide in [Install page.](https://chocolatey.org/install)
+Install chocolatey package manager:
+- Follow the official guide in [Install page.](https://chocolatey.org/install)
 
 Using [chocolatey](https://chocolatey.org/install), run the following:
 ```
@@ -42,7 +42,7 @@ cinst nodejs.install --version 8.6.0
 
 > Hint: Don't forget to do ```npm init``` to generate profile.json.
 
-after the install process being completed, run the following into the command line with **administration execution**:
+after the install has finished, run the following into the command line with **administration execution**:
 ```
 npm install -g --production windows-build-tools
 ```
@@ -67,12 +67,9 @@ brew install node
 ### Linux Specific Setup
 
 
-For the node package manager, I suggest you to use [Linuxbrew](https://linuxbrew.sh/).
-
-
 #### For Ubuntu, debian distros/based distros:
 
-You will need to install build tools and curl, git because you want to compile and install native add-ons from npm:
+You will need to install build tools and curl, git:
 ```
 $ sudo apt-get install -y build-essential curl git
 ```
@@ -85,7 +82,7 @@ $ sudo apt-get install -y nodejs
 
 #### For RHEL, CentOS and Fedora distros/based distros:
 
-You will need to install build tools and curl, git because you want to compile and install native add-ons from npm:
+You will need to install build tools and curl, git:
 ```
 $ sudo dnf -y groupinstall 'Development Tools' && sudo dnf -y install curl git
 ```
