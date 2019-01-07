@@ -37,8 +37,8 @@ const DEV = {
 };
 
 const initialState = {
-  // ...PROD,
-  ...STAGE,
+  ...PROD,
+  // ...STAGE,
   // ...DEV,
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',

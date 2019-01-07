@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native-elements';
+import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MajorText from '../App/components/MajorText';
 import MajorTextWithVectorIcon from '../App/components/MajorTextWithVectorIcon';
@@ -10,6 +11,7 @@ import {
   waitForComponentAppear
 } from '../navigation';
 import * as AssetService from '../services/AssetService';
+import { cancelOrder } from './orders';
 import { setUnlimitedProxyAllowance, setNoProxyAllowance } from './wallet';
 
 /* eslint-disable */
@@ -23,10 +25,8 @@ export function ActionErrorSuccessFlow(
     const _actionOptions = {
       ...actionOptions,
       callback: error => {
-        waitForComponentAppear(
-          parentComponentId,
-          () =>
-            error ? showErrorModal(error) : showSuccessModal(successMessage, ok)
+        waitForComponentAppear(parentComponentId, () =>
+          error ? showErrorModal(error) : showSuccessModal(successMessage, ok)
         );
       }
     };
@@ -45,10 +45,8 @@ export function ConfirmActionErrorSuccessFlow(
     const _actionOptions = {
       ...actionOptions,
       callback: error => {
-        waitForComponentAppear(
-          parentComponentId,
-          () =>
-            error ? showErrorModal(error) : showSuccessModal(successMessage, ok)
+        waitForComponentAppear(parentComponentId, () =>
+          error ? showErrorModal(error) : showSuccessModal(successMessage, ok)
         );
       }
     };
@@ -114,6 +112,36 @@ export function disapprove(parentComponentId, assetData) {
         <Text>
           Lock transaction successfully sent to the Ethereum network. It takes a
           few minutes for Ethereum to confirm the transaction.
+        </Text>
+      )
+    );
+  };
+}
+
+export function cancel(parentComponentId, order) {
+  return async dispatch => {
+    const actionOptions = {
+      action: () => dispatch(cancelOrder(order)),
+      icon: <Entypo name="block" size={100} />,
+      label: <MajorText>Cancelling Order...</MajorText>
+    };
+    const confirmationOptions = {
+      label: (
+        <MajorTextWithVectorIcon
+          text={`Cancel order?`}
+          iconName="block"
+          IconComponent={Entypo}
+        />
+      )
+    };
+    return await dispatch(
+      ConfirmActionErrorSuccessFlow(
+        parentComponentId,
+        confirmationOptions,
+        actionOptions,
+        <Text>
+          Cancel order successfully sent to the Ethereum network. It takes a few
+          minutes for Ethereum to confirm the transaction.
         </Text>
       )
     );

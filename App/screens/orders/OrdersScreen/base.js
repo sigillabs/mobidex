@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
 import { fonts, styles } from '../../../../styles';
-import { cancelOrder, loadOrders } from '../../../../thunks';
+import { cancel, loadOrders } from '../../../../thunks';
 import * as AssetService from '../../../../services/AssetService';
 import { navigationProp } from '../../../../types/props';
 import CollapsibleButtonView from '../../../components/CollapsibleButtonView';
@@ -15,8 +15,6 @@ import EmptyList from '../../../components/EmptyList';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
 import MutedText from '../../../components/MutedText';
 import Row from '../../../components/Row';
-import Cancelling from './Cancelling';
-import Cancelled from './Cancelled';
 
 class BaseTokenOrder extends Component {
   static get propTypes() {
@@ -103,9 +101,7 @@ class BaseOrdersScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: false,
-      showCancelling: false,
-      showCancelled: false
+      refreshing: false
     };
   }
 
@@ -114,17 +110,6 @@ class BaseOrdersScreen extends Component {
   }
 
   render() {
-    if (this.state.showCancelled)
-      return (
-        <Cancelled
-          onLeave={this.setState({
-            showCancelled: false,
-            showCancelling: false
-          })}
-        />
-      );
-    if (this.state.showCancelling) return <Cancelling />;
-
     const orders = this.filterOrders();
 
     return (
@@ -174,18 +159,8 @@ class BaseOrdersScreen extends Component {
     return orders;
   };
 
-  cancelOrder = async order => {
-    this.setState({ showCancelling: true });
-    try {
-      await this.props.dispatch(cancelOrder(order));
-    } catch (error) {
-      this.props.navigation.showErrorModal(error);
-      return;
-    } finally {
-      this.setState({ showCancelling: false });
-    }
-    this.setState({ showCancelled: true });
-    this.onRefresh();
+  cancelOrder = order => {
+    this.props.dispatch(cancel(this.props.navigation.componentId, order));
   };
 
   onRefresh = async (force = true) => {
