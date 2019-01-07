@@ -5,10 +5,10 @@ import { ZERO } from '../constants/0x';
 
 const PROD = {
   network: 1,
-  // ethereumNodeEndpoint:
-  //   'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   ethereumNodeEndpoint:
-    'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
+    'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  // ethereumNodeEndpoint:
+  //   'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
   relayerEndpoint: 'https://mobidex.io/relayer/v2',
   relayerWSS: 'wss://mobidex.io/relayer/v2/',
   inf0xEndpoint: 'https://mobidex.io/inf0x/2.0/',

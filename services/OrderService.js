@@ -1,4 +1,3 @@
-import { AssetBuyer } from '@0xproject/asset-buyer';
 import { marketUtils } from '@0xproject/order-utils';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import {

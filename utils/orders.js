@@ -1,7 +1,7 @@
-import { BigNumber, orderHashUtils, signatureUtils, SignerType } from "0x.js";
-import ethUtil from "ethereumjs-util";
-import * as _ from "lodash";
-import { ZERO } from "../constants/0x";
+import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
+import ethUtil from 'ethereumjs-util';
+import * as _ from 'lodash';
+import { ZERO } from '../constants/0x';
 
 export function findOrdersThatCoverTakerAssetFillAmount(
   orders,

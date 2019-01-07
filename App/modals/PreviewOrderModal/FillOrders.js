@@ -88,9 +88,9 @@ class PreviewFillOrders extends Component {
     );
 
     InteractionManager.runAfterInteractions(async () => {
-      try {
-        let quote, gas;
+      let quote, gas;
 
+      try {
         // 1. Reload orderbook
         await this.props.dispatch(
           loadOrderbook(this.props.base.assetData, this.props.quote.assetData)
@@ -116,13 +116,21 @@ class PreviewFillOrders extends Component {
             }
           );
         }
+      } catch (err) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
+        return;
+      }
 
-        if (!quote) {
-          this.props.navigation.dismissModal();
-          return;
-        }
+      if (!quote) {
+        this.props.navigation.dismissModal();
+        return;
+      }
 
-        // 3. Load gas estimatation
+      // 3. Load gas estimatation
+      try {
         if (side === 'buy') {
           gas = await ZeroExService.estimateMarketBuyOrders(
             quote.orders,
@@ -134,22 +142,23 @@ class PreviewFillOrders extends Component {
             quote.assetSellAmount
           );
         }
-
-        // 4. Load gas price
-        const gasPrice = await WalletService.getGasPriceInEth();
-
-        this.setState({
-          quote,
-          gas,
-          gasPrice,
-          loading: false
-        });
       } catch (err) {
         this.props.navigation.dismissModal();
         this.props.navigation.waitForDisappear(() =>
           this.props.navigation.showErrorModal(err)
         );
+        return;
       }
+
+      // 4. Load gas price
+      const gasPrice = await WalletService.getGasPriceInEth();
+
+      this.setState({
+        quote,
+        gas,
+        gasPrice,
+        loading: false
+      });
     });
   }
 
