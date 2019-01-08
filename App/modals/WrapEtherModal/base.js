@@ -79,6 +79,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
 
   getDerivedAmount(column, newAmount, oldAmount) {
     const amount = reduceDecimalOverflow(newAmount.join(''), 6);
+    if (!amount) return [];
     if (this.getTotalEthereum().lt(amount || 0)) {
       return this.getTotalEthereum()
         .toString()
@@ -178,6 +179,7 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   };
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  connectNavigation(BaseWrapEtherScreen)
-);
+export default connect(
+  () => ({}),
+  dispatch => ({ dispatch })
+)(connectNavigation(BaseWrapEtherScreen));
