@@ -38,15 +38,10 @@ public class MainApplication extends NavigationApplication {
         return BuildConfig.DEBUG;
     }
 
-    protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-                new ViewUtilPackage());
-    }
-
     @Override
     public List<ReactPackage> createAdditionalReactPackages() {
         return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
             new ReactNativeExceptionHandlerPackage(),
             new ReactNativeRestartPackage(),
             new RNDeviceInfo(),
@@ -56,6 +51,7 @@ public class MainApplication extends NavigationApplication {
             new VectorIconsPackage(),
             new RandomBytesPackage(),
             new BackgroundTimerPackage(),
+            new ViewUtilPackage(),
             new RNUUIDGeneratorPackage()
           );
     }
