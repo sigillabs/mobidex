@@ -10,7 +10,7 @@ import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import VerticalPadding from '../../components/VerticalPadding';
 
-class UnlockWithTouchIdentification extends Component {
+class UnlockWithFaceIdentification extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -27,8 +27,8 @@ class UnlockWithTouchIdentification extends Component {
           style={[styles.bigBottom, styles.flex1]}
         >
           <View style={[styles.center]}>
-            <MaterialIcon name="fingerprint" color="black" size={100} />
-            <Text>Press to unlock with Finger Print</Text>
+            <MaterialIcon name="face" color="black" size={100} />
+            <Text>Press to unlock with Face ID</Text>
           </View>
         </TouchableOpacity>
         <VerticalPadding size={25} />
@@ -48,8 +48,8 @@ class UnlockWithTouchIdentification extends Component {
   }
 
   finish = pin => {
-    this.props.showUnlocking(null);
+    this.props.showUnlocking(null, true);
   };
 }
 
-export default connectNavigation(UnlockWithTouchIdentification);
+export default connectNavigation(UnlockWithFaceIdentification);

@@ -167,13 +167,47 @@ class WalletManager: NSObject {
     let context = LAContext()
     var error:NSError?
     if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+      guard error == nil else {
+        callback([error!.localizedDescription, false])
+        return;
+      }
+
+      if #available(iOS 11.0, *) {
+        callback([NSNull(), context.biometryType == LABiometryType.touchID])
+        return;
+      }
+      
       callback([NSNull(), true])
-    } else {
-      callback([NSNull(), false])
+      return;
     }
+    
+    callback([NSNull(), false])
+  }
+  
+  @objc(supportsFaceIDAuthentication:) func supportsFaceIDAuthentication(callback: RCTResponseSenderBlock) -> Void {
+    let context = LAContext()
+    var error:NSError?
+    if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+      guard error == nil else {
+        callback([error!.localizedDescription, false])
+        return;
+      }
+
+      if #available(iOS 11.0, *) {
+        callback([NSNull(), context.biometryType == LABiometryType.faceID])
+        return;
+      }
+    }
+
+    callback([NSNull(), false])
   }
   
   @objc(cancelFingerPrintAuthentication:) func cancelFingerPrintAuthentication(callback: RCTResponseSenderBlock) -> Void {
+    // Not Supported in iOS
+    callback([NSNull(), NSNull()])
+  }
+  
+  @objc(cancelFaceIDAuthentication:) func cancelFaceIDAuthentication(callback: RCTResponseSenderBlock) -> Void {
     // Not Supported in iOS
     callback([NSNull(), NSNull()])
   }

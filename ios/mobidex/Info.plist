@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.7</string>
+	<string>0.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>17</string>
+	<string>0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -54,6 +54,8 @@
 	<string>Mobidex identifies QR codes to import private keys.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Mobidex does not use speech recognition.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Mobidex may need access to Face ID to authenticate you</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

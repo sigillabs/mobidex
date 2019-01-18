@@ -160,8 +160,18 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void supportsFaceIDAuthentication(Callback cb) {
+        cb.invoke(null, false);
+    }
+
+    @ReactMethod
     public void cancelFingerPrintAuthentication(final Callback cb) {
         passcodeManager.cancelFingerPrintAuthentication();
+        cb.invoke(null, null);
+    }
+
+    @ReactMethod
+    public void cancelFaceIDAuthentication(final Callback cb) {
         cb.invoke(null, null);
     }
 

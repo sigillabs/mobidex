@@ -5,6 +5,7 @@ import * as WalletService from '../../../services/WalletService';
 import { navigationProp } from '../../../types/props';
 import Loading from '../../views/Loading';
 import UnlockWithTouchIdentification from './UnlockWithTouchIdentification';
+import UnlockWithFaceIdentification from './UnlockWithFaceIdentification';
 import UnlockWithPin from './UnlockWithPin';
 import Unlocking from './Unlocking';
 
@@ -27,7 +28,8 @@ class UnlockAndSignModal extends Component {
       forceShowPin: false,
       screen: null,
       error: null,
-      pin: null
+      pin: null,
+      isFaceID: false
     };
   }
 
@@ -37,8 +39,11 @@ class UnlockAndSignModal extends Component {
     }
 
     const supportsFingerPrint = await WalletService.supportsFingerPrintUnlock();
+    const supportsFaceID = await WalletService.supportsFaceIDUnlock();
     if (supportsFingerPrint && !this.forceShowPin) {
       this.showTouchIdentification();
+    } else if (supportsFaceID && !this.forceShowPin) {
+      this.showFaceIdentification();
     } else {
       this.showPin();
     }
@@ -75,10 +80,22 @@ class UnlockAndSignModal extends Component {
 
       case 2:
         return (
+          <UnlockWithFaceIdentification
+            {...this.props}
+            error={error}
+            cancel={this.cancel}
+            showUnlocking={this.showUnlocking}
+            showPin={this.showPin}
+          />
+        );
+
+      case 3:
+        return (
           <Unlocking
             {...this.props}
             pin={this.state.pin}
             error={this.setError}
+            isFaceID={this.state.isFaceID}
           />
         );
 
@@ -107,12 +124,22 @@ class UnlockAndSignModal extends Component {
     });
   };
 
-  showUnlocking = pin => {
+  showFaceIdentification = () => {
     this.setState({
       screen: 2,
       previousScreen: this.state.screen,
       loading: false,
-      pin
+      pin: null
+    });
+  };
+
+  showUnlocking = (pin, isFaceID) => {
+    this.setState({
+      screen: 3,
+      previousScreen: this.state.screen,
+      loading: false,
+      pin,
+      isFaceID
     });
   };
 

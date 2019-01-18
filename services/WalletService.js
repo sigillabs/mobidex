@@ -28,6 +28,15 @@ export async function supportsFingerPrintUnlock() {
   );
 }
 
+export async function supportsFaceIDUnlock() {
+  return await new Promise((resolve, reject) =>
+    WalletManager.supportsFaceIDAuthentication((err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    })
+  );
+}
+
 export async function cancelFingerPrintUnlock() {
   return await new Promise((resolve, reject) =>
     WalletManager.cancelFingerPrintAuthentication((err, data) => {

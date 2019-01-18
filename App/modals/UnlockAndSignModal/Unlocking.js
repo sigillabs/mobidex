@@ -17,8 +17,9 @@ class Unlocking extends Component {
       navigation: navigationProp.isRequired,
       tx: PropTypes.object,
       message: PropTypes.string,
-      pin: PropTypes.string.isRequired,
-      next: PropTypes.func.isRequired
+      next: PropTypes.func.isRequired,
+      pin: PropTypes.string,
+      isFaceID: PropTypes.bool
     };
   }
 
@@ -54,6 +55,8 @@ class Unlocking extends Component {
   render() {
     if (this.props.pin) {
       return this.renderForPin();
+    } else if (this.props.isFaceID) {
+      return this.renderForFaceId();
     } else {
       return this.renderForTouchId();
     }
@@ -77,6 +80,16 @@ class Unlocking extends Component {
         <MaterialIcon name="fingerprint" color="green" size={100} />
         <VerticalPadding size={25} />
         <Text>Start scanning your fingerprint</Text>
+      </BigCenter>
+    );
+  }
+
+  renderForFaceId() {
+    return (
+      <BigCenter>
+        <MaterialIcon name="face" color="green" size={100} />
+        <VerticalPadding size={25} />
+        <Text>Start scanning your face</Text>
       </BigCenter>
     );
   }
