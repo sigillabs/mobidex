@@ -22,7 +22,7 @@ class TokenPriceGraph extends Component {
     this.state = {
       loading: false,
       data: [],
-      selectedTab: 1,
+      selectedTab: 2,
       topBarHeight: 0,
       statusBarHeight: 0
     };

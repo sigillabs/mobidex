@@ -23,7 +23,7 @@ class ForexPriceGraph extends Component {
     this.state = {
       loading: false,
       data: [],
-      selectedTab: 1
+      selectedTab: 2
     };
   }
 
