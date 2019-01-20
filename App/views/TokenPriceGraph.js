@@ -75,6 +75,7 @@ class TokenPriceGraph extends Component {
     return client.getTokenPrices(
       this.props.baseSymbol,
       this.props.quoteSymbol,
+      'BUY',
       INTERVALS[this.state.selectedTab],
       SAMPLES[this.state.selectedTab],
       true

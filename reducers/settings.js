@@ -11,8 +11,8 @@ const PROD = {
   //   'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
   relayerEndpoint: 'https://mobidex.io/relayer/v2',
   relayerWSS: 'wss://mobidex.io/relayer/v2/',
-  inf0xEndpoint: 'https://mobidex.io/inf0x/2.0/',
-  inf0xWSS: 'wss://mobidex.io/inf0x/2.0/'
+  inf0xEndpoint: 'https://mobidex.io:9443/inf0x/2.1/',
+  inf0xWSS: 'wss://mobidex.io:9443/inf0x/2.1/'
 };
 
 const STAGE = {

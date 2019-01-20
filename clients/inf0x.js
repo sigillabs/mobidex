@@ -36,20 +36,18 @@ export default class Inf0xClient {
   @cache('inf0x:v2:forex:ticker:{}:{}:{}', 60)
   async getForexTicker(products = [], symbols = [], quote = 'USD') {
     const qs = stringify({
+      networkId: this.network,
       product: products,
       symbol: symbols,
       quote
     });
 
-    const response = await fetch(
-      `${this.endpoint}/${this.network}/forex/ticker?${qs}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const response = await fetch(`${this.endpoint}/forex/ticker?${qs}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    );
+    });
     const json = await response.json();
 
     // console.debug(
@@ -61,24 +59,29 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:v2:token:prices:{}:{}:{}:{}', 5)
-  async getTokenPrices(symbol, quote = 'WETH', sample = 'DAY', n = 7) {
+  @cache('inf0x:v2:token:prices:{}:{}:{}:{}:{}', 5)
+  async getTokenPrices(
+    symbol,
+    quote = 'WETH',
+    side = 'BUY',
+    sample = 'DAY',
+    n = 7
+  ) {
     const qs = stringify({
+      networkId: this.network,
       quote,
       symbol,
       sample,
+      side,
       n
     });
 
-    const response = await fetch(
-      `${this.endpoint}/${this.network}/tokens/history?${qs}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const response = await fetch(`${this.endpoint}/tokens/history?${qs}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    );
+    });
     const json = await response.json();
 
     // console.debug(
@@ -90,23 +93,27 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:v2:token:ticker:{}:{}:{}', 60)
-  async getTokenTicker(products = [], symbols = [], quote = 'WETH') {
+  @cache('inf0x:v2:token:ticker:{}:{}:{}:{}', 60)
+  async getTokenTicker(
+    products = [],
+    symbols = [],
+    quote = 'WETH',
+    side = 'BUY'
+  ) {
     const qs = stringify({
+      networkId: this.network,
       product: products,
       symbol: symbols,
-      quote
+      quote,
+      side
     });
 
-    const response = await fetch(
-      `${this.endpoint}/${this.network}/tokens/ticker?${qs}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const response = await fetch(`${this.endpoint}/tokens/ticker?${qs}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    );
+    });
     const json = await response.json();
 
     // console.debug(
@@ -121,18 +128,16 @@ export default class Inf0xClient {
   @cache('inf0x:v2:events:all', 5)
   async getEvents(account) {
     const qs = stringify({
+      networkId: this.network,
       account: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
     });
 
-    const response = await fetch(
-      `${this.endpoint}/${this.network}/events?${qs}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const response = await fetch(`${this.endpoint}/events?${qs}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    );
+    });
     const json = await response.json();
 
     // console.debug(

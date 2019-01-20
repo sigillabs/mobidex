@@ -19,15 +19,3 @@ export function trackEvent(category, action, values = null) {
     _tracker.trackEvent(category, action, values);
   }
 }
-
-export function wrapRouter(router) {
-  return {
-    ...router,
-    getStateForAction: (action, lastState) => {
-      if (action.type === 'Navigation/NAVIGATE') {
-        trackScreen(action.routeName);
-      }
-      return router.getStateForAction(action, lastState);
-    }
-  };
-}

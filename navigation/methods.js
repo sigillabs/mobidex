@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as AnalyticsService from '../services/AnalyticsService';
 
 let history = [];
 
@@ -11,6 +12,10 @@ Navigation.events().registerComponentDidDisappearListener(({ componentId }) => {
 
 Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
   history.push(componentId);
+});
+
+Navigation.events().registerComponentDidAppearListener(({ componentName }) => {
+  AnalyticsService.trackScreen(componentName);
 });
 
 export function waitForComponentAppear(
