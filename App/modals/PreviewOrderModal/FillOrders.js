@@ -84,6 +84,7 @@ class PreviewFillOrders extends Component {
   componentDidMount() {
     const { side, amount } = this.props;
     const feeAsset = AssetService.getFeeAsset();
+    const etherBalance = WalletService.getBalanceBySymbol('ETH');
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
       this.props.base.decimals
@@ -139,7 +140,7 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 3. Verify assets
+      // 3. Verify orders
       try {
         if (side === 'buy') {
           fillResults = await ZeroExService.validateMarketBuyOrders(
@@ -184,16 +185,25 @@ class PreviewFillOrders extends Component {
       // 5. Load gas price
       const gasPrice = await WalletService.getGasPriceInEth();
 
-      const takerFee = Web3Wrapper.toUnitAmount(
-        fillResults.takerFeePaid,
-        feeAsset.decimals
-      );
+      // 6. Verify network fee
+      if (gasPrice.mul(gas).gt(etherBalance)) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(
+            new Error('Not enough ETH to pay network fee.')
+          )
+        );
+        return;
+      }
 
       this.setState({
         quote,
         gas,
         gasPrice,
-        takerFee,
+        takerFee: Web3Wrapper.toUnitAmount(
+          fillResults.takerFeePaid,
+          feeAsset.decimals
+        ),
         loading: false
       });
     });
