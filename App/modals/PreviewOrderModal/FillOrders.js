@@ -219,21 +219,21 @@ class PreviewFillOrders extends Component {
     if (!receipt) return null;
 
     const web3 = WalletService.getWeb3();
-    const { gas, gasPrice, quote, takerFee } = this.state;
+    const { gas, gasPrice, quote } = this.state;
     const { side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
     const feeAsset = AssetService.getFeeAsset();
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
 
-    const { priceAverage, subtotal, fee, total } = receipt;
+    const { priceAverage, subtotal, maxFee, takerFee, total } = receipt;
     const funds = WalletService.getBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder =
       side === 'buy' ? funds.sub(total) : funds.add(total);
     const feeFunds = WalletService.getAdjustedBalanceByAddress(
       feeAsset.address
     );
-    const feeFundsAfterOrder = feeFunds.sub(fee);
+    const feeFundsAfterOrder = feeFunds.sub(takerFee);
 
     const priceInWEI = web3.utils.toWei(gasPrice.toString());
     const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
@@ -283,7 +283,7 @@ class PreviewFillOrders extends Component {
           leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={fee}
+              amount={maxFee}
               assetData={feeAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
@@ -385,7 +385,7 @@ class PreviewFillOrders extends Component {
               assetData={feeAsset.assetData}
               style={[
                 styles.tokenAmountRight,
-                getProfitLossStyle(fee.gt(0) ? -1 : 0)
+                getProfitLossStyle(takerFee.gt(0) ? -1 : 0)
               ]}
             />
           }
@@ -480,8 +480,8 @@ class PreviewFillOrders extends Component {
   getReceipt = () => {
     const subtotal = this.getSubtotal();
     const total = this.getTotal();
-    const fee = this.getMaxFee();
-    const { quote } = this.state;
+    const maxFee = this.getMaxFee();
+    const { takerFee, quote } = this.state;
 
     if (!quote) {
       return null;
@@ -492,7 +492,8 @@ class PreviewFillOrders extends Component {
     return {
       priceAverage,
       subtotal,
-      fee,
+      maxFee,
+      takerFee,
       total
     };
   };
