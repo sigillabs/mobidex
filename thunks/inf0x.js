@@ -10,7 +10,6 @@ export function updateForexTickers(force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const products = assets.map(({ symbol }) => `${symbol}-${forexCurrency}`);
-
     const jsonResponse = await client.getForexTicker(products, force);
     dispatch(updateForexTicker(jsonResponse));
   };

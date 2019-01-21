@@ -78,6 +78,7 @@ class BaseProductDetailsScreen extends Component {
       this.props.dispatch(loadAllowance(quote.assetData, reload)),
       this.props.dispatch(loadAllowance(feeAsset.assetData, reload)),
       this.props.dispatch(loadBalance(base.assetData, reload)),
+      this.props.dispatch(loadBalance(quote.assetData, reload)),
       this.props.dispatch(
         loadOrderbook(base.assetData, quote.assetData, reload)
       )

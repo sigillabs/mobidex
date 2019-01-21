@@ -1,7 +1,35 @@
 import { BigNumber } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
-import { getWeb3 } from './WalletService';
+import { findAssetByData, getFeeAsset } from './AssetService';
+import {
+  getAllowanceByAssetData,
+  getBalanceByAssetData,
+  getWeb3
+} from './WalletService';
+
+function parseMarketActionResult(result) {
+  if (result.length !== 258) return null;
+
+  let prunedResult = result.substring(2);
+
+  const makerAssetFilledAmount = new BigNumber(
+    `0x${prunedResult.substring(0, 64)}`
+  );
+  const takerAssetFilledAmount = new BigNumber(
+    `0x${prunedResult.substring(64, 128)}`
+  );
+  const makerFeePaid = new BigNumber(`0x${prunedResult.substring(128, 192)}`);
+  const takerFeePaid = new BigNumber(`0x${prunedResult.substring(192, 256)}`);
+
+  return {
+    makerAssetFilledAmount,
+    takerAssetFilledAmount,
+    makerFeePaid,
+    takerFeePaid
+  };
+}
 
 export async function estimateMarketBuyOrders(orders, amount) {
   const web3 = getWeb3();
@@ -30,7 +58,95 @@ export async function callMarketBuyOrders(orders, amount) {
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
-  return result;
+  return parseMarketActionResult(result);
+}
+
+export async function validateMarketBuyOrders(orders, amount) {
+  const fillResult = await callMarketBuyOrders(orders, amount);
+  const takerAsset = findAssetByData(orders[0].takerAssetData);
+  const feeAsset = getFeeAsset();
+  const quoteBalance = Web3Wrapper.toBaseUnitAmount(
+    getBalanceByAssetData(takerAsset.assetData),
+    takerAsset.decimals
+  );
+  const feeBalance = Web3Wrapper.toBaseUnitAmount(
+    getBalanceByAssetData(feeAsset.assetData),
+    feeAsset.decimals
+  );
+  const quoteAllowance = Web3Wrapper.toBaseUnitAmount(
+    getAllowanceByAssetData(takerAsset.assetData),
+    takerAsset.decimals
+  );
+  const feeAllowance = Web3Wrapper.toBaseUnitAmount(
+    getAllowanceByAssetData(feeAsset.assetData),
+    feeAsset.decimals
+  );
+
+  if (fillResult.takerAssetFilledAmount.gt(quoteBalance)) {
+    throw new Error(`Not enough ${takerAsset.symbol} to process orders.`);
+  }
+
+  if (fillResult.takerAssetFilledAmount.gt(quoteAllowance)) {
+    throw new Error(
+      `${takerAsset.symbol} is still locked. Please unlock it to start trading.`
+    );
+  }
+
+  if (fillResult.takerFeePaid.gt(feeBalance)) {
+    throw new Error(`Not enough ${feeAsset.symbol} to process orders.`);
+  }
+
+  if (fillResult.takerFeePaid.gt(feeAllowance)) {
+    throw new Error(
+      `${feeAsset.symbol} is still locked. Please unlock it to start trading.`
+    );
+  }
+
+  return fillResult;
+}
+
+export async function validateMarketSellOrders(orders, amount) {
+  const fillResult = await callMarketSellOrders(orders, amount);
+  const takerAsset = findAssetByData(orders[0].takerAssetData);
+  const feeAsset = getFeeAsset();
+  const baseBalance = Web3Wrapper.toBaseUnitAmount(
+    getBalanceByAssetData(takerAsset.assetData),
+    takerAsset.decimals
+  );
+  const feeBalance = Web3Wrapper.toBaseUnitAmount(
+    getBalanceByAssetData(feeAsset.assetData),
+    feeAsset.decimals
+  );
+  const baseAllowance = Web3Wrapper.toBaseUnitAmount(
+    getAllowanceByAssetData(takerAsset.assetData),
+    takerAsset.decimals
+  );
+  const feeAllowance = Web3Wrapper.toBaseUnitAmount(
+    getAllowanceByAssetData(feeAsset.assetData),
+    feeAsset.decimals
+  );
+
+  if (fillResult.takerAssetFilledAmount.gt(baseBalance)) {
+    throw new Error(`Not enough ${takerAsset.symbol} to process orders.`);
+  }
+
+  if (fillResult.takerAssetFilledAmount.gt(baseAllowance)) {
+    throw new Error(
+      `${takerAsset.symbol} is still locked. Please unlock it to start trading.`
+    );
+  }
+
+  if (fillResult.takerFeePaid.gt(feeBalance)) {
+    throw new Error(`Not enough ${feeAsset.symbol} to process orders.`);
+  }
+
+  if (fillResult.takerFeePaid.gt(feeAllowance)) {
+    throw new Error(
+      `${feeAsset.symbol} is still locked. Please unlock it to start trading.`
+    );
+  }
+
+  return fillResult;
 }
 
 export async function estimateMarketSellOrders(orders, amount) {
@@ -60,5 +176,5 @@ export async function callMarketSellOrders(orders, amount) {
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
-  return result;
+  return parseMarketActionResult(result);
 }

@@ -76,27 +76,37 @@ class PreviewFillOrders extends Component {
       gas: 0,
       gasPrice: 0,
       loading: true,
-      quote: null
+      quote: null,
+      takerFee: null
     };
   }
 
   componentDidMount() {
     const { side, amount } = this.props;
+    const feeAsset = AssetService.getFeeAsset();
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
       this.props.base.decimals
     );
 
     InteractionManager.runAfterInteractions(async () => {
-      let quote, gas;
+      let quote, gas, fillResults;
 
+      // 1. Reload orderbook, balance, and allowance.
       try {
-        // 1. Reload orderbook
         await this.props.dispatch(
           loadOrderbook(this.props.base.assetData, this.props.quote.assetData)
         );
+      } catch (err) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
+        return;
+      }
 
-        // 2. Load quote
+      // 2. Load quote
+      try {
         if (side === 'buy') {
           quote = await OrderService.getBuyAssetsQuoteAsync(
             this.props.base.assetData,
@@ -129,7 +139,28 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 3. Load gas estimatation
+      // 3. Verify assets
+      try {
+        if (side === 'buy') {
+          fillResults = await ZeroExService.validateMarketBuyOrders(
+            quote.orders,
+            quote.assetBuyAmount
+          );
+        } else {
+          fillResults = await ZeroExService.validateMarketSellOrders(
+            quote.orders,
+            quote.assetSellAmount
+          );
+        }
+      } catch (err) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
+        return;
+      }
+
+      // 4. Load gas estimatation
       try {
         if (side === 'buy') {
           gas = await ZeroExService.estimateMarketBuyOrders(
@@ -150,13 +181,19 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 4. Load gas price
+      // 5. Load gas price
       const gasPrice = await WalletService.getGasPriceInEth();
+
+      const takerFee = Web3Wrapper.toUnitAmount(
+        fillResults.takerFeePaid,
+        feeAsset.decimals
+      );
 
       this.setState({
         quote,
         gas,
         gasPrice,
+        takerFee,
         loading: false
       });
     });
@@ -172,7 +209,7 @@ class PreviewFillOrders extends Component {
     if (!receipt) return null;
 
     const web3 = WalletService.getWeb3();
-    const { gas, gasPrice, quote } = this.state;
+    const { gas, gasPrice, quote, takerFee } = this.state;
     const { side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
@@ -214,6 +251,18 @@ class PreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={subtotal}
               assetData={quoteAsset.assetData}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Fee"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={takerFee}
+              assetData={feeAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
           }

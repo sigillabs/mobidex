@@ -212,6 +212,15 @@ export function getBalanceBySymbol(symbol) {
   );
 }
 
+export function getBalanceByAssetData(assetData) {
+  if (!assetData) {
+    return getBalanceByAddress(null);
+  }
+
+  const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
+  return getBalanceByAddress(address);
+}
+
 export function getAdjustedBalanceByAddress(address) {
   const {
     relayer: { assets }
@@ -234,6 +243,10 @@ export function getFullEthereumBalance() {
 }
 
 export function getAllowanceByAssetData(assetData) {
+  if (!assetData) {
+    return getAllowanceByAddress(null);
+  }
+
   const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
   return getAllowanceByAddress(address);
 }
