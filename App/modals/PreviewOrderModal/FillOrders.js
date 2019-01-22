@@ -142,6 +142,7 @@ class PreviewFillOrders extends Component {
 
       // 3. Verify orders
       try {
+        // NOTE: infura will not throw.
         if (side === 'buy') {
           fillResults = await ZeroExService.validateMarketBuyOrders(
             quote.orders,
@@ -156,7 +157,15 @@ class PreviewFillOrders extends Component {
       } catch (err) {
         this.props.navigation.dismissModal();
         this.props.navigation.waitForDisappear(() =>
-          this.props.navigation.showErrorModal(err)
+          this.props.navigation.showErrorModal(
+            new Error(
+              `It looks like you do not have enough ${
+                side === 'buy'
+                  ? this.props.quote.symbol
+                  : this.props.base.symbol
+              } or ${feeAsset.symbol}.`
+            )
+          )
         );
         return;
       }

@@ -24,7 +24,7 @@ class SettingsScreen extends React.Component {
       }
     };
   }
-  
+
   static propTypes = {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,
@@ -56,7 +56,7 @@ class SettingsScreen extends React.Component {
           title={<MutedText>Version</MutedText>}
           subtitle={
             <Text>
-              {DeviceInfo.getSystemName()} {DeviceInfo.getVersion()}.{DeviceInfo.getBuildNumber()}
+              {DeviceInfo.getSystemName()} {DeviceInfo.getVersion()}}
             </Text>
           }
         />

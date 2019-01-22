@@ -1,5 +1,6 @@
 import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
+import ethUtil from 'ethereumjs-util';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import { findAssetByData, getFeeAsset } from './AssetService';
@@ -39,7 +40,7 @@ export async function estimateMarketBuyOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const gas = await web3.eth.estimateGas({
-    from: account,
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -54,7 +55,7 @@ export async function callMarketBuyOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const result = await web3.eth.call({
-    from: account,
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -157,7 +158,7 @@ export async function estimateMarketSellOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const gas = await web3.eth.estimateGas({
-    from: account,
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -172,7 +173,7 @@ export async function callMarketSellOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const result = await web3.eth.call({
-    from: account,
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
