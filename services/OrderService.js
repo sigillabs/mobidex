@@ -12,10 +12,14 @@ import ZeroExClient from '../clients/0x';
 import RelayerClient from '../clients/relayer';
 import { NULL_ADDRESS, ZERO } from '../constants/0x';
 import {
+  feeForMaker,
+  feeForTaker,
   averagePriceByMakerAmount,
   averagePriceByTakerAmount,
   filterFillableOrders,
-  findOrdersThatCoverTakerAssetFillAmount
+  findOrdersThatCoverTakerAssetFillAmount,
+  makerAmountFromTakerAmount,
+  takerAmountFromMakerAmount
 } from '../utils';
 import * as AssetService from './AssetService';
 import * as WalletService from './WalletService';
@@ -424,15 +428,31 @@ export async function getBuyAssetsQuoteAsync(
   );
   const bestCasePrice = averagePriceByTakerAmount(bestCaseOrders.resultOrders);
 
+  // Fees
+  const worstCaseFee = feeForMaker(
+    worstCaseOrders.resultOrders,
+    assetBuyAmount
+  );
+  const bestCaseFee = feeForMaker(bestCaseOrders.resultOrders, assetBuyAmount);
+
+  // Best case sell amount
+  const assetSellAmount = takerAmountFromMakerAmount(
+    bestCaseOrders.resultOrders,
+    assetBuyAmount
+  );
+
   return {
     assetBuyAmount,
+    assetSellAmount,
     assetData,
     bestCaseQuoteInfo: {
-      ethPerAssetPrice: bestCasePrice
+      ethPerAssetPrice: bestCasePrice,
+      fee: bestCaseFee
     },
     orders: worstCaseOrders.resultOrders,
     worstCaseQuoteInfo: {
-      ethPerAssetPrice: worstCasePrice
+      ethPerAssetPrice: worstCasePrice,
+      fee: worstCaseFee
     }
   };
 }
@@ -519,15 +539,31 @@ export async function getSellAssetsQuoteAsync(
   );
   const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders);
 
+  // Fees
+  const worstCaseFee = feeForTaker(
+    worstCaseOrders.resultOrders,
+    assetSellAmount
+  );
+  const bestCaseFee = feeForTaker(bestCaseOrders.resultOrders, assetSellAmount);
+
+  // Best case buy amount
+  const assetBuyAmount = makerAmountFromTakerAmount(
+    bestCaseOrders.resultOrders,
+    assetSellAmount
+  );
+
   return {
+    assetBuyAmount,
     assetSellAmount,
     assetData,
     bestCaseQuoteInfo: {
-      ethPerAssetPrice: bestCasePrice
+      ethPerAssetPrice: bestCasePrice,
+      fee: bestCaseFee
     },
     orders: worstCaseOrders.resultOrders,
     worstCaseQuoteInfo: {
-      ethPerAssetPrice: worstCasePrice
+      ethPerAssetPrice: worstCasePrice,
+      fee: worstCaseFee
     }
   };
 }

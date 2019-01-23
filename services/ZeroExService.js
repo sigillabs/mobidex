@@ -11,6 +11,7 @@ import {
 } from './WalletService';
 
 function parseMarketActionResult(result) {
+  console.warn(result);
   if (result.length !== 258) return null;
 
   let prunedResult = result.substring(2);
@@ -64,6 +65,9 @@ export async function callMarketBuyOrders(orders, amount) {
 
 export async function validateMarketBuyOrders(orders, amount) {
   const fillResult = await callMarketBuyOrders(orders, amount);
+  if (!fillResult) {
+    throw new Error('Could not call market buy orders.');
+  }
   const takerAsset = findAssetByData(orders[0].takerAssetData);
   const feeAsset = getFeeAsset();
   const quoteBalance = Web3Wrapper.toBaseUnitAmount(
@@ -108,6 +112,9 @@ export async function validateMarketBuyOrders(orders, amount) {
 
 export async function validateMarketSellOrders(orders, amount) {
   const fillResult = await callMarketSellOrders(orders, amount);
+  if (!fillResult) {
+    throw new Error('Could not call market sell orders.');
+  }
   const takerAsset = findAssetByData(orders[0].takerAssetData);
   const feeAsset = getFeeAsset();
   const baseBalance = Web3Wrapper.toBaseUnitAmount(

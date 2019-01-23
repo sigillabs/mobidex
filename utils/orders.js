@@ -157,3 +157,151 @@ export function averagePriceByTakerAmount(
 
   return prices.reduce((acc, price) => acc.add(price), ZERO).div(prices.length);
 }
+
+export function feeForMaker(
+  orders,
+  makerAmount,
+  options = { remainingFillableMakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableMakerAssetAmounts: null };
+  if (!options.remainingFillableMakerAssetAmounts)
+    options.remainingFillableMakerAssetAmounts = orders.map(
+      ({ makerAssetAmount }) => new BigNumber(makerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+
+  let fees = ZERO;
+  let remainingAmount = new BigNumber(makerAmount);
+  for (let i = 0; i < orders.length; ++i) {
+    const { makerFee, makerAssetAmount } = orders[i];
+    const remainingFillableMakerAssetAmount =
+      options.remainingFillableMakerAssetAmounts[i];
+    if (!remainingAmount.gt(remainingFillableMakerAssetAmount)) {
+      fees = remainingAmount
+        .div(makerAssetAmount)
+        .mul(makerFee)
+        .add(fees);
+      break;
+    }
+
+    remainingAmount = remainingAmount.sub(remainingFillableMakerAssetAmount);
+    fees = remainingFillableMakerAssetAmount
+      .div(makerAssetAmount)
+      .mul(makerFee)
+      .add(fees);
+  }
+
+  return new BigNumber(fees.toFixed(0, BigNumber.ROUND_FLOOR));
+}
+
+export function feeForTaker(
+  orders,
+  takerAmount,
+  options = { remainingFillableTakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableTakerAssetAmounts: null };
+  if (!options.remainingFillableTakerAssetAmounts)
+    options.remainingFillableTakerAssetAmounts = orders.map(
+      ({ takerAssetAmount }) => new BigNumber(takerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+
+  let fees = ZERO;
+  let remainingAmount = new BigNumber(takerAmount);
+  for (let i = 0; i < orders.length; ++i) {
+    const { takerFee, takerAssetAmount } = orders[i];
+    const remainingFillableTakerAssetAmount =
+      options.remainingFillableTakerAssetAmounts[i];
+    if (!remainingAmount.gt(remainingFillableTakerAssetAmount)) {
+      fees = remainingAmount
+        .div(takerAssetAmount)
+        .mul(takerFee)
+        .add(fees);
+      break;
+    }
+
+    remainingAmount = remainingAmount.sub(remainingFillableTakerAssetAmount);
+    fees = remainingFillableTakerAssetAmount
+      .div(takerAssetAmount)
+      .mul(takerFee)
+      .add(fees);
+  }
+
+  return new BigNumber(fees.toFixed(0, BigNumber.ROUND_FLOOR));
+}
+
+export function takerAmountFromMakerAmount(
+  orders,
+  makerAmount,
+  options = { remainingFillableMakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableMakerAssetAmounts: null };
+  if (!options.remainingFillableMakerAssetAmounts)
+    options.remainingFillableMakerAssetAmounts = orders.map(
+      ({ makerAssetAmount }) => new BigNumber(makerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+
+  let takerAmount = ZERO;
+  let remainingMakerAmount = new BigNumber(makerAmount);
+  for (let i = 0; i < orders.length; ++i) {
+    const { makerAssetAmount, takerAssetAmount } = orders[i];
+    const remainingFillableMakerAssetAmount =
+      options.remainingFillableMakerAssetAmounts[i];
+    if (!remainingMakerAmount.gt(remainingFillableMakerAssetAmount)) {
+      takerAmount = remainingMakerAmount
+        .div(makerAssetAmount)
+        .mul(takerAssetAmount)
+        .add(takerAmount);
+      break;
+    }
+
+    remainingMakerAmount = remainingMakerAmount.sub(
+      remainingFillableMakerAssetAmount
+    );
+    takerAmount = remainingFillableMakerAssetAmount
+      .div(makerAssetAmount)
+      .mul(takerAssetAmount)
+      .add(takerAmount);
+  }
+
+  return new BigNumber(takerAmount.toFixed(0, BigNumber.ROUND_FLOOR));
+}
+
+export function makerAmountFromTakerAmount(
+  orders,
+  takerAmount,
+  options = { remainingFillableTakerAssetAmounts: null }
+) {
+  if (!options) options = { remainingFillableTakerAssetAmounts: null };
+  if (!options.remainingFillableTakerAssetAmounts)
+    options.remainingFillableTakerAssetAmounts = orders.map(
+      ({ takerAssetAmount }) => new BigNumber(takerAssetAmount.toString())
+    );
+  if (!orders.length) return ZERO;
+
+  let makerAmount = ZERO;
+  let remainingTakerAmount = new BigNumber(takerAmount);
+  for (let i = 0; i < orders.length; ++i) {
+    const { makerAssetAmount, takerAssetAmount } = orders[i];
+    const remainingFillableTakerAssetAmount =
+      options.remainingFillableTakerAssetAmounts[i];
+    if (!remainingTakerAmount.gt(remainingFillableTakerAssetAmount)) {
+      makerAmount = remainingTakerAmount
+        .div(takerAssetAmount)
+        .mul(makerAssetAmount)
+        .add(makerAmount);
+      break;
+    }
+
+    remainingTakerAmount = remainingTakerAmount.sub(
+      remainingFillableTakerAssetAmount
+    );
+    makerAmount = remainingFillableTakerAssetAmount
+      .div(takerAssetAmount)
+      .mul(makerAssetAmount)
+      .add(makerAmount);
+  }
+
+  return new BigNumber(makerAmount.toFixed(0, BigNumber.ROUND_FLOOR));
+}

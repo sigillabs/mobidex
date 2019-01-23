@@ -76,8 +76,7 @@ class PreviewFillOrders extends Component {
       gas: 0,
       gasPrice: 0,
       loading: true,
-      quote: null,
-      takerFee: null
+      quote: null
     };
   }
 
@@ -85,13 +84,20 @@ class PreviewFillOrders extends Component {
     const { side, amount } = this.props;
     const feeAsset = AssetService.getFeeAsset();
     const etherBalance = WalletService.getBalanceBySymbol('ETH');
+    const feeBalance = WalletService.getBalanceByAssetData(feeAsset.assetData);
+    const quoteBalance = WalletService.getBalanceByAssetData(
+      this.props.quote.assetData
+    );
+    const baseBalance = WalletService.getBalanceByAssetData(
+      this.props.base.assetData
+    );
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
       new BigNumber(amount),
       this.props.base.decimals
     );
 
     InteractionManager.runAfterInteractions(async () => {
-      let quote, gas, fillResults;
+      let quote, gas;
 
       // 1. Reload orderbook, balance, and allowance.
       try {
@@ -141,29 +147,56 @@ class PreviewFillOrders extends Component {
       }
 
       // 3. Verify orders
-      try {
-        // NOTE: infura will not throw.
-        if (side === 'buy') {
-          fillResults = await ZeroExService.validateMarketBuyOrders(
-            quote.orders,
-            quote.assetBuyAmount
+      //// - Check fee balance
+      //// - Check taker balance
+      if (side === 'buy') {
+        const unit = Web3Wrapper.toUnitAmount(
+          quote.assetSellAmount,
+          this.props.quote.decimals
+        );
+        if (unit.gt(feeBalance)) {
+          this.props.navigation.dismissModal();
+          this.props.navigation.waitForDisappear(() =>
+            this.props.navigation.showErrorModal(
+              new Error(
+                `Not enough ${
+                  this.props.quote.symbol
+                } to pay the order fees. You have ${quoteBalance.toString()}, but need ${unit.toString()}.`
+              )
+            )
           );
-        } else {
-          fillResults = await ZeroExService.validateMarketSellOrders(
-            quote.orders,
-            quote.assetSellAmount
-          );
+          return;
         }
-      } catch (err) {
+      } else {
+        const unit = Web3Wrapper.toUnitAmount(
+          quote.assetSellAmount,
+          this.props.base.decimals
+        );
+        if (unit.gt(feeBalance)) {
+          this.props.navigation.dismissModal();
+          this.props.navigation.waitForDisappear(() =>
+            this.props.navigation.showErrorModal(
+              new Error(
+                `Not enough ${
+                  this.props.base.symbol
+                } to pay the order fees. You have ${baseBalance.toString()}, but need ${unit.toString()}.`
+              )
+            )
+          );
+          return;
+        }
+      }
+
+      const unitFee = Web3Wrapper.toUnitAmount(
+        quote.worstCaseQuoteInfo.fee,
+        feeAsset.decimals
+      );
+      if (unitFee.gt(feeBalance)) {
         this.props.navigation.dismissModal();
         this.props.navigation.waitForDisappear(() =>
           this.props.navigation.showErrorModal(
             new Error(
-              `It looks like you do not have enough ${
-                side === 'buy'
-                  ? this.props.quote.symbol
-                  : this.props.base.symbol
-              } or ${feeAsset.symbol}.`
+              `Not enough ZRX to pay the order fees. You have ${feeBalance.toString()}, but need ${unitFee.toString()}.`
             )
           )
         );
@@ -209,10 +242,6 @@ class PreviewFillOrders extends Component {
         quote,
         gas,
         gasPrice,
-        takerFee: Web3Wrapper.toUnitAmount(
-          fillResults.takerFeePaid,
-          feeAsset.decimals
-        ),
         loading: false
       });
     });
@@ -445,6 +474,14 @@ class PreviewFillOrders extends Component {
     return Web3Wrapper.toUnitAmount(fee, asset.decimals);
   };
 
+  getFee = () => {
+    const asset = AssetService.getFeeAsset();
+    return Web3Wrapper.toUnitAmount(
+      this.state.quote.worstCaseQuoteInfo.fee,
+      asset.decimals
+    );
+  };
+
   getTotalGasCost = () => {
     const { gasPrice, gas } = this.state;
     return gasPrice.mul(gas).toString();
@@ -487,15 +524,16 @@ class PreviewFillOrders extends Component {
   };
 
   getReceipt = () => {
-    const subtotal = this.getSubtotal();
-    const total = this.getTotal();
-    const maxFee = this.getMaxFee();
-    const { takerFee, quote } = this.state;
+    const { quote } = this.state;
 
     if (!quote) {
       return null;
     }
 
+    const subtotal = this.getSubtotal();
+    const total = this.getTotal();
+    const maxFee = this.getMaxFee();
+    const takerFee = this.getFee();
     const priceAverage = OrderService.getAveragePrice(quote.orders);
 
     return {

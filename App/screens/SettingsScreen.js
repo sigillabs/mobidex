@@ -56,7 +56,7 @@ class SettingsScreen extends React.Component {
           title={<MutedText>Version</MutedText>}
           subtitle={
             <Text>
-              {DeviceInfo.getSystemName()} {DeviceInfo.getVersion()}}
+              {DeviceInfo.getSystemName()} {DeviceInfo.getVersion()}
             </Text>
           }
         />
