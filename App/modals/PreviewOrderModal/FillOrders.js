@@ -154,7 +154,7 @@ class PreviewFillOrders extends Component {
           quote.assetSellAmount,
           this.props.quote.decimals
         );
-        if (unit.gt(feeBalance)) {
+        if (unit.gt(quoteBalance)) {
           this.props.navigation.dismissModal();
           this.props.navigation.waitForDisappear(() =>
             this.props.navigation.showErrorModal(
@@ -172,7 +172,7 @@ class PreviewFillOrders extends Component {
           quote.assetSellAmount,
           this.props.base.decimals
         );
-        if (unit.gt(feeBalance)) {
+        if (unit.gt(baseBalance)) {
           this.props.navigation.dismissModal();
           this.props.navigation.waitForDisappear(() =>
             this.props.navigation.showErrorModal(
@@ -188,7 +188,7 @@ class PreviewFillOrders extends Component {
       }
 
       const unitFee = Web3Wrapper.toUnitAmount(
-        quote.worstCaseQuoteInfo.fee,
+        quote.bestCaseQuoteInfo.fee,
         feeAsset.decimals
       );
       if (unitFee.gt(feeBalance)) {
