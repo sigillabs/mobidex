@@ -33,7 +33,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:v2:forex:ticker:{}:{}:{}', 60)
+  @cache('inf0x:v2:forex:ticker:{}:{}:{}', 24 * 60 * 60)
   async getForexTicker(products = [], symbols = [], quote = 'USD') {
     const qs = stringify({
       networkId: this.network,
@@ -93,7 +93,7 @@ export default class Inf0xClient {
   }
 
   @time
-  @cache('inf0x:v2:token:ticker:{}:{}:{}:{}', 60)
+  @cache('inf0x:v2:token:ticker:{}:{}:{}:{}', 24 * 60 * 60)
   async getTokenTicker(
     products = [],
     symbols = [],

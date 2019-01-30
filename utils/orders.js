@@ -1,4 +1,5 @@
 import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import { ZERO } from '../constants/0x';
@@ -116,6 +117,13 @@ export function averagePriceByMakerAmount(
     options.remainingFillableMakerAssetAmounts,
     remainingFillableTakerAssetAmounts
   )
+    .map(([makerAssetAmount, takerAssetAmount]) => [
+      Web3Wrapper.toBaseUnitAmount(
+        makerAssetAmount,
+        options.makerAssetDecimals
+      ),
+      Web3Wrapper.toBaseUnitAmount(takerAssetAmount, options.takerAssetDecimals)
+    ])
     .map(([makerAssetAmount, takerAssetAmount]) =>
       takerAssetAmount.gt(0) ? makerAssetAmount.div(takerAssetAmount) : ZERO
     )
@@ -125,7 +133,11 @@ export function averagePriceByMakerAmount(
 
 export function averagePriceByTakerAmount(
   orders,
-  options = { remainingFillableTakerAssetAmounts: null }
+  options = {
+    remainingFillableTakerAssetAmounts: null,
+    makerAssetDecimals: 18,
+    takerAssetDecimals: 18
+  }
 ) {
   if (!options) options = { remainingFillableTakerAssetAmounts: null };
   if (!options.remainingFillableTakerAssetAmounts)
@@ -133,6 +145,8 @@ export function averagePriceByTakerAmount(
       ({ takerAssetAmount }) => new BigNumber(takerAssetAmount.toString())
     );
   if (!orders.length) return ZERO;
+  if (!options.makerAssetDecimals) options.makerAssetDecimals = 18;
+  if (!options.takerAssetDecimals) options.takerAssetDecimals = 18;
 
   const ratios = _.zip(orders, options.remainingFillableTakerAssetAmounts).map(
     ([{ takerAssetAmount }, remainingTakerAssetAmount]) =>
@@ -150,6 +164,13 @@ export function averagePriceByTakerAmount(
     remainingFillableMakerAssetAmounts,
     options.remainingFillableTakerAssetAmounts
   )
+    .map(([makerAssetAmount, takerAssetAmount]) => [
+      Web3Wrapper.toBaseUnitAmount(
+        makerAssetAmount,
+        options.makerAssetDecimals
+      ),
+      Web3Wrapper.toBaseUnitAmount(takerAssetAmount, options.takerAssetDecimals)
+    ])
     .map(([makerAssetAmount, takerAssetAmount]) =>
       makerAssetAmount.gt(0) ? takerAssetAmount.div(makerAssetAmount) : ZERO
     )
@@ -161,7 +182,11 @@ export function averagePriceByTakerAmount(
 export function feeForMaker(
   orders,
   makerAmount,
-  options = { remainingFillableMakerAssetAmounts: null }
+  options = {
+    remainingFillableMakerAssetAmounts: null,
+    makerAssetDecimals: 18,
+    takerAssetDecimals: 18
+  }
 ) {
   if (!options) options = { remainingFillableMakerAssetAmounts: null };
   if (!options.remainingFillableMakerAssetAmounts)
@@ -169,6 +194,8 @@ export function feeForMaker(
       ({ makerAssetAmount }) => new BigNumber(makerAssetAmount.toString())
     );
   if (!orders.length) return ZERO;
+  if (!options.makerAssetDecimals) options.makerAssetDecimals = 18;
+  if (!options.takerAssetDecimals) options.takerAssetDecimals = 18;
 
   let fees = ZERO;
   let remainingAmount = new BigNumber(makerAmount);
@@ -233,7 +260,9 @@ export function feeForTaker(
 export function takerAmountFromMakerAmount(
   orders,
   makerAmount,
-  options = { remainingFillableMakerAssetAmounts: null }
+  options = {
+    remainingFillableMakerAssetAmounts: null
+  }
 ) {
   if (!options) options = { remainingFillableMakerAssetAmounts: null };
   if (!options.remainingFillableMakerAssetAmounts)

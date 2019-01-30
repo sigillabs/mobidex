@@ -424,9 +424,16 @@ export async function getBuyAssetsQuoteAsync(
 
   // Prices
   const worstCasePrice = averagePriceByTakerAmount(
-    worstCaseOrders.resultOrders
+    worstCaseOrders.resultOrders,
+    {
+      makerAssetDecimals: quoteAsset.decimals,
+      takerAssetDecimals: baseAsset.decimals
+    }
   );
-  const bestCasePrice = averagePriceByTakerAmount(bestCaseOrders.resultOrders);
+  const bestCasePrice = averagePriceByTakerAmount(bestCaseOrders.resultOrders, {
+    makerAssetDecimals: quoteAsset.decimals,
+    takerAssetDecimals: baseAsset.decimals
+  });
 
   // Fees
   const worstCaseFee = feeForMaker(
@@ -535,9 +542,16 @@ export async function getSellAssetsQuoteAsync(
 
   // Average prices
   const worstCasePrice = averagePriceByMakerAmount(
-    worstCaseOrders.resultOrders
+    worstCaseOrders.resultOrders,
+    {
+      makerAssetDecimals: baseAsset.decimals,
+      takerAssetDecimals: quoteAsset.decimals
+    }
   );
-  const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders);
+  const bestCasePrice = averagePriceByMakerAmount(bestCaseOrders.resultOrders, {
+    makerAssetDecimals: baseAsset.decimals,
+    takerAssetDecimals: quoteAsset.decimals
+  });
 
   // Fees
   const worstCaseFee = feeForTaker(
