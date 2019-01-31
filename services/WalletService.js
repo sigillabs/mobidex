@@ -221,27 +221,6 @@ export function getBalanceByAssetData(assetData) {
   return getBalanceByAddress(address);
 }
 
-export function getAdjustedBalanceByAddress(address) {
-  const {
-    relayer: { assets }
-  } = _store.getState();
-  if (!address) return getFullEthereumBalance();
-  const asset = _.find(assets, { address });
-  if (!asset) return ZERO;
-  if (asset.symbol === 'ETH' || asset.symbol === 'WETH')
-    return getFullEthereumBalance();
-  return getBalanceByAddress(address);
-}
-
-export function getAdjustedBalanceBySymbol(symbol) {
-  if (symbol === 'WETH' || symbol === 'ETH') return getFullEthereumBalance();
-  return getBalanceBySymbol(symbol);
-}
-
-export function getFullEthereumBalance() {
-  return getBalanceBySymbol('ETH').add(getBalanceBySymbol('WETH'));
-}
-
 export function getAllowanceByAssetData(assetData) {
   if (!assetData) {
     return getAllowanceByAddress(null);

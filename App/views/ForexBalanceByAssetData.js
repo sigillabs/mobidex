@@ -26,7 +26,7 @@ export default class ForexBalanceByAssetData extends Component {
       return <FormattedForexAmount {...this.props} amount={ZERO} />;
     }
 
-    const balance = WalletService.getAdjustedBalanceByAddress(
+    const balance = WalletService.getBalanceByAddress(
       assetDataUtils.decodeERC20AssetData(asset.assetData).tokenAddress
     );
     const price = TickerService.getCurrentPrice(

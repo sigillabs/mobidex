@@ -268,9 +268,7 @@ class PreviewFillOrders extends Component {
     const funds = WalletService.getBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder =
       side === 'buy' ? funds.sub(total) : funds.add(total);
-    const feeFunds = WalletService.getAdjustedBalanceByAddress(
-      feeAsset.address
-    );
+    const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
     const feeFundsAfterOrder = feeFunds.sub(takerFee);
 
     const priceInWEI = web3.utils.toWei(gasPrice.toString());

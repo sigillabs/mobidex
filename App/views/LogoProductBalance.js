@@ -10,14 +10,7 @@ export default class LogoProductBalance extends Component {
   static get propTypes() {
     return {
       baseSymbol: PropTypes.string.isRequired,
-      quoteSymbol: PropTypes.string.isRequired,
-      adjusted: PropTypes.bool
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      adjusted: true
+      quoteSymbol: PropTypes.string.isRequired
     };
   }
 
@@ -36,11 +29,7 @@ export default class LogoProductBalance extends Component {
             />
           </Col>
           <Col style={styles.flex3} right>
-            <TokenBalanceBySymbol
-              symbol={baseSymbol}
-              style={[fonts.large]}
-              adjusted={this.props.adjusted}
-            />
+            <TokenBalanceBySymbol symbol={baseSymbol} style={[fonts.large]} />
           </Col>
         </Row>
         <Row>
@@ -53,11 +42,7 @@ export default class LogoProductBalance extends Component {
             />
           </Col>
           <Col style={styles.flex3} right>
-            <TokenBalanceBySymbol
-              symbol={quoteSymbol}
-              style={[fonts.large]}
-              adjusted={this.props.adjusted}
-            />
+            <TokenBalanceBySymbol symbol={quoteSymbol} style={[fonts.large]} />
           </Col>
         </Row>
       </Col>
