@@ -1,4 +1,3 @@
-import { assetDataUtils } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
@@ -8,7 +7,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
-import * as AssetService from '../../../../services/AssetService';
 import * as WalletService from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
 import { approve, disapprove } from '../../../../thunks';
@@ -26,17 +24,12 @@ class TokenDetails extends Component {
   };
 
   render() {
-    const { asset } = this.props;
-    const { symbol } = asset;
-
-    const assetOrWETH =
-      asset.assetData !== null
-        ? AssetService.findAssetByData(asset.assetData)
-        : AssetService.getWETHAsset();
-
-    const isUnlocked = WalletService.isUnlockedByAddress(
-      assetDataUtils.decodeERC20AssetData(assetOrWETH.assetData).tokenAddress
-    );
+    const {
+      asset: { assetData, symbol }
+    } = this.props;
+    const isUnlocked = assetData
+      ? WalletService.isUnlockedByAssetData(assetData)
+      : true;
 
     return (
       <View
@@ -51,11 +44,11 @@ class TokenDetails extends Component {
         <Avatar
           size="large"
           rounded
-          source={getImage(asset.symbol)}
+          source={getImage(symbol)}
           activeOpacity={0.7}
         />
         <TokenBalanceByAssetData
-          assetData={asset.assetData}
+          assetData={assetData}
           style={{ marginTop: 5 }}
         />
 
@@ -96,19 +89,21 @@ class TokenDetails extends Component {
               onPress={this.wrap}
             />
           ) : null}
-          <Button
-            large
-            title=""
-            icon={
-              <FontAwesome
-                name={isUnlocked ? 'lock' : 'unlock'}
-                color="white"
-                size={28}
-                style={[styles.margin1]}
-              />
-            }
-            onPress={this.toggleApprove}
-          />
+          {symbol !== 'ETH' ? (
+            <Button
+              large
+              title=""
+              icon={
+                <FontAwesome
+                  name={isUnlocked ? 'lock' : 'unlock'}
+                  color="white"
+                  size={28}
+                  style={[styles.margin1]}
+                />
+              }
+              onPress={this.toggleApprove}
+            />
+          ) : null}
           <Button
             large
             title=""
@@ -150,22 +145,21 @@ class TokenDetails extends Component {
   };
 
   toggleApprove = () => {
-    const { asset } = this.props;
-    const assetOrWETH =
-      asset.assetData !== null
-        ? AssetService.findAssetByData(asset.assetData)
-        : AssetService.getWETHAsset();
-    const isUnlocked = WalletService.isUnlockedByAddress(
-      assetDataUtils.decodeERC20AssetData(assetOrWETH.assetData).tokenAddress
-    );
+    const {
+      asset: { assetData }
+    } = this.props;
+
+    if (!assetData) return;
+
+    const isUnlocked = WalletService.isUnlockedByAssetData(assetData);
 
     if (isUnlocked) {
       this.props.dispatch(
-        disapprove(this.props.navigation.componentId, assetOrWETH.assetData)
+        disapprove(this.props.navigation.componentId, assetData)
       );
     } else {
       this.props.dispatch(
-        approve(this.props.navigation.componentId, assetOrWETH.assetData)
+        approve(this.props.navigation.componentId, assetData)
       );
     }
   };

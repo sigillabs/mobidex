@@ -25,13 +25,13 @@ class BaseAccountsScreen extends Component {
 
   render() {
     const asset = _.find(this.props.assets, { symbol: this.state.asset });
-    const ethToken = _.find(this.props.assets, { symbol: 'ETH' });
-    const assets = [ethToken].concat(
-      _.filter(
-        this.props.assets,
-        asset => asset.symbol !== 'WETH' && asset.symbol !== 'ETH'
-      )
-    );
+    // const ethToken = _.find(this.props.assets, { symbol: 'ETH' });
+    // const assets = [ethToken].concat(
+    //   _.filter(
+    //     this.props.assets,
+    //     asset => asset.symbol !== 'WETH' && asset.symbol !== 'ETH'
+    //   )
+    // );
 
     return (
       <SafeAreaView style={styles.flex1}>
@@ -42,7 +42,7 @@ class BaseAccountsScreen extends Component {
         )}
         <TokenList
           asset={asset}
-          assets={assets}
+          assets={this.props.assets}
           onPress={asset => {
             if (this.state.asset !== asset.symbol) {
               this.setState({

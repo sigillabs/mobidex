@@ -81,17 +81,18 @@ class PreviewLimitOrder extends Component {
 
     if (!receipt) return this.props.navigation.dismissModal();
 
-    const { subtotal, fee, total } = receipt;
+    const { amount, fee, payment, price } = receipt;
     const quoteAsset = getQuoteAsset();
+    const baseAsset = this.props.base;
     const feeAsset = getFeeAsset();
     const funds = WalletService.getBalanceByAddress(quoteAsset.address);
     const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
     const fundsAfterOrder =
-      side === 'buy' ? funds.sub(total) : funds.add(total);
+      side === 'buy' ? funds.sub(payment) : funds.add(payment);
     const feeFundsAfterOrder = feeFunds.sub(fee);
 
     const profitStyle = getProfitLossStyle(
-      side === 'buy' ? total.negated() : total
+      side === 'buy' ? payment.negated() : payment
     );
 
     return (
@@ -99,10 +100,34 @@ class PreviewLimitOrder extends Component {
         style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
       >
         <TwoColumnListItem
-          left="Sub-Total"
+          left="Amount"
+          leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={subtotal}
+              amount={amount}
+              assetData={baseAsset.assetData}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Price"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={price}
+              assetData={quoteAsset.assetData}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Payment Amount"
+          right={
+            <FormattedTokenAmount
+              amount={payment}
               assetData={quoteAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
@@ -119,22 +144,8 @@ class PreviewLimitOrder extends Component {
               style={[styles.tokenAmountRight]}
             />
           }
-          bottomDivider={false}
-          leftStyle={{ height: 30 }}
-        />
-        <TwoColumnListItem
-          left="Total"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={total}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight, profitStyle]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          topDivider={true}
           bottomDivider={true}
+          leftStyle={{ height: 30 }}
         />
         <TwoColumnListItem
           left="Funds Available"
@@ -236,13 +247,13 @@ class PreviewLimitOrder extends Component {
       feeAsset.decimals
     );
 
-    let subtotal = new BigNumber(limitOrder.amount).mul(limitOrder.price);
-    let total = subtotal;
+    let payment = new BigNumber(limitOrder.amount).mul(limitOrder.price);
 
     return {
-      subtotal,
+      amount: limitOrder.amount,
       fee,
-      total
+      payment,
+      price: limitOrder.price
     };
   }
 

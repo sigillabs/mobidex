@@ -27,8 +27,7 @@ export function formatProduct(baseTokenSymbol, quoteTokenSymbol) {
 
 export function formatSymbol(symbol) {
   if (!symbol) return symbol;
-  const _symbol = symbol.toUpperCase().trim();
-  return _symbol === 'WETH' ? 'ETH' : _symbol;
+  return symbol.toUpperCase().trim();
 }
 
 export function summarizeAddress(address) {

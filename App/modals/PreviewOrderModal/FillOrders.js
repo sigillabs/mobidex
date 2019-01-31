@@ -83,7 +83,10 @@ class PreviewFillOrders extends Component {
   componentDidMount() {
     const { side, amount } = this.props;
     const feeAsset = AssetService.getFeeAsset();
-    const etherBalance = WalletService.getBalanceBySymbol('ETH');
+    const networkFeeAsset = AssetService.getNetworkFeeAsset();
+    const etherBalance = WalletService.getBalanceByAssetData(
+      networkFeeAsset.assetData
+    );
     const feeBalance = WalletService.getBalanceByAssetData(feeAsset.assetData);
     const quoteBalance = WalletService.getBalanceByAssetData(
       this.props.quote.assetData
@@ -264,14 +267,23 @@ class PreviewFillOrders extends Component {
     const feeAsset = AssetService.getFeeAsset();
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
 
-    const { priceAverage, subtotal, maxFee, takerFee, total } = receipt;
+    const {
+      amount,
+      payment,
+      priceAverage,
+      maxFee,
+      networkFee,
+      takerFee
+    } = receipt;
     const funds = WalletService.getBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder =
-      side === 'buy' ? funds.sub(total) : funds.add(total);
-    const feeFunds = WalletService.getAdjustedBalanceByAddress(
-      feeAsset.address
-    );
+      side === 'buy' ? funds.sub(payment) : funds.add(payment);
+    const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
     const feeFundsAfterOrder = feeFunds.sub(takerFee);
+    const networkFeeFunds = WalletService.getBalanceByAddress(
+      networkFeeAsset.assetData
+    );
+    const networkFeeFundsAfterOrder = networkFeeFunds.sub(networkFee);
 
     const priceInWEI = web3.utils.toWei(gasPrice.toString());
     const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
@@ -281,23 +293,23 @@ class PreviewFillOrders extends Component {
         style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
       >
         <TwoColumnListItem
-          left="Average Price"
+          left="Amount"
           leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={priceAverage}
-              assetData={quoteAsset.assetData}
+              amount={amount}
+              assetData={quote.assetData}
               style={[styles.tokenAmountRight]}
             />
           }
           bottomDivider={false}
         />
         <TwoColumnListItem
-          left="Sub-Total"
+          left="Average Price"
           leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={subtotal}
+              amount={priceAverage}
               assetData={quoteAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
@@ -357,16 +369,13 @@ class PreviewFillOrders extends Component {
           bottomDivider={true}
         />
         <TwoColumnListItem
-          left="Total"
+          left="Payment Amount"
           leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={total}
+              amount={payment}
               assetData={quoteAsset.assetData}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(side === 'buy' ? -1 : 1)
-              ]}
+              style={[styles.tokenAmountRight]}
             />
           }
           rowStyle={{ marginTop: 10 }}
@@ -393,6 +402,18 @@ class PreviewFillOrders extends Component {
             <FormattedTokenAmount
               amount={feeFunds}
               assetData={feeAsset.assetData}
+              style={[styles.tokenAmountRight]}
+            />
+          }
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Network Fee Funds Available"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={networkFeeFunds}
+              assetData={networkFeeAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
           }
@@ -425,6 +446,18 @@ class PreviewFillOrders extends Component {
                 styles.tokenAmountRight,
                 getProfitLossStyle(takerFee.gt(0) ? -1 : 0)
               ]}
+            />
+          }
+          bottomDivider={false}
+        />
+        <TwoColumnListItem
+          left="Network Fee Funds After Filling Orders"
+          leftStyle={[styles.tokenAmountLeft]}
+          right={
+            <FormattedTokenAmount
+              amount={networkFeeFundsAfterOrder}
+              assetData={feeAsset.assetData}
+              style={[styles.tokenAmountRight]}
             />
           }
           bottomDivider={true}
@@ -466,6 +499,17 @@ class PreviewFillOrders extends Component {
     }
   };
 
+  getAmount = () => {
+    const { side } = this.props;
+    const { quote } = this.state;
+    const asset = AssetService.findAssetByData(quote.assetData);
+    if (side === 'buy') {
+      return Web3Wrapper.toUnitAmount(quote.assetBuyAmount, asset.decimals);
+    } else {
+      return Web3Wrapper.toUnitAmount(quote.assetSellAmount, asset.decimals);
+    }
+  };
+
   getMaxFee = () => {
     const asset = AssetService.getFeeAsset();
     const fee = this.state.quote.orders
@@ -487,30 +531,20 @@ class PreviewFillOrders extends Component {
     return gasPrice.mul(gas).toString();
   };
 
-  getSubtotal = () => {
+  getPayment = () => {
     const { side } = this.props;
     const { quote } = this.state;
     const asset = AssetService.findAssetByData(quote.assetData);
-    let amount = null;
     if (side === 'buy') {
-      amount = Web3Wrapper.toUnitAmount(
-        quote.assetBuyAmount,
-        asset.decimals
-      ).mul(quote.bestCaseQuoteInfo.ethPerAssetPrice);
+      return Web3Wrapper.toUnitAmount(quote.assetBuyAmount, asset.decimals).mul(
+        quote.bestCaseQuoteInfo.ethPerAssetPrice
+      );
     } else {
-      amount = Web3Wrapper.toUnitAmount(
+      return Web3Wrapper.toUnitAmount(
         quote.assetSellAmount,
         asset.decimals
       ).mul(quote.bestCaseQuoteInfo.ethPerAssetPrice);
     }
-    return amount.toString();
-  };
-
-  getTotal = () => {
-    const { quote } = this.state;
-    const subtotal = this.getSubtotal(quote);
-    const gas = this.getTotalGasCost();
-    return new BigNumber(subtotal).add(gas).toString();
   };
 
   getFillAction = () => {
@@ -530,18 +564,20 @@ class PreviewFillOrders extends Component {
       return null;
     }
 
-    const subtotal = this.getSubtotal();
-    const total = this.getTotal();
+    const amount = this.getAmount();
+    const payment = this.getPayment();
     const maxFee = this.getMaxFee();
     const takerFee = this.getFee();
+    const networkFee = this.getTotalGasCost();
     const priceAverage = OrderService.getAveragePrice(quote.orders);
 
     return {
+      amount,
+      payment,
       priceAverage,
-      subtotal,
       maxFee,
-      takerFee,
-      total
+      networkFee,
+      takerFee
     };
   };
 

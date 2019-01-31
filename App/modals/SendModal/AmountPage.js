@@ -40,7 +40,7 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
 
   renderTop() {
     const { asset } = this.props;
-    const balance = WalletService.getAdjustedBalanceByAddress(asset.address);
+    const balance = WalletService.getBalanceByAddress(asset.address);
 
     return (
       <React.Fragment>

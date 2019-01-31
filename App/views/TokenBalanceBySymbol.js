@@ -9,17 +9,15 @@ import FormattedTokenAmount from '../components/FormattedTokenAmount';
 export default class TokenBalanceBySymbol extends Component {
   static propTypes = {
     symbol: PropTypes.string,
-    showSymbol: PropTypes.bool,
-    adjusted: PropTypes.bool
+    showSymbol: PropTypes.bool
   };
 
   static defaultProps = {
-    showSymbol: true,
-    adjusted: true
+    showSymbol: true
   };
 
   render() {
-    const { adjusted, symbol, showSymbol } = this.props;
+    const { symbol, showSymbol } = this.props;
     const asset = symbol
       ? AssetService.findAssetBySymbol(symbol)
       : AssetService.getWETHAsset();
@@ -38,9 +36,7 @@ export default class TokenBalanceBySymbol extends Component {
     const { tokenAddress } = assetDataUtils.decodeERC20AssetData(
       asset.assetData
     );
-    const balance = adjusted
-      ? WalletService.getAdjustedBalanceByAddress(tokenAddress)
-      : WalletService.getBalanceByAddress(tokenAddress);
+    const balance = WalletService.getBalanceByAddress(tokenAddress);
 
     return (
       <FormattedTokenAmount
