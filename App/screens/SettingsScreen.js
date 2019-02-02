@@ -4,7 +4,7 @@ import React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { setGasStation } from '../../actions';
+import { setGasLevel, setGasStation } from '../../actions';
 import { showModal } from '../../navigation';
 import { styles } from '../../styles';
 import { clearCache } from '../../utils';
@@ -14,6 +14,12 @@ const GAS_STATIONS = [
   { name: 'default', label: 'default' },
   { name: 'eth-gas-station-info', label: 'ethgasstation.info' },
   { name: 'ether-chain-gas-price-oracle', label: 'etherchain.info' }
+];
+
+const GAS_LEVELS = [
+  { name: 'low', label: 'Slow  (< 30 min)' },
+  { name: 'standard', label: 'Average (< 15 min)' },
+  { name: 'high', label: 'Fast (< 2 min)' }
 ];
 
 class SettingsScreen extends React.Component {
@@ -73,7 +79,11 @@ class SettingsScreen extends React.Component {
         />
         <ListItem
           title={<MutedText>Gas Level</MutedText>}
-          subtitle={<Text>{gasLevel}</Text>}
+          subtitle={
+            <TouchableOpacity onPress={this.showGasLevelSelect}>
+              <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
+            </TouchableOpacity>
+          }
         />
         <ListItem
           title={<MutedText>Gas Station</MutedText>}
@@ -105,6 +115,15 @@ class SettingsScreen extends React.Component {
       options: GAS_STATIONS,
       select: name => this.props.dispatch(setGasStation(name)),
       selected: this.props.gasStation
+    });
+  };
+
+  showGasLevelSelect = () => {
+    showModal('modals.Select', {
+      title: 'Select Gas Level',
+      options: GAS_LEVELS,
+      select: name => this.props.dispatch(setGasLevel(name)),
+      selected: this.props.gasLevel
     });
   };
 }
