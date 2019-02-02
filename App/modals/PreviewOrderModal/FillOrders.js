@@ -164,7 +164,7 @@ class PreviewFillOrders extends Component {
               new Error(
                 `Not enough ${
                   this.props.quote.symbol
-                } to pay the order fees. You have ${quoteBalance.toString()}, but need ${unit.toString()}.`
+                }. You have ${quoteBalance.toString()}, but need ${unit.toString()}.`
               )
             )
           );
@@ -182,7 +182,7 @@ class PreviewFillOrders extends Component {
               new Error(
                 `Not enough ${
                   this.props.base.symbol
-                } to pay the order fees. You have ${baseBalance.toString()}, but need ${unit.toString()}.`
+                }. You have ${baseBalance.toString()}, but need ${unit.toString()}.`
               )
             )
           );
@@ -199,7 +199,7 @@ class PreviewFillOrders extends Component {
         this.props.navigation.waitForDisappear(() =>
           this.props.navigation.showErrorModal(
             new Error(
-              `Not enough ZRX to pay the order fees. You have ${feeBalance.toString()}, but need ${unitFee.toString()}.`
+              `Not enough ZRX to pay the relayer fees. You have ${feeBalance.toString()}, but need ${unitFee.toString()}.`
             )
           )
         );
