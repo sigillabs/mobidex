@@ -456,7 +456,7 @@ class PreviewFillOrders extends Component {
           right={
             <FormattedTokenAmount
               amount={networkFeeFundsAfterOrder}
-              assetData={feeAsset.assetData}
+              assetData={networkFeeAsset.assetData}
               style={[styles.tokenAmountRight]}
             />
           }

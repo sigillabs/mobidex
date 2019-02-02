@@ -11,7 +11,6 @@ import {
 } from './WalletService';
 
 function parseMarketActionResult(result) {
-  console.warn(result);
   if (result.length !== 258) return null;
 
   let prunedResult = result.substring(2);

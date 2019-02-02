@@ -75,6 +75,7 @@ class BaseProductItem extends Component {
     this.setState({ loading: true });
     await Promise.all([
       this.props.dispatch(updateForexTicker(base.symbol, reload)),
+      this.props.dispatch(updateForexTicker(quote.symbol, reload)),
       this.props.dispatch(updateTokenTicker(base.symbol, quote.symbol, reload)),
       this.props.dispatch(
         loadOrderbook(base.assetData, quote.assetData, reload)

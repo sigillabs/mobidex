@@ -8,8 +8,8 @@ import {
   loadAllowance,
   loadBalance,
   loadOrderbook,
-  updateForexTickers,
-  updateTokenTickers
+  updateForexTicker,
+  updateTokenTicker
 } from '../../../../thunks';
 import ForexProductDetailsView from './ForexProductDetailsView';
 import TokenProductDetailsView from './TokenProductDetailsView';
@@ -72,8 +72,9 @@ class BaseProductDetailsScreen extends Component {
 
     this.setState({ refreshing: true });
     await Promise.all([
-      this.props.dispatch(updateForexTickers(reload)),
-      this.props.dispatch(updateTokenTickers(reload)),
+      this.props.dispatch(updateForexTicker(base.symbol, reload)),
+      this.props.dispatch(updateForexTicker(quote.symbol, reload)),
+      this.props.dispatch(updateTokenTicker(base.symbol, quote.symbol, reload)),
       this.props.dispatch(loadAllowance(base.assetData, reload)),
       this.props.dispatch(loadAllowance(quote.assetData, reload)),
       this.props.dispatch(loadAllowance(feeAsset.assetData, reload)),
