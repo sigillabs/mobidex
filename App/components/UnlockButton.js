@@ -18,14 +18,12 @@ class UnlockButton extends React.Component {
 
   render() {
     const { assetData, dispatch, ...rest } = this.props;
-    const assetOrWETH =
-      assetData !== null
-        ? AssetService.findAssetByData(assetData)
-        : AssetService.getWETHAsset();
+    const asset = AssetService.findAssetByData(assetData);
+
     return (
       <Button
         icon={<FontAwesome name="lock" size={20} color="white" />}
-        title={`Unlock ${formatSymbol(assetOrWETH.symbol)}`}
+        title={`Unlock ${formatSymbol(asset.symbol)}`}
         {...rest}
         onPress={this.toggleApprove}
       />
@@ -34,13 +32,12 @@ class UnlockButton extends React.Component {
 
   toggleApprove = () => {
     const { assetData } = this.props;
-    const assetOrWETH =
-      assetData !== null
-        ? AssetService.findAssetByData(assetData)
-        : AssetService.getWETHAsset();
+    const asset = assetData
+      ? AssetService.findAssetByData(assetData)
+      : AssetService.getWETHAsset();
 
     this.props.dispatch(
-      approve(this.props.navigation.componentId, assetOrWETH.assetData)
+      approve(this.props.navigation.componentId, asset.assetData)
     );
   };
 }

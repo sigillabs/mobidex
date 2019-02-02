@@ -13,8 +13,8 @@ export function initialLoad(forceLevel = 0) {
     await Promise.all([
       dispatch(loadAllowances(forceLevel > 2)),
       dispatch(loadBalances(forceLevel > 2)),
-      dispatch(updateForexTickers(forceLevel > 1)),
-      dispatch(updateTokenTickers(forceLevel > 1)),
+      // dispatch(updateForexTickers(forceLevel > 1)),
+      // dispatch(updateTokenTickers(forceLevel > 1)),
       dispatch(loadOrderbooks(forceLevel > 1)),
       dispatch(loadOrders(forceLevel > 1)),
       dispatch(loadActiveTransactions(forceLevel > 0))

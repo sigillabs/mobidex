@@ -1,4 +1,3 @@
-import { assetDataUtils } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ZERO } from '../../constants/0x';
@@ -26,9 +25,7 @@ export default class ForexBalanceByAssetData extends Component {
       return <FormattedForexAmount {...this.props} amount={ZERO} />;
     }
 
-    const balance = WalletService.getBalanceByAddress(
-      assetDataUtils.decodeERC20AssetData(asset.assetData).tokenAddress
-    );
+    const balance = WalletService.getBalanceByAssetData(this.props.assetData);
     const price = TickerService.getCurrentPrice(
       TickerService.getForexTicker(asset.symbol)
     );

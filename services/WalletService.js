@@ -265,8 +265,12 @@ export function getAllowanceBySymbol(symbol) {
 }
 
 export function isUnlockedByAssetData(assetData) {
-  const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
-  return isUnlockedByAddress(address);
+  if (assetData) {
+    const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
+    return isUnlockedByAddress(address);
+  } else {
+    return true;
+  }
 }
 
 export function isUnlockedByAddress(address) {

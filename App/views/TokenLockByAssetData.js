@@ -1,4 +1,3 @@
-import { assetDataUtils } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,17 +15,13 @@ export default class TokenLockByAssetData extends Component {
 
   render() {
     const { assetData } = this.props;
-    const asset = assetData
-      ? AssetService.findAssetByData(assetData)
-      : AssetService.getWETHAsset();
+    const asset = AssetService.findAssetByData(assetData);
 
     if (!asset) {
       return <Icon color="white" {...this.props} name="lock" size={20} />;
     }
 
-    const isUnlocked = WalletService.isUnlockedByAddress(
-      assetDataUtils.decodeERC20AssetData(asset.assetData).tokenAddress
-    );
+    const isUnlocked = WalletService.isUnlockedByAssetData(asset.assetData);
 
     if (isUnlocked) {
       return <Icon color="white" {...this.props} name="unlock" size={20} />;

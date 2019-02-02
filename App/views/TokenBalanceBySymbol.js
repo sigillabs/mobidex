@@ -1,4 +1,3 @@
-import { assetDataUtils } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ZERO } from '../../constants/0x';
@@ -18,9 +17,7 @@ export default class TokenBalanceBySymbol extends Component {
 
   render() {
     const { symbol, showSymbol } = this.props;
-    const asset = symbol
-      ? AssetService.findAssetBySymbol(symbol)
-      : AssetService.getWETHAsset();
+    const asset = AssetService.findAssetBySymbol(symbol);
 
     if (!asset) {
       return (
@@ -33,10 +30,7 @@ export default class TokenBalanceBySymbol extends Component {
       );
     }
 
-    const { tokenAddress } = assetDataUtils.decodeERC20AssetData(
-      asset.assetData
-    );
-    const balance = WalletService.getBalanceByAddress(tokenAddress);
+    const balance = WalletService.getBalanceByAssetData(asset.assetData);
 
     return (
       <FormattedTokenAmount
