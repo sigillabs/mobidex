@@ -73,6 +73,9 @@ export const styles = StyleSheet.create({
   textCenter: {
     textAlign: 'center'
   },
+  textLeft: {
+    textAlign: 'left'
+  },
   justifyCenter: {
     justifyContent: 'center'
   },
@@ -244,6 +247,18 @@ export const styles = StyleSheet.create({
   },
   mb3: {
     marginBottom: 15
+  },
+  ml0: {
+    marginRight: 0
+  },
+  ml1: {
+    marginLeft: 5
+  },
+  ml2: {
+    marginLeft: 10
+  },
+  ml3: {
+    marginLeft: 15
   },
   mr0: {
     marginRight: 0

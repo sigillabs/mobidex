@@ -7,6 +7,7 @@ import ErrorModal from '../App/modals/ErrorModal';
 import LoadingModal from '../App/modals/LoadingModal';
 import PreviewOrderModal from '../App/modals/PreviewOrderModal';
 import ReceiveModal from '../App/modals/ReceiveModal';
+import SelectModal from '../App/modals/SelectModal';
 import SendModal from '../App/modals/SendModal';
 import UnlockAndSignModal from '../App/modals/UnlockAndSignModal';
 import WrapEtherModal from '../App/modals/WrapEtherModal';
@@ -30,6 +31,13 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.Notification',
     () => NotificationModal,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'modals.Select',
+    () => SelectModal,
     Provider,
     store
   );

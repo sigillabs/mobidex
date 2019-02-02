@@ -45,6 +45,8 @@ const initialState = {
   feeSymbol: 'ZRX',
   networkFeeSymbol: 'ETH',
   showForexPrices: false,
+  gasStation: 'default',
+  gasLevel: 'low',
   gasPrice: ZERO,
   gasLimit: ZERO,
   minimumBalance: 10 ** 16
@@ -66,6 +68,12 @@ export default handleActions(
     },
     [Actions.SET_GAS_LIMIT]: (state, action) => {
       return { ...state, gasLimit: new BigNumber(action.payload) };
+    },
+    [Actions.SET_GAS_STATION]: (state, action) => {
+      return { ...state, gasStation: action.payload };
+    },
+    [Actions.SET_GAS_LEVEL]: (state, action) => {
+      return { ...state, gasLevel: action.payload };
     }
   },
   initialState

@@ -303,34 +303,6 @@ export function isUnlockedBySymbol(symbol) {
   return MAX.eq(allowances[asset.address]);
 }
 
-export function getDecimalsByAddress(address) {
-  const {
-    relayer: { assets }
-  } = _store.getState();
-  const asset = _.find(assets, { address });
-  if (!asset) return 0;
-  return asset.decimals;
-}
-
-export function getDecimalsBySymbol(symbol) {
-  const {
-    relayer: { assets }
-  } = _store.getState();
-  const asset = _.find(assets, { symbol });
-  if (!asset) return 0;
-  return asset.decimals;
-}
-
-export async function getGasPrice() {
-  const web3 = getWeb3();
-  return new BigNumber(await web3.eth.getGasPrice());
-}
-
-export async function getGasPriceInEth() {
-  const gasPrice = await getGasPrice();
-  return convertGasPriceToEth(gasPrice);
-}
-
 export function convertGasPriceToEth(gasPrice) {
   const web3 = getWeb3();
   return new BigNumber(web3.utils.fromWei(gasPrice.toString()));

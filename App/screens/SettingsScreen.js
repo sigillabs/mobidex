@@ -1,12 +1,20 @@
 import PropTypes from 'prop-types';
+import * as _ from 'lodash';
 import React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
-import * as DeviceInfo from 'react-native-device-info';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { setGasStation } from '../../actions';
+import { showModal } from '../../navigation';
 import { styles } from '../../styles';
 import { clearCache } from '../../utils';
 import MutedText from '../components/MutedText';
+
+const GAS_STATIONS = [
+  { name: 'default', label: 'default' },
+  { name: 'eth-gas-station-info', label: 'ethgasstation.info' },
+  { name: 'ether-chain-gas-price-oracle', label: 'etherchain.info' }
+];
 
 class SettingsScreen extends React.Component {
   static options() {
@@ -29,11 +37,22 @@ class SettingsScreen extends React.Component {
     network: PropTypes.number.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,
     forexCurrency: PropTypes.string.isRequired,
-    quoteSymbol: PropTypes.string.isRequired
+    quoteSymbol: PropTypes.string.isRequired,
+    gasStation: PropTypes.string.isRequired,
+    gasLevel: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   render() {
-    const { network, relayerEndpoint, forexCurrency, quoteSymbol } = this.props;
+    const {
+      network,
+      relayerEndpoint,
+      forexCurrency,
+      quoteSymbol,
+      gasStation,
+      gasLevel
+    } = this.props;
+
     return (
       <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
         <ListItem
@@ -53,11 +72,15 @@ class SettingsScreen extends React.Component {
           subtitle={<Text>{relayerEndpoint}</Text>}
         />
         <ListItem
-          title={<MutedText>Version</MutedText>}
+          title={<MutedText>Gas Level</MutedText>}
+          subtitle={<Text>{gasLevel}</Text>}
+        />
+        <ListItem
+          title={<MutedText>Gas Station</MutedText>}
           subtitle={
-            <Text>
-              {DeviceInfo.getSystemName()} {DeviceInfo.getVersion()}
-            </Text>
+            <TouchableOpacity onPress={this.showGasStationSelect}>
+              <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
+            </TouchableOpacity>
           }
         />
         <ListItem
@@ -71,6 +94,19 @@ class SettingsScreen extends React.Component {
       </ScrollView>
     );
   }
+
+  clearCache = () => {
+    clearCache();
+  };
+
+  showGasStationSelect = () => {
+    showModal('modals.Select', {
+      title: 'Select Gas Station',
+      options: GAS_STATIONS,
+      select: name => this.props.dispatch(setGasStation(name)),
+      selected: this.props.gasStation
+    });
+  };
 }
 
 export default connect(

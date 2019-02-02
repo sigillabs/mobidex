@@ -17,7 +17,8 @@ import {
   ActionErrorSuccessFlow,
   loadOrderbook,
   marketBuy,
-  marketSell
+  marketSell,
+  refreshGasPrice
 } from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
@@ -65,6 +66,7 @@ class PreviewFillOrders extends Component {
       amount: PropTypes.string.isRequired,
       base: PropTypes.object.isRequired,
       quote: PropTypes.object.isRequired,
+      gasPrice: PropTypes.instanceOf(BigNumber),
       dispatch: PropTypes.func.isRequired
     };
   }
@@ -74,7 +76,6 @@ class PreviewFillOrders extends Component {
 
     this.state = {
       gas: 0,
-      gasPrice: 0,
       loading: true,
       quote: null
     };
@@ -228,7 +229,9 @@ class PreviewFillOrders extends Component {
       }
 
       // 5. Load gas price
-      const gasPrice = await WalletService.getGasPriceInEth();
+      const gasPrice = WalletService.convertGasPriceToEth(
+        await this.props.dispatch(refreshGasPrice())
+      );
 
       // 6. Verify network fee
       if (gasPrice.mul(gas).gt(etherBalance)) {
@@ -244,7 +247,6 @@ class PreviewFillOrders extends Component {
       this.setState({
         quote,
         gas,
-        gasPrice,
         loading: false
       });
     });
@@ -260,8 +262,8 @@ class PreviewFillOrders extends Component {
     if (!receipt) return null;
 
     const web3 = WalletService.getWeb3();
-    const { gas, gasPrice, quote } = this.state;
-    const { side } = this.props;
+    const { gas, quote } = this.state;
+    const { gasPrice, side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
     const feeAsset = AssetService.getFeeAsset();
@@ -275,6 +277,7 @@ class PreviewFillOrders extends Component {
       networkFee,
       takerFee
     } = receipt;
+    const networkFeeInETH = web3.utils.fromWei(networkFee.toString());
     const funds = WalletService.getBalanceByAddress(quoteAsset.address);
     const fundsAfterOrder =
       side === 'buy' ? funds.sub(payment) : funds.add(payment);
@@ -283,10 +286,9 @@ class PreviewFillOrders extends Component {
     const networkFeeFunds = WalletService.getBalanceByAddress(
       networkFeeAsset.assetData
     );
-    const networkFeeFundsAfterOrder = networkFeeFunds.sub(networkFee);
+    const networkFeeFundsAfterOrder = networkFeeFunds.sub(networkFeeInETH);
 
-    const priceInWEI = web3.utils.toWei(gasPrice.toString());
-    const priceInGWEI = web3.utils.fromWei(priceInWEI, 'gwei');
+    const priceInGWEI = web3.utils.fromWei(gasPrice.toString(), 'gwei');
 
     return (
       <SafeAreaView
@@ -360,7 +362,7 @@ class PreviewFillOrders extends Component {
           leftStyle={[styles.tokenAmountLeft]}
           right={
             <FormattedTokenAmount
-              amount={this.getTotalGasCost()}
+              amount={networkFeeInETH}
               assetData={networkFeeAsset.assetData}
               symbol={'ETH'}
               style={[styles.tokenAmountRight]}
@@ -527,7 +529,8 @@ class PreviewFillOrders extends Component {
   };
 
   getTotalGasCost = () => {
-    const { gasPrice, gas } = this.state;
+    const { gasPrice } = this.props;
+    const { gas } = this.state;
     return gasPrice.mul(gas).toString();
   };
 
@@ -603,7 +606,7 @@ class PreviewFillOrders extends Component {
 }
 
 export default connect(
-  ({ wallet: { web3 } }) => ({ web3 }),
+  ({ wallet: { web3 }, settings: { gasPrice } }) => ({ web3, gasPrice }),
   dispatch => ({ dispatch })
 )(connectNavigation(PreviewFillOrders));
 
