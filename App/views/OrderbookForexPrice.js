@@ -7,6 +7,18 @@ import * as OrderService from '../../services/OrderService';
 import * as TickerService from '../../services/TickerService';
 import FormattedForexAmount from '../components/FormattedForexAmount';
 
+function getPrice(orderbook, side) {
+  if (side === 'buy') {
+    return orderbook.asks.size > 0
+      ? OrderService.getOrderPrice(orderbook.lowestAsk())
+      : ZERO;
+  } else {
+    return orderbook.bids.size > 0
+      ? OrderService.getOrderPrice(orderbook.highestBid())
+      : ZERO;
+  }
+}
+
 export class OrderbookForexPrice extends Component {
   render() {
     const { orderbooks, baseAssetData, quoteAssetData, side } = this.props;
@@ -38,12 +50,7 @@ export class OrderbookForexPrice extends Component {
       return <FormattedForexAmount {...this.props} amount={0} />;
     }
 
-    const price =
-      orderbook.bids.size > 0
-        ? OrderService.getOrderPrice(
-            side === 'buy' ? orderbook.highestBid() : orderbook.lowestAsk()
-          )
-        : ZERO;
+    const price = getPrice(orderbook, side);
 
     return (
       <FormattedForexAmount
@@ -59,6 +66,10 @@ OrderbookForexPrice.propTypes = {
   quoteAssetData: PropTypes.string.isRequired,
   baseAssetData: PropTypes.string.isRequired,
   side: PropTypes.string.isRequired
+};
+
+OrderbookForexPrice.defaultProps = {
+  side: 'buy'
 };
 
 export default connect(({ relayer: { orderbooks } }) => ({
