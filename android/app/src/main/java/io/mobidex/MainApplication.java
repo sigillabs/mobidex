@@ -4,6 +4,7 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
 import com.horcrux.svg.SvgPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -12,6 +13,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
+import io.mobidex.ViewUtilPackage;
 import com.reactnativenavigation.react.ReactGateway;
 
 import java.util.Arrays;
@@ -35,10 +37,11 @@ public class MainApplication extends NavigationApplication {
     public boolean isDebug() {
         return BuildConfig.DEBUG;
     }
-  
+
     @Override
     public List<ReactPackage> createAdditionalReactPackages() {
         return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
             new ReactNativeExceptionHandlerPackage(),
             new ReactNativeRestartPackage(),
             new RNDeviceInfo(),
@@ -48,6 +51,7 @@ public class MainApplication extends NavigationApplication {
             new VectorIconsPackage(),
             new RandomBytesPackage(),
             new BackgroundTimerPackage(),
+            new ViewUtilPackage(),
             new RNUUIDGeneratorPackage()
           );
     }

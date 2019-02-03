@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { NativeModules, Platform, Image } from 'react-native';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
@@ -11,7 +11,16 @@ import Button from '../../../components/Button';
 import VerticalPadding from '../../../components/VerticalPadding';
 import Row from '../../../components/Row';
 
-class BaseIntro extends Component {
+const ViewUtil = NativeModules.ViewUtil;
+
+class BaseIntro extends Component {  
+  componentDidMount() {
+      if (Platform.OS != 'ios') {
+          ViewUtil.keepScreenAwake();
+          ViewUtil.enterFullScreen();
+      };
+  }
+  
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired
