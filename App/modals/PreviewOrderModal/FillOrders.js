@@ -12,7 +12,7 @@ import * as AssetService from '../../../services/AssetService';
 import * as OrderService from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
 import * as ZeroExService from '../../../services/ZeroExService';
-import { colors, getProfitLossStyle } from '../../../styles';
+import { colors } from '../../../styles';
 import {
   ActionErrorSuccessFlow,
   loadOrderbook,
@@ -20,11 +20,12 @@ import {
   marketSell,
   refreshGasPrice
 } from '../../../thunks';
+import { formatAmount } from '../../../utils';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
 import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import Row from '../../components/Row';
+import Receipt from '../../views/Receipt';
 import Loading from './Loading';
 
 class Order extends Component {
@@ -83,12 +84,14 @@ class PreviewFillOrders extends Component {
 
   componentDidMount() {
     const { side, amount } = this.props;
-    const feeAsset = AssetService.getFeeAsset();
-    const networkFeeAsset = AssetService.getNetworkFeeAsset();
+    const relayerFeeAsset = AssetService.getFeeAsset();
+    const networkrelayerFeeAsset = AssetService.getNetworkFeeAsset();
     const etherBalance = WalletService.getBalanceByAssetData(
-      networkFeeAsset.assetData
+      networkrelayerFeeAsset.assetData
     );
-    const feeBalance = WalletService.getBalanceByAssetData(feeAsset.assetData);
+    const feeBalance = WalletService.getBalanceByAssetData(
+      relayerFeeAsset.assetData
+    );
     const quoteBalance = WalletService.getBalanceByAssetData(
       this.props.quote.assetData
     );
@@ -193,7 +196,7 @@ class PreviewFillOrders extends Component {
 
       const unitFee = Web3Wrapper.toUnitAmount(
         quote.bestCaseQuoteInfo.fee,
-        feeAsset.decimals
+        relayerFeeAsset.decimals
       );
       if (unitFee.gt(feeBalance)) {
         this.props.navigation.dismissModal();
@@ -261,210 +264,106 @@ class PreviewFillOrders extends Component {
 
     if (!receipt) return null;
 
-    const web3 = WalletService.getWeb3();
-    const { gas, quote } = this.state;
-    const { gasPrice, side } = this.props;
+    const { quote } = this.state;
+    const { side } = this.props;
     const baseAsset = this.props.base;
     const quoteAsset = this.props.quote;
-    const feeAsset = AssetService.getFeeAsset();
-    const networkFeeAsset = AssetService.getNetworkFeeAsset();
+    const relayerFeeAsset = AssetService.getFeeAsset();
 
-    const {
-      amount,
-      payment,
-      priceAverage,
-      maxFee,
-      networkFee,
-      takerFee
-    } = receipt;
-    const networkFeeInETH = web3.utils.fromWei(networkFee.toString());
-    const funds = WalletService.getBalanceByAddress(quoteAsset.address);
-    const fundsAfterOrder =
-      side === 'buy' ? funds.sub(payment) : funds.add(payment);
-    const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
-    const feeFundsAfterOrder = feeFunds.sub(takerFee);
-    const networkFeeFunds = WalletService.getBalanceByAddress(
-      networkFeeAsset.assetData
+    const { amount, payment, priceAverage, relayerFee } = receipt;
+    const quoteFunds = WalletService.getBalanceByAddress(quoteAsset.address);
+    const baseFunds = WalletService.getBalanceByAddress(baseAsset.address);
+    const quoteFundsAfterOrder =
+      side === 'buy' ? quoteFunds.sub(payment) : quoteFunds.add(payment);
+    const baseFundsAfterOrder =
+      side === 'buy' ? baseFunds.add(amount) : baseFunds.sub(amount);
+    const relayerFeeFunds = WalletService.getBalanceByAddress(
+      relayerFeeAsset.address
     );
-    const networkFeeFundsAfterOrder = networkFeeFunds.sub(networkFeeInETH);
+    const relayerFeeFundsAfterOrder = relayerFeeFunds.sub(relayerFee);
 
-    const priceInGWEI = web3.utils.fromWei(gasPrice.toString(), 'gwei');
+    const extraWalletData = [
+      {
+        denomination: quoteAsset.symbol,
+        value: formatAmount(quoteFunds, 9)
+      },
+      {
+        denomination: baseAsset.symbol,
+        value: formatAmount(baseFunds, 9)
+      },
+      {
+        denomination: relayerFeeAsset.symbol,
+        value: formatAmount(relayerFeeFunds, 9)
+      }
+    ];
+    const extraUpdatedWalletData = [
+      {
+        denomination: quoteAsset.symbol,
+        value: formatAmount(quoteFundsAfterOrder, 9),
+        profit: side === 'sell',
+        loss: side === 'buy'
+      },
+      {
+        denomination: baseAsset.symbol,
+        value: formatAmount(baseFundsAfterOrder, 9),
+        profit: side === 'buy',
+        loss: side === 'sell'
+      },
+      {
+        denomination: relayerFeeAsset.symbol,
+        value: formatAmount(relayerFeeFundsAfterOrder, 9),
+        loss: relayerFee.gt(0)
+      }
+    ];
+    const extraSections = [
+      {
+        title: 'Relayer',
+        data: [
+          {
+            name: 'Fees',
+            value: formatAmount(relayerFee, 9),
+            denomination: relayerFeeAsset.symbol,
+            loss: relayerFee.gt(0)
+          }
+        ]
+      },
+      {
+        title: 'Order',
+        data: [
+          {
+            name: 'Side',
+            value: side
+          },
+          {
+            name: 'Average Price',
+            value: formatAmount(priceAverage, 9),
+            denomination: quoteAsset.symbol
+          },
+          {
+            name: 'Sending',
+            value: formatAmount(side === 'buy' ? payment : amount, 9),
+            denomination: side === 'buy' ? quoteAsset.symbol : baseAsset.symbol,
+            loss: true
+          },
+          {
+            name: 'Receiving',
+            value: formatAmount(side === 'buy' ? amount : payment, 9),
+            denomination: side === 'buy' ? baseAsset.symbol : quoteAsset.symbol,
+            profit: true
+          }
+        ]
+      }
+    ];
 
     return (
-      <SafeAreaView
-        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
-      >
-        <TwoColumnListItem
-          left="Amount"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={amount}
-              assetData={quote.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
+      <SafeAreaView style={[styles.flex1]}>
+        <Receipt
+          gas={this.state.gas}
+          extraWalletData={extraWalletData}
+          extraUpdatedWalletData={extraUpdatedWalletData}
+          extraSections={extraSections}
         />
-        <TwoColumnListItem
-          left="Average Price"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={priceAverage}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Fee"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={takerFee}
-              assetData={feeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Maximum Fee"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={maxFee}
-              assetData={feeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
-          left="Gas Price"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={priceInGWEI}
-              assetData={networkFeeAsset.assetData}
-              symbol={'GWEI'}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          topDivider={true}
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Total Gas Cost"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={networkFeeInETH}
-              assetData={networkFeeAsset.assetData}
-              symbol={'ETH'}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
-          left="Payment Amount"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={payment}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          bottomDivider={true}
-          topDivider={true}
-        />
-        <TwoColumnListItem
-          left="Funds Available"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={funds}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Fee Funds Available"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={feeFunds}
-              assetData={feeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Network Fee Funds Available"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={networkFeeFunds}
-              assetData={networkFeeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
-          left="Funds After Filling Orders"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={fundsAfterOrder}
-              assetData={quoteAsset.assetData}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(side === 'buy' ? -1 : 1)
-              ]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Fee Funds After Filling Orders"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={feeFundsAfterOrder}
-              assetData={feeAsset.assetData}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(takerFee.gt(0) ? -1 : 0)
-              ]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Network Fee Funds After Filling Orders"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={networkFeeFundsAfterOrder}
-              assetData={networkFeeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-        />
-        <Row style={{ width: '100%' }}>
+        <Row style={[styles.flex0]}>
           <Button
             large
             onPress={this.cancel}
@@ -501,6 +400,16 @@ class PreviewFillOrders extends Component {
     }
   };
 
+  getFillAction = () => {
+    const { side } = this.props;
+
+    if (side === 'buy') {
+      return marketBuy;
+    } else {
+      return marketSell;
+    }
+  };
+
   getAmount = () => {
     const { side } = this.props;
     const { quote } = this.state;
@@ -515,7 +424,7 @@ class PreviewFillOrders extends Component {
   getMaxFee = () => {
     const asset = AssetService.getFeeAsset();
     const fee = this.state.quote.orders
-      .map(o => o.takerFee)
+      .map(o => o.relayerFee)
       .reduce((total, fee) => total.add(fee), ZERO);
     return Web3Wrapper.toUnitAmount(fee, asset.decimals);
   };
@@ -550,16 +459,6 @@ class PreviewFillOrders extends Component {
     }
   };
 
-  getFillAction = () => {
-    const { side } = this.props;
-
-    if (side === 'buy') {
-      return marketBuy;
-    } else {
-      return marketSell;
-    }
-  };
-
   getReceipt = () => {
     const { quote } = this.state;
 
@@ -569,18 +468,14 @@ class PreviewFillOrders extends Component {
 
     const amount = this.getAmount();
     const payment = this.getPayment();
-    const maxFee = this.getMaxFee();
-    const takerFee = this.getFee();
-    const networkFee = this.getTotalGasCost();
+    const relayerFee = this.getFee();
     const priceAverage = OrderService.getAveragePrice(quote.orders);
 
     return {
       amount,
       payment,
       priceAverage,
-      maxFee,
-      networkFee,
-      takerFee
+      relayerFee
     };
   };
 

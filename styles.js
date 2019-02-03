@@ -387,6 +387,10 @@ export const styles = StyleSheet.create({
   },
   loss: {
     color: colors.red0
+  },
+  mutedText: {
+    fontSize: 10,
+    color: colors.grey1
   }
 });
 

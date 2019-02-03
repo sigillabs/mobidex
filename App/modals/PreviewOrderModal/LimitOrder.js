@@ -14,11 +14,11 @@ import {
 import * as WalletService from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
 import { ActionErrorSuccessFlow, submitOrder } from '../../../thunks';
+import { formatAmount } from '../../../utils';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
-import TwoColumnListItem from '../../components/TwoColumnListItem';
-import FormattedTokenAmount from '../../components/FormattedTokenAmount';
 import Row from '../../components/Row';
+import Receipt from '../../views/Receipt';
 import Loading from './Loading';
 
 class PreviewLimitOrder extends Component {
@@ -81,124 +81,105 @@ class PreviewLimitOrder extends Component {
 
     if (!receipt) return this.props.navigation.dismissModal();
 
-    const { amount, fee, payment, price } = receipt;
+    const { amount, relayerFee, payment, price } = receipt;
     const quoteAsset = getQuoteAsset();
     const baseAsset = this.props.base;
-    const feeAsset = getFeeAsset();
-    const funds = WalletService.getBalanceByAddress(quoteAsset.address);
-    const feeFunds = WalletService.getBalanceByAddress(feeAsset.address);
-    const fundsAfterOrder =
-      side === 'buy' ? funds.sub(payment) : funds.add(payment);
-    const feeFundsAfterOrder = feeFunds.sub(fee);
+    const relayerFeeAsset = getFeeAsset();
+    const quoteFunds = WalletService.getBalanceByAddress(quoteAsset.address);
+    const baseFunds = WalletService.getBalanceByAddress(baseAsset.address);
+    const relayerFeeFunds = WalletService.getBalanceByAddress(
+      relayerFeeAsset.address
+    );
+    const quoteFundsAfterOrder =
+      side === 'buy' ? quoteFunds.sub(payment) : quoteFunds.add(payment);
+    const baseFundsAfterOrder =
+      side === 'buy' ? baseFunds.add(payment) : baseFunds.sub(payment);
+    const relayerFeeFundsAfterOrder = relayerFeeFunds.sub(relayerFee);
 
     const profitStyle = getProfitLossStyle(
       side === 'buy' ? payment.negated() : payment
     );
 
+    const extraWalletData = [
+      {
+        denomination: quoteAsset.symbol,
+        value: formatAmount(quoteFunds, 9)
+      },
+      {
+        denomination: baseAsset.symbol,
+        value: formatAmount(baseFunds, 9)
+      },
+      {
+        denomination: relayerFeeAsset.symbol,
+        value: formatAmount(relayerFeeFunds, 9)
+      }
+    ];
+    const extraUpdatedWalletData = [
+      {
+        denomination: quoteAsset.symbol,
+        value: formatAmount(quoteFundsAfterOrder, 9),
+        profit: side === 'sell',
+        loss: side === 'buy'
+      },
+      {
+        denomination: baseAsset.symbol,
+        value: formatAmount(baseFundsAfterOrder, 9),
+        profit: side === 'buy',
+        loss: side === 'sell'
+      },
+      {
+        denomination: relayerFeeAsset.symbol,
+        value: formatAmount(relayerFeeFundsAfterOrder, 9),
+        loss: relayerFee.gt(0)
+      }
+    ];
+    const extraSections = [
+      {
+        title: 'Relayer',
+        data: [
+          {
+            name: 'Fees',
+            value: formatAmount(relayerFee, 9),
+            denomination: relayerFeeAsset.symbol,
+            loss: relayerFee.gt(0)
+          }
+        ]
+      },
+      {
+        title: 'Order',
+        data: [
+          {
+            name: 'Side',
+            value: side
+          },
+          {
+            name: 'Price',
+            value: formatAmount(price, 9),
+            denomination: quoteAsset.symbol
+          },
+          {
+            name: 'Sending',
+            value: formatAmount(side === 'buy' ? payment : amount, 9),
+            denomination: side === 'buy' ? quoteAsset.symbol : baseAsset.symbol,
+            loss: true
+          },
+          {
+            name: 'Receiving',
+            value: formatAmount(side === 'buy' ? amount : payment, 9),
+            denomination: side === 'buy' ? baseAsset.symbol : quoteAsset.symbol,
+            profit: true
+          }
+        ]
+      }
+    ];
+
     return (
-      <SafeAreaView
-        style={{ width: '100%', height: '100%', flex: 1, marginTop: 50 }}
-      >
-        <TwoColumnListItem
-          left="Amount"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={amount}
-              assetData={baseAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Price"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={price}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Payment Amount"
-          right={
-            <FormattedTokenAmount
-              amount={payment}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={false}
-          leftStyle={[styles.tokenAmountLeft]}
-        />
-        <TwoColumnListItem
-          left="Fee"
-          right={
-            <FormattedTokenAmount
-              amount={fee}
-              assetData={feeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-          leftStyle={{ height: 30 }}
-        />
-        <TwoColumnListItem
-          left="Funds Available"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={funds}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Fee Funds Available"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={feeFunds}
-              assetData={feeAsset.assetData}
-              style={[styles.tokenAmountRight]}
-            />
-          }
-          bottomDivider={true}
-        />
-        <TwoColumnListItem
-          left="Funds After Order"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={fundsAfterOrder}
-              assetData={quoteAsset.assetData}
-              style={[styles.tokenAmountRight, profitStyle]}
-            />
-          }
-          rowStyle={{ marginTop: 10 }}
-          bottomDivider={false}
-        />
-        <TwoColumnListItem
-          left="Fee Funds After Order"
-          leftStyle={[styles.tokenAmountLeft]}
-          right={
-            <FormattedTokenAmount
-              amount={feeFundsAfterOrder}
-              assetData={feeAsset.assetData}
-              style={[
-                styles.tokenAmountRight,
-                getProfitLossStyle(fee.gt(0) ? -1 : 0)
-              ]}
-            />
-          }
-          bottomDivider={true}
+      <SafeAreaView style={[styles.flex1]}>
+        <Receipt
+          extraWalletData={extraWalletData}
+          extraUpdatedWalletData={extraUpdatedWalletData}
+          extraSections={extraSections}
+          showNetwork={false}
         />
         <Row style={{ width: '100%' }}>
           <Button
@@ -241,17 +222,17 @@ class PreviewLimitOrder extends Component {
 
     if (!limitOrder) return null;
 
-    const feeAsset = getFeeAsset();
-    const fee = Web3Wrapper.toUnitAmount(
+    const relayerFeeAsset = getFeeAsset();
+    const relayerFee = Web3Wrapper.toUnitAmount(
       new BigNumber(configuredOrder.makerFee),
-      feeAsset.decimals
+      relayerFeeAsset.decimals
     );
 
     let payment = new BigNumber(limitOrder.amount).mul(limitOrder.price);
 
     return {
       amount: limitOrder.amount,
-      fee,
+      relayerFee,
       payment,
       price: limitOrder.price
     };

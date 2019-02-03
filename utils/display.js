@@ -47,21 +47,22 @@ export function formatTimestamp(timestamp) {
   return moment.unix(timestamp).format('MMMM Do YYYY, h:mm:ss a');
 }
 
-export function formatAmountWithDecimals(amount, decimals) {
+export function formatAmountWithDecimals(amount, decimals, precision = 6) {
   if (amount === null) return formatAmount(0);
   if (!decimals) return formatAmount(amount);
   return formatAmount(
-    Web3Wrapper.toUnitAmount(new BigNumber(amount), decimals)
+    Web3Wrapper.toUnitAmount(new BigNumber(amount), decimals),
+    precision
   );
 }
 
-export function formatAmount(amount) {
+export function formatAmount(amount, precision = 6) {
   if (amount === null) amount = 0;
   if (isDecimalOverflow(amount)) {
     amount = reduceDecimalOverflow(amount);
   }
   const amountBN = new BigNumber(amount);
-  return amountBN.toFixed(6);
+  return amountBN.toFixed(precision);
 }
 
 export function formatMoney(n) {

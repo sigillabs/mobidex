@@ -6,7 +6,9 @@ import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
 import Web3 from 'web3';
+import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
+import EtherToken from '../clients/EtherToken';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { showModal } from '../navigation';
 
@@ -312,4 +314,37 @@ export async function estimateEthSend() {
   const web3 = getWeb3();
   const ethereumClient = new EthereumClient(web3);
   return await ethereumClient.estimateGas(NULL_ADDRESS, undefined);
+}
+
+export async function estimateDeposit(amount) {
+  const web3 = getWeb3();
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const WETH9Address = await zeroExClient.getWETHTokenAddress();
+  const etherTokenClient = new EtherToken(ethereumClient, WETH9Address);
+  const account = await ethereumClient.getAccount();
+  const options = {
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    data: await etherTokenClient.depositTx(),
+    value: amount.toString(),
+    to: WETH9Address
+  };
+  const gas = await web3.eth.estimateGas(options);
+  return new BigNumber(gas);
+}
+
+export async function estimateWithdraw(amount) {
+  const web3 = getWeb3();
+  const ethereumClient = new EthereumClient(web3);
+  const zeroExClient = new ZeroExClient(ethereumClient);
+  const WETH9Address = await zeroExClient.getWETHTokenAddress();
+  const etherTokenClient = new EtherToken(ethereumClient, WETH9Address);
+  const account = await ethereumClient.getAccount();
+  const options = {
+    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    data: await etherTokenClient.withdrawTx(amount),
+    to: WETH9Address
+  };
+  const gas = await web3.eth.estimateGas(options);
+  return new BigNumber(gas);
 }

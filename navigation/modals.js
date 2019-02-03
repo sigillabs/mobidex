@@ -6,6 +6,7 @@ import NotificationModal from '../App/modals/NotificationModal';
 import ErrorModal from '../App/modals/ErrorModal';
 import LoadingModal from '../App/modals/LoadingModal';
 import PreviewOrderModal from '../App/modals/PreviewOrderModal';
+import ReceiptModal from '../App/modals/ReceiptModal';
 import ReceiveModal from '../App/modals/ReceiveModal';
 import SelectModal from '../App/modals/SelectModal';
 import SendModal from '../App/modals/SendModal';
@@ -87,6 +88,13 @@ export function registerModals() {
   Navigation.registerComponentWithRedux(
     'modals.WrapEther',
     () => WrapEtherModal,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'modals.Receipt',
+    () => ReceiptModal,
     Provider,
     store
   );

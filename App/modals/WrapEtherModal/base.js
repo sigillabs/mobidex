@@ -1,7 +1,8 @@
 import { BigNumber } from '0x.js';
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Dimensions, Slider, View } from 'react-native';
+import { Slider, View } from 'react-native';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -9,7 +10,7 @@ import * as WalletService from '../../../services/WalletService';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import {
-  ActionErrorSuccessFlow,
+  ReceiptActionErrorSuccessFlow,
   wrapEther,
   unwrapEther
 } from '../../../thunks';
@@ -129,8 +130,14 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
 
     if (weth.gt(amount || 0)) {
       this.props.dispatch(
-        ActionErrorSuccessFlow(
+        ReceiptActionErrorSuccessFlow(
           this.props.navigation.componentId,
+          {
+            gas: await WalletService.estimateWithdraw(
+              this.getWETHChange().neg()
+            ),
+            value: 0
+          },
           {
             action: this.unwrap,
             icon: <Entypo name="chevron-with-circle-down" size={100} />,
@@ -142,8 +149,12 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
       );
     } else if (weth.lt(amount || 0)) {
       this.props.dispatch(
-        ActionErrorSuccessFlow(
+        ReceiptActionErrorSuccessFlow(
           this.props.navigation.componentId,
+          {
+            gas: await WalletService.estimateDeposit(this.getWETHChange()),
+            value: this.getWETHChange()
+          },
           {
             action: this.wrap,
             icon: <Entypo name="chevron-with-circle-up" size={100} />,
@@ -162,20 +173,23 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
     return eth.add(weth);
   }
 
-  wrap = async () => {
+  getWETHChange() {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    const wrapAmount = new BigNumber(amount.join('') || 0).sub(weth);
+    return Web3Wrapper.toBaseUnitAmount(
+      new BigNumber(amount.join('') || 0).sub(weth),
+      18
+    );
+  }
 
-    await this.props.dispatch(wrapEther(wrapAmount));
+  wrap = async () => {
+    await this.props.dispatch(wrapEther(this.getWETHChange(), { wei: true }));
   };
 
   unwrap = async () => {
-    const { amount } = this.state;
-    const weth = WalletService.getBalanceBySymbol('WETH');
-    const unwrapAmount = weth.sub(amount.join('') || 0);
-
-    await this.props.dispatch(unwrapEther(unwrapAmount));
+    await this.props.dispatch(
+      unwrapEther(this.getWETHChange().neg(), { wei: true })
+    );
   };
 }
 

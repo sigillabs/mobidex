@@ -61,14 +61,6 @@ export default class EthereumClient {
     const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), 18);
     const gasPrice = this.options ? this.options.gasPrice : undefined;
     return await new Promise((resolve, reject) => {
-      console.debug(
-        JSON.stringify({
-          from: sender,
-          to,
-          value,
-          gasPrice
-        })
-      );
       const response = this.web3.eth.sendTransaction({
         from: sender,
         to,
