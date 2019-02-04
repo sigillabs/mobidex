@@ -20,10 +20,11 @@ import { initialize as initializeStore } from './store';
 import { loadWalletAddress } from './thunks';
 import { setExceptionHandlers } from './error-handlers';
 
-if (I18nManager.isRTL) {
-  I18nManager.allowRTL(false);
-  RNRestart.Restart();
-}
+// if (I18nManager.isRTL) {
+//   I18nManager.allowRTL(false);
+//   RNRestart.Restart();
+// }
+I18nManager.forceRTL(true);
 
 EventEmitter.defaultMaxListeners = 32000;
 

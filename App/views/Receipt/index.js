@@ -27,9 +27,21 @@ class BaseReceipt extends Component {
     });
 
     return {
-      gas: PropTypes.instanceOf(BigNumber).isRequired,
-      gasPrice: PropTypes.instanceOf(BigNumber).isRequired,
-      value: PropTypes.instanceOf(BigNumber),
+      gas: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      gasPrice: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]).isRequired,
+      value: PropTypes.oneOfType([
+        PropTypes.instanceOf(BigNumber),
+        PropTypes.number,
+        PropTypes.string
+      ]),
       extraWalletData: dataProp,
       extraNetworkData: dataProp,
       extraUpdatedWalletData: dataProp,
@@ -50,13 +62,15 @@ class BaseReceipt extends Component {
   }
 
   render() {
-    const { gas, gasPrice } = this.props;
+    const gas = new BigNumber(this.props.gas);
+    const gasPrice = new BigNumber(this.props.gasPrice);
+    const value = new BigNumber(this.props.value);
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
     const networkFeeFunds = WalletService.getBalanceByAssetData(
       networkFeeAsset.assetData
     );
     const networkFee = this.getTotalGasCost();
-    const value = Web3Wrapper.toUnitAmount(this.props.value || ZERO, 18);
+    const unitValue = Web3Wrapper.toUnitAmount(this.props.value || ZERO, 18);
 
     const wallet = {
       title: 'Wallet',
@@ -84,7 +98,7 @@ class BaseReceipt extends Component {
         },
         {
           name: 'Tx Value',
-          value: formatAmount(value, 9),
+          value: formatAmount(unitValue, 9),
           denomination: networkFeeAsset.symbol,
           loss: value.gt(0)
         }
@@ -94,7 +108,10 @@ class BaseReceipt extends Component {
       title: 'Wallet After Transaction',
       data: [
         {
-          value: formatAmount(networkFeeFunds.sub(networkFee).sub(value), 9),
+          value: formatAmount(
+            networkFeeFunds.sub(networkFee).sub(unitValue),
+            9
+          ),
           denomination: networkFeeAsset.symbol,
           loss: networkFee.gt(0)
         }
@@ -156,10 +173,11 @@ class BaseReceipt extends Component {
   );
 
   getTotalGasCost = () => {
-    const { gasPrice, gas } = this.props;
-    if (gas === null || gas === undefined) {
+    if (this.props.gas === null || this.props.gas === undefined) {
       return ZERO;
     }
+    const gas = new BigNumber(this.props.gas);
+    const gasPrice = new BigNumber(this.props.gasPrice);
     return Web3Wrapper.toUnitAmount(gasPrice.mul(gas), 18);
   };
 }

@@ -61,7 +61,7 @@ class SettingsScreen extends React.Component {
     } = this.props;
 
     return (
-      <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
+      <ScrollView contentContainerStyle={[styles.flex1, styles.p3]}>
         <ListItem
           title={<MutedText>Forex Currency</MutedText>}
           subtitle={<Text>{forexCurrency}</Text>}

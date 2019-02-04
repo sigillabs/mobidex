@@ -13,7 +13,11 @@ import {
 } from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
 import { colors, getProfitLossStyle } from '../../../styles';
-import { ActionErrorSuccessFlow, submitOrder } from '../../../thunks';
+import {
+  ActionErrorSuccessFlow,
+  refreshGasPrice,
+  submitOrder
+} from '../../../thunks';
 import { formatAmount } from '../../../utils';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
@@ -53,6 +57,7 @@ class PreviewLimitOrder extends Component {
 
     InteractionManager.runAfterInteractions(async () => {
       try {
+        await this.props.dispatch(refreshGasPrice());
         const configuredOrder = await configureOrder(this.props.order);
         this.setState({ configuredOrder });
       } catch (err) {

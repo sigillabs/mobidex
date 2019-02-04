@@ -160,6 +160,18 @@ export const styles = StyleSheet.create({
   pb3: {
     paddingBottom: 15
   },
+  pl0: {
+    paddingLeft: 0
+  },
+  pl1: {
+    paddingLeft: 5
+  },
+  pl2: {
+    paddingLeft: 10
+  },
+  pl3: {
+    paddingLeft: 15
+  },
   ph0: {
     paddingHorizontal: 0,
     paddingLeft: 0,

@@ -40,12 +40,12 @@ class BaseTokenOrder extends Component {
         roundAvatar
         bottomDivider
         title={
-          <View style={extraStyles.itemContainer}>
+          <View style={[styles.w100, styles.mh2, styles.alignCenter]}>
             <Row>
               <FormattedTokenAmount
                 amount={order.makerAssetAmount}
                 assetData={makerToken.assetData}
-                style={([extraStyles.left, fonts.large], { flex: 1 })}
+                style={[styles.textCenter, fonts.large, styles.flex1]}
                 isUnitAmount={false}
               />
               <Icon name="swap" color="black" size={24} />
@@ -53,10 +53,10 @@ class BaseTokenOrder extends Component {
                 amount={order.takerAssetAmount}
                 assetData={takerToken.assetData}
                 style={[
-                  extraStyles.right,
+                  styles.textCenter,
                   fonts.large,
-                  extraStyles.padLeft,
-                  { flex: 1 }
+                  styles.pl2,
+                  styles.flex1
                 ]}
                 isUnitAmount={false}
               />
@@ -64,10 +64,12 @@ class BaseTokenOrder extends Component {
           </View>
         }
         subtitle={
-          <View style={extraStyles.itemContainer}>
+          <View style={[styles.w100, styles.mh2, styles.alignCenter]}>
             <Row>
-              <MutedText style={[extraStyles.left]}>Maker</MutedText>
-              <MutedText style={[extraStyles.right, extraStyles.padLeft]}>
+              <MutedText style={[styles.textCenter, styles.flex1]}>
+                Maker
+              </MutedText>
+              <MutedText style={[styles.textCenter, styles.pl2, styles.flex1]}>
                 Taker
               </MutedText>
             </Row>
@@ -169,28 +171,6 @@ class BaseOrdersScreen extends Component {
     this.setState({ refreshing: false });
   };
 }
-
-const extraStyles = {
-  itemContainer: {
-    alignItems: 'center',
-    marginHorizontal: 10,
-    width: '100%'
-  },
-  center: {
-    textAlign: 'center'
-  },
-  padBottom: {
-    marginBottom: 5
-  },
-  padLeft: {
-    marginLeft: 10
-  },
-  right: {
-    flex: 1,
-    textAlign: 'right',
-    marginHorizontal: 10
-  }
-};
 
 export default connect(
   state => ({
