@@ -98,7 +98,7 @@ class SettingsScreen extends React.Component {
           title={<MutedText>Clear Cache</MutedText>}
           subtitle={
             <TouchableOpacity onPress={this.clearCache}>
-              <Text>Click Here</Text>
+              <Text>Tap Here</Text>
             </TouchableOpacity>
           }
         />
