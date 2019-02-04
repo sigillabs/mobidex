@@ -48,11 +48,10 @@ export default handleActions(
 
       if (!state.orderbooks[baseAssetData])
         state.orderbooks[baseAssetData] = {};
-      if (!state.orderbooks[baseAssetData][quoteAssetData])
-        state.orderbooks[baseAssetData][quoteAssetData] = new Orderbook(
-          baseAssetData,
-          quoteAssetData
-        );
+      state.orderbooks[baseAssetData][quoteAssetData] = new Orderbook(
+        baseAssetData,
+        quoteAssetData
+      );
 
       for (const order of bids) {
         state.orderbooks[baseAssetData][quoteAssetData].add(order);

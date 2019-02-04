@@ -22,7 +22,19 @@ const saveStateMiddleware = store => next => action => {
   try {
     return next(action);
   } finally {
-    AsyncStorage.setItem(KEY, JSON.stringify(store.getState()));
+    let state = store.getState();
+
+    // 1. Make a copy of the state
+    state = { ...state };
+    state.relayer = { ...state.relayer };
+
+    // 2. Skip orderbook
+    state.relayer.orderbooks = {};
+
+    // 3. Skip orders
+    state.relayer.orders = [];
+
+    AsyncStorage.setItem(KEY, JSON.stringify(state));
   }
 };
 
