@@ -77,13 +77,13 @@ class BaseReceipt extends Component {
           denomination: 'GWEI'
         },
         {
-          name: 'Fee',
+          name: 'Tx Fee',
           value: formatAmount(networkFee, 9),
           denomination: networkFeeAsset.symbol,
           loss: networkFee.gt(0)
         },
         {
-          name: 'Value',
+          name: 'Tx Value',
           value: formatAmount(value, 9),
           denomination: networkFeeAsset.symbol,
           loss: value.gt(0)

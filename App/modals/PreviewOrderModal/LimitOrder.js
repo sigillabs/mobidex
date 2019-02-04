@@ -138,7 +138,7 @@ class PreviewLimitOrder extends Component {
         title: 'Relayer',
         data: [
           {
-            name: 'Fees',
+            name: 'Trade Fees',
             value: formatAmount(relayerFee, 9),
             denomination: relayerFeeAsset.symbol,
             loss: relayerFee.gt(0)
