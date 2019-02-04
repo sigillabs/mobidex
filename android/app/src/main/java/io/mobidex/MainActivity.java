@@ -20,8 +20,8 @@ public class MainActivity extends NavigationActivity {
         Drawable launch_screen_bitmap = ContextCompat.getDrawable(getApplicationContext(), R.drawable.launch_screen);
         splash.setBackground(launch_screen_bitmap);
 
-        I18nUtil sharedI18nUtilInstance = I18nUtil.getInstance();
-        sharedI18nUtilInstance.allowRTL(context, true);
+        // I18nUtil sharedI18nUtilInstance = I18nUtil.getInstance();
+        // sharedI18nUtilInstance.allowRTL(context, false);
 
         return splash;
     }

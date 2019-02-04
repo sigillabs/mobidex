@@ -1,21 +1,39 @@
 import { ordersChannelFactory } from '@0xproject/connect';
-import { addOrders, updateForexTicker, updateTokenTicker } from '../actions';
+import {
+  addOrders,
+  finishedFirstLoad,
+  updateForexTicker,
+  updateTokenTicker
+} from '../actions';
 import { Inf0xWebSocketClient } from '../clients/inf0x';
 import TimerService from '../services/TimerService';
 import { loadAssets, loadOrderbooks, loadOrders, loadProducts } from './orders';
 import { loadActiveTransactions, loadAllowances, loadBalances } from './wallet';
 
 export function initialLoad(forceLevel = 0) {
-  return async dispatch => {
-    await dispatch(loadProducts(forceLevel > 3));
-    await dispatch(loadAssets(forceLevel > 3));
-    await Promise.all([
-      dispatch(loadAllowances(forceLevel > 2)),
-      dispatch(loadBalances(forceLevel > 2)),
-      dispatch(loadOrderbooks(forceLevel > 1)),
-      dispatch(loadOrders(forceLevel > 1)),
-      dispatch(loadActiveTransactions(forceLevel > 0))
-    ]);
+  return async (dispatch, getState) => {
+    const {
+      settings: { firstLoad }
+    } = getState();
+
+    if (firstLoad || forceLevel > 1) {
+      await dispatch(loadProducts(forceLevel > 3));
+      await dispatch(loadAssets(forceLevel > 3));
+      await Promise.all([
+        dispatch(loadAllowances(forceLevel > 2)),
+        dispatch(loadBalances(forceLevel > 2)),
+        dispatch(loadOrderbooks(0, 1, forceLevel > 1)),
+        dispatch(loadOrders(forceLevel > 1)),
+        dispatch(loadActiveTransactions(forceLevel > 0))
+      ]);
+      dispatch(finishedFirstLoad());
+    } else {
+      await Promise.all([
+        dispatch(loadOrderbooks(0, 1, forceLevel > 1)),
+        dispatch(loadOrders(forceLevel > 1)),
+        dispatch(loadActiveTransactions(forceLevel > 0))
+      ]);
+    }
   };
 }
 

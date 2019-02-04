@@ -29,7 +29,7 @@ export default class RelayerClient {
   }
 
   @time
-  @cache('relayer:v2:orders:{}', 24 * 60 * 60)
+  // @cache('relayer:v2:orders:{}', 24 * 60 * 60)
   async getOrdersForAddress(address) {
     const result = await this.client.getOrdersAsync({
       networkId: this.network,
@@ -52,8 +52,8 @@ export default class RelayerClient {
   }
 
   @time
-  @cache('relayer:v2:orderbook:{}:{}:{}', 1)
-  async getOrderbook(baseAssetData, quoteAssetData) {
+  // @cache('relayer:v2:orderbook:{}:{}:{}:{}', 1)
+  async getOrderbook(baseAssetData, quoteAssetData, page = 0, perPage = 1000) {
     const result = await this.client.getOrderbookAsync(
       {
         baseAssetData,
@@ -61,7 +61,8 @@ export default class RelayerClient {
       },
       {
         networkId: this.network,
-        perPage: 1000
+        perPage,
+        page
       }
     );
     return {

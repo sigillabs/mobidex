@@ -26,7 +26,13 @@ function fixOrders(orders) {
     .map(orderParsingUtils.convertOrderStringFieldsToBigNumber);
 }
 
-export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
+export function loadOrderbook(
+  baseAssetData,
+  quoteAssetData,
+  page = 0,
+  perPage = 10,
+  force = false
+) {
   return async (dispatch, getState) => {
     let {
       settings: { network, relayerEndpoint }
@@ -48,6 +54,8 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
       const orderbook = await client.getOrderbook(
         baseAsset.assetData,
         quoteAsset.assetData,
+        page,
+        perPage,
         force
       );
 
@@ -68,7 +76,7 @@ export function loadOrderbook(baseAssetData, quoteAssetData, force = false) {
   };
 }
 
-export function loadOrderbooks(force = false) {
+export function loadOrderbooks(page = 0, perPage = 10, force = false) {
   return async (dispatch, getState) => {
     let {
       relayer: { products }
@@ -80,6 +88,8 @@ export function loadOrderbooks(force = false) {
           loadOrderbook(
             product.assetDataB.assetData,
             product.assetDataA.assetData,
+            page,
+            perPage,
             force
           )
         )

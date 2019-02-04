@@ -3,7 +3,6 @@ import React from 'react';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { finishedFirstLoad } from '../../../actions';
 import { connect as connectNavigation, setTabsRoot } from '../../../navigation';
 import { registerBackgroundUpdates } from '../../../navigation/background';
 import { get as getStore } from '../../../store';
@@ -16,18 +15,12 @@ import RotatingView from '../../components/RotatingView';
 class BaseInitialLoadScreen extends React.Component {
   static propTypes = {
     navigation: navigationProp.isRequired,
-    firstLoad: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   componentDidMount() {
-    const { firstLoad } = this.props;
-
     requestAnimationFrame(async () => {
-      if (firstLoad) {
-        await this.props.dispatch(initialLoad(1));
-        this.props.dispatch(finishedFirstLoad());
-      }
+      await this.props.dispatch(initialLoad(1));
       this.props.dispatch(startWebsockets());
 
       // Set initial navigation.
@@ -57,6 +50,6 @@ class BaseInitialLoadScreen extends React.Component {
 }
 
 export default connect(
-  ({ settings: { firstLoad } }) => ({ firstLoad }),
+  () => ({}),
   dispatch => ({ dispatch })
 )(connectNavigation(BaseInitialLoadScreen));

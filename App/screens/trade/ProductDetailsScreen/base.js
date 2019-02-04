@@ -81,7 +81,7 @@ class BaseProductDetailsScreen extends Component {
       this.props.dispatch(loadBalance(base.assetData, reload)),
       this.props.dispatch(loadBalance(quote.assetData, reload)),
       this.props.dispatch(
-        loadOrderbook(base.assetData, quote.assetData, reload)
+        loadOrderbook(base.assetData, quote.assetData, 0, 10, reload)
       )
     ]);
     this.setState({ refreshing: false });
