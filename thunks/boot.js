@@ -2,7 +2,6 @@ import { ordersChannelFactory } from '@0xproject/connect';
 import { addOrders, updateForexTicker, updateTokenTicker } from '../actions';
 import { Inf0xWebSocketClient } from '../clients/inf0x';
 import TimerService from '../services/TimerService';
-import { updateForexTickers, updateTokenTickers } from './inf0x';
 import { loadAssets, loadOrderbooks, loadOrders, loadProducts } from './orders';
 import { loadActiveTransactions, loadAllowances, loadBalances } from './wallet';
 
@@ -13,8 +12,6 @@ export function initialLoad(forceLevel = 0) {
     await Promise.all([
       dispatch(loadAllowances(forceLevel > 2)),
       dispatch(loadBalances(forceLevel > 2)),
-      // dispatch(updateForexTickers(forceLevel > 1)),
-      // dispatch(updateTokenTickers(forceLevel > 1)),
       dispatch(loadOrderbooks(forceLevel > 1)),
       dispatch(loadOrders(forceLevel > 1)),
       dispatch(loadActiveTransactions(forceLevel > 0))

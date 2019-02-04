@@ -12,9 +12,8 @@ import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen
 import PreviewMnemonicScreen from '../App/screens/onboarding/PreviewMnemonicScreen';
 import PinScreen from '../App/screens/onboarding/PinScreen';
 import SettingsScreen from '../App/screens/SettingsScreen.js';
-import { store } from '../store';
 
-export function registerScreens() {
+export function registerScreens(store) {
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.Introduction',
     () => IntroScreen,

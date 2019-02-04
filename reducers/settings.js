@@ -37,6 +37,7 @@ const DEV = {
 };
 
 const initialState = {
+  firstLoad: true,
   // ...PROD,
   ...STAGE,
   // ...DEV,
@@ -54,6 +55,9 @@ const initialState = {
 
 export default handleActions(
   {
+    [Actions.FINISHED_FIRST_LOAD]: state => {
+      return { ...state, firstLoad: false };
+    },
     [Actions.TOGGLE_SHOW_FOREX]: state => {
       return { ...state, showForexPrices: !state.showForexPrices };
     },

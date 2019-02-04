@@ -1,26 +1,41 @@
+import { AsyncStorage } from 'react-native';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
-import { setStore as setStoreForAssetService } from './services/AssetService';
-import { setStore as setStoreForOrderService } from './services/OrderService';
-import { setStore as setStoreForTickerService } from './services/TickerService';
-import TimerService from './services/TimerService';
-import {
-  ActiveTransactionWatchdog,
-  TransactionService
-} from './services/TransactionService';
-import { setStore as setStoreForWalletService } from './services/WalletService';
 
-const store = createStore(rootReducer, undefined, applyMiddleware(thunk));
+let STORE = null;
+const KEY = 'app-state';
 
-TimerService.getInstance(60 * 1000).start();
+async function getState() {
+  const json = await AsyncStorage.getItem(KEY);
+  if (!json) {
+    return undefined;
+  }
+  return JSON.parse(json);
+}
 
-setStoreForAssetService(store);
-setStoreForOrderService(store);
-setStoreForTickerService(store);
-setStoreForWalletService(store);
+export async function clearState() {
+  return AsyncStorage.removeItem(KEY);
+}
 
-new TransactionService(store);
-new ActiveTransactionWatchdog(store).start();
+const saveStateMiddleware = store => next => action => {
+  try {
+    return next(action);
+  } finally {
+    AsyncStorage.setItem(KEY, JSON.stringify(store.getState()));
+  }
+};
 
-export { store };
+export async function initialize(next) {
+  const initialState = await getState();
+  STORE = createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(thunk, saveStateMiddleware)
+  );
+  next(STORE);
+}
+
+export function get() {
+  return STORE;
+}

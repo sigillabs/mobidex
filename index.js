@@ -7,7 +7,16 @@ import { setInitialBootRoot, setOnboardingRoot } from './navigation';
 import { registerHeaders } from './navigation/headers';
 import { registerModals } from './navigation/modals';
 import { registerScreens } from './navigation/screens';
-import { store } from './store';
+import { setStore as setStoreForAssetService } from './services/AssetService';
+import { setStore as setStoreForOrderService } from './services/OrderService';
+import { setStore as setStoreForTickerService } from './services/TickerService';
+import TimerService from './services/TimerService';
+import {
+  ActiveTransactionWatchdog,
+  TransactionService
+} from './services/TransactionService';
+import { setStore as setStoreForWalletService } from './services/WalletService';
+import { initialize as initializeStore } from './store';
 import { loadWalletAddress } from './thunks';
 import { setExceptionHandlers } from './error-handlers';
 
@@ -31,32 +40,51 @@ if (__DEV__) {
   setExceptionHandlers();
 }
 
-registerScreens();
-registerHeaders();
-registerModals();
+const initializeApp = (function initialize() {
+  let _store = null;
+  let _count = 0;
 
-Navigation.events().registerAppLaunchedListener(async () => {
-  Navigation.setDefaultOptions({
-    statusBar: {
-      visible: true,
-      style: 'dark'
-    },
-    topBar: {
-      visible: false,
-      drawBehind: true,
-      animate: true
+  return async store => {
+    if (store) _store = store;
+    if (++_count < 2) return;
+
+    TimerService.getInstance(60 * 1000).start();
+    setStoreForAssetService(_store);
+    setStoreForOrderService(_store);
+    setStoreForTickerService(_store);
+    setStoreForWalletService(_store);
+    new TransactionService(_store);
+    new ActiveTransactionWatchdog(_store).start();
+
+    await _store.dispatch(loadWalletAddress());
+
+    const {
+      wallet: { address }
+    } = _store.getState();
+
+    registerScreens(_store);
+    registerHeaders(_store);
+    registerModals(_store);
+
+    Navigation.setDefaultOptions({
+      statusBar: {
+        visible: true,
+        style: 'dark'
+      },
+      topBar: {
+        visible: false,
+        drawBehind: true,
+        animate: true
+      }
+    });
+
+    if (address) {
+      setInitialBootRoot();
+    } else {
+      setOnboardingRoot();
     }
-  });
+  };
+})();
 
-  await store.dispatch(loadWalletAddress());
-
-  const {
-    wallet: { address }
-  } = store.getState();
-
-  if (address) {
-    setInitialBootRoot();
-  } else {
-    setOnboardingRoot();
-  }
-});
+initializeStore(initializeApp);
+Navigation.events().registerAppLaunchedListener(initializeApp);

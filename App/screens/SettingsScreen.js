@@ -6,6 +6,7 @@ import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { setGasLevel, setGasStation } from '../../actions';
 import { showModal } from '../../navigation';
+import { clearState } from '../../store';
 import { styles } from '../../styles';
 import { clearCache } from '../../utils';
 import MutedText from '../components/MutedText';
@@ -96,7 +97,7 @@ class SettingsScreen extends React.Component {
         <ListItem
           title={<MutedText>Clear Cache</MutedText>}
           subtitle={
-            <TouchableOpacity onPress={() => clearCache()}>
+            <TouchableOpacity onPress={this.clearCache}>
               <Text>Click Here</Text>
             </TouchableOpacity>
           }
@@ -106,6 +107,7 @@ class SettingsScreen extends React.Component {
   }
 
   clearCache = () => {
+    clearState();
     clearCache();
   };
 

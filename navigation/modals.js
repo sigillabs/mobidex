@@ -12,9 +12,8 @@ import SelectModal from '../App/modals/SelectModal';
 import SendModal from '../App/modals/SendModal';
 import UnlockAndSignModal from '../App/modals/UnlockAndSignModal';
 import WrapEtherModal from '../App/modals/WrapEtherModal';
-import { store } from '../store';
 
-export function registerModals() {
+export function registerModals(store) {
   Navigation.registerComponentWithRedux(
     'modals.Action',
     () => ActionModal,

@@ -1,7 +1,6 @@
 import { Navigation } from 'react-native-navigation';
-import { store } from '../store';
 
-export function registerBackgroundUpdates() {
+export function registerBackgroundUpdates(store) {
   store.subscribe(
     (function activeTransactionsBadgeUpdater(store) {
       let activeTransactionCount = null;
