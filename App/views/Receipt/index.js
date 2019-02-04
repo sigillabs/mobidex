@@ -62,9 +62,9 @@ class BaseReceipt extends Component {
   }
 
   render() {
-    const gas = new BigNumber(this.props.gas);
-    const gasPrice = new BigNumber(this.props.gasPrice);
-    const value = new BigNumber(this.props.value);
+    const gas = new BigNumber(this.props.gas || 0);
+    const gasPrice = new BigNumber(this.props.gasPrice || 0);
+    const value = new BigNumber(this.props.value || 0);
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
     const networkFeeFunds = WalletService.getBalanceByAssetData(
       networkFeeAsset.assetData
