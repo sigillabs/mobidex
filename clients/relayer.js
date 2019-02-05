@@ -53,7 +53,7 @@ export default class RelayerClient {
 
   @time
   // @cache('relayer:v2:orderbook:{}:{}:{}:{}', 1)
-  async getOrderbook(baseAssetData, quoteAssetData, page = 0, perPage = 1000) {
+  async getOrderbook(baseAssetData, quoteAssetData, page = 1, perPage = 1000) {
     const result = await this.client.getOrderbookAsync(
       {
         baseAssetData,

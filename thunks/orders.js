@@ -29,7 +29,7 @@ function fixOrders(orders) {
 export function loadOrderbook(
   baseAssetData,
   quoteAssetData,
-  page = 0,
+  page = 1,
   perPage = 10,
   force = false
 ) {
@@ -76,7 +76,7 @@ export function loadOrderbook(
   };
 }
 
-export function loadOrderbooks(page = 0, perPage = 10, force = false) {
+export function loadOrderbooks(page = 1, perPage = 10, force = false) {
   return async (dispatch, getState) => {
     let {
       relayer: { products }

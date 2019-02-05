@@ -22,15 +22,15 @@ export function initialLoad(forceLevel = 0) {
       await Promise.all([
         dispatch(loadAllowances(forceLevel > 2)),
         dispatch(loadBalances(forceLevel > 2)),
-        dispatch(loadOrderbooks(0, 1, forceLevel > 1)),
-        dispatch(loadOrders(forceLevel > 1)),
+        dispatch(loadOrderbooks(1, 1, forceLevel > 1)),
+        // dispatch(loadOrders(forceLevel > 1)),
         dispatch(loadActiveTransactions(forceLevel > 0))
       ]);
       dispatch(finishedFirstLoad());
     } else {
       await Promise.all([
-        dispatch(loadOrderbooks(0, 1, forceLevel > 1)),
-        dispatch(loadOrders(forceLevel > 1)),
+        dispatch(loadOrderbooks(1, 1, forceLevel > 1)),
+        // dispatch(loadOrders(forceLevel > 1)),
         dispatch(loadActiveTransactions(forceLevel > 0))
       ]);
     }
@@ -106,11 +106,15 @@ export function startInf0xWebsockets() {
         onError: error => {
           console.warn(error);
         },
-        onUpdate: (channel, ticker) => {
+        onUpdate: (channel, tickers) => {
           if (channel === 'token-ticker') {
-            dispatch(updateTokenTicker(ticker));
+            for (const ticker of tickers) {
+              dispatch(updateTokenTicker(ticker));
+            }
           } else if (channel === 'forex-ticker') {
-            dispatch(updateForexTicker(ticker));
+            for (const ticker of tickers) {
+              dispatch(updateForexTicker(ticker));
+            }
           }
         }
       }

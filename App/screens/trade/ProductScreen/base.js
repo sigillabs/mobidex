@@ -78,7 +78,7 @@ class BaseProductItem extends Component {
       this.props.dispatch(updateForexTicker(quote.symbol, reload)),
       this.props.dispatch(updateTokenTicker(base.symbol, quote.symbol, reload)),
       this.props.dispatch(
-        loadOrderbook(base.assetData, quote.assetData, 0, 10, reload)
+        loadOrderbook(base.assetData, quote.assetData, 1, 10, reload)
       )
     ]);
     this.setState({ loading: false });

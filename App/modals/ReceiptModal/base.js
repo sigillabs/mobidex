@@ -3,11 +3,10 @@ import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { InteractionManager, SafeAreaView, View } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
-import { ActionErrorSuccessFlow, refreshGasPrice } from '../../../thunks';
+import { refreshGasPrice } from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import Row from '../../components/Row';
@@ -17,6 +16,8 @@ class BaseReceiptModal extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
+      confirm: PropTypes.func.isRequired,
+      cancel: PropTypes.func,
       action: PropTypes.func.isRequired,
       gas: PropTypes.instanceOf(BigNumber).isRequired,
       gasPrice: PropTypes.instanceOf(BigNumber).isRequired,
@@ -46,7 +47,7 @@ class BaseReceiptModal extends Component {
           />
           <Button
             large
-            onPress={this.confirm}
+            onPress={this.submit}
             containerStyle={[styles.fluff0, styles.flex1]}
             title="Confirm"
           />
@@ -60,21 +61,28 @@ class BaseReceiptModal extends Component {
     return Web3Wrapper.toUnitAmount(gasPrice.mul(gas), 18);
   };
 
-  cancel = () => this.props.navigation.dismissModal();
+  cancel = () => {
+    this.props.navigation.dismissModal();
+    if (this.props.cancel) {
+      this.props.cancel();
+    }
+  };
 
   submit = () => {
-    this.props.dispatch(
-      ActionErrorSuccessFlow(
-        this.props.navigation.componentId,
-        {
-          action: this.props.action,
-          icon: <Entypo name="chevron-with-circle-up" size={100} />,
-          label: 'Submitting To The Ethereum Network...'
-        },
-        'Submitting To Network',
-        () => this.props.navigation.dismissModal()
-      )
-    );
+    this.props.confirm();
+    this.props.navigation.dismissModal();
+    // this.props.dispatch(
+    //   ActionErrorSuccessFlow(
+    //     this.props.navigation.componentId,
+    //     {
+    //       action: this.props.action,
+    //       icon: <Entypo name="chevron-with-circle-up" size={100} />,
+    //       label: 'Submitting To The Ethereum Network...'
+    //     },
+    //     'Submitting To Network',
+    //     () => this.props.navigation.dismissModal()
+    //   )
+    // );
   };
 }
 

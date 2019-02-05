@@ -48,17 +48,6 @@ export class OrderbookPrice extends Component {
     }
 
     const orderbook = orderbooks[baseAssetData][quoteAssetData];
-
-    if (!orderbook) {
-      return (
-        <FormattedTokenAmount
-          {...this.props}
-          assetData={quoteAssetData}
-          amount={0}
-        />
-      );
-    }
-
     const price = getPrice(orderbook, side);
 
     return (
