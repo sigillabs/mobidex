@@ -1,6 +1,8 @@
 import { AsyncStorage } from 'react-native';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
+import { fixOrders } from './lib/utils/orders';
+import Orderbook from './lib/orderbook';
 import rootReducer from './reducers';
 
 let STORE = null;
@@ -11,7 +13,37 @@ async function getState() {
   if (!json) {
     return undefined;
   }
-  return JSON.parse(json);
+  const object = JSON.parse(json);
+
+  // 1. Change orderbook to rbtree
+  const orderbooks = {};
+  for (const baseAssetData in object.relayer.orderbooks) {
+    if (!orderbooks[baseAssetData]) {
+      orderbooks[baseAssetData] = {};
+    }
+    for (const quoteAssetData of object.relayer.orderbooks[baseAssetData]) {
+      const bids = fixOrders(
+        object.relayer.orderbooks[baseAssetData][quoteAssetData].bids
+      );
+      const asks = fixOrders(
+        object.relayer.orderbooks[baseAssetData][quoteAssetData].asks
+      );
+      orderbooks[baseAssetData][quoteAssetData] = new Orderbook();
+      for (const bid of fixOrders(bids)) {
+        orderbooks[baseAssetData][quoteAssetData].add(bid);
+      }
+      for (const ask of fixOrders(asks)) {
+        orderbooks[baseAssetData][quoteAssetData].add(ask);
+      }
+    }
+  }
+
+  object.relayer.orderbooks = orderbooks;
+
+  // 2. Change orders to serializable
+  object.relayer.orders = fixOrders(object.relayer.orders);
+
+  return undefined;
 }
 
 export async function clearState() {
@@ -28,11 +60,21 @@ const saveStateMiddleware = store => next => action => {
     state = { ...state };
     state.relayer = { ...state.relayer };
 
-    // 2. Skip orderbook
+    // 2. Change orderbook to serializable
+    const serializableOrderbooks = {};
+    for (const baseAssetData in state.relayer.orderbooks) {
+      if (!serializableOrderbooks[baseAssetData]) {
+        serializableOrderbooks[baseAssetData] = {};
+      }
+      for (const quoteAssetData in state.relayer.orderbooks[baseAssetData]) {
+        serializableOrderbooks[baseAssetData][
+          quoteAssetData
+        ] = state.relayer.orderbooks[baseAssetData][
+          quoteAssetData
+        ].serializable();
+      }
+    }
     state.relayer.orderbooks = {};
-
-    // 3. Skip orders
-    state.relayer.orders = [];
 
     AsyncStorage.setItem(KEY, JSON.stringify(state));
   }

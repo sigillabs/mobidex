@@ -18,13 +18,7 @@ import { showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
-
-function fixOrders(orders) {
-  if (!orders) return null;
-  return orders
-    .filter(order => Boolean(order))
-    .map(orderParsingUtils.convertOrderStringFieldsToBigNumber);
-}
+import { fixOrders } from '../lib/utils/orders';
 
 export function loadOrderbook(
   baseAssetData,
