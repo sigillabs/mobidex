@@ -109,8 +109,12 @@ class BaseProductScreen extends Component {
     super(props);
 
     this.state = {
-      refreshing: false
+      refreshing: true
     };
+  }
+
+  componentDidMount() {
+    this.setState({ refreshing: false });
   }
 
   render() {
@@ -128,7 +132,7 @@ class BaseProductScreen extends Component {
           />
         )}
         refreshing={this.state.refreshing}
-        onRefresh={() => this.onRefresh()}
+        onRefresh={this.onRefresh}
         ListEmptyComponent={() => (
           <EmptyList
             wrapperStyle={{
@@ -144,13 +148,13 @@ class BaseProductScreen extends Component {
     );
   }
 
-  async onRefresh(reload = true) {
+  onRefresh = async (reload = true) => {
     this.setState({ refreshing: true });
     await this.props.dispatch(initialLoad(reload ? 3 : 0));
     this.props.dispatch(updateForexTickers(reload));
     this.props.dispatch(updateTokenTickers(reload));
     this.setState({ refreshing: false });
-  }
+  };
 }
 
 export default connect(

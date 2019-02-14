@@ -43,7 +43,7 @@ async function getState() {
   // 2. Change orders to serializable
   object.relayer.orders = fixOrders(object.relayer.orders);
 
-  return undefined;
+  return object;
 }
 
 export async function clearState() {

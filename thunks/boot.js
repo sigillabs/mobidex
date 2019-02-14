@@ -7,8 +7,7 @@ import {
 } from '../actions';
 import { Inf0xWebSocketClient } from '../clients/inf0x';
 import TimerService from '../services/TimerService';
-import { loadAssets, loadOrderbooks, loadOrders, loadProducts } from './orders';
-import { loadActiveTransactions, loadAllowances, loadBalances } from './wallet';
+import { loadAssets, loadProducts } from './orders';
 
 export function initialLoad(forceLevel = 0) {
   return async (dispatch, getState) => {
@@ -19,20 +18,7 @@ export function initialLoad(forceLevel = 0) {
     if (firstLoad || forceLevel > 1) {
       await dispatch(loadProducts(forceLevel > 3));
       await dispatch(loadAssets(forceLevel > 3));
-      await Promise.all([
-        dispatch(loadAllowances(forceLevel > 2)),
-        dispatch(loadBalances(forceLevel > 2)),
-        dispatch(loadOrderbooks(1, 1, forceLevel > 1)),
-        // dispatch(loadOrders(forceLevel > 1)),
-        dispatch(loadActiveTransactions(forceLevel > 0))
-      ]);
       dispatch(finishedFirstLoad());
-    } else {
-      await Promise.all([
-        dispatch(loadOrderbooks(1, 1, forceLevel > 1)),
-        // dispatch(loadOrders(forceLevel > 1)),
-        dispatch(loadActiveTransactions(forceLevel > 0))
-      ]);
     }
   };
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Text } from 'react-native-elements';
 import * as AssetService from '../../services/AssetService';
+import { styles } from '../../styles';
 import { formatAmount, formatAmountWithDecimals } from '../../utils';
 import FormattedSymbol from './FormattedSymbol';
 
@@ -42,8 +43,8 @@ export default class FormattedTokenAmount extends React.PureComponent {
     const asset = AssetService.findAssetByData(assetData || null);
 
     return (
-      <Text {...rest}>
-        <Text>
+      <Text numberOfLines={1} {...rest}>
+        <Text numberOfLines={1} style={[styles.row]}>
           {isUnitAmount
             ? formatAmount(amount)
             : formatAmountWithDecimals(amount, asset.decimals)}

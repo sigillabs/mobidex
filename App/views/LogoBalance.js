@@ -51,7 +51,7 @@ export default class LogoBalance extends Component {
 const style = {
   container: {
     backgroundColor: 'transparent',
-    minWidth: 150,
+    minWidth: 200,
     alignItems: 'center',
     justifyContent: 'center'
   }

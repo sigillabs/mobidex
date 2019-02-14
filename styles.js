@@ -108,6 +108,7 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    flexWrap: 'nowrap',
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
@@ -117,11 +118,6 @@ export const styles = StyleSheet.create({
   },
   bottom: {
     justifyContent: 'flex-end',
-    alignItems: 'center'
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center'
   },
   flex0: {
