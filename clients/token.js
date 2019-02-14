@@ -1,9 +1,9 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
-import ethUtil from 'ethereumjs-util';
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { ZERO } from '../constants/0x';
 import { cache, time } from '../lib/decorators/cls';
+import { formatHexString } from '../lib/utils/format';
 import { hex2a } from '../utils';
 import ZeroExClient from './0x.js';
 
@@ -128,8 +128,8 @@ export default class TokenClient {
     ).getContractWrappers();
     const account = await this.ethereumClient.getAccount();
     const balance = await contractWrappers.erc20Token.getBalanceAsync(
-      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      formatHexString(this.address.toString()),
+      formatHexString(account.toString())
     );
     return balance;
   }
@@ -148,8 +148,8 @@ export default class TokenClient {
     }
 
     return await contractWrappers.erc20Token.getProxyAllowanceAsync(
-      `0x${ethUtil.stripHexPrefix(this.address.toString())}`,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      formatHexString(this.address.toString()),
+      formatHexString(account.toString())
     );
   }
 
@@ -164,8 +164,8 @@ export default class TokenClient {
     }
 
     return await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      formatHexString(this.address.toString()),
+      formatHexString(account.toString())
     );
   }
 
@@ -180,8 +180,8 @@ export default class TokenClient {
     }
 
     return await contractWrappers.erc20Token.setProxyAllowanceAsync(
-      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(this.address.toString()),
+      formatHexString(account.toString()),
       amount
     );
   }
@@ -195,9 +195,9 @@ export default class TokenClient {
     const { decimals } = await this.get();
     const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), decimals);
     return await contractWrappers.erc20Token.transferAsync(
-      `0x${ethUtil.stripHexPrefix(this.address.toString().toLowerCase())}`,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
-      `0x${ethUtil.stripHexPrefix(to)}`.toLowerCase(),
+      formatHexString(this.address.toString()),
+      formatHexString(account.toString()),
+      formatHexString(to.toString()),
       value
     );
   }

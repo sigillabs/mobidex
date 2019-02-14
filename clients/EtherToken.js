@@ -1,7 +1,8 @@
 import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { time } from '../lib/decorators/cls';
+import { formatHexString } from '../lib/utils/format';
 
-const TokenABI = require('../abi/WETH9.json');
+const Weth9ABI = require('../abi/WETH9.json');
 
 let CONTRACT = null;
 
@@ -20,7 +21,7 @@ export default class EtherToken {
         web3: this.ethereumClient.getWeb3(),
         contractDefinitions: {
           WETH9: {
-            ...TokenABI,
+            ...Weth9ABI,
             networks: {
               [networkId]: {
                 address: this.address
@@ -46,6 +47,8 @@ export default class EtherToken {
   @time
   async withdrawTx(wad) {
     const contract = await this.getContract();
-    return contract.methods.withdraw(wad).encodeABI();
+    return contract.methods
+      .withdraw(formatHexString(wad.toString(16)))
+      .encodeABI();
   }
 }

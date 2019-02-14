@@ -1,7 +1,7 @@
-import ethUtil from 'ethereumjs-util';
 import { stringify } from 'qs';
 import UUIDGenerator from 'react-native-uuid-generator';
 import { cache, time } from '../lib/decorators/cls';
+import { formatHexString } from '../lib/utils/format';
 
 export default class Inf0xClient {
   constructor(endpoint, options = { network: null }) {
@@ -129,7 +129,7 @@ export default class Inf0xClient {
   async getEvents(account) {
     const qs = stringify({
       networkId: this.network,
-      account: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      account: formatHexString(account.toString())
     });
 
     const response = await fetch(`${this.endpoint}/events?${qs}`, {

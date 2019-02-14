@@ -1,7 +1,6 @@
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { assetDataUtils, BigNumber } from '0x.js';
 import EthTx from 'ethereumjs-tx';
-import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import { NativeModules } from 'react-native';
 import ZeroClientProvider from 'web3-provider-engine/zero';
@@ -10,6 +9,7 @@ import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import EtherToken from '../clients/EtherToken';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
+import { formatHexString } from '../lib/utils/format';
 import { showModal } from '../navigation';
 
 const WalletManager = NativeModules.WalletManager;
@@ -62,7 +62,7 @@ export async function getWalletAddress() {
     WalletManager.loadWalletAddress((err, data) => {
       if (err) return reject(err);
       if (data) {
-        resolve(`0x${ethUtil.stripHexPrefix(data)}`);
+        resolve(formatHexString(data));
       } else {
         resolve();
       }
@@ -76,9 +76,9 @@ export async function signTransaction(tx, password) {
       if (err) return reject(new Error('Could not sign transaction'));
       if (!data) return resolve();
       resolve({
-        r: `0x${ethUtil.stripHexPrefix(data.r)}`,
-        s: `0x${ethUtil.stripHexPrefix(data.s)}`,
-        v: `0x${ethUtil.stripHexPrefix(data.v)}`
+        r: formatHexString(data.r),
+        s: formatHexString(data.s),
+        v: formatHexString(data.v)
       });
     })
   );
@@ -88,7 +88,7 @@ export async function signMessage(message, password) {
   return await new Promise((resolve, reject) =>
     WalletManager.signMessage(message, password, (err, data) => {
       if (err) return reject(new Error('Could not sign message'));
-      resolve(`0x${ethUtil.stripHexPrefix(data)}`);
+      resolve(formatHexString(data));
     })
   );
 }
@@ -160,10 +160,7 @@ export function getWeb3() {
               return cb(new Error('Could not unlock wallet'));
             }
 
-            return cb(
-              null,
-              `0x${ethUtil.stripHexPrefix(signature.toLowerCase())}`
-            );
+            return cb(null, formatHexString(signature));
           }
         });
       }
@@ -324,7 +321,7 @@ export async function estimateDeposit(amount) {
   const etherTokenClient = new EtherToken(ethereumClient, WETH9Address);
   const account = await ethereumClient.getAccount();
   const options = {
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: await etherTokenClient.depositTx(),
     value: amount.toString(),
     to: WETH9Address
@@ -341,7 +338,7 @@ export async function estimateWithdraw(amount) {
   const etherTokenClient = new EtherToken(ethereumClient, WETH9Address);
   const account = await ethereumClient.getAccount();
   const options = {
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: await etherTokenClient.withdrawTx(amount),
     to: WETH9Address
   };

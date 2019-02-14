@@ -1,8 +1,8 @@
 import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import ethUtil from 'ethereumjs-util';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
+import { formatHexString } from '../lib/utils/format';
 import { findAssetByData, getFeeAsset } from './AssetService';
 import {
   getAllowanceByAssetData,
@@ -40,7 +40,7 @@ export async function estimateMarketBuyOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const gas = await web3.eth.estimateGas({
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -55,7 +55,7 @@ export async function callMarketBuyOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const result = await web3.eth.call({
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -164,7 +164,7 @@ export async function estimateMarketSellOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const gas = await web3.eth.estimateGas({
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });
@@ -179,7 +179,7 @@ export async function callMarketSellOrders(orders, amount) {
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
   const result = await web3.eth.call({
-    from: `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+    from: formatHexString(account.toString()),
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
   });

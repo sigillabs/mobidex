@@ -1,8 +1,8 @@
 import { BigNumber, orderHashUtils, signatureUtils, SignerType } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import { ZERO } from '../constants/0x';
+import { formatHexString } from '../lib/utils/format';
 
 export function findOrdersThatCoverTakerAssetFillAmount(
   orders,
@@ -79,7 +79,7 @@ export async function filterTestOrderFill(wrappers, orders, amount, account) {
         await wrappers.exchange.validateFillOrderThrowIfInvalidAsync(
           order,
           new BigNumber(amount),
-          `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+          formatHexString(account.toString())
         );
         return [true, order];
       } catch (err) {

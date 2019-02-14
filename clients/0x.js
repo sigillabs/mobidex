@@ -1,6 +1,6 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
-import ethUtil from 'ethereumjs-util';
 import { cache, time } from '../lib/decorators/cls';
+import { formatHexString } from '../lib/utils/format';
 import { filterFillableOrders } from '../utils/orders';
 
 export default class ZeroExClient {
@@ -70,7 +70,7 @@ export default class ZeroExClient {
     return signatureUtils.ecSignOrderHashAsync(
       this.ethereumClient.getCurrentProvider(),
       orderHash,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       SignerType.Default
     );
   }
@@ -83,7 +83,7 @@ export default class ZeroExClient {
     return wrappers.etherToken.depositAsync(
       WETHAddress,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      formatHexString(account.toString())
     );
   }
 
@@ -95,7 +95,7 @@ export default class ZeroExClient {
     return wrappers.etherToken.withdrawAsync(
       WETHAddress,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`
+      formatHexString(account.toString())
     );
   }
 
@@ -106,7 +106,7 @@ export default class ZeroExClient {
     return wrappers.exchange.fillOrKillOrderAsync(
       order,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       { shouldValidate: false }
     );
   }
@@ -118,7 +118,7 @@ export default class ZeroExClient {
     return wrappers.exchange.batchFillOrKillOrdersAsync(
       orders,
       amounts.map(amount => new BigNumber(amount)),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       { shouldValidate: false }
     );
   }
@@ -146,7 +146,7 @@ export default class ZeroExClient {
     return wrappers.exchange.marketBuyOrdersAsync(
       fillableOrders,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       this.options
     );
   }
@@ -166,7 +166,7 @@ export default class ZeroExClient {
     return wrappers.exchange.marketSellOrdersAsync(
       fillableOrders,
       new BigNumber(amount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       { ...this.options, shouldValidate: true }
     );
   }
@@ -194,7 +194,7 @@ export default class ZeroExClient {
     return wrappers.forwarder.marketBuyOrdersWithEthAsync(
       fillableOrders,
       new BigNumber(makerAmount),
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       new BigNumber(ethAmount),
       fillableFeeOrders,
       feePercentage,
@@ -209,7 +209,7 @@ export default class ZeroExClient {
     const account = await this.ethereumClient.getAccount();
     return wrappers.forwarder.marketSellOrdersWithEthAsync(
       orders,
-      `0x${ethUtil.stripHexPrefix(account.toString().toLowerCase())}`,
+      formatHexString(account.toString()),
       new BigNumber(amount),
       feeOrders,
       feePercentage,

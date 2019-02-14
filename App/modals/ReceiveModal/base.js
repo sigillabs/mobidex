@@ -5,6 +5,7 @@ import { Avatar, Text } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import ethUtil from 'ethereumjs-util';
+import { formatHexString } from '../../../lib/utils/format';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import { navigationProp } from '../../../types/props';
@@ -36,7 +37,7 @@ class BaseReceiveScreen extends Component {
         <Text h4>Address</Text>
         <TouchableOpacity onPress={this.copy} style={styles.row}>
           <Text style={{ fontSize: 13, marginRight: 5 }}>
-            {`0x${ethUtil.stripHexPrefix(this.props.address.toString())}`}
+            {formatHexString(this.props.address.toString())}
           </Text>
           <MaterialIcons name="content-copy" size={20} />
         </TouchableOpacity>
@@ -54,14 +55,12 @@ class BaseReceiveScreen extends Component {
   back = () => this.props.navigation.dismissModal();
 
   copy = () =>
-    Clipboard.setString(
-      `0x${ethUtil.stripHexPrefix(this.props.address.toString())}`
-    );
+    Clipboard.setString(formatHexString(this.props.address.toString()));
 
   share = () =>
     Share.share(
       {
-        message: `Here's My Address: 0x${ethUtil.stripHexPrefix(
+        message: `Here's My Address: ${formatHexString(
           this.props.address.toString()
         )}`,
         title: 'My Address'
