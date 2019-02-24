@@ -38,8 +38,8 @@ const DEV = {
 
 const initialState = {
   firstLoad: true,
-  // ...PROD,
-  ...STAGE,
+  ...PROD,
+  // ...STAGE,
   // ...DEV,
   forexCurrency: 'USD',
   quoteSymbol: 'WETH',

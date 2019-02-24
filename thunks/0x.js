@@ -157,11 +157,7 @@ export function marketBuy(quote) {
 }
 
 export function marketSell(quote) {
-  return async (dispatch, getState) => {
-    const {
-      settings: { gasLimit }
-    } = getState();
-
+  return async () => {
     const web3 = WalletService.getWeb3();
 
     if (quote === null) {
