@@ -38,7 +38,8 @@ const DEV = {
 
 const initialState = {
   firstLoad: true,
-  ...PROD,
+  ...(__DEV__ ? STAGE : PROD),
+  // ...PROD,
   // ...STAGE,
   // ...DEV,
   forexCurrency: 'USD',
