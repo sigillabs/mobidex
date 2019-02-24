@@ -6,6 +6,7 @@ import { Slider, View } from 'react-native';
 import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { formatUnitValue } from '../../../lib/utils/format';
 import * as WalletService from '../../../services/WalletService';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
@@ -176,10 +177,10 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   getWETHChange() {
     const { amount } = this.state;
     const weth = WalletService.getBalanceBySymbol('WETH');
-    return Web3Wrapper.toBaseUnitAmount(
-      new BigNumber(amount.join('') || 0).sub(weth),
-      18
+    const formattedAmount = formatUnitValue(
+      new BigNumber(amount.join('') || 0).sub(weth)
     );
+    return Web3Wrapper.toBaseUnitAmount(formattedAmount, 18);
   }
 
   wrap = async () => {
