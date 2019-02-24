@@ -17,6 +17,28 @@ export default class TokenClient {
   }
 
   @time
+  async getContract() {
+    const networkId = await this.ethereumClient.getNetworkId();
+    const account = await this.ethereumClient.getAccount();
+    return ContractDefinitionLoader({
+      web3: this.ethereumClient.getWeb3(),
+      contractDefinitions: {
+        Token: {
+          ...TokenABI,
+          networks: {
+            [networkId]: {
+              address: this.address
+            }
+          }
+        }
+      },
+      options: {
+        from: account
+      }
+    }).Token;
+  }
+
+  @time
   @cache(function() {
     return 'client:token:' + this.address;
   }, 365 * 24 * 60 * 60)
@@ -200,5 +222,16 @@ export default class TokenClient {
       formatHexString(to.toString()),
       value
     );
+  }
+
+  @time
+  async transferTx(to, value) {
+    const contract = await this.getContract();
+    return contract.methods
+      .transfer(
+        formatHexString(to.toString()),
+        formatHexString(value.toString(16))
+      )
+      .encodeABI();
   }
 }

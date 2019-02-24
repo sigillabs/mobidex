@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';

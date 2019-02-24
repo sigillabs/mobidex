@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import EtherToken from '../clients/EtherToken';
+import TokenClient from '../clients/token';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { formatHexString } from '../lib/utils/format';
 import { showModal } from '../navigation';
@@ -311,6 +312,21 @@ export async function estimateEthSend() {
   const web3 = getWeb3();
   const ethereumClient = new EthereumClient(web3);
   return await ethereumClient.estimateGas(NULL_ADDRESS, undefined);
+}
+
+export async function estimateTokenSend(address, to, amount) {
+  const web3 = getWeb3();
+  const ethereumClient = new EthereumClient(web3);
+  const tokenAddress = formatHexString(address);
+  const tokenClient = new TokenClient(ethereumClient, tokenAddress);
+  const account = await ethereumClient.getAccount();
+  const options = {
+    from: formatHexString(account.toString()),
+    data: await tokenClient.transferTx(to, amount),
+    to: tokenAddress
+  };
+  const gas = await web3.eth.estimateGas(options);
+  return new BigNumber(gas);
 }
 
 export async function estimateDeposit(amount) {

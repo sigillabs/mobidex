@@ -9,41 +9,47 @@ let STORE = null;
 const KEY = 'app-state';
 
 async function getState() {
-  const json = await AsyncStorage.getItem(KEY);
-  if (!json) {
-    return undefined;
-  }
-  const object = JSON.parse(json);
-
-  // 1. Change orderbook to rbtree
-  const orderbooks = {};
-  for (const baseAssetData in object.relayer.orderbooks) {
-    if (!orderbooks[baseAssetData]) {
-      orderbooks[baseAssetData] = {};
+  try {
+    const json = await AsyncStorage.getItem(KEY);
+    if (!json) {
+      return undefined;
     }
-    for (const quoteAssetData of object.relayer.orderbooks[baseAssetData]) {
-      const bids = fixOrders(
-        object.relayer.orderbooks[baseAssetData][quoteAssetData].bids
-      );
-      const asks = fixOrders(
-        object.relayer.orderbooks[baseAssetData][quoteAssetData].asks
-      );
-      orderbooks[baseAssetData][quoteAssetData] = new Orderbook();
-      for (const bid of fixOrders(bids)) {
-        orderbooks[baseAssetData][quoteAssetData].add(bid);
+    const object = JSON.parse(json);
+
+    // 1. Change orderbook to rbtree
+    const orderbooks = {};
+    for (const baseAssetData in object.relayer.orderbooks) {
+      if (!orderbooks[baseAssetData]) {
+        orderbooks[baseAssetData] = {};
       }
-      for (const ask of fixOrders(asks)) {
-        orderbooks[baseAssetData][quoteAssetData].add(ask);
+      for (const quoteAssetData of object.relayer.orderbooks[baseAssetData]) {
+        const bids = fixOrders(
+          object.relayer.orderbooks[baseAssetData][quoteAssetData].bids
+        );
+        const asks = fixOrders(
+          object.relayer.orderbooks[baseAssetData][quoteAssetData].asks
+        );
+        orderbooks[baseAssetData][quoteAssetData] = new Orderbook();
+        for (const bid of fixOrders(bids)) {
+          orderbooks[baseAssetData][quoteAssetData].add(bid);
+        }
+        for (const ask of fixOrders(asks)) {
+          orderbooks[baseAssetData][quoteAssetData].add(ask);
+        }
       }
     }
+
+    object.relayer.orderbooks = orderbooks;
+
+    // 2. Change orders to serializable
+    object.relayer.orders = fixOrders(
+      object.relayer.orders.map(({ order }) => order)
+    );
+
+    return object;
+  } catch (err) {
+    console.warn(err);
   }
-
-  object.relayer.orderbooks = orderbooks;
-
-  // 2. Change orders to serializable
-  object.relayer.orders = fixOrders(object.relayer.orders);
-
-  return object;
 }
 
 export async function clearState() {

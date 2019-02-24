@@ -1,3 +1,4 @@
+import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -5,7 +6,13 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
-import { ActionErrorSuccessFlow, sendEther, sendTokens } from '../../../thunks';
+import * as WalletService from '../../../services/WalletService';
+import {
+  ActionErrorSuccessFlow,
+  ReceiptActionErrorSuccessFlow,
+  sendEther,
+  sendTokens
+} from '../../../thunks';
 import { navigationProp } from '../../../types/props';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
@@ -68,26 +75,63 @@ class BaseSendScreen extends Component {
     this.submit(address);
   };
 
-  submit = address => {
+  submit = async address => {
     const { asset } = this.props;
+    const { amount } = this.state;
+    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(amount, asset.decimals);
+
+    // this.props.dispatch(
+    //   ActionErrorSuccessFlow(
+    //     this.props.navigation.componentId,
+    //     {
+    //       action: async () => {
+    //         if (asset.address === null) {
+    //           await this.props.dispatch(
+    //             sendEther(address || this.state.address, this.state.amount)
+    //           );
+    //         } else {
+    //           await this.props.dispatch(
+    //             sendTokens(
+    //               asset,
+    //               address || this.state.address,
+    //               this.state.amount
+    //             )
+    //           );
+    //         }
+    //       },
+    //       icon: <FontAwesome name="send" size={100} />,
+    //       label: `Sending ${asset.name}...`
+    //     },
+    //     `Sent ${asset.name}`,
+    //     () => this.props.navigation.dismissModal()
+    //   )
+    // );
+
+    const to = address || this.state.address;
+    let gas = null;
+    if (asset.address === null) {
+      gas = await WalletService.estimateEthSend();
+    } else {
+      gas = await WalletService.estimateTokenSend(
+        asset.address,
+        to,
+        baseUnitAmount
+      );
+    }
 
     this.props.dispatch(
-      ActionErrorSuccessFlow(
+      ReceiptActionErrorSuccessFlow(
         this.props.navigation.componentId,
+        {
+          gas,
+          value: asset.address === null ? baseUnitAmount : undefined
+        },
         {
           action: async () => {
             if (asset.address === null) {
-              await this.props.dispatch(
-                sendEther(address || this.state.address, this.state.amount)
-              );
+              await this.props.dispatch(sendEther(to, amount));
             } else {
-              await this.props.dispatch(
-                sendTokens(
-                  asset,
-                  address || this.state.address,
-                  this.state.amount
-                )
-              );
+              await this.props.dispatch(sendTokens(asset, to, amount));
             }
           },
           icon: <FontAwesome name="send" size={100} />,
@@ -100,6 +144,7 @@ class BaseSendScreen extends Component {
   };
 }
 
-export default connect(state => ({ ...state }), dispatch => ({ dispatch }))(
-  connectNavigation(BaseSendScreen)
-);
+export default connect(
+  state => ({ ...state }),
+  dispatch => ({ dispatch })
+)(connectNavigation(BaseSendScreen));
