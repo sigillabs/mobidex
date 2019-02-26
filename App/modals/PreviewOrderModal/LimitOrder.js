@@ -18,7 +18,7 @@ import {
   refreshGasPrice,
   submitOrder
 } from '../../../thunks';
-import { formatAmount } from '../../../utils';
+import { formatAmount, formatTimestamp } from '../../../utils';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import Row from '../../components/Row';
@@ -86,7 +86,7 @@ class PreviewLimitOrder extends Component {
 
     if (!receipt) return this.props.navigation.dismissModal();
 
-    const { amount, relayerFee, payment, price } = receipt;
+    const { amount, relayerFee, payment, price, expires } = receipt;
     const quoteAsset = getQuoteAsset();
     const baseAsset = this.props.base;
     const relayerFeeAsset = getFeeAsset();
@@ -100,10 +100,6 @@ class PreviewLimitOrder extends Component {
     const baseFundsAfterOrder =
       side === 'buy' ? baseFunds.add(payment) : baseFunds.sub(payment);
     const relayerFeeFundsAfterOrder = relayerFeeFunds.sub(relayerFee);
-
-    const profitStyle = getProfitLossStyle(
-      side === 'buy' ? payment.negated() : payment
-    );
 
     const extraWalletData = [
       {
@@ -173,6 +169,10 @@ class PreviewLimitOrder extends Component {
             value: formatAmount(side === 'buy' ? amount : payment, 9),
             denomination: side === 'buy' ? baseAsset.symbol : quoteAsset.symbol,
             profit: true
+          },
+          {
+            name: 'Expires',
+            value: formatTimestamp(expires)
           }
         ]
       }
@@ -239,7 +239,8 @@ class PreviewLimitOrder extends Component {
       amount: limitOrder.amount,
       relayerFee,
       payment,
-      price: limitOrder.price
+      price: limitOrder.price,
+      expires: configuredOrder.expirationTimeSeconds
     };
   }
 
