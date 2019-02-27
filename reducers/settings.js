@@ -9,6 +9,7 @@ const PROD = {
   //   'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   ethereumNodeEndpoint:
     'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
+  mobidexEndpoint: 'https://mobidex.io/app/v1',
   relayerEndpoint: 'https://mobidex.io/relayer/v2',
   relayerWSS: 'wss://mobidex.io/relayer/v2/',
   inf0xEndpoint: 'https://mobidex.io/inf0x/2.1/',
@@ -21,6 +22,7 @@ const STAGE = {
   //   'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   ethereumNodeEndpoint:
     'https://eth-kovan.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
+  mobidexEndpoint: 'https://mobidex.io:9443/app/v1',
   relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
   relayerWSS: 'wss://mobidex.io:9443/relayer/v2/',
   inf0xEndpoint: 'https://mobidex.io:9443/inf0x/2.1/',
@@ -30,6 +32,7 @@ const STAGE = {
 const DEV = {
   network: 50,
   ethereumNodeEndpoint: 'http://localhost:8545',
+  mobidexEndpoint: 'https://mobidex.io:9443/app/v1',
   relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
   relayerWSS: 'wss://mobidex.io:9443/relayer/v2/',
   inf0xEndpoint: 'https://mobidex.io:9443/inf0x/2.1/',

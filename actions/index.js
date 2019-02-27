@@ -26,6 +26,7 @@ export const setOrderbook = createAction(Actions.SET_ORDERBOOK);
 export const setOrders = createAction(Actions.SET_ORDERS);
 export const setProducts = createAction(Actions.SET_PRODUCTS);
 export const setQuote = createAction(Actions.SET_QUOTE);
+export const setReferralCode = createAction(Actions.SET_REFERRAL_CODE);
 export const setWallet = createAction(Actions.SET_WALLET);
 export const setWalletAddress = createAction(Actions.SET_WALLET_ADDRESS);
 export const setTransactionHash = createAction(Actions.SET_TRANSACTION_HASH);

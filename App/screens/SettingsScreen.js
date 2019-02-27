@@ -5,11 +5,13 @@ import { ScrollView, TouchableOpacity } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { setGasLevel, setGasStation } from '../../actions';
+import { addReferrer } from '../../thunks';
 import { showModal } from '../../navigation';
 import { clearState } from '../../store';
 import { styles } from '../../styles';
 import { clearCache } from '../../utils';
 import MutedText from '../components/MutedText';
+import ReferralCodeInput from '../components/ReferralCodeInput';
 
 const GAS_STATIONS = [
   { name: 'default', label: 'default' },
@@ -42,6 +44,7 @@ class SettingsScreen extends React.Component {
 
   static propTypes = {
     network: PropTypes.number.isRequired,
+    mobidexEndpoint: PropTypes.string.isRequired,
     relayerEndpoint: PropTypes.string.isRequired,
     forexCurrency: PropTypes.string.isRequired,
     quoteSymbol: PropTypes.string.isRequired,
@@ -102,6 +105,7 @@ class SettingsScreen extends React.Component {
             </TouchableOpacity>
           }
         />
+        <ListItem title={<ReferralCodeInput onSubmit={this.addReferer} />} />
       </ScrollView>
     );
   }
@@ -127,6 +131,14 @@ class SettingsScreen extends React.Component {
       select: name => this.props.dispatch(setGasLevel(name)),
       selected: this.props.gasLevel
     });
+  };
+
+  addReferer = async code => {
+    try {
+      await this.props.dispatch(addReferrer(code));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
