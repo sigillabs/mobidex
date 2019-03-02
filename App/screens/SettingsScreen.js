@@ -14,8 +14,9 @@ import { setGasLevel, setGasStation } from '../../actions';
 import { addReferrer, loadUser } from '../../thunks';
 import { showModal } from '../../navigation';
 import { clearState } from '../../store';
-import { styles } from '../../styles';
+import { colors, styles } from '../../styles';
 import { clearCache } from '../../utils';
+import Divider from '../components/Divider';
 import MutedText from '../components/MutedText';
 import ReferralCodeInput from '../components/ReferralCodeInput';
 
@@ -89,7 +90,7 @@ class SettingsScreen extends React.Component {
     return (
       <SafeAreaView style={[styles.flex1]}>
         <ScrollView
-          contentContainerStyle={[styles.flex1, styles.p3]}
+          contentContainerStyle={[styles.flex1]}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
@@ -105,6 +106,7 @@ class SettingsScreen extends React.Component {
             title={<MutedText>Quote Token</MutedText>}
             subtitle={<Text>{quoteSymbol}</Text>}
           />
+          <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
           <ListItem
             title={<MutedText>Network</MutedText>}
             subtitle={<Text>{network}</Text>}
@@ -133,14 +135,6 @@ class SettingsScreen extends React.Component {
               </TouchableOpacity>
             }
           />
-          <ListItem
-            title={<MutedText>Clear Cache</MutedText>}
-            subtitle={
-              <TouchableOpacity onPress={this.clearCache}>
-                <Text>Tap Here</Text>
-              </TouchableOpacity>
-            }
-          />
           {referralCode ? (
             <ListItem
               title={<MutedText>Referrer Code</MutedText>}
@@ -155,6 +149,15 @@ class SettingsScreen extends React.Component {
               title={<ReferralCodeInput onSubmit={this.addReferer} />}
             />
           )}
+          <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
+          <ListItem
+            title={<MutedText>Clear Cache</MutedText>}
+            subtitle={
+              <TouchableOpacity onPress={this.clearCache}>
+                <Text>Tap Here</Text>
+              </TouchableOpacity>
+            }
+          />
         </ScrollView>
       </SafeAreaView>
     );
