@@ -1,5 +1,5 @@
 import MobidexClient from '../clients/mobidex';
-import { setReferralCode } from '../actions';
+import { setUser } from '../actions';
 
 export function addReferrer(code) {
   return async (dispatch, getState) => {
@@ -10,7 +10,7 @@ export function addReferrer(code) {
     const client = new MobidexClient(mobidexEndpoint);
     const user = await client.addReferral(address, code);
 
-    dispatch(setReferralCode(user.referralCode));
+    dispatch(setUser(user));
   };
 }
 
@@ -23,6 +23,6 @@ export function loadUser() {
     const client = new MobidexClient(mobidexEndpoint);
     const user = await client.getUser(address);
 
-    dispatch(setReferralCode(user.referralCode));
+    dispatch(setUser(user));
   };
 }

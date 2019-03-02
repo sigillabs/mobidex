@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import React from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import {
+  Clipboard,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity
+} from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { setGasLevel, setGasStation } from '../../actions';
-import { addReferrer } from '../../thunks';
+import { addReferrer, loadUser } from '../../thunks';
 import { showModal } from '../../navigation';
 import { clearState } from '../../store';
 import { styles } from '../../styles';
@@ -50,8 +56,22 @@ class SettingsScreen extends React.Component {
     quoteSymbol: PropTypes.string.isRequired,
     gasStation: PropTypes.string.isRequired,
     gasLevel: PropTypes.string.isRequired,
+    referralCode: PropTypes.string,
+    referrerCode: PropTypes.string,
     dispatch: PropTypes.func.isRequired
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      refreshing: false
+    };
+  }
+
+  componentDidMount() {
+    this.onRefresh();
+  }
 
   render() {
     const {
@@ -61,59 +81,94 @@ class SettingsScreen extends React.Component {
       forexCurrency,
       quoteSymbol,
       gasStation,
-      gasLevel
+      gasLevel,
+      referralCode,
+      referrerCode
     } = this.props;
 
     return (
-      <ScrollView contentContainerStyle={[styles.flex1, styles.p3]}>
-        <ListItem
-          title={<MutedText>Forex Currency</MutedText>}
-          subtitle={<Text>{forexCurrency}</Text>}
-        />
-        <ListItem
-          title={<MutedText>Quote Token</MutedText>}
-          subtitle={<Text>{quoteSymbol}</Text>}
-        />
-        <ListItem
-          title={<MutedText>Network</MutedText>}
-          subtitle={<Text>{network}</Text>}
-        />
-        <ListItem
-          title={<MutedText>Relayer Endpoint</MutedText>}
-          subtitle={<Text>{relayerEndpoint}</Text>}
-        />
-        <ListItem
-          title={<MutedText>Mobidex Endpoint</MutedText>}
-          subtitle={<Text>{mobidexEndpoint}</Text>}
-        />
-        <ListItem
-          title={<MutedText>Gas Level</MutedText>}
-          subtitle={
-            <TouchableOpacity onPress={this.showGasLevelSelect}>
-              <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
-            </TouchableOpacity>
+      <SafeAreaView style={[styles.flex1]}>
+        <ScrollView
+          contentContainerStyle={[styles.flex1, styles.p3]}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
           }
-        />
-        <ListItem
-          title={<MutedText>Gas Station</MutedText>}
-          subtitle={
-            <TouchableOpacity onPress={this.showGasStationSelect}>
-              <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
-            </TouchableOpacity>
-          }
-        />
-        <ListItem
-          title={<MutedText>Clear Cache</MutedText>}
-          subtitle={
-            <TouchableOpacity onPress={this.clearCache}>
-              <Text>Tap Here</Text>
-            </TouchableOpacity>
-          }
-        />
-        <ListItem title={<ReferralCodeInput onSubmit={this.addReferer} />} />
-      </ScrollView>
+        >
+          <ListItem
+            title={<MutedText>Forex Currency</MutedText>}
+            subtitle={<Text>{forexCurrency}</Text>}
+          />
+          <ListItem
+            title={<MutedText>Quote Token</MutedText>}
+            subtitle={<Text>{quoteSymbol}</Text>}
+          />
+          <ListItem
+            title={<MutedText>Network</MutedText>}
+            subtitle={<Text>{network}</Text>}
+          />
+          <ListItem
+            title={<MutedText>Relayer Endpoint</MutedText>}
+            subtitle={<Text>{relayerEndpoint}</Text>}
+          />
+          <ListItem
+            title={<MutedText>Mobidex Endpoint</MutedText>}
+            subtitle={<Text>{mobidexEndpoint}</Text>}
+          />
+          <ListItem
+            title={<MutedText>Gas Level</MutedText>}
+            subtitle={
+              <TouchableOpacity onPress={this.showGasLevelSelect}>
+                <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
+              </TouchableOpacity>
+            }
+          />
+          <ListItem
+            title={<MutedText>Gas Station</MutedText>}
+            subtitle={
+              <TouchableOpacity onPress={this.showGasStationSelect}>
+                <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
+              </TouchableOpacity>
+            }
+          />
+          <ListItem
+            title={<MutedText>Clear Cache</MutedText>}
+            subtitle={
+              <TouchableOpacity onPress={this.clearCache}>
+                <Text>Tap Here</Text>
+              </TouchableOpacity>
+            }
+          />
+          {referralCode ? (
+            <ListItem
+              title={<MutedText>Referrer Code</MutedText>}
+              subtitle={
+                <TouchableOpacity onPress={this.copyReferrerCode}>
+                  <Text>{referrerCode}</Text>
+                </TouchableOpacity>
+              }
+            />
+          ) : (
+            <ListItem
+              title={<ReferralCodeInput onSubmit={this.addReferer} />}
+            />
+          )}
+        </ScrollView>
+      </SafeAreaView>
     );
   }
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    try {
+      await this.props.dispatch(loadUser());
+    } catch (err) {
+      // console.warn(err);
+    }
+    this.setState({ refreshing: false });
+  };
 
   clearCache = () => {
     clearState();
@@ -145,9 +200,17 @@ class SettingsScreen extends React.Component {
       // console.warn(err);
     }
   };
+
+  copyReferrerCode = () => {
+    Clipboard.setString(this.props.referrerCode);
+  };
 }
 
 export default connect(
-  state => ({ ...state.settings }),
+  state => ({
+    ...state.settings,
+    referralCode: state.wallet.referralCode,
+    referrerCode: state.wallet.referrerCode
+  }),
   dispatch => ({ dispatch })
 )(SettingsScreen);

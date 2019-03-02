@@ -4,6 +4,7 @@ import * as Actions from '../constants/actions';
 
 const initialState = {
   referralCode: null,
+  referrerCode: null,
   address: null,
   balances: {},
   allowances: {},
@@ -63,8 +64,12 @@ export default handleActions(
         balances: { ...state.balances, ...action.payload }
       };
     },
-    [Actions.SET_REFERRAL_CODE]: (state, action) => {
-      return { ...state, referralCode: action.payload };
+    [Actions.SET_USER]: (state, action) => {
+      const user = {
+        referralCode: action.payload.referralCode,
+        referrerCode: action.payload.referrerCode
+      };
+      return { ...state, ...user };
     },
     [Actions.SET_WALLET_ADDRESS]: (state, action) => {
       return { ...state, address: action.payload };

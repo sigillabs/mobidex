@@ -17,6 +17,11 @@ export default class MobidexClient {
         referrerCode: code
       })
     });
+
+    if (response.status === 400) {
+      throw new Error('Referral code does not exist');
+    }
+
     const json = await response.json();
 
     return json;
@@ -25,12 +30,16 @@ export default class MobidexClient {
   @time
   async getUser(address) {
     const response = await fetch(`${this.endpoint}/user/${address}`, {
-      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       }
     });
+
+    if (response.status === 404) {
+      throw new Error('User does not exist');
+    }
+
     const json = await response.json();
 
     return json;
