@@ -56,6 +56,7 @@ class SettingsScreen extends React.Component {
   render() {
     const {
       network,
+      mobidexEndpoint,
       relayerEndpoint,
       forexCurrency,
       quoteSymbol,
@@ -80,6 +81,10 @@ class SettingsScreen extends React.Component {
         <ListItem
           title={<MutedText>Relayer Endpoint</MutedText>}
           subtitle={<Text>{relayerEndpoint}</Text>}
+        />
+        <ListItem
+          title={<MutedText>Mobidex Endpoint</MutedText>}
+          subtitle={<Text>{mobidexEndpoint}</Text>}
         />
         <ListItem
           title={<MutedText>Gas Level</MutedText>}
@@ -137,7 +142,7 @@ class SettingsScreen extends React.Component {
     try {
       await this.props.dispatch(addReferrer(code));
     } catch (err) {
-      console.warn(err);
+      // console.warn(err);
     }
   };
 }

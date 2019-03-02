@@ -7,19 +7,16 @@ export default class MobidexClient {
 
   @time
   async addReferral(address, code) {
-    const response = await fetch(
-      `${this.endpoint}/app/user/${address}/referral`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: {
-          referrerCode: code
-        }
-      }
-    );
+    const response = await fetch(`${this.endpoint}/user/${address}/referral`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        referrerCode: code
+      })
+    });
     const json = await response.json();
 
     return json;
@@ -27,7 +24,7 @@ export default class MobidexClient {
 
   @time
   async getUser(address) {
-    const response = await fetch(`${this.endpoint}/app/user/${address}`, {
+    const response = await fetch(`${this.endpoint}/user/${address}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
