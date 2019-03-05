@@ -88,9 +88,8 @@ class SettingsScreen extends React.Component {
     } = this.props;
 
     return (
-      <SafeAreaView style={[styles.flex1]}>
+      <SafeAreaView style={[styles.h100, styles.w100]}>
         <ScrollView
-          contentContainerStyle={[styles.flex1]}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
