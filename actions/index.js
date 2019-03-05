@@ -5,7 +5,7 @@ export const addActiveTransactions = createAction(
   Actions.ADD_ACTIVE_TRANSACTIONS
 );
 export const addAssets = createAction(Actions.ADD_ASSETS);
-export const addOrders = createAction(Actions.ADD_ORDERS);
+export const appendOrderbook = createAction(Actions.APPEND_ORDERBOOK);
 export const addTransactions = createAction(Actions.ADD_TRANSACTIONS);
 export const finishedFirstLoad = createAction(Actions.FINISHED_FIRST_LOAD);
 export const notProcessing = createAction(Actions.NOT_PROCESSING);

@@ -18,6 +18,7 @@ import {
   loadOrderbook,
   marketBuy,
   marketSell,
+  pruneOrders,
   refreshGasPrice
 } from '../../../thunks';
 import { formatAmount } from '../../../utils';
@@ -119,7 +120,20 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 2. Load quote
+      // 2. Prune orders
+      try {
+        this.props.dispatch(
+          pruneOrders(this.props.base.assetData, this.props.quote.assetData)
+        );
+      } catch (err) {
+        this.props.navigation.dismissModal();
+        this.props.navigation.waitForDisappear(() =>
+          this.props.navigation.showErrorModal(err)
+        );
+        return;
+      }
+
+      // 3. Load quote
       try {
         if (side === 'buy') {
           quote = await OrderService.getBuyAssetsQuoteAsync(
@@ -153,7 +167,7 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 3. Verify orders
+      // 4. Verify
       //// - Check fee balance
       //// - Check taker balance
       if (side === 'buy') {
@@ -210,7 +224,7 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 4. Load gas estimatation
+      // 5. Load gas estimatation
       try {
         if (side === 'buy') {
           gas = await ZeroExService.estimateMarketBuyOrders(
@@ -231,12 +245,12 @@ class PreviewFillOrders extends Component {
         return;
       }
 
-      // 5. Load gas price
+      // 6. Load gas price
       const gasPrice = WalletService.convertGasPriceToEth(
         await this.props.dispatch(refreshGasPrice())
       );
 
-      // 6. Verify network fee
+      // 7. Verify network fee
       if (gasPrice.mul(gas).gt(etherBalance)) {
         this.props.navigation.dismissModal();
         this.props.navigation.waitForDisappear(() =>

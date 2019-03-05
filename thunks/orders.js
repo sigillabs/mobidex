@@ -4,6 +4,7 @@ import ethUtil from 'ethereumjs-util';
 import * as _ from 'lodash';
 import {
   addAssets,
+  appendOrderbook,
   setOrders,
   setOrderbook,
   setProducts,
@@ -18,7 +19,7 @@ import { showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
-import { fixOrders } from '../lib/utils/orders';
+import { fixOrders, filterFillableOrders } from '../lib/utils/orders';
 
 export function loadOrderbook(
   baseAssetData,
@@ -121,7 +122,7 @@ export function loadOrder(orderHash) {
       if (!order) return;
 
       dispatch(
-        setOrders([
+        appendOrderbook([
           orderParsingUtils.convertOrderStringFieldsToBigNumber(order)
         ])
       );
@@ -246,6 +247,27 @@ export function loadMarketSellQuote(
     } catch (err) {
       dispatch(setQuote(['sell', null, false, err]));
     }
+  };
+}
+
+export function pruneOrders(baseAssetData, quoteAssetData) {
+  return async (dispatch, getState) => {
+    const {
+      relayer: { orderbooks }
+    } = getState();
+
+    if (!orderbooks) return;
+    if (!orderbooks[baseAssetData]) return;
+    if (!orderbooks[baseAssetData][quoteAssetData]) return;
+
+    const asks = filterFillableOrders(
+      orderbooks[baseAssetData][quoteAssetData].asks
+    );
+    const bids = filterFillableOrders(
+      orderbooks[baseAssetData][quoteAssetData].bids
+    );
+
+    dispatch(setOrderbook([baseAssetData, quoteAssetData, bids, asks]));
   };
 }
 

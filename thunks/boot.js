@@ -1,6 +1,6 @@
 import { ordersChannelFactory } from '@0xproject/connect';
 import {
-  addOrders,
+  appendOrderbook,
   finishedFirstLoad,
   updateForexTicker,
   updateTokenTicker
@@ -52,7 +52,7 @@ export function startRelayerWebsockets() {
           console.warn('relayer wss error', channel, error, subscriptionOpts);
         },
         onUpdate: (channel, subscriptionOpts, orders) => {
-          dispatch(addOrders(orders));
+          dispatch(appendOrderbook(orders));
         }
       }
     );
