@@ -560,6 +560,9 @@ export function getImage(symbol) {
     case 'WAX':
       return require('../images/tokens/WAX.png');
 
+    case 'WBTC':
+      return require('../images/tokens/WBTC.png');
+
     case 'WETH':
       return require('../images/tokens/WETH.png');
 
