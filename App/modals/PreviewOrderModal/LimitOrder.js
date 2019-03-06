@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { InteractionManager, SafeAreaView } from 'react-native';
+import { InteractionManager, SafeAreaView, ScrollView } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../navigation';
@@ -12,7 +12,7 @@ import {
   convertZeroExOrderToLimitOrder
 } from '../../../services/OrderService';
 import * as WalletService from '../../../services/WalletService';
-import { colors, getProfitLossStyle } from '../../../styles';
+import { colors } from '../../../styles';
 import {
   ActionErrorSuccessFlow,
   refreshGasPrice,
@@ -180,26 +180,28 @@ class PreviewLimitOrder extends Component {
 
     return (
       <SafeAreaView style={[styles.flex1]}>
-        <Receipt
-          extraWalletData={extraWalletData}
-          extraUpdatedWalletData={extraUpdatedWalletData}
-          extraSections={extraSections}
-          showNetwork={false}
-        />
-        <Row style={{ width: '100%' }}>
-          <Button
-            large
-            onPress={this.cancel}
-            title={'Cancel'}
-            containerStyle={{ flex: 1 }}
+        <ScrollView contentContainerStyle={[styles.flex0, styles.p3]}>
+          <Receipt
+            extraWalletData={extraWalletData}
+            extraUpdatedWalletData={extraUpdatedWalletData}
+            extraSections={extraSections}
+            showNetwork={false}
           />
-          <Button
-            large
-            onPress={this.submit}
-            title={this.getButtonTitle()}
-            containerStyle={{ flex: 1 }}
-          />
-        </Row>
+          <Row style={{ width: '100%' }}>
+            <Button
+              large
+              onPress={this.cancel}
+              title={'Cancel'}
+              containerStyle={{ flex: 1 }}
+            />
+            <Button
+              large
+              onPress={this.submit}
+              title={this.getButtonTitle()}
+              containerStyle={{ flex: 1 }}
+            />
+          </Row>
+        </ScrollView>
       </SafeAreaView>
     );
   }
