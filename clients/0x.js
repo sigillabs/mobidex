@@ -83,7 +83,8 @@ export default class ZeroExClient {
     return wrappers.etherToken.depositAsync(
       WETHAddress,
       new BigNumber(amount),
-      formatHexString(account.toString())
+      formatHexString(account.toString()),
+      this.options
     );
   }
 
@@ -95,7 +96,8 @@ export default class ZeroExClient {
     return wrappers.etherToken.withdrawAsync(
       WETHAddress,
       new BigNumber(amount),
-      formatHexString(account.toString())
+      formatHexString(account.toString()),
+      this.options
     );
   }
 
@@ -107,7 +109,7 @@ export default class ZeroExClient {
       order,
       new BigNumber(amount),
       formatHexString(account.toString()),
-      { shouldValidate: false }
+      { ...this.options, shouldValidate: false }
     );
   }
 
@@ -119,7 +121,7 @@ export default class ZeroExClient {
       orders,
       amounts.map(amount => new BigNumber(amount)),
       formatHexString(account.toString()),
-      { shouldValidate: false }
+      { ...this.options, shouldValidate: false }
     );
   }
 
@@ -127,6 +129,7 @@ export default class ZeroExClient {
   async cancelOrder(order) {
     const wrappers = await this.getContractWrappers();
     return wrappers.exchange.cancelOrderAsync(order, {
+      ...this.options,
       shouldValidate: false
     });
   }
