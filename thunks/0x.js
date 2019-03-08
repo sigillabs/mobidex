@@ -17,8 +17,7 @@ export function deposit(address, amount) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
     const txhash = await zeroExClient.depositEther(new BigNumber(amount));
     const activeTransaction = {
@@ -41,8 +40,7 @@ export function withdraw(address, amount) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
     const txhash = await zeroExClient.withdrawEther(new BigNumber(amount));
     const activeTransaction = {
@@ -65,8 +63,7 @@ export function fillOrKillOrder(order, amount) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
     const txhash = await zeroExClient.fillOrKillOrder(order, amount);
     const activeTransaction = {
@@ -82,7 +79,7 @@ export function fillOrKillOrder(order, amount) {
 export function batchFillOrKill(orders, amounts) {
   return async (dispatch, getState) => {
     const {
-      settings: { gasPrice, gasLimit }
+      settings: { gasPrice }
     } = getState();
 
     const web3 = WalletService.getWeb3();
@@ -92,8 +89,7 @@ export function batchFillOrKill(orders, amounts) {
     } else {
       const ethereumClient = new EthereumClient(web3);
       const zeroExClient = new ZeroExClient(ethereumClient, {
-        gasPrice,
-        gasLimit
+        gasPrice
       });
       const txhash = await zeroExClient.fillOrKillOrders(orders, amounts);
       const activeTransaction = {
@@ -135,8 +131,7 @@ export function marketBuyWithEth(quote) {
     );
 
     const txhash = await buyer.executeBuyQuoteAsync(quote, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
     const activeTransaction = {
       id: txhash,
@@ -165,8 +160,7 @@ export function marketBuy(quote) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
 
     const txhash = await zeroExClient.marketBuy(
@@ -200,8 +194,7 @@ export function marketSell(quote) {
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
-      gasPrice,
-      gasLimit
+      gasPrice
     });
 
     const txhash = await zeroExClient.marketSell(
