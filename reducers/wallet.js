@@ -67,7 +67,9 @@ export default handleActions(
     [Actions.SET_USER]: (state, action) => {
       const user = {
         referralCode: action.payload.referralCode,
-        referrerCode: action.payload.referrerCode
+        referrerCode: action.payload.referrer
+          ? action.payload.referrer.referralCode
+          : null
       };
       return { ...state, ...user };
     },

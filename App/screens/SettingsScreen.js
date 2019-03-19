@@ -66,7 +66,8 @@ class SettingsScreen extends React.Component {
     super(props);
 
     this.state = {
-      refreshing: false
+      refreshing: false,
+      referralCodeError: false
     };
   }
 
@@ -134,18 +135,28 @@ class SettingsScreen extends React.Component {
               </TouchableOpacity>
             }
           />
-          {referralCode ? (
+          {referrerCode ? (
             <ListItem
-              title={<MutedText>Referrer Code</MutedText>}
+              title={<MutedText>Referral Code</MutedText>}
               subtitle={
-                <TouchableOpacity onPress={this.copyReferrerCode}>
-                  <Text>{referrerCode}</Text>
+                <TouchableOpacity onPress={this.copyReferralCode}>
+                  <Text>{referralCode}</Text>
                 </TouchableOpacity>
               }
             />
           ) : (
             <ListItem
-              title={<ReferralCodeInput onSubmit={this.addReferer} />}
+              title={
+                <ReferralCodeInput
+                  onSubmit={this.addReferer}
+                  errorMessage={
+                    this.state.referralCodeError
+                      ? 'Referral code does not exist'
+                      : ' '
+                  }
+                  errorStyle={{ color: colors.error }}
+                />
+              }
             />
           )}
           <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
@@ -166,10 +177,9 @@ class SettingsScreen extends React.Component {
     this.setState({ refreshing: true });
     try {
       await this.props.dispatch(loadUser());
-    } catch (err) {
-      // console.warn(err);
+    } finally {
+      this.setState({ refreshing: false });
     }
-    this.setState({ refreshing: false });
   };
 
   clearCache = () => {
@@ -198,13 +208,14 @@ class SettingsScreen extends React.Component {
   addReferer = async code => {
     try {
       await this.props.dispatch(addReferrer(code));
+      this.setState({ referralCodeError: false });
     } catch (err) {
-      // console.warn(err);
+      this.setState({ referralCodeError: true });
     }
   };
 
-  copyReferrerCode = () => {
-    Clipboard.setString(this.props.referrerCode);
+  copyReferralCode = () => {
+    Clipboard.setString(this.props.referralCode);
   };
 }
 
