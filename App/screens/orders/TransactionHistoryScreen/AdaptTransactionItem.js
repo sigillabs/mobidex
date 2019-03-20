@@ -59,6 +59,26 @@ export default class AdaptTransactionItem extends Component {
 
     switch (txtype) {
       case 'MARKET_BUY':
+        /* eslint-disable */
+        return (
+          <TransactionItem
+            action={txtype}
+            label={LABEL_LOOKUP[txtype]}
+            destination={{
+              address: this.props.transaction.spender,
+              amount:
+                this.props.transaction.amount === 'UNLIMITED'
+                  ? 'UNLIMITED'
+                  : formatAmountWithDecimals(
+                      quote.assetBuyAmount,
+                      token ? token.decimals : 18
+                    ),
+              symbol: token ? token.symbol : 'Token'
+            }}
+            timestamp={timestamp}
+          />
+        );
+      /* eslint-enable */
       case 'MARKET_SELL':
         /* eslint-disable */
         return (
@@ -71,7 +91,7 @@ export default class AdaptTransactionItem extends Component {
                 this.props.transaction.amount === 'UNLIMITED'
                   ? 'UNLIMITED'
                   : formatAmountWithDecimals(
-                      quote.assetSellAmount || quote.assetBuyAmount,
+                      quote.assetSellAmount,
                       token ? token.decimals : 18
                     ),
               symbol: token ? token.symbol : 'Token'
