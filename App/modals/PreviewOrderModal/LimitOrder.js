@@ -90,50 +90,53 @@ class PreviewLimitOrder extends Component {
     const quoteAsset = getQuoteAsset();
     const baseAsset = this.props.base;
     const relayerFeeAsset = getFeeAsset();
-    const quoteFunds = WalletService.getBalanceByAddress(quoteAsset.address);
-    const baseFunds = WalletService.getBalanceByAddress(baseAsset.address);
-    const relayerFeeFunds = WalletService.getBalanceByAddress(
-      relayerFeeAsset.address
-    );
-    const quoteFundsAfterOrder =
-      side === 'buy' ? quoteFunds.sub(payment) : quoteFunds.add(payment);
-    const baseFundsAfterOrder =
-      side === 'buy' ? baseFunds.add(payment) : baseFunds.sub(payment);
-    const relayerFeeFundsAfterOrder = relayerFeeFunds.sub(relayerFee);
+    const assets = [baseAsset, quoteAsset, relayerFeeAsset];
+    const addresses = new Set(assets.map(asset => asset.address));
+    const wallet = {};
+    const walletAfterTransaction = {};
 
-    const extraWalletData = [
-      {
-        denomination: quoteAsset.symbol,
-        value: formatAmount(quoteFunds, 9)
-      },
-      {
-        denomination: baseAsset.symbol,
-        value: formatAmount(baseFunds, 9)
-      },
-      {
-        denomination: relayerFeeAsset.symbol,
-        value: formatAmount(relayerFeeFunds, 9)
-      }
-    ];
-    const extraUpdatedWalletData = [
-      {
-        denomination: quoteAsset.symbol,
-        value: formatAmount(quoteFundsAfterOrder, 9),
-        profit: side === 'sell',
-        loss: side === 'buy'
-      },
-      {
-        denomination: baseAsset.symbol,
-        value: formatAmount(baseFundsAfterOrder, 9),
-        profit: side === 'buy',
-        loss: side === 'sell'
-      },
-      {
-        denomination: relayerFeeAsset.symbol,
-        value: formatAmount(relayerFeeFundsAfterOrder, 9),
-        loss: relayerFee.gt(0)
-      }
-    ];
+    for (const asset of assets) {
+      wallet[asset.address] = {
+        symbol: asset.symbol,
+        amount: WalletService.getBalanceByAddress(asset.address)
+      };
+      walletAfterTransaction[asset.address] = {
+        symbol: asset.symbol,
+        amount: WalletService.getBalanceByAddress(asset.address)
+      };
+    }
+
+    if (side === 'buy') {
+      walletAfterTransaction[
+        quoteAsset.address
+      ].amount = walletAfterTransaction[quoteAsset.address].amount.sub(payment);
+      walletAfterTransaction[baseAsset.address].amount = walletAfterTransaction[
+        baseAsset.address
+      ].amount.add(amount);
+    } else {
+      walletAfterTransaction[
+        quoteAsset.address
+      ].amount = walletAfterTransaction[quoteAsset.address].amount.add(payment);
+      walletAfterTransaction[baseAsset.address].amount = walletAfterTransaction[
+        baseAsset.address
+      ].amount.sub(amount);
+    }
+    walletAfterTransaction[
+      relayerFeeAsset.address
+    ].amount = walletAfterTransaction[relayerFeeAsset.address].amount.sub(
+      relayerFee
+    );
+
+    const extraWalletData = Array.from(addresses).map(address => ({
+      denomination: wallet[address].symbol,
+      value: formatAmount(wallet[address].amount, 9)
+    }));
+    const extraUpdatedWalletData = Array.from(addresses).map(address => ({
+      denomination: walletAfterTransaction[address].symbol,
+      value: formatAmount(walletAfterTransaction[address].amount, 9),
+      profit: walletAfterTransaction[address].amount.gt(wallet[address].amount),
+      loss: walletAfterTransaction[address].amount.lt(wallet[address].amount)
+    }));
     const extraSections = [
       {
         title: 'Relayer',

@@ -113,7 +113,7 @@ class BaseReceipt extends Component {
             9
           ),
           denomination: networkFeeAsset.symbol,
-          loss: networkFee.gt(0)
+          loss: networkFee.gt(0) || unitValue.gt(0)
         }
       ]
     };

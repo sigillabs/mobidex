@@ -19,7 +19,8 @@ import { showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
-import { fixOrders, filterFillableOrders } from '../lib/utils/orders';
+import { fixOrders } from '../lib/utils/orders';
+import { filterFillableOrders } from '../utils';
 
 export function loadOrderbook(
   baseAssetData,
@@ -260,12 +261,29 @@ export function pruneOrders(baseAssetData, quoteAssetData) {
     if (!orderbooks[baseAssetData]) return;
     if (!orderbooks[baseAssetData][quoteAssetData]) return;
 
-    const asks = filterFillableOrders(
-      orderbooks[baseAssetData][quoteAssetData].asks
-    );
-    const bids = filterFillableOrders(
-      orderbooks[baseAssetData][quoteAssetData].bids
-    );
+    const web3 = WalletService.getWeb3();
+    const ethereumClient = new EthereumClient(web3);
+    const zeroExClient = await new ZeroExClient(ethereumClient);
+    const wrappers = await zeroExClient.getContractWrappers();
+    const orderbook = orderbooks[baseAssetData][quoteAssetData];
+    const asks = [];
+    const bids = [];
+    const askIterator = orderbook.asks.iterator();
+    const bidIterator = orderbook.bids.iterator();
+    let ask, bid;
+
+    while ((ask = askIterator.next()) !== null) {
+      try {
+        await wrappers.exchange.validateOrderFillableOrThrowAsync(ask);
+        asks.push(ask);
+      } catch (err) {}
+    }
+    while ((bid = bidIterator.next()) !== null) {
+      try {
+        await wrappers.exchange.validateOrderFillableOrThrowAsync(bid);
+        bids.push(bid);
+      } catch (err) {}
+    }
 
     dispatch(setOrderbook([baseAssetData, quoteAssetData, bids, asks]));
   };
