@@ -28,7 +28,7 @@ class ProductDetailsScreen extends React.PureComponent {
         rightButtons: [
           {
             id: 'toggleForexButton',
-            text: 'ETH',
+            text: 'WETH',
             color: 'black'
           }
         ]
