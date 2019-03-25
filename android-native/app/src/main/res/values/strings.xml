@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Mobidex</string>
+    <string name="product_price_title">Price</string>
+    <string name="product_24avg_title">24 Hour Average</string>
+</resources>

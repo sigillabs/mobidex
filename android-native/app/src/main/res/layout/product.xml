@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:id="@+id/order_container" android:orientation="horizontal"
+              android:gravity="fill_horizontal">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="match_parent" android:id="@+id/product_logo"
+            android:gravity="start|fill_horizontal" android:layout_width="0dp" android:layout_weight="1">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/product_title"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content" android:id="@+id/product_price"
+            android:gravity="center|fill_horizontal" android:layout_width="0dp" android:layout_weight="2">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/price_data" android:textAlignment="center"/>
+        <TextView
+                android:text="@string/product_price_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/price_title" android:textAlignment="center"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content" android:id="@+id/product_24avg"
+            android:gravity="fill_horizontal|end" android:layout_width="0dp" android:layout_weight="2">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/avg_data" android:textAlignment="center"/>
+        <TextView
+                android:text="@string/product_24avg_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/avg_title" android:textAlignment="center"/>
+    </LinearLayout>
+</LinearLayout>

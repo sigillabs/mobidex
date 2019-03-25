@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_height="match_parent"
+                                                 android:layout_width="match_parent">
+
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/main_content">
+
+    </FrameLayout>
+    <android.support.design.widget.BottomNavigationView
+            app:menu="@menu/bottom_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="?android:attr/windowBackground"
+            android:foreground="?attr/selectableItemBackground"
+            app:itemIconTint="@android:color/black"
+            app:itemTextColor="@android:color/black" android:id="@+id/bottom_tabs"/>
+
+</android.support.design.widget.CoordinatorLayout>

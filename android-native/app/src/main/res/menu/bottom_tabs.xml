@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Trade" android:id="@+id/trade"/>
+    <item android:title="Orders" android:id="@+id/orders"/>
+    <item android:title="Transactions" android:id="@+id/transactions"/>
+    <item android:title="Wallet" android:id="@+id/wallet"/>
+    <item android:title="Settings" android:id="@+id/settings"/>
+</menu>
