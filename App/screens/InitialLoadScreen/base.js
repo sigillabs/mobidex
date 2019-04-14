@@ -21,13 +21,15 @@ class BaseInitialLoadScreen extends React.Component {
   componentDidMount() {
     requestAnimationFrame(async () => {
       await this.props.dispatch(initialLoad(1));
-      this.props.dispatch(startWebsockets());
 
       // Set initial navigation.
       setTabsRoot();
 
       // background updates have to be registered after tabs have been set.
       registerBackgroundUpdates(getStore());
+
+      // Register websocket connections from inf0x and relayer
+      this.props.dispatch(startWebsockets());
     });
   }
 

@@ -13,7 +13,7 @@ export default class TimerService {
   start() {
     if (!this.running) {
       this.running = true;
-      BackgroundTimer.runBackgroundTimer(() => {
+      BackgroundTimer.runBackgroundTimer(async () => {
         const current = moment().unix();
         const remove = [];
         for (const index in this.events) {
@@ -47,7 +47,7 @@ export default class TimerService {
   }
 
   static getInstance(interval = 5 * 60 * 1000) {
-    if (TimerService.instance === null) {
+    if (!TimerService.instance) {
       TimerService.instance = new TimerService(interval);
     }
 

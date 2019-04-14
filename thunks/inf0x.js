@@ -4,6 +4,7 @@ import {
   updateTokenTicker as _updateTokenTicker
 } from '../actions';
 import Inf0xClient from '../clients/inf0x';
+import { setOfflineRoot } from '../navigation';
 
 export function updateForexTickers(force = false) {
   return async (dispatch, getState) => {
@@ -13,8 +14,16 @@ export function updateForexTickers(force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const products = assets.map(({ symbol }) => `${symbol}-${forexCurrency}`);
-    const jsonResponse = await client.getForexTicker(products, force);
-    dispatch(_updateForexTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getForexTicker(products, force);
+      dispatch(_updateForexTicker(jsonResponse));
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        console.warn(error);
+      }
+    }
   };
 }
 
@@ -25,8 +34,16 @@ export function updateForexTicker(symbol, force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const product = `${symbol}-${forexCurrency}`;
-    const jsonResponse = await client.getForexTicker([product], force);
-    dispatch(_updateForexTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getForexTicker([product], force);
+      dispatch(_updateForexTicker(jsonResponse));
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        console.warn(error);
+      }
+    }
   };
 }
 
@@ -44,8 +61,16 @@ export function updateTokenTickers(force = false) {
       ])
       .filter(([tokenA, tokenB]) => tokenA && tokenB)
       .map(([tokenA, tokenB]) => `${tokenB.symbol}-${tokenA.symbol}`);
-    const jsonResponse = await client.getTokenTicker(_products, force);
-    dispatch(_updateTokenTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getTokenTicker(_products, force);
+      dispatch(_updateTokenTicker(jsonResponse));
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        console.warn(error);
+      }
+    }
   };
 }
 
@@ -56,7 +81,15 @@ export function updateTokenTicker(baseSymbol, quoteSymbol, force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const product = `${baseSymbol}-${quoteSymbol}`;
-    const jsonResponse = await client.getTokenTicker([product], force);
-    dispatch(_updateTokenTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getTokenTicker([product], force);
+      dispatch(_updateTokenTicker(jsonResponse));
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        console.warn(error);
+      }
+    }
   };
 }

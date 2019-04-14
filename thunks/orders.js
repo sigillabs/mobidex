@@ -15,12 +15,11 @@ import RelayerClient from '../clients/relayer';
 import TokenClient from '../clients/token';
 import ZeroExClient from '../clients/0x';
 import * as AssetService from '../services/AssetService';
-import { showErrorModal } from '../navigation';
+import { setOfflineRoot, showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
 import { fixOrders } from '../lib/utils/orders';
-import { filterFillableOrders } from '../utils';
 
 export function loadOrderbook(
   baseAssetData,
@@ -67,7 +66,11 @@ export function loadOrderbook(
         ])
       );
     } catch (err) {
-      showErrorModal(err);
+      if (~err.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(err);
+      }
     }
   };
 }
@@ -106,7 +109,11 @@ export function loadOrders(force = false) {
       const orders = await client.getOrdersForAddress(address, force);
       dispatch(setOrders(fixOrders(orders)));
     } catch (err) {
-      showErrorModal(err);
+      if (~err.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(err);
+      }
     }
   };
 }
@@ -128,7 +135,11 @@ export function loadOrder(orderHash) {
         ])
       );
     } catch (err) {
-      showErrorModal(err);
+      if (~err.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(err);
+      }
     }
   };
 }
@@ -156,7 +167,11 @@ export function loadProducts(force = false) {
       }));
       dispatch(setProducts(extendedPairs));
     } catch (err) {
-      showErrorModal(err);
+      if (~err.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(err);
+      }
     }
   };
 }
@@ -167,9 +182,8 @@ export function loadAssets(force = false) {
       relayer: { products }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
-
     try {
+      const web3 = WalletService.getWeb3();
       const ethereumClient = new EthereumClient(web3);
       const productsA = products.map(pair => pair.assetDataA);
       const productsB = products.map(pair => pair.assetDataB);
@@ -199,7 +213,11 @@ export function loadAssets(force = false) {
         )
       );
     } catch (err) {
-      showErrorModal(err);
+      if (~err.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(err);
+      }
     }
   };
 }

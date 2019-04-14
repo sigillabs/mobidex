@@ -88,6 +88,79 @@ export function showSuccessModal(label, ok) {
   });
 }
 
+export async function setOfflineRoot() {
+  Navigation.setRoot({
+    root: {
+      bottomTabs: await getOfflineBottomTabs()
+    }
+  });
+}
+
+export async function getOfflineBottomTabs() {
+  const icons = await Promise.all([
+    Ionicons.getImageSource('md-funnel', 30),
+    Ionicons.getImageSource('md-card', 30),
+    Ionicons.getImageSource('ios-settings', 30)
+  ]);
+  const [offline, wallet, settings] = icons;
+  return {
+    children: [
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.Offline'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Offline',
+              icon: offline,
+              badgeColor: 'red'
+            }
+          }
+        }
+      },
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.wallet.Accounts'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Wallet',
+              icon: wallet
+            }
+          }
+        }
+      },
+      {
+        stack: {
+          children: [
+            {
+              component: {
+                name: 'navigation.Settings'
+              }
+            }
+          ],
+          options: {
+            bottomTab: {
+              text: 'Settings',
+              icon: settings
+            }
+          }
+        }
+      }
+    ]
+  };
+}
+
 export function setOnboardingRoot() {
   Navigation.setRoot({
     root: {

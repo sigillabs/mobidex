@@ -13,7 +13,7 @@ import Inf0xClient from '../clients/inf0x';
 import TokenClient from '../clients/token';
 import { MAX } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
-import { showErrorModal } from '../navigation';
+import { setOfflineRoot, showErrorModal } from '../navigation';
 import { TransactionService } from '../services/TransactionService';
 import * as WalletService from '../services/WalletService';
 import { deposit, withdraw } from './0x';
@@ -23,8 +23,12 @@ export function loadWalletAddress() {
     try {
       const address = await WalletService.getWalletAddress();
       dispatch(setWalletAddress(address));
-    } catch (err) {
-      console.warn(err);
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
     }
   };
 }
@@ -35,34 +39,51 @@ export function loadAllowances(force = false) {
       relayer: { assets }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
-
-    const ethereumClient = new EthereumClient(web3);
-    const allowances = await Promise.all(
-      assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
-        const tokenClient = new TokenClient(ethereumClient, address);
-        return tokenClient
-          .getAllowance(null, force)
-          .then(allowance => ({ [address]: allowance }));
-      })
-    );
-    const allAllowances = allowances.reduce(
-      (acc, obj) => _.merge(acc, obj),
-      {}
-    );
-    dispatch(setAllowances(allAllowances));
+    try {
+      const web3 = WalletService.getWeb3();
+      const ethereumClient = new EthereumClient(web3);
+      const allowances = await Promise.all(
+        assets
+          .filter(({ address }) => Boolean(address))
+          .map(({ address }) => {
+            const tokenClient = new TokenClient(ethereumClient, address);
+            return tokenClient
+              .getAllowance(null, force)
+              .then(allowance => ({ [address]: allowance }));
+          })
+      );
+      const allAllowances = allowances.reduce(
+        (acc, obj) => _.merge(acc, obj),
+        {}
+      );
+      dispatch(setAllowances(allAllowances));
+    } catch (error) {
+      if (~error.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
+    }
   };
 }
 
 export function loadAllowance(assetData, force = false) {
   return async dispatch => {
-    const web3 = WalletService.getWeb3();
-    const ethereumClient = new EthereumClient(web3);
-    const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
-    const tokenClient = new TokenClient(ethereumClient, address);
-    const allowance = await tokenClient.getAllowance(null, force);
-
-    dispatch(setAllowances({ [address]: allowance }));
+    try {
+      const web3 = WalletService.getWeb3();
+      const ethereumClient = new EthereumClient(web3);
+      const address = assetDataUtils.decodeERC20AssetData(assetData)
+        .tokenAddress;
+      const tokenClient = new TokenClient(ethereumClient, address);
+      const allowance = await tokenClient.getAllowance(null, force);
+      dispatch(setAllowances({ [address]: allowance }));
+    } catch (error) {
+      if (~error.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
+    }
   };
 }
 
@@ -72,48 +93,64 @@ export function loadBalances(force = false) {
       relayer: { assets }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
-
-    const ethereumClient = new EthereumClient(web3);
-    const balances = await Promise.all(
-      assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
-        const tokenClient = new TokenClient(ethereumClient, address);
-        return tokenClient
-          .getBalance(force)
-          .then(balance => ({ [address]: balance }));
-      })
-    );
-    const ethereumBalance = await ethereumClient.getBalance(force);
-    const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
-    dispatch(setBalances(allBalances));
-    dispatch(
-      setBalances({
-        null: ethereumBalance
-      })
-    );
-  };
-}
-
-export function loadBalance(assetData, force = false) {
-  return async dispatch => {
-    const web3 = WalletService.getWeb3();
-    const ethereumClient = new EthereumClient(web3);
-
-    if (assetData !== null) {
-      const address = assetDataUtils.decodeERC20AssetData(assetData)
-        .tokenAddress;
-      const tokenClient = new TokenClient(ethereumClient, address);
-      const balance = await tokenClient.getBalance(force);
-
-      dispatch(setBalances({ [address]: balance }));
-    } else {
+    try {
+      const web3 = WalletService.getWeb3();
+      const ethereumClient = new EthereumClient(web3);
+      const balances = await Promise.all(
+        assets
+          .filter(({ address }) => Boolean(address))
+          .map(({ address }) => {
+            const tokenClient = new TokenClient(ethereumClient, address);
+            return tokenClient
+              .getBalance(force)
+              .then(balance => ({ [address]: balance }));
+          })
+      );
       const ethereumBalance = await ethereumClient.getBalance(force);
-
+      const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+      dispatch(setBalances(allBalances));
       dispatch(
         setBalances({
           null: ethereumBalance
         })
       );
+    } catch (error) {
+      if (~error.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
+    }
+  };
+}
+
+export function loadBalance(assetData, force = false) {
+  return async dispatch => {
+    try {
+      const web3 = WalletService.getWeb3();
+      const ethereumClient = new EthereumClient(web3);
+      if (assetData !== null) {
+        const address = assetDataUtils.decodeERC20AssetData(assetData)
+          .tokenAddress;
+        const tokenClient = new TokenClient(ethereumClient, address);
+        const balance = await tokenClient.getBalance(force);
+
+        dispatch(setBalances({ [address]: balance }));
+      } else {
+        const ethereumBalance = await ethereumClient.getBalance(force);
+
+        dispatch(
+          setBalances({
+            null: ethereumBalance
+          })
+        );
+      }
+    } catch (error) {
+      if (~error.message.indexOf('Network request failed')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
     }
   };
 }
@@ -194,8 +231,12 @@ export function loadTransactions(force = false) {
       alltx.sort((txa, txb) => txb.timestamp - txa.timestamp);
 
       dispatch(addTransactions(alltx));
-    } catch (err) {
-      showErrorModal(err);
+    } catch (error) {
+      if (~error.message.indexOf('Network is down')) {
+        setOfflineRoot();
+      } else {
+        showErrorModal(error);
+      }
     }
   };
 }

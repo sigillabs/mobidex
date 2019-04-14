@@ -11,7 +11,7 @@ import EtherToken from '../clients/EtherToken';
 import TokenClient from '../clients/token';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { formatHexString } from '../lib/utils/format';
-import { showModal } from '../navigation';
+import { setOfflineRoot, showModal, showErrorModal } from '../navigation';
 
 const WalletManager = NativeModules.WalletManager;
 
@@ -125,7 +125,10 @@ export function getWeb3() {
       addresses.push(address.toLowerCase());
     }
 
+    console.warn(ethereumNodeEndpoint)
     const engine = ZeroClientProvider({
+      stopped: true,
+      debug: true,
       rpcUrl: ethereumNodeEndpoint,
       getAccounts: cb => {
         cb(null, addresses);
@@ -166,6 +169,10 @@ export function getWeb3() {
         });
       }
     });
+    engine.on('error', error => {
+      console.warn(error);
+    });
+    engine.start();
 
     _web3 = new Web3(engine);
   }

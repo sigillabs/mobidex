@@ -6,6 +6,7 @@ import {
   updateTokenTicker
 } from '../actions';
 import { Inf0xWebSocketClient } from '../clients/inf0x';
+import { setOfflineRoot } from '../navigation';
 import TimerService from '../services/TimerService';
 import { loadAssets, loadProducts } from './orders';
 
@@ -42,14 +43,21 @@ export function startRelayerWebsockets() {
       {
         onClose: channel => {
           console.trace('relayer wss connection terminated -- restarting');
-
           TimerService.getInstance().setTimeout(
             () => dispatch(startRelayerWebsockets()),
             1
           );
         },
         onError: (channel, error, subscriptionOpts) => {
-          console.warn('relayer wss error', channel, error, subscriptionOpts);
+          console.warn(
+            'relayer wss error',
+            channel,
+            error.message,
+            subscriptionOpts
+          );
+          if (~error.message.indexOf('Network is down')) {
+            setOfflineRoot();
+          }
         },
         onUpdate: (channel, subscriptionOpts, orders) => {
           dispatch(appendOrderbook(orders));
@@ -90,7 +98,10 @@ export function startInf0xWebsockets() {
           );
         },
         onError: error => {
-          console.warn(error);
+          console.warn(error.message);
+          if (~error.message.indexOf('Network is down')) {
+            setOfflineRoot();
+          }
         },
         onUpdate: (channel, tickers) => {
           if (channel === 'token-ticker') {

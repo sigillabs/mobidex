@@ -12,6 +12,7 @@ import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen
 import PreviewMnemonicScreen from '../App/screens/onboarding/PreviewMnemonicScreen';
 import PinScreen from '../App/screens/onboarding/PinScreen';
 import SettingsScreen from '../App/screens/SettingsScreen.js';
+import OfflineScreen from '../App/screens/OfflineScreen.js';
 
 export function registerScreens(store) {
   Navigation.registerComponentWithRedux(
@@ -94,6 +95,13 @@ export function registerScreens(store) {
   Navigation.registerComponentWithRedux(
     'navigation.Settings',
     () => SettingsScreen,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'navigation.Offline',
+    () => OfflineScreen,
     Provider,
     store
   );
