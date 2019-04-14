@@ -75,14 +75,6 @@ export default handleActions(
     },
     [Actions.SET_WALLET_ADDRESS]: (state, action) => {
       return { ...state, address: action.payload };
-    },
-    [Actions.SET_WALLET]: (state, action) => {
-      let { address, web3 } = action.payload;
-      if (address && web3) {
-        return { ...state, address, web3 };
-      } else {
-        return { ...state, address: null, web3: null };
-      }
     }
   },
   initialState

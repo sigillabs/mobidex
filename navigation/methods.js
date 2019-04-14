@@ -88,6 +88,16 @@ export function showSuccessModal(label, ok) {
   });
 }
 
+export function setOfflineRoot() {
+  Navigation.setRoot({
+    root: {
+      component: {
+        name: 'navigation.Offline'
+      }
+    }
+  });
+}
+
 export function setOnboardingRoot() {
   Navigation.setRoot({
     root: {
@@ -137,59 +147,6 @@ export async function getBottomTabs() {
           children: [
             {
               component: {
-                name: 'navigation.trade.Products'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Trade',
-              icon: trade
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
-                id: 'OrdersList',
-                name: 'navigation.orders.List'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Orders',
-              icon: orders,
-              badgeColor: 'red'
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
-                name: 'navigation.wallet.Accounts'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Wallet',
-              icon: wallet
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
                 name: 'navigation.Settings'
               }
             }
@@ -204,4 +161,78 @@ export async function getBottomTabs() {
       }
     ]
   };
+  // return {
+  //   children: [
+  //     {
+  //       stack: {
+  //         children: [
+  //           {
+  //             component: {
+  //               name: 'navigation.trade.Products'
+  //             }
+  //           }
+  //         ],
+  //         options: {
+  //           bottomTab: {
+  //             text: 'Trade',
+  //             icon: trade
+  //           }
+  //         }
+  //       }
+  //     },
+  //     {
+  //       stack: {
+  //         children: [
+  //           {
+  //             component: {
+  //               id: 'OrdersList',
+  //               name: 'navigation.orders.List'
+  //             }
+  //           }
+  //         ],
+  //         options: {
+  //           bottomTab: {
+  //             text: 'Orders',
+  //             icon: orders,
+  //             badgeColor: 'red'
+  //           }
+  //         }
+  //       }
+  //     },
+  //     {
+  //       stack: {
+  //         children: [
+  //           {
+  //             component: {
+  //               name: 'navigation.wallet.Accounts'
+  //             }
+  //           }
+  //         ],
+  //         options: {
+  //           bottomTab: {
+  //             text: 'Wallet',
+  //             icon: wallet
+  //           }
+  //         }
+  //       }
+  //     },
+  //     {
+  //       stack: {
+  //         children: [
+  //           {
+  //             component: {
+  //               name: 'navigation.Settings'
+  //             }
+  //           }
+  //         ],
+  //         options: {
+  //           bottomTab: {
+  //             text: 'Settings',
+  //             icon: settings
+  //           }
+  //         }
+  //       }
+  //     }
+  //   ]
+  // };
 }

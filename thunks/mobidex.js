@@ -20,9 +20,13 @@ export function loadUser() {
       settings: { mobidexEndpoint },
       wallet: { address }
     } = getState();
-    const client = new MobidexClient(mobidexEndpoint);
-    const user = await client.getUser(address);
 
-    dispatch(setUser(user));
+    try {
+      const client = new MobidexClient(mobidexEndpoint);
+      const user = await client.getUser(address);
+      dispatch(setUser(user));
+    } catch (err) {
+      console.warn(err.message);
+    }
   };
 }

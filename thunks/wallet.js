@@ -39,12 +39,14 @@ export function loadAllowances(force = false) {
 
     const ethereumClient = new EthereumClient(web3);
     const allowances = await Promise.all(
-      assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
-        const tokenClient = new TokenClient(ethereumClient, address);
-        return tokenClient
-          .getAllowance(null, force)
-          .then(allowance => ({ [address]: allowance }));
-      })
+      assets
+        .filter(({ address }) => Boolean(address))
+        .map(({ address }) => {
+          const tokenClient = new TokenClient(ethereumClient, address);
+          return tokenClient
+            .getAllowance(null, force)
+            .then(allowance => ({ [address]: allowance }));
+        })
     );
     const allAllowances = allowances.reduce(
       (acc, obj) => _.merge(acc, obj),
@@ -59,10 +61,14 @@ export function loadAllowance(assetData, force = false) {
     const web3 = WalletService.getWeb3();
     const ethereumClient = new EthereumClient(web3);
     const address = assetDataUtils.decodeERC20AssetData(assetData).tokenAddress;
-    const tokenClient = new TokenClient(ethereumClient, address);
-    const allowance = await tokenClient.getAllowance(null, force);
 
-    dispatch(setAllowances({ [address]: allowance }));
+    try {
+      const tokenClient = new TokenClient(ethereumClient, address);
+      const allowance = await tokenClient.getAllowance(null, force);
+      dispatch(setAllowances({ [address]: allowance }));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
@@ -75,22 +81,29 @@ export function loadBalances(force = false) {
     const web3 = WalletService.getWeb3();
 
     const ethereumClient = new EthereumClient(web3);
-    const balances = await Promise.all(
-      assets.filter(({ address }) => Boolean(address)).map(({ address }) => {
-        const tokenClient = new TokenClient(ethereumClient, address);
-        return tokenClient
-          .getBalance(force)
-          .then(balance => ({ [address]: balance }));
-      })
-    );
-    const ethereumBalance = await ethereumClient.getBalance(force);
-    const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
-    dispatch(setBalances(allBalances));
-    dispatch(
-      setBalances({
-        null: ethereumBalance
-      })
-    );
+
+    try {
+      const balances = await Promise.all(
+        assets
+          .filter(({ address }) => Boolean(address))
+          .map(({ address }) => {
+            const tokenClient = new TokenClient(ethereumClient, address);
+            return tokenClient
+              .getBalance(force)
+              .then(balance => ({ [address]: balance }));
+          })
+      );
+      const ethereumBalance = await ethereumClient.getBalance(force);
+      const allBalances = balances.reduce((acc, obj) => _.merge(acc, obj), {});
+      dispatch(setBalances(allBalances));
+      dispatch(
+        setBalances({
+          null: ethereumBalance
+        })
+      );
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
@@ -99,21 +112,25 @@ export function loadBalance(assetData, force = false) {
     const web3 = WalletService.getWeb3();
     const ethereumClient = new EthereumClient(web3);
 
-    if (assetData !== null) {
-      const address = assetDataUtils.decodeERC20AssetData(assetData)
-        .tokenAddress;
-      const tokenClient = new TokenClient(ethereumClient, address);
-      const balance = await tokenClient.getBalance(force);
+    try {
+      if (assetData !== null) {
+        const address = assetDataUtils.decodeERC20AssetData(assetData)
+          .tokenAddress;
+        const tokenClient = new TokenClient(ethereumClient, address);
+        const balance = await tokenClient.getBalance(force);
 
-      dispatch(setBalances({ [address]: balance }));
-    } else {
-      const ethereumBalance = await ethereumClient.getBalance(force);
+        dispatch(setBalances({ [address]: balance }));
+      } else {
+        const ethereumBalance = await ethereumClient.getBalance(force);
 
-      dispatch(
-        setBalances({
-          null: ethereumBalance
-        })
-      );
+        dispatch(
+          setBalances({
+            null: ethereumBalance
+          })
+        );
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 }

@@ -1,3 +1,4 @@
+import { reducer as network } from 'react-native-offline';
 import { combineReducers } from 'redux';
 import device from './device';
 import error from './error';
@@ -11,6 +12,7 @@ export default combineReducers({
   device,
   error,
   quote,
+  network,
   relayer,
   settings,
   ticker,

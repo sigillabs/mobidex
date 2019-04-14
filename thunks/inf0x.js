@@ -13,8 +13,12 @@ export function updateForexTickers(force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const products = assets.map(({ symbol }) => `${symbol}-${forexCurrency}`);
-    const jsonResponse = await client.getForexTicker(products, force);
-    dispatch(_updateForexTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getForexTicker(products, force);
+      dispatch(_updateForexTicker(jsonResponse));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
@@ -25,8 +29,12 @@ export function updateForexTicker(symbol, force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const product = `${symbol}-${forexCurrency}`;
-    const jsonResponse = await client.getForexTicker([product], force);
-    dispatch(_updateForexTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getForexTicker([product], force);
+      dispatch(_updateForexTicker(jsonResponse));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
@@ -44,8 +52,12 @@ export function updateTokenTickers(force = false) {
       ])
       .filter(([tokenA, tokenB]) => tokenA && tokenB)
       .map(([tokenA, tokenB]) => `${tokenB.symbol}-${tokenA.symbol}`);
-    const jsonResponse = await client.getTokenTicker(_products, force);
-    dispatch(_updateTokenTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getTokenTicker(_products, force);
+      dispatch(_updateTokenTicker(jsonResponse));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
 
@@ -56,7 +68,11 @@ export function updateTokenTicker(baseSymbol, quoteSymbol, force = false) {
     } = getState();
     const client = new Inf0xClient(inf0xEndpoint, { network });
     const product = `${baseSymbol}-${quoteSymbol}`;
-    const jsonResponse = await client.getTokenTicker([product], force);
-    dispatch(_updateTokenTicker(jsonResponse));
+    try {
+      const jsonResponse = await client.getTokenTicker([product], force);
+      dispatch(_updateTokenTicker(jsonResponse));
+    } catch (err) {
+      console.warn(err);
+    }
   };
 }
