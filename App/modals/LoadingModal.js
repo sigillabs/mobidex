@@ -24,7 +24,7 @@ export default class LoadingScreen extends Component {
             style={{
               marginHorizontal: 0,
               width: '100%',
-              resizeMode: Image.resizeMode.contain
+              resizeMode: 'contain'
             }}
           />
         </RotatingView>

@@ -4,7 +4,6 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.horcrux.svg.SvgPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
@@ -44,7 +43,6 @@ public class MainApplication extends NavigationApplication {
             new RNDeviceInfo(),
             new GoogleAnalyticsBridgePackage(),
             new WalletManagerPackage(),
-            new SvgPackage(),
             new VectorIconsPackage(),
             new RandomBytesPackage(),
             new BackgroundTimerPackage(),

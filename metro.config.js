@@ -1,0 +1,25 @@
+/**
+ * Metro configuration for React Native
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ */
+
+// const path = require('path');
+const blacklist = require('metro-config/src/defaults/blacklist');
+const extraNodeModules = require('node-libs-react-native');
+
+module.exports = {
+  resolver: {
+    extraNodeModules,
+    blacklistRE: blacklist()
+  },
+  transformer: {
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: false
+      }
+    })
+  }
+};

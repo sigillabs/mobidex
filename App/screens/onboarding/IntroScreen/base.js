@@ -26,7 +26,7 @@ class BaseIntro extends Component {
           style={{
             marginHorizontal: 0,
             width: '100%',
-            resizeMode: Image.resizeMode.contain
+            resizeMode: 'contain'
           }}
         />
         <VerticalPadding size={20} />
@@ -71,6 +71,7 @@ class BaseIntro extends Component {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  connectNavigation(BaseIntro)
-);
+export default connect(
+  () => ({}),
+  dispatch => ({ dispatch })
+)(connectNavigation(BaseIntro));
