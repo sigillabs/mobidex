@@ -6,7 +6,7 @@ platform :ios, '10.0'
 
 target 'mobidex' do
   use_frameworks!
-  pod 'web3swift', '~> 0.9.0'
+  pod 'web3swift', '~> 2.1.3'
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
