@@ -119,7 +119,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 920
         versionName "0.9.6"
-        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative55"
+        missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         multiDexEnabled true
     }
     compileOptions {
