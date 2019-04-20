@@ -19,6 +19,7 @@ import { clearCache } from '../../utils';
 import Divider from '../components/Divider';
 import MutedText from '../components/MutedText';
 import ReferralCodeInput from '../components/ReferralCodeInput';
+import TouchableListItem from '../components/TouchableListItem';
 
 const GAS_STATIONS = [
   { name: 'default', label: 'default' },
@@ -119,30 +120,25 @@ class SettingsScreen extends React.Component {
             title={<MutedText>Mobidex Endpoint</MutedText>}
             subtitle={<Text>{mobidexEndpoint}</Text>}
           />
-          <ListItem
-            title={<MutedText>Gas Level</MutedText>}
+          <TouchableListItem
+            title="Gas Level"
             subtitle={
-              <TouchableOpacity onPress={this.showGasLevelSelect}>
-                <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
-              </TouchableOpacity>
+              <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
             }
+            onPress={this.showGasLevelSelect}
           />
-          <ListItem
-            title={<MutedText>Gas Station</MutedText>}
+          <TouchableListItem
+            title="Gas Station"
             subtitle={
-              <TouchableOpacity onPress={this.showGasStationSelect}>
-                <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
-              </TouchableOpacity>
+              <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
             }
+            onPress={this.showGasStationSelect}
           />
           {referrerCode ? (
-            <ListItem
-              title={<MutedText>Referral Code</MutedText>}
-              subtitle={
-                <TouchableOpacity onPress={this.copyReferralCode}>
-                  <Text>{referralCode}</Text>
-                </TouchableOpacity>
-              }
+            <TouchableListItem
+              title="Referral Code"
+              subtitle={<Text>{referralCode}</Text>}
+              onPress={this.copyReferralCode}
             />
           ) : (
             <ListItem
@@ -160,13 +156,10 @@ class SettingsScreen extends React.Component {
             />
           )}
           <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
-          <ListItem
-            title={<MutedText>Clear Cache</MutedText>}
-            subtitle={
-              <TouchableOpacity onPress={this.clearCache}>
-                <Text>Tap Here</Text>
-              </TouchableOpacity>
-            }
+          <TouchableListItem
+            title="Clear Cache"
+            subtitle={<Text>Tap Here</Text>}
+            onPress={this.clearCache}
           />
         </ScrollView>
       </SafeAreaView>
