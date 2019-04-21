@@ -5,10 +5,10 @@ import { ZERO } from '../constants/0x';
 
 const PROD = {
   network: 1,
-  ethereumNodeEndpoint:
-    'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   // ethereumNodeEndpoint:
-  //   'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
+  //   'https://mainnet.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  ethereumNodeEndpoint:
+    'https://eth-mainnet.alchemyapi.io/jsonrpc/x1YomDJDRqqvIAHJNeEhpGoZj6i18ARB',
   mobidexEndpoint: 'https://mobidex.io/app/1.0',
   relayerEndpoint: 'https://mobidex.io/relayer/v2',
   relayerWSS: 'wss://mobidex.io/relayer/v2/',
@@ -18,10 +18,10 @@ const PROD = {
 
 const STAGE = {
   network: 42,
-  ethereumNodeEndpoint:
-    'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   // ethereumNodeEndpoint:
-  //   'https://eth-kovan.alchemyapi.io/jsonrpc/luC74yyUWG5lXOj1yMaAIo8Ik5ZLqsti',
+  //   'https://kovan.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
+  ethereumNodeEndpoint:
+    'https://eth-kovan.alchemyapi.io/jsonrpc/luC74yyUWG5lXOj1yMaAIo8Ik5ZLqsti',
   mobidexEndpoint: 'https://mobidex.io:9443/app/1.0',
   relayerEndpoint: 'https://mobidex.io:9443/relayer/v2',
   relayerWSS: 'wss://mobidex.io:9443/relayer/v2/',

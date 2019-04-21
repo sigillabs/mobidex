@@ -155,8 +155,8 @@ if $cygwin ; then
 fi
 
 # Escape application args
-function splitJvmOpts() {   save () {
-    JVM_OPTS=("$@")     for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
+function save () {
+    for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
     echo " "
 }
 APP_ARGS=$(save "$@")
