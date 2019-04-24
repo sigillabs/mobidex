@@ -9,7 +9,7 @@ export default class AssetBuyerError extends Component {
   static test(error) {
     if (!error) return false;
     if (!error.message) return false;
-    return error.message.indexOf('ASSET_UNAVAILABLE:') === 0;
+    return error.message && error.message.indexOf('ASSET_UNAVAILABLE:') === 0;
   }
 
   render() {

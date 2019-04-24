@@ -55,7 +55,7 @@ export function startRelayerWebsockets() {
             error.message,
             subscriptionOpts
           );
-          if (~error.message.indexOf('Network is down')) {
+          if (error.message && ~error.message.indexOf('Network is down')) {
             setOfflineRoot();
           }
         },
@@ -99,7 +99,7 @@ export function startInf0xWebsockets() {
         },
         onError: error => {
           console.warn(error.message);
-          if (~error.message.indexOf('Network is down')) {
+          if (error.message && ~error.message.indexOf('Network is down')) {
             setOfflineRoot();
           }
         },

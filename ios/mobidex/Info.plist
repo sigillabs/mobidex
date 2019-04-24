@@ -25,11 +25,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-    <true/>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -52,8 +52,6 @@
 	<string>Mobidex does not use calendars currently.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Mobidex identifies QR codes to import private keys.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSMotionUsageDescription</key>
 	<string>Mobidex identifies QR codes to import private keys.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

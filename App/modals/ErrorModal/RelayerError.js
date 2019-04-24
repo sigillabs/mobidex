@@ -9,7 +9,7 @@ export default class RelayerError extends Component {
   static test(error) {
     if (!error) return false;
     if (!error.message) return false;
-    return error.message.indexOf('400') === 0;
+    return error.message && error.message.indexOf('400') === 0;
   }
 
   render() {
@@ -27,7 +27,12 @@ export default class RelayerError extends Component {
         ~source.toLowerCase().indexOf('post') &&
         ~source.toLowerCase().indexOf('order')
       ) {
-        return <Text style={styles.text}>Your wallet is either locked or you do not have enough tokens to create the order.</Text>;
+        return (
+          <Text style={styles.text}>
+            Your wallet is either locked or you do not have enough tokens to
+            create the order.
+          </Text>
+        );
       } else {
         return <Text style={styles.text}>Error posting to relayer</Text>;
       }

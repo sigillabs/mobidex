@@ -125,7 +125,6 @@ export function getWeb3() {
       addresses.push(address.toLowerCase());
     }
 
-    console.warn(ethereumNodeEndpoint)
     const engine = ZeroClientProvider({
       stopped: true,
       debug: true,

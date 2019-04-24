@@ -24,7 +24,7 @@ export function loadWalletAddress() {
       const address = await WalletService.getWalletAddress();
       dispatch(setWalletAddress(address));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);
@@ -58,7 +58,7 @@ export function loadAllowances(force = false) {
       );
       dispatch(setAllowances(allAllowances));
     } catch (error) {
-      if (~error.message.indexOf('Network request failed')) {
+      if (error.message && ~error.message.indexOf('Network request failed')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);
@@ -78,7 +78,7 @@ export function loadAllowance(assetData, force = false) {
       const allowance = await tokenClient.getAllowance(null, force);
       dispatch(setAllowances({ [address]: allowance }));
     } catch (error) {
-      if (~error.message.indexOf('Network request failed')) {
+      if (error.message && ~error.message.indexOf('Network request failed')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);
@@ -115,7 +115,7 @@ export function loadBalances(force = false) {
         })
       );
     } catch (error) {
-      if (~error.message.indexOf('Network request failed')) {
+      if (error.message && ~error.message.indexOf('Network request failed')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);
@@ -146,7 +146,7 @@ export function loadBalance(assetData, force = false) {
         );
       }
     } catch (error) {
-      if (~error.message.indexOf('Network request failed')) {
+      if (error.message && ~error.message.indexOf('Network request failed')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);
@@ -232,7 +232,7 @@ export function loadTransactions(force = false) {
 
       dispatch(addTransactions(alltx));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         showErrorModal(error);

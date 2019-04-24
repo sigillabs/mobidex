@@ -18,7 +18,7 @@ export function updateForexTickers(force = false) {
       const jsonResponse = await client.getForexTicker(products, force);
       dispatch(_updateForexTicker(jsonResponse));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         console.warn(error);
@@ -38,7 +38,7 @@ export function updateForexTicker(symbol, force = false) {
       const jsonResponse = await client.getForexTicker([product], force);
       dispatch(_updateForexTicker(jsonResponse));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         console.warn(error);
@@ -65,7 +65,7 @@ export function updateTokenTickers(force = false) {
       const jsonResponse = await client.getTokenTicker(_products, force);
       dispatch(_updateTokenTicker(jsonResponse));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         console.warn(error);
@@ -85,7 +85,7 @@ export function updateTokenTicker(baseSymbol, quoteSymbol, force = false) {
       const jsonResponse = await client.getTokenTicker([product], force);
       dispatch(_updateTokenTicker(jsonResponse));
     } catch (error) {
-      if (~error.message.indexOf('Network is down')) {
+      if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
       } else {
         console.warn(error);
