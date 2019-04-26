@@ -1,10 +1,12 @@
 package io.mobidex;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -61,6 +63,7 @@ public class PasscodeManager extends BaseActivityEventListener {
 
     private GetPasscodeCallback getPasscodeCallback;
 
+    @TargetApi(Build.VERSION_CODES.M)
     PasscodeManager(ReactApplicationContext reactContext, String path) {
         this.path = path;
         context = reactContext;
@@ -110,6 +113,7 @@ public class PasscodeManager extends BaseActivityEventListener {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private KeyPair generateKeyPair() throws InvalidAlgorithmParameterException, NoSuchProviderException, NoSuchAlgorithmException {
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
@@ -180,6 +184,7 @@ public class PasscodeManager extends BaseActivityEventListener {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     void getPasscode(final GetPasscodeCallback callback) {
         if (!supportsFingerPrintAuthentication()) {
             callback.invoke(null, null);

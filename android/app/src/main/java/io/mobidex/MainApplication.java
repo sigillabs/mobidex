@@ -4,6 +4,7 @@ import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.horcrux.svg.SvgPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
@@ -11,7 +12,6 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
-import com.reactnativenavigation.react.ReactGateway;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +46,8 @@ public class MainApplication extends NavigationApplication {
             new VectorIconsPackage(),
             new RandomBytesPackage(),
             new BackgroundTimerPackage(),
-            new RNUUIDGeneratorPackage()
+            new RNUUIDGeneratorPackage(),
+            new SvgPackage()
           );
     }
 }
