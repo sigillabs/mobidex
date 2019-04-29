@@ -195,6 +195,13 @@
 			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
 			remoteInfo = "double-conversion-tvOS";
 		};
+		3003D54F2276C6DF0004F6CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
 		301B13DA20F87F1200714D8F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 301B13AF20F87F1100714D8F /* RNDeviceInfo.xcodeproj */;
@@ -946,6 +953,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3003D5502276C6DF0004F6CD /* PBXTargetDependency */,
 			);
 			name = mobidex;
 			productName = "Hello World";
@@ -1675,6 +1683,11 @@
 			isa = PBXTargetDependency;
 			target = 2D02E47A1E0B4A5D006451C7 /* mobidex-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
+		};
+		3003D5502276C6DF0004F6CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = 3003D54F2276C6DF0004F6CD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
