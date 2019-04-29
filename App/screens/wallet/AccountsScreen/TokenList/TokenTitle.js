@@ -1,37 +1,40 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Text } from 'react-native-elements';
+import { StyleSheet } from 'react-native';
 import { colors } from '../../../../../styles';
 import TokenLockByAssetData from '../../../../views/TokenLockByAssetData';
+import Text from '../../../../components/Text';
 
 export default class TokenTitle extends Component {
+  static get propTypes() {
+    return {
+      asset: PropTypes.object.isRequired,
+      highlight: PropTypes.bool.isRequired
+    };
+  }
+
   render() {
     const { asset } = this.props;
 
     return (
-      <Text
-        style={[
-          {
-            alignItems: 'center',
-            flex: 1,
-            flexDirection: 'row',
-            textAlign: 'left'
-          }
-        ]}
-      >
+      <Text style={[styles.container]}>
         <TokenLockByAssetData
           assetData={asset.assetData}
           color={this.props.highlight ? colors.white : colors.yellow0}
         />
-        <Text> </Text>
-        <Text> </Text>
-        <Text>{asset.name}</Text>
+        <Text>
+          {'\u2066'} {asset.name}
+        </Text>
       </Text>
     );
   }
 }
 
-TokenTitle.propTypes = {
-  asset: PropTypes.object.isRequired,
-  highlight: PropTypes.bool.isRequired
-};
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    textAlign: 'left'
+  }
+});

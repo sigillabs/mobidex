@@ -4,7 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/background</item>
         <item name="android:screenOrientation">portrait</item>
+        <item name="android:gravity">left</item>
         <item name="android:layoutDirection">ltr</item>
+        <item name="android:textDirection">ltr</item>  
+        <item name="android:textAlignment">textStart</item>
     </style>
 
     <!-- Launcher theme. -->

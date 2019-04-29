@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.LinearLayout;
 
+import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.reactnativenavigation.NavigationActivity;
 
 public class MainActivity extends NavigationActivity {
@@ -13,6 +14,8 @@ public class MainActivity extends NavigationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(this.createSplashLayout());
+        I18nUtil sharedI18nUtilInstance = I18nUtil.getInstance();
+        sharedI18nUtilInstance.allowRTL(getApplicationContext(), false);
     }
 
     public LinearLayout createSplashLayout() {

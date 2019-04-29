@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ListItem, Text } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 import Row from '../../../components/Row';
+import Text from '../../../components/Text';
 
 export default class ProductDetailListItem extends Component {
   static get propTypes() {
