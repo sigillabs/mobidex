@@ -1,4 +1,5 @@
 import React from 'react';
+import { InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -88,12 +89,14 @@ export function showSuccessModal(label, ok) {
   });
 }
 
-export async function setOfflineRoot() {
-  Navigation.setRoot({
-    root: {
-      bottomTabs: await getOfflineBottomTabs()
-    }
-  });
+export function setOfflineRoot() {
+  InteractionManager.runAfterInteractions(async () =>
+    Navigation.setRoot({
+      root: {
+        bottomTabs: await getOfflineBottomTabs()
+      }
+    })
+  );
 }
 
 export async function getOfflineBottomTabs() {
@@ -178,21 +181,25 @@ export function setOnboardingRoot() {
 }
 
 export function setInitialBootRoot() {
-  Navigation.setRoot({
-    root: {
-      component: {
-        name: 'navigation.trade.InitialLoadScreen'
+  InteractionManager.runAfterInteractions(async () =>
+    Navigation.setRoot({
+      root: {
+        component: {
+          name: 'navigation.trade.InitialLoadScreen'
+        }
       }
-    }
-  });
+    })
+  );
 }
 
 export async function setTabsRoot() {
-  Navigation.setRoot({
-    root: {
-      bottomTabs: await getBottomTabs()
-    }
-  });
+  InteractionManager.runAfterInteractions(async () =>
+    Navigation.setRoot({
+      root: {
+        bottomTabs: await getBottomTabs()
+      }
+    })
+  );
 }
 
 export async function getBottomTabs() {
