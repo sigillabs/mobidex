@@ -11,7 +11,7 @@ import EtherToken from '../clients/EtherToken';
 import TokenClient from '../clients/token';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { formatHexString } from '../lib/utils/format';
-import { setOfflineRoot, showModal, showErrorModal } from '../navigation';
+import { showModal } from '../navigation';
 
 const WalletManager = NativeModules.WalletManager;
 

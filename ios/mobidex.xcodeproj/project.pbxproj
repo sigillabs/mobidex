@@ -54,6 +54,7 @@
 		30EB9EFB20DB9D700088F4BF /* WalletManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */; };
 		30EB9EFD20DB9E3A0088F4BF /* WalletManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB9EFC20DB9E390088F4BF /* WalletManager.swift */; };
 		30EF49CF210827C400620DAC /* libReactNativeExceptionHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30EF49CE2108278000620DAC /* libReactNativeExceptionHandler.a */; };
+		3403FEBFCA8747EDAA337F30 /* libRNAppAuth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DE0062FD8444B22AC8793FB /* libRNAppAuth.a */; };
 		4604C6C67C1EC95D7FB704E5 /* Pods_mobidex.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD94ED3CAB15D32CA0118F0A /* Pods_mobidex.framework */; };
 		55B88444186647CAB65F9AC3 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2689DC0CF77740A1A489C005 /* Zocial.ttf */; };
 		5628E0CFC0E44E199504EE56 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7AA71E7CFD7046D7917D1E92 /* Octicons.ttf */; };
@@ -335,6 +336,13 @@
 			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
 			remoteInfo = RCTRestart;
 		};
+		30FB9FCE228C9D6D00D0EE15 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 61464CB96F054D65A99D2788 /* RNAppAuth.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNAppAuth;
+		};
 		3DAD3E831DF850E9000B6D8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -473,6 +481,7 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		14E97D0DE6BB4973859D0C2F /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		168FB06E184A430ABEC3D593 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		1DE0062FD8444B22AC8793FB /* libRNAppAuth.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAppAuth.a; sourceTree = "<group>"; };
 		2689DC0CF77740A1A489C005 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* mobidex-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mobidex-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* mobidex-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "mobidex-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -500,6 +509,7 @@
 		4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNUUIDGenerator.xcodeproj; path = "../node_modules/react-native-uuid-generator/ios/RNUUIDGenerator.xcodeproj"; sourceTree = "<group>"; };
 		5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTRestart.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		61464CB96F054D65A99D2788 /* RNAppAuth.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAppAuth.xcodeproj; path = "../node_modules/react-native-app-auth/ios/RNAppAuth.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AA71E7CFD7046D7917D1E92 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		7AF2D5562C8D48F6BCB176F5 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -556,6 +566,7 @@
 				4604C6C67C1EC95D7FB704E5 /* Pods_mobidex.framework in Frameworks */,
 				C24624756027419C81BFA1A5 /* libRCTRestart.a in Frameworks */,
 				0BDE03F1E2484FE2A4E94C43 /* libRNUUIDGenerator.a in Frameworks */,
+				3403FEBFCA8747EDAA337F30 /* libRNAppAuth.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,6 +799,7 @@
 			children = (
 				5AEF5BABE5C643DB92FE74CC /* libRCTRestart.a */,
 				C1441786E9784CC0830730E8 /* libRNUUIDGenerator.a */,
+				1DE0062FD8444B22AC8793FB /* libRNAppAuth.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -796,6 +808,14 @@
 			isa = PBXGroup;
 			children = (
 				30EF4A1421082D2600620DAC /* libRCTRestart.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		30FB9FCB228C9D6D00D0EE15 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30FB9FCF228C9D6D00D0EE15 /* libRNAppAuth.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -852,6 +872,7 @@
 				01E53F7AC91E41D38F4EC0E9 /* RNRandomBytes.xcodeproj */,
 				EC724CCF91FA4437A902DFCE /* RCTRestart.xcodeproj */,
 				4E04691316DF40A49A9BE9F0 /* RNUUIDGenerator.xcodeproj */,
+				61464CB96F054D65A99D2788 /* RNAppAuth.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1106,6 +1127,10 @@
 				{
 					ProductGroup = 30D5E1A121AFDFA500CB020D /* Products */;
 					ProjectRef = 30D5E1A021AFDFA500CB020D /* ReactNativeNavigation.xcodeproj */;
+				},
+				{
+					ProductGroup = 30FB9FCB228C9D6D00D0EE15 /* Products */;
+					ProjectRef = 61464CB96F054D65A99D2788 /* RNAppAuth.xcodeproj */;
 				},
 				{
 					ProductGroup = 30B76AC821A8949E002A5451 /* Products */;
@@ -1395,6 +1420,13 @@
 			remoteRef = 30EF4A1321082D2600620DAC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		30FB9FCF228C9D6D00D0EE15 /* libRNAppAuth.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNAppAuth.a;
+			remoteRef = 30FB9FCE228C9D6D00D0EE15 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1591,6 +1623,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-mobidex/Pods-mobidex-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework",
 				"${BUILT_PRODUCTS_DIR}/BigInt/BigInt.framework",
 				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/EthereumABI/EthereumABI.framework",
@@ -1604,6 +1637,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppAuth.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BigInt.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EthereumABI.framework",
@@ -1720,11 +1754,15 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1747,11 +1785,15 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = mobidexTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1777,6 +1819,7 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1814,6 +1857,7 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = mobidex/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -1853,10 +1897,14 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1887,10 +1935,14 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1920,10 +1972,14 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1953,10 +2009,14 @@
 					"$(SRCROOT)/../node_modules/react-native-randombytes",
 					"$(SRCROOT)/../node_modules/react-native-restart/ios/RCTRestart/**",
 					"$(SRCROOT)/../node_modules/react-native-uuid-generator/ios",
+					"$(SRCROOT)/../node_modules/react-native-app-auth/ios",
 				);
 				INFOPLIST_FILE = "mobidex-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

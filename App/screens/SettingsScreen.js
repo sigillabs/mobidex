@@ -5,8 +5,7 @@ import {
   Clipboard,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
-  TouchableOpacity
+  ScrollView
 } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';

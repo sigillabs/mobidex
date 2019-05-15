@@ -52,6 +52,13 @@ class BaseIntro extends Component {
               this.props.navigation.push('navigation.onboarding.ImportMnemonic')
             }
           />
+          <Button
+            large
+            title="Login With Bitski"
+            onPress={() =>
+              this.props.navigation.push('navigation.onboarding.BitskiLogin')
+            }
+          />
         </Row>
       </BigCenter>
     );
