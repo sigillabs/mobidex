@@ -4,7 +4,7 @@ import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import * as AssetService from '../services/AssetService';
 import { TransactionService } from '../services/TransactionService';
-import * as WalletService from '../services/WalletService';
+import { WalletService } from '../services/WalletService';
 import { checkAndSetUnlimitedProxyAllowance } from './wallet';
 
 export function deposit(address, amount) {
@@ -13,7 +13,7 @@ export function deposit(address, amount) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
@@ -36,7 +36,7 @@ export function withdraw(address, amount) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
@@ -59,7 +59,7 @@ export function fillOrKillOrder(order, amount) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = new ZeroExClient(ethereumClient, {
@@ -82,7 +82,7 @@ export function batchFillOrKill(orders, amounts) {
       settings: { gasPrice }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     if (orders.length === 1) {
       await dispatch(fillOrKillOrder(orders[0], amounts[0]));
@@ -109,7 +109,7 @@ export function marketBuyWithEth(quote) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     if (quote === null) {
       throw new Error('Need a quote to sell assets.');
@@ -148,7 +148,7 @@ export function marketBuy(quote) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     if (quote === null) {
       throw new Error('Need a quote to buy assets.');
@@ -182,7 +182,7 @@ export function marketSell(quote) {
       settings: { gasPrice, gasLimit }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     if (quote === null) {
       throw new Error('Need a quote to sell assets.');

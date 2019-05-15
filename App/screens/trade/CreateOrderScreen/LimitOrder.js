@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
-import { isValidAmount } from '../../../../utils';
+import { isValidAmount } from '../../../../lib/utils';
 import SelectableCirclesRow from '../../../components/SelectableCirclesRow';
 import TouchableTokenAmount from '../../../components/TouchableTokenAmount';
 import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';

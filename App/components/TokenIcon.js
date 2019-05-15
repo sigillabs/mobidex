@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
 import * as AssetService from '../../services/AssetService';
 import { fonts, images, styles } from '../../styles';
-import { getImage } from '../../utils';
+import { getImage } from '../../lib/utils';
 
 export default class TokenIcon extends Component {
   render() {

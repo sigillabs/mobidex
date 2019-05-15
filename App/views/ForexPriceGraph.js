@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import { formatMoney } from '../../utils';
+import { formatMoney } from '../../lib/utils';
 import Inf0xClient from '../../clients/inf0x';
 import PriceGraph from '../components/PriceGraph';
 

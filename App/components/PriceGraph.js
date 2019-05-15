@@ -6,7 +6,7 @@ import { G, Line, Text as SVGText } from 'react-native-svg';
 import { AreaChart } from 'react-native-svg-charts';
 import { colors, styles } from '../../styles';
 import { styleProp } from '../../types/props/styles';
-import { colorWithAlpha } from '../../utils';
+import { colorWithAlpha } from '../../lib/utils';
 import MutedText from './MutedText';
 import Tabs from './Tabs';
 

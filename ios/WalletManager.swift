@@ -163,6 +163,17 @@ class WalletManager: NSObject {
     
     getPasscodeFromKeychain(callback: callback)
   }
+
+  @objc(isWalletAvailable:) func isWalletAvailable(callback: @escaping RCTResponseSenderBlock) -> Void {
+    guard let store = self.findWallet(),
+      let addresses = store.addresses,
+      addresses.count != 0
+      else {
+        callback([NSNull(), false])
+        return;
+    }
+    callback([NSNull(), true])
+  }
   
   @objc(supportsFingerPrintAuthentication:) func supportsFingerPrintAuthentication(callback: RCTResponseSenderBlock) -> Void {
     let context = LAContext()
@@ -243,6 +254,12 @@ class WalletManager: NSObject {
     }
   }
 
+  @objc(removeWallet:) func removeWallet(callback: RCTResponseSenderBlock) -> Void {
+    let directory = getKeystoreDirectory()
+    try! FileManager.default.removeItem(atPath: directory)
+    
+    callback([NSNull(), NSNull()])
+  }
   
   @objc(loadWallet:callback:) func loadWallet(password: String?, callback: @escaping RCTResponseSenderBlock) -> Void {
     ensurePasscode(password, callback: { error, password in

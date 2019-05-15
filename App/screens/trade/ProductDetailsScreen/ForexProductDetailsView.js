@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import * as TickerService from '../../../../services/TickerService';
 import { getProfitLossStyle } from '../../../../styles';
-import { formatMoney } from '../../../../utils';
+import { formatMoney } from '../../../../lib/utils';
 import FormattedForexAmount from '../../../components/FormattedForexAmount';
 import FormattedPercent from '../../../components/FormattedPercent';
 import OrderbookForexPrice from '../../../views/OrderbookForexPrice';

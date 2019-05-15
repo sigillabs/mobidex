@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { formatAmount, formatAmountWithDecimals } from '../../../../utils';
+import { formatAmount, formatAmountWithDecimals } from '../../../../lib/utils';
 import * as AssetService from '../../../../services/AssetService';
 import TransactionItem from './TransactionItem';
 import CancelledItem from './CancelledItem';

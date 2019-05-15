@@ -155,6 +155,29 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void isWalletAvailable(Callback cb) {
+        loadKeypair(password, new Callback() {
+            @Override
+            public void invoke(Object... args) {
+                if (args.length == 1) {
+                    cb.invoke(args[0], null);
+                } else {
+                    cb.invoke(null, false);
+                }
+            }
+        }, new Callback() {
+            @Override
+            public void invoke(Object... args) {
+                if (args.length == 1) {
+                    cb.invoke(null, true);
+                } else {
+                    cb.invoke(null, false);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void supportsFingerPrintAuthentication(Callback cb) {
         cb.invoke(null, passcodeManager.supportsFingerPrintAuthentication());
     }
@@ -173,12 +196,6 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void cancelFaceIDAuthentication(final Callback cb) {
         cb.invoke(null, null);
-    }
-
-    @ReactMethod
-    public void doesWalletExist(Callback cb) {
-        File walletFile = getWalletFile();
-        cb.invoke(null, walletFile != null && walletFile.exists());
     }
 
     @ReactMethod
@@ -224,6 +241,11 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         };
 
         passcodeManager.savePasscode(password, passcodeCallback);
+    }
+
+    @ReactMethod
+    public void removeWallet(final Callback cb) {
+        cb.invoke(null, clearKeystorePath());
     }
 
     private void loadKeypair(String password, final Callback errorCallback, final Callback successCallback) {

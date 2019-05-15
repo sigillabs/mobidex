@@ -54,7 +54,16 @@ const initialState = {
   gasLevel: 'low',
   gasPrice: ZERO,
   gasLimit: ZERO,
-  minimumBalance: 10 ** 16
+  minimumBalance: 10 ** 16,
+  bitski: {
+    auth: {
+      issuer: 'https://account.bitski.com/',
+      clientId: '5b9d3c1a-0b08-4e02-971e-ad65e37cdcd5',
+      redirectUrl: 'mobidex://auth',
+      scopes: ['openid', 'offline']
+    },
+    endpoint: 'https://api.bitski.com/v1/transactions'
+  }
 };
 
 export default handleActions(

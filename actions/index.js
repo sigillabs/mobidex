@@ -15,6 +15,9 @@ export const removeActiveTransactions = createAction(
 );
 export const setAllowances = createAction(Actions.SET_ALLOWANCES);
 export const setBalances = createAction(Actions.SET_BALANCES);
+export const setBitskiCredentials = createAction(
+  Actions.SET_BITSKI_CREDENTIALS
+);
 export const setError = createAction(Actions.SET_ERROR);
 export const setForexCurrency = createAction(Actions.SET_FOREX_CURRENCY);
 export const setGasLevel = createAction(Actions.SET_GAS_LEVEL);

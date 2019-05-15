@@ -25,6 +25,7 @@ export default class NavigationProvider extends React.Component {
           componentId: this.props.componentId,
           push: this.push,
           pop: this.pop,
+          popToRoot: this.popToRoot,
           showModal: showModal,
           showErrorModal: showErrorModal,
           dismissModal: this.dismissModal,
@@ -45,6 +46,10 @@ export default class NavigationProvider extends React.Component {
 
   pop = () => {
     Navigation.pop(this.props.componentId);
+  };
+
+  popToRoot = () => {
+    Navigation.popToRoot(this.props.componentId);
   };
 
   dismissModal = () => {

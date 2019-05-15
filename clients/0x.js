@@ -1,7 +1,7 @@
 import { BigNumber, ContractWrappers, SignerType, signatureUtils } from '0x.js';
 import { cache, time } from '../lib/decorators/cls';
 import { formatHexString } from '../lib/utils/format';
-import { filterFillableOrders } from '../utils/orders';
+import { filterFillableOrders } from '../lib/utils/orders';
 
 export default class ZeroExClient {
   static ORDER_FIELDS = [

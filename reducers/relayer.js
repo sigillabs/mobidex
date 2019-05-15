@@ -15,11 +15,11 @@ export default handleActions(
     [Actions.ADD_ASSETS]: (state, action) => {
       return {
         ...state,
-        assets: _.unionBy(state.assets, action.payload, 'assetData')
+        assets: _.unionBy(action.payload, state.assets, 'assetData')
       };
     },
     [Actions.APPEND_ORDERBOOK]: (state, action) => {
-      state.orders = _.unionBy(state.orders, action.payload, 'orderHash');
+      state.orders = _.unionBy(action.payload, state.orders, 'orderHash');
 
       for (const order of action.payload) {
         if (

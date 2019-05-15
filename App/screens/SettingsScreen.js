@@ -5,17 +5,17 @@ import {
   Clipboard,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
-  TouchableOpacity
+  ScrollView
 } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { setGasLevel, setGasStation } from '../../actions';
+import { WalletService } from '../../services/WalletService';
 import { addReferrer, loadUser } from '../../thunks';
 import { showModal } from '../../navigation';
-import { clearState } from '../../store';
+import { clearState } from '../../lib/stores/app';
 import { colors, styles } from '../../styles';
-import { clearCache } from '../../utils';
+import { clearCache } from '../../lib/utils';
 import Divider from '../components/Divider';
 import MutedText from '../components/MutedText';
 import ReferralCodeInput from '../components/ReferralCodeInput';
@@ -161,6 +161,19 @@ class SettingsScreen extends React.Component {
             subtitle={<Text>Tap Here</Text>}
             onPress={this.clearCache}
           />
+          {WalletService.instance.selected == 'bitski' ? (
+            <TouchableListItem
+              title="Sign Out Of Bitski"
+              subtitle={<Text>Tap Here</Text>}
+              onPress={this.removeWallet}
+            />
+          ) : (
+            <TouchableListItem
+              title="Remove Wallet (Dangerous)"
+              subtitle={<Text>Tap Here</Text>}
+              onPress={this.removeWallet}
+            />
+          )}
         </ScrollView>
       </SafeAreaView>
     );
@@ -178,6 +191,13 @@ class SettingsScreen extends React.Component {
   clearCache = () => {
     clearState();
     clearCache();
+  };
+
+  removeWallet = () => {
+    clearState();
+    clearCache();
+
+    WalletService.instance.removeWallet();
   };
 
   showGasStationSelect = () => {

@@ -8,7 +8,7 @@ import {
   connect as connectNavigation
 } from '../../../../navigation';
 import { styles } from '../../../../styles';
-import * as WalletService from '../../../../services/WalletService';
+import { WalletService } from '../../../../services/WalletService';
 import { ActionErrorSuccessFlow } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
@@ -52,7 +52,10 @@ class BasePinScreen extends PinKeyboardLayout {
         {
           action: async () => {
             await checkOrRequestExternalStorageWrite();
-            await WalletService.importMnemonics(mnemonic, pin.join(''));
+            await WalletService.instance.wallets.integrated.importMnemonics(
+              mnemonic,
+              pin.join('')
+            );
           },
           icon: <FontAwesome name="gear" size={100} />,
           label: 'Constructing Wallet...'
@@ -64,6 +67,7 @@ class BasePinScreen extends PinKeyboardLayout {
   }
 }
 
-export default connect(() => ({}), dispatch => ({ dispatch }))(
-  connectNavigation(BasePinScreen)
-);
+export default connect(
+  () => ({}),
+  dispatch => ({ dispatch })
+)(connectNavigation(BasePinScreen));

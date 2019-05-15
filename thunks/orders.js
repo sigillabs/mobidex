@@ -18,7 +18,7 @@ import * as AssetService from '../services/AssetService';
 import { setOfflineRoot, showErrorModal } from '../navigation';
 import * as OrderService from '../services/OrderService';
 import { TransactionService } from '../services/TransactionService';
-import * as WalletService from '../services/WalletService';
+import { WalletService } from '../services/WalletService';
 import { fixOrders } from '../lib/utils/orders';
 
 export function loadOrderbook(
@@ -183,7 +183,7 @@ export function loadAssets(force = false) {
     } = getState();
 
     try {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethereumClient = new EthereumClient(web3);
       const productsA = products.map(pair => pair.assetDataA);
       const productsB = products.map(pair => pair.assetDataB);
@@ -279,7 +279,7 @@ export function pruneOrders(baseAssetData, quoteAssetData) {
     if (!orderbooks[baseAssetData]) return;
     if (!orderbooks[baseAssetData][quoteAssetData]) return;
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = await new ZeroExClient(ethereumClient);
     const wrappers = await zeroExClient.getContractWrappers();
@@ -330,7 +330,7 @@ export function cancelOrder(order) {
       wallet: { address }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const zeroExClient = await new ZeroExClient(ethereumClient);

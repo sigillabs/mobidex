@@ -4,7 +4,7 @@ import React from 'react';
 import { Text } from 'react-native-elements';
 import * as AssetService from '../../services/AssetService';
 import { styles } from '../../styles';
-import { formatAmount, formatAmountWithDecimals } from '../../utils';
+import { formatAmount, formatAmountWithDecimals } from '../../lib/utils';
 import FormattedSymbol from './FormattedSymbol';
 
 export default class FormattedTokenAmount extends React.PureComponent {

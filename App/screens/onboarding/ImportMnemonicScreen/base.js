@@ -31,7 +31,7 @@ class BaseImportMnemonicScreen extends Component {
   static getDerivedStateFromProps(props, state) {
     const mnemonic = (props.mnemonic || []).slice();
     const page = props.page || 0;
-    const word = mnemonic[page];
+    const word = state.word || mnemonic[page];
 
     return {
       ...state,
@@ -107,7 +107,8 @@ class BaseImportMnemonicScreen extends Component {
     this.setState({ submitting: true });
     const addMnemonic = ((await Clipboard.getString()) || '')
       .split(/\s+/)
-      .filter(word => Boolean(word));
+      .filter(word => Boolean(word))
+      .slice(0, 12);
 
     if (addMnemonic.length === 0) return;
 

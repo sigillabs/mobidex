@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { formatAmount, formatSymbol, getImage } from '../../utils';
+import { formatAmount, formatSymbol, getImage } from '../../lib/utils';
 import FormattedSymbol from './FormattedSymbol';
 import MutedText from './MutedText';
 import BlinkingCursor from './BlinkingCursor';

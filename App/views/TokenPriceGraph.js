@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { formatAmount, formatSymbol } from '../../utils';
+import { formatAmount, formatSymbol } from '../../lib/utils';
 import Inf0xClient from '../../clients/inf0x';
 import PriceGraph from '../components/PriceGraph';
 

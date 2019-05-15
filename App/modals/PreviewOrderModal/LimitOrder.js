@@ -11,14 +11,14 @@ import {
   configureOrder,
   convertZeroExOrderToLimitOrder
 } from '../../../services/OrderService';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { colors } from '../../../styles';
 import {
   ActionErrorSuccessFlow,
   refreshGasPrice,
   submitOrder
 } from '../../../thunks';
-import { formatAmount, formatTimestamp } from '../../../utils';
+import { formatAmount, formatTimestamp } from '../../../lib/utils';
 import { navigationProp } from '../../../types/props';
 import Button from '../../components/Button';
 import Row from '../../components/Row';
@@ -98,11 +98,11 @@ class PreviewLimitOrder extends Component {
     for (const asset of assets) {
       wallet[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
       walletAfterTransaction[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
     }
 

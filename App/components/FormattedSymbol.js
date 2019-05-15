@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
-import { formatSymbol } from '../../utils';
+import { formatSymbol } from '../../lib/utils';
 
 export default class FormattedSymbol extends Component {
   static get propTypes() {

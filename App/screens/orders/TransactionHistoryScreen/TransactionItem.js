@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ListItem, Text } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { formatTimestamp } from '../../../../utils';
+import { formatTimestamp } from '../../../../lib/utils';
 import AddressText from '../../../components/AddressText';
 import MutedText from '../../../components/MutedText';
 import Row from '../../../components/Row';

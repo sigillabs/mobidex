@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { formatAmountWithDecimals } from '../../../../utils';
+import { formatAmountWithDecimals } from '../../../../lib/utils';
 import * as AssetService from '../../../../services/AssetService';
 import TransactionItem from './TransactionItem';
 

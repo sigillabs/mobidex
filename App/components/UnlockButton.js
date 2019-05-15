@@ -6,7 +6,7 @@ import { connect as connectNavigation } from '../../navigation';
 import * as AssetService from '../../services/AssetService';
 import { approve } from '../../thunks';
 import { navigationProp } from '../../types/props';
-import { formatSymbol } from '../../utils';
+import { formatSymbol } from '../../lib/utils';
 import Button from './Button';
 
 class UnlockButton extends React.Component {

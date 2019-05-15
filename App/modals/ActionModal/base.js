@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Text } from 'react-native-elements';
-import { connect as connectNavigation } from '../../../navigation';
+import {
+  connect as connectNavigation,
+  waitForComponentAppear
+} from '../../../navigation';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import VerticalPadding from '../../components/VerticalPadding';
@@ -23,8 +26,10 @@ class BaseActionModal extends React.PureComponent {
       try {
         await this.props.action();
       } catch (err) {
-        this.props.navigation.dismissModal();
-        this.props.callback(err);
+        waitForComponentAppear(this.props.navigation.componentId, () => {
+          this.props.navigation.dismissModal();
+          this.props.callback(err);
+        });
         return;
       }
 

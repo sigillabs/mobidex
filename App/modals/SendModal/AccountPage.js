@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as TickerService from '../../../services/TickerService';
-import { formatAmount, formatMoney } from '../../../utils';
+import { formatAmount, formatMoney } from '../../../lib/utils';
 import AddressInput from '../../components/AddressInput';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import ConfirmationView from '../../views/ConfirmationView';

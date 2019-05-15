@@ -3,7 +3,7 @@ import React from 'react';
 import { connect as connectNavigation } from '../../../../navigation';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
-import { isValidAmount } from '../../../../utils';
+import { isValidAmount } from '../../../../lib/utils';
 import TokenAmount from '../../../components/TokenAmount';
 import OneButtonTokenAmountKeyboardLayout from '../../../layouts/OneButtonTokenAmountKeyboardLayout';
 import OrderbookPrice from '../../../views/OrderbookPrice';

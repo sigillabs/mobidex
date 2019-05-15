@@ -11,6 +11,7 @@ import IntroScreen from '../App/screens/onboarding/IntroScreen';
 import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen';
 import PreviewMnemonicScreen from '../App/screens/onboarding/PreviewMnemonicScreen';
 import PinScreen from '../App/screens/onboarding/PinScreen';
+import BitskiLogin from '../App/screens/onboarding/BitskiLogin';
 import SettingsScreen from '../App/screens/SettingsScreen.js';
 import OfflineScreen from '../App/screens/OfflineScreen.js';
 
@@ -39,6 +40,13 @@ export function registerScreens(store) {
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.Pin',
     () => PinScreen,
+    Provider,
+    store
+  );
+
+  Navigation.registerComponentWithRedux(
+    'navigation.onboarding.BitskiLogin',
+    () => BitskiLogin,
     Provider,
     store
   );

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-elements';
-import { formatMoney, getImage } from '../../../../utils';
+import { formatMoney, getImage } from '../../../../lib/utils';
 import * as TickerService from '../../../../services/TickerService';
-import * as WalletService from '../../../../services/WalletService';
+import { WalletService } from '../../../../services/WalletService';
 
 export default class PortfolioDetails extends Component {
   static propTypes = {
@@ -18,7 +18,7 @@ export default class PortfolioDetails extends Component {
       .filter(asset => Boolean(asset))
       .map(a => ({
         ticker: TickerService.getForexTicker(a.symbol),
-        balance: WalletService.getBalanceByAddress(a.address)
+        balance: WalletService.instance.getBalanceByAddress(a.address)
       }))
       .filter(f => f.ticker && f.ticker.price)
       .map(f => ({

@@ -121,6 +121,9 @@ android {
         versionName "0.9.7"
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         multiDexEnabled true
+        manifestPlaceholders = [
+          appAuthRedirectScheme: 'io.mobidex.wallet.oauth'
+        ]
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -165,6 +168,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-app-auth')
     implementation project(':react-native-svg')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules

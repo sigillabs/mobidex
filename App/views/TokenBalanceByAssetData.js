@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ZERO } from '../../constants/0x';
 import * as AssetService from '../../services/AssetService';
-import * as WalletService from '../../services/WalletService';
+import { WalletService } from '../../services/WalletService';
 import FormattedTokenAmount from '../components/FormattedTokenAmount';
 
 export default class TokenBalanceByAssetData extends Component {
@@ -30,7 +30,9 @@ export default class TokenBalanceByAssetData extends Component {
       );
     }
 
-    const balance = WalletService.getBalanceByAssetData(asset.assetData);
+    const balance = WalletService.instance.getBalanceByAssetData(
+      asset.assetData
+    );
 
     return (
       <FormattedTokenAmount

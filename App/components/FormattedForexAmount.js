@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
-import { formatMoney } from '../../utils';
+import { formatMoney } from '../../lib/utils';
 
 export default class FormattedForexAmount extends Component {
   static get propTypes() {

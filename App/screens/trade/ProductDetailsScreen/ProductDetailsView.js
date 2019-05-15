@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
-import * as WalletService from '../../../../services/WalletService';
+import { WalletService } from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
 import { navigationProp } from '../../../../types/props';
 import Button from '../../../components/Button';
@@ -43,7 +43,7 @@ class ProductDetailsView extends Component {
         {graph}
         <Divider style={[styles.mt0]} />
         <Row style={[styles.justifyCenter]}>
-          {WalletService.isUnlockedByAssetData(feeAsset.assetData)
+          {WalletService.instance.isUnlockedByAssetData(feeAsset.assetData)
             ? this.renderActionButtons()
             : this.renderUnlockFeeAssetButton()}
         </Row>
@@ -83,7 +83,7 @@ class ProductDetailsView extends Component {
 
   renderBuyButton() {
     const { quote } = this.props;
-    if (WalletService.isUnlockedByAssetData(quote.assetData)) {
+    if (WalletService.instance.isUnlockedByAssetData(quote.assetData)) {
       return (
         <Button
           containerStyle={[{ width: 150 }, styles.justifyCenter]}
@@ -105,7 +105,7 @@ class ProductDetailsView extends Component {
 
   renderSellButton() {
     const { base } = this.props;
-    if (WalletService.isUnlockedByAssetData(base.assetData)) {
+    if (WalletService.instance.isUnlockedByAssetData(base.assetData)) {
       return (
         <Button
           containerStyle={[{ width: 150 }, styles.justifyCenter]}

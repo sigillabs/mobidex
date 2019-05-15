@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { fonts } from '../../styles';
-import { formatSymbol } from '../../utils';
+import { formatSymbol } from '../../lib/utils';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
 import TokenIcon from '../components/TokenIcon';

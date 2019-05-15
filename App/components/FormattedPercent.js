@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
-import { formatPercent } from '../../utils';
+import { formatPercent } from '../../lib/utils';
 
 export default class FormattedPercent extends Component {
   static get propTypes() {

@@ -4,7 +4,7 @@ import { ContractDefinitionLoader } from 'web3-contracts-loader';
 import { ZERO } from '../constants/0x';
 import { cache, time } from '../lib/decorators/cls';
 import { formatHexString } from '../lib/utils/format';
-import { hex2a } from '../utils';
+import { hex2a } from '../lib/utils';
 import ZeroExClient from './0x.js';
 
 const TokenABI = require('../abi/Token.json');

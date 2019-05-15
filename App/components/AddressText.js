@@ -2,7 +2,7 @@ import ethUtil from 'ethereumjs-util';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
-import { summarizeAddress } from '../../utils';
+import { summarizeAddress } from '../../lib/utils';
 
 export default class AddressText extends Component {
   render() {

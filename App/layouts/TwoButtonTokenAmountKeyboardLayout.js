@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 import VirtualKeyboard from 'react-native-virtual-keyboard';
 import { styles } from '../../styles';
-import { processVirtualKeyboardCharacter } from '../../utils';
+import { processVirtualKeyboardCharacter } from '../../lib/utils';
 import Button from '../components/Button';
 import Row from '../components/Row';
 

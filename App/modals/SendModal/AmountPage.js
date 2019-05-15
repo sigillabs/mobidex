@@ -4,10 +4,10 @@ import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { connect } from 'react-redux';
 import * as TickerService from '../../../services/TickerService';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { styles } from '../../../styles';
 import { refreshGasPrice } from '../../../thunks';
-import { formatAmount, getForexIcon, isValidAmount } from '../../../utils';
+import { formatAmount, getForexIcon, isValidAmount } from '../../../lib/utils';
 import MaxButton from '../../components/MaxButton';
 import Row from '../../components/Row';
 import TokenAmount from '../../components/TokenAmount';
@@ -40,7 +40,7 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
 
   renderTop() {
     const { asset } = this.props;
-    const balance = WalletService.getBalanceByAddress(asset.address);
+    const balance = WalletService.instance.getBalanceByAddress(asset.address);
 
     return (
       <React.Fragment>
@@ -176,12 +176,16 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
 
   setMaxTokenAmount = async () => {
     const { asset } = this.props;
-    const balance = WalletService.getBalanceByAddress(asset.address || null);
+    const balance = WalletService.instance.getBalanceByAddress(
+      asset.address || null
+    );
     let amount = balance;
 
     if (!asset.address) {
-      const gasAmount = await WalletService.estimateEthSend();
-      const gasPrice = WalletService.convertGasPriceToEth(this.props.gasPrice);
+      const gasAmount = await WalletService.instance.estimateEthSend();
+      const gasPrice = WalletService.instance.convertGasPriceToEth(
+        this.props.gasPrice
+      );
       const gasFee = gasPrice.mul(gasAmount);
 
       amount = amount.sub(gasFee);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
 import { getProfitLossStyle } from '../../../../styles';
-import { formatAmount } from '../../../../utils';
+import { formatAmount } from '../../../../lib/utils';
 import FormattedPercent from '../../../components/FormattedPercent';
 import FormattedTokenAmount from '../../../components/FormattedTokenAmount';
 import * as TickerService from '../../../../services/TickerService';
