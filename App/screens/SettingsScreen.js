@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { setGasLevel, setGasStation } from '../../actions';
 import { addReferrer, loadUser } from '../../thunks';
 import { showModal } from '../../navigation';
-import { clearState } from '../../store';
+import { clearState } from '../../lib/stores/app';
 import { colors, styles } from '../../styles';
 import { clearCache } from '../../utils';
 import Divider from '../components/Divider';

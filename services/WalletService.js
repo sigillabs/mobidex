@@ -12,8 +12,25 @@ import TokenClient from '../clients/token';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { formatHexString } from '../lib/utils/format';
 import { showModal } from '../navigation';
+import BaseService from './BaseService';
 
 const WalletManager = NativeModules.WalletManager;
+
+export class WalletService extends BaseService {
+  async supportsFingerPrintUnlock() {}
+
+  async supportsFaceIDUnlock() {}
+
+  async cancelFingerPrintUnlock() {}
+
+  async getPrivateKey() {}
+
+  async getWalletAddress() {}
+
+  async signTransaction() {}
+
+  async signMessage() {}
+}
 
 let _store;
 let _web3;

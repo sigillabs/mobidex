@@ -12,13 +12,7 @@ class BaseBitskiLoginScreen extends Component {
   static get propTypes() {
     return {
       dispatch: PropTypes.func.isRequired,
-      navigation: navigationProp.isRequired,
-      bitski: PropTypes.shape({
-        issuer: PropTypes.string.isRequired,
-        clientId: PropTypes.string.isRequired,
-        redirectUrl: PropTypes.string.isRequired,
-        scopes: PropTypes.arrayOf(PropTypes.string).isRequired
-      })
+      navigation: navigationProp.isRequired
     };
   }
 
@@ -85,6 +79,6 @@ class BaseBitskiLoginScreen extends Component {
 }
 
 export default connect(
-  ({ settings: { bitski } }) => ({ bitski }),
+  () => ({}),
   dispatch => ({ dispatch })
 )(connectNavigation(BaseBitskiLoginScreen));

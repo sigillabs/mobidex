@@ -22,6 +22,7 @@ export function authorizeBitski() {
       }
     } = getState();
 
+    console.warn(auth);
     const result = await appAuthorize(auth);
     return dispatch(setBitskiCredentials(result));
   };
