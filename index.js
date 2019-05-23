@@ -15,7 +15,7 @@ import {
   ActiveTransactionWatchdog,
   TransactionService
 } from './services/TransactionService';
-import { setStore as setStoreForWalletService } from './services/WalletService';
+import { WalletService } from './services/WalletService';
 import { initialize as initializeStore } from './store';
 import { loadWalletAddress } from './thunks';
 import { setExceptionHandlers } from './error-handlers';
@@ -52,7 +52,7 @@ const initializeApp = (function initialize() {
     setStoreForAssetService(_store);
     setStoreForOrderService(_store);
     setStoreForTickerService(_store);
-    setStoreForWalletService(_store);
+    new WalletService(_store);
     new TransactionService(_store);
     new ActiveTransactionWatchdog(_store).start();
 

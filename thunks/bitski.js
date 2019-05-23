@@ -14,6 +14,23 @@ export function setBitskiCredentials(credentials) {
   };
 }
 
+/*
+Example Response:
+{
+  "additionalParameters": {},
+  "scopes": [
+    "openid",
+    "offline"
+  ],
+  "idToken": "<>",
+  "accessToken": "<>",
+  "tokenAdditionalParameters": {},
+  "refreshToken": "<>",
+  "tokenType": "bearer",
+  "authorizeAdditionalParameters": {},
+  "accessTokenExpirationDate": "2019-05-23T02:49:05Z"
+}
+*/
 export function authorizeBitski() {
   return async (dispatch, getState) => {
     const {
@@ -22,7 +39,6 @@ export function authorizeBitski() {
       }
     } = getState();
 
-    console.warn(auth);
     const result = await appAuthorize(auth);
     return dispatch(setBitskiCredentials(result));
   };

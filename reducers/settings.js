@@ -59,7 +59,7 @@ const initialState = {
     auth: {
       issuer: 'https://account.bitski.com/',
       clientId: '5b9d3c1a-0b08-4e02-971e-ad65e37cdcd5',
-      redirectUrl: 'io.mobidex.wallet.oauth',
+      redirectUrl: 'mobidex://auth',
       scopes: ['openid', 'offline']
     },
     endpoint: 'https://api.bitski.com/v1/transactions'
