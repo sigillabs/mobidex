@@ -19,12 +19,14 @@ class BitskiManager: NSObject {
     }
   }
   
-  func initialize(clientID: string, redirectURL: string) -> Boolean {
-    Bitski.shared = Bitski(clientID: clientID, redirectURL: URL(redirectURL)!)
+  func initialize(clientID: String, redirectURL: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    Bitski.shared = Bitski(clientID: clientID, redirectURL: URL(string: redirectURL)!)
+
+    callback([NSNull(), NSNull()])
   }
   
-  func initialized() -> String {
-    return Bitski.shared?.isLoggedIn
+  func initialized(callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([NSNull(), Bitski.shared?.isLoggedIn])
   }
 }
 

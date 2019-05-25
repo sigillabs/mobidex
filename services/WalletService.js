@@ -25,7 +25,7 @@ export class WalletService extends BaseService {
 
     this.wallet = new IntegratedWallet(settings);
 
-    await this.wallet.initialized();
+    await this.wallet.initialize();
 
     this.initialized = true;
     this.web3 = new Web3(this.wallet.provider);
