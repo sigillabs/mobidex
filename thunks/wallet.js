@@ -15,13 +15,13 @@ import { MAX } from '../constants/0x';
 import * as AssetService from '../services/AssetService';
 import { setOfflineRoot, showErrorModal } from '../navigation';
 import { TransactionService } from '../services/TransactionService';
-import * as WalletService from '../services/WalletService';
+import { WalletService } from '../services/WalletService';
 import { deposit, withdraw } from './0x';
 
 export function loadWalletAddress() {
   return async dispatch => {
     try {
-      const address = await WalletService.getWalletAddress();
+      const address = await WalletService.instance.getWalletAddress();
       dispatch(setWalletAddress(address));
     } catch (error) {
       if (error.message && ~error.message.indexOf('Network is down')) {
@@ -40,7 +40,7 @@ export function loadAllowances(force = false) {
     } = getState();
 
     try {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethereumClient = new EthereumClient(web3);
       const allowances = await Promise.all(
         assets
@@ -70,7 +70,7 @@ export function loadAllowances(force = false) {
 export function loadAllowance(assetData, force = false) {
   return async dispatch => {
     try {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethereumClient = new EthereumClient(web3);
       const address = assetDataUtils.decodeERC20AssetData(assetData)
         .tokenAddress;
@@ -94,7 +94,7 @@ export function loadBalances(force = false) {
     } = getState();
 
     try {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethereumClient = new EthereumClient(web3);
       const balances = await Promise.all(
         assets
@@ -127,7 +127,7 @@ export function loadBalances(force = false) {
 export function loadBalance(assetData, force = false) {
   return async dispatch => {
     try {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethereumClient = new EthereumClient(web3);
       if (assetData !== null) {
         const address = assetDataUtils.decodeERC20AssetData(assetData)
@@ -161,7 +161,7 @@ export function loadTransactions(force = false) {
       settings: { inf0xEndpoint, network }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     try {
       const ethereumClient = new EthereumClient(web3);
@@ -254,7 +254,7 @@ export function sendTokens(token, to, amount) {
       wallet: { address }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const tokenClient = new TokenClient(ethereumClient, token.address);
@@ -278,7 +278,7 @@ export function sendEther(to, amount) {
       settings: { gasPrice }
     } = getState();
 
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3, { gasPrice });
     const txhash = await ethereumClient.send(to, amount);
@@ -345,7 +345,7 @@ export function checkAndUnwrapEther(
 
 export function setUnlimitedProxyAllowance(address) {
   return async () => {
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const tokenClient = new TokenClient(ethereumClient, address);
@@ -362,7 +362,7 @@ export function setUnlimitedProxyAllowance(address) {
 
 export function setNoProxyAllowance(address) {
   return async () => {
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const tokenClient = new TokenClient(ethereumClient, address);
@@ -379,7 +379,7 @@ export function setNoProxyAllowance(address) {
 
 export function checkAndSetUnlimitedProxyAllowance(address) {
   return async dispatch => {
-    const web3 = WalletService.getWeb3();
+    const web3 = WalletService.instance.web3;
 
     const ethereumClient = new EthereumClient(web3);
     const tokenClient = new TokenClient(ethereumClient, address);

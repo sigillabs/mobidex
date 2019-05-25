@@ -163,6 +163,17 @@ class WalletManager: NSObject {
     
     getPasscodeFromKeychain(callback: callback)
   }
+
+  @objc(isWalletAvailable:) func isWalletAvailable(callback: @escaping RCTResponseSenderBlock) -> Void {
+    guard let store = self.findWallet(),
+      let addresses = store.addresses,
+      addresses.count != 0
+      else {
+        callback([NSNull(), false])
+        return;
+    }
+    callback([NSNull(), true])
+  }
   
   @objc(supportsFingerPrintAuthentication:) func supportsFingerPrintAuthentication(callback: RCTResponseSenderBlock) -> Void {
     let context = LAContext()

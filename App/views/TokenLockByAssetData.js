@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as AssetService from '../../services/AssetService';
-import * as WalletService from '../../services/WalletService';
+import { WalletService } from '../../services/WalletService';
 
 export default class TokenLockByAssetData extends Component {
   static propTypes = {
@@ -21,7 +21,9 @@ export default class TokenLockByAssetData extends Component {
       return <Icon color="white" {...this.props} name="lock" size={20} />;
     }
 
-    const isUnlocked = WalletService.isUnlockedByAssetData(asset.assetData);
+    const isUnlocked = WalletService.instance.isUnlockedByAssetData(
+      asset.assetData
+    );
 
     if (isUnlocked) {
       return <Icon color="white" {...this.props} name="unlock" size={20} />;

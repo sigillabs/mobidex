@@ -56,6 +56,7 @@ const initializeApp = (function initialize() {
     new TransactionService(_store);
     new ActiveTransactionWatchdog(_store).start();
 
+    await WalletService.instance.initialize();
     await _store.dispatch(loadWalletAddress());
 
     const {

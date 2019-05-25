@@ -9,26 +9,52 @@ import TokenClient from '../clients/token';
 import { ZERO, NULL_ADDRESS, MAX } from '../constants/0x';
 import { formatHexString } from '../lib/utils/format';
 import { IntegratedWallet } from '../lib/wallets/integrated';
+import { BitskiWallet } from '../lib/wallets/bitski';
 import BaseService from './BaseService';
 
 export class WalletService extends BaseService {
   constructor(store) {
     super(store);
 
-    this.initialized = false;
-    this.wallet = null;
+    this.wallets = {};
+    this.selected = null;
     this.web3 = null;
   }
 
-  async initializeWallet() {
+  get wallet() {
+    if (this.selected === null) return null;
+    return this.wallets[this.selected];
+  }
+
+  get enabledWallets() {
+    return Object.values(this.wallets).filter(wallet => wallet.available);
+  }
+
+  getInternalWallet(name) {
+    return this.wallets[name];
+  }
+
+  async initialize() {
     const { settings } = this.store.getState();
 
-    this.wallet = new IntegratedWallet(settings);
-
-    await this.wallet.initialized();
-
-    this.initialized = true;
-    this.web3 = new Web3(this.wallet.provider);
+    this.wallets = {
+      bitski: new BitskiWallet({
+        ...settings,
+        ...settings.bitski,
+        network: settings.network
+      }),
+      integrated: new IntegratedWallet(settings)
+    };
+    await Promise.all(this.enabledWallets.map(wallet => wallet.initialize()));
+    for (const name in this.wallets) {
+      if (this.wallets[name].exists) {
+        this.selected = name;
+        break;
+      }
+    }
+    if (this.selected) {
+      this.web3 = new Web3(this.wallet.provider);
+    }
   }
 
   async supportsFingerPrintUnlock() {

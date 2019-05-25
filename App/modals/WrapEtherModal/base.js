@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { formatUnitValue } from '../../../lib/utils/format';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { connect as connectNavigation } from '../../../navigation';
 import { styles } from '../../../styles';
 import {
@@ -45,7 +45,8 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
 
   componentDidMount() {
     this.setState({
-      amount: WalletService.getBalanceBySymbol('WETH')
+      amount: WalletService.instance
+        .getBalanceBySymbol('WETH')
         .toString()
         .split('')
     });
@@ -127,14 +128,14 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
       amount = formatAmount(amount).toString();
     }
 
-    const weth = WalletService.getBalanceBySymbol('WETH');
+    const weth = WalletService.instance.getBalanceBySymbol('WETH');
 
     if (weth.gt(amount || 0)) {
       this.props.dispatch(
         ReceiptActionErrorSuccessFlow(
           this.props.navigation.componentId,
           {
-            gas: await WalletService.estimateWithdraw(
+            gas: await WalletService.instance.estimateWithdraw(
               this.getWETHChange().neg()
             ),
             value: 0
@@ -153,7 +154,9 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
         ReceiptActionErrorSuccessFlow(
           this.props.navigation.componentId,
           {
-            gas: await WalletService.estimateDeposit(this.getWETHChange()),
+            gas: await WalletService.instance.estimateDeposit(
+              this.getWETHChange()
+            ),
             value: this.getWETHChange()
           },
           {
@@ -169,14 +172,14 @@ class BaseWrapEtherScreen extends TwoButtonTokenAmountKeyboardLayout {
   }
 
   getTotalEthereum() {
-    const eth = WalletService.getBalanceBySymbol('ETH');
-    const weth = WalletService.getBalanceBySymbol('WETH');
+    const eth = WalletService.instance.getBalanceBySymbol('ETH');
+    const weth = WalletService.instance.getBalanceBySymbol('WETH');
     return eth.add(weth);
   }
 
   getWETHChange() {
     const { amount } = this.state;
-    const weth = WalletService.getBalanceBySymbol('WETH');
+    const weth = WalletService.instance.getBalanceBySymbol('WETH');
     const formattedAmount = formatUnitValue(
       new BigNumber(amount.join('') || 0).sub(weth)
     );

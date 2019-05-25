@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import { setGasPrice } from '../actions';
 import EthGasStationInfo from '../clients/EthGasStationInfo.js';
 import EtherChainGasPriceOracle from '../clients/EtherChainGasPriceOracle.js';
-import * as WalletService from '../services/WalletService';
+import { WalletService } from '../services/WalletService';
 
 export function refreshGasPrice() {
   return async (dispatch, getState) => {
@@ -20,7 +20,7 @@ export function refreshGasPrice() {
       const estimates = await client.get();
       gasPrice = estimates[gasLevel];
     } else {
-      const web3 = WalletService.getWeb3();
+      const web3 = WalletService.instance.web3;
       const ethGasPrice = await web3.eth.getGasPrice();
       gasPrice = new BigNumber(ethGasPrice);
     }

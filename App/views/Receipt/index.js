@@ -6,7 +6,7 @@ import { SectionList } from 'react-native';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
 import * as AssetService from '../../../services/AssetService';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { formatAmount } from '../../../utils';
 import ReceiptItem from './ReceiptItem';
 import SectionHeader from './SectionHeader';
@@ -66,7 +66,7 @@ class BaseReceipt extends Component {
     const gasPrice = new BigNumber(this.props.gasPrice || 0);
     const value = new BigNumber(this.props.value || 0);
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
-    const networkFeeFunds = WalletService.getBalanceByAssetData(
+    const networkFeeFunds = WalletService.instance.getBalanceByAssetData(
       networkFeeAsset.assetData
     );
     const networkFee = this.getTotalGasCost();

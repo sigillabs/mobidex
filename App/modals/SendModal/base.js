@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import {
   ReceiptActionErrorSuccessFlow,
   sendEther,
@@ -149,7 +149,7 @@ class BaseSendScreen extends Component {
     const extraWalletData = [];
     const extraUpdatedWalletData = [];
     const extraSections = [];
-    const gas = await WalletService.estimateEthSend();
+    const gas = await WalletService.instance.estimateEthSend();
     const action = () => this.props.dispatch(sendEther(to, amount));
     const value = baseUnitAmount;
 
@@ -168,7 +168,9 @@ class BaseSendScreen extends Component {
     const { asset } = this.props;
     const { amount } = this.state;
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(amount, asset.decimals);
-    const balance = await WalletService.getBalanceByAssetData(asset.assetData);
+    const balance = await WalletService.instance.getBalanceByAssetData(
+      asset.assetData
+    );
 
     const to = address || this.state.address;
     const extraWalletData = [
@@ -196,7 +198,7 @@ class BaseSendScreen extends Component {
         ]
       }
     ];
-    const gas = await WalletService.estimateTokenSend(
+    const gas = await WalletService.instance.estimateTokenSend(
       asset.address,
       to,
       baseUnitAmount

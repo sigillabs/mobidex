@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { connect as connectNavigation } from '../../../navigation';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { colors } from '../../../styles';
 import { navigationProp } from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
@@ -30,12 +30,12 @@ class Unlocking extends Component {
 
       try {
         if (tx) {
-          data = await WalletService.signTransaction(
+          data = await WalletService.instance.signTransaction(
             tx,
             pin ? pin.slice(0, 6) : null
           );
         } else if (message) {
-          data = await WalletService.signMessage(
+          data = await WalletService.instance.signMessage(
             message,
             pin ? pin.slice(0, 6) : null
           );

@@ -2,6 +2,15 @@ PODS:
   - AppAuth (0.95.0)
   - BigInt (3.1.0):
     - SipHash (~> 1.2)
+  - BigInt.swift (1.0.0)
+  - Bitski (0.4.2):
+    - AppAuth (~> 0.93)
+    - BigInt.swift (~> 1.0)
+    - PromiseKit/CorePromise (~> 6.0)
+    - secp256k1.swift (~> 0.1)
+    - Web3 (~> 0.3.1)
+    - Web3/ContractABI (~> 0.3.1)
+    - Web3/PromiseKit (~> 0.3.1)
   - CryptoSwift (0.15.0)
   - EthereumABI (1.1.1):
     - BigInt (~> 3.1)
@@ -18,11 +27,26 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (6.4.1):
     - PromiseKit/CorePromise
+  - secp256k1.swift (0.1.4)
   - secp256k1_swift (1.0.3)
   - SipHash (1.2.2)
   - Starscream (3.1.0)
   - SwiftRLP (1.1):
     - BigInt (~> 3.1)
+  - Web3 (0.3.1):
+    - Web3/Core (= 0.3.1)
+    - Web3/HTTPExtension (= 0.3.1)
+  - Web3/ContractABI (0.3.1):
+    - Web3/Core
+  - Web3/Core (0.3.1):
+    - BigInt (~> 3.1)
+    - CryptoSwift (~> 0.8)
+    - secp256k1.swift (~> 0.1)
+  - Web3/HTTPExtension (0.3.1):
+    - Web3/Core
+  - Web3/PromiseKit (0.3.1):
+    - PromiseKit/CorePromise (~> 6.0)
+    - Web3/Core
   - web3swift (2.1.3):
     - BigInt (= 3.1)
     - CryptoSwift (= 0.15.0)
@@ -35,35 +59,44 @@ PODS:
 
 DEPENDENCIES:
   - AppAuth (>= 0.94)
+  - Bitski (~> 0.4.2)
   - web3swift (~> 2.1.3)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - AppAuth
     - BigInt
+    - BigInt.swift
+    - Bitski
     - CryptoSwift
     - EthereumABI
     - EthereumAddress
     - PromiseKit
+    - secp256k1.swift
     - secp256k1_swift
     - SipHash
     - Starscream
     - SwiftRLP
+    - Web3
     - web3swift
 
 SPEC CHECKSUMS:
   AppAuth: 137f6bb6fc9dfbaf2cf9f6fcff1d336ff0163bc6
   BigInt: 76b5dfdfa3e2e478d4ffdf161aeede5502e2742f
+  BigInt.swift: 1e0ddf08d82166e72dfb0fa8d40301d273081afc
+  Bitski: a978042793ded140519a18c117d73133be2aa521
   CryptoSwift: 769f58a9e89f64e8796c2e59ce5f002dc81a2438
   EthereumABI: f040f5429e5a4366d028c88b88d9441e137593af
   EthereumAddress: f476e1320dca3a0024431e713ede7a09c7eb7796
   PromiseKit: 4c76a6506638034e3d7bede97b2ff7743f7bd2dc
+  secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   secp256k1_swift: 4fc5c4b2d2c6d21ee8ccb868cdc92da12f38bed9
   SipHash: fad90a4683e420c52ef28063063dbbce248ea6d4
   Starscream: 08172b481e145289c4930cb567230fb55897cfa4
   SwiftRLP: 5512899925f1a9e1c78c902ed3bf857880e814a0
+  Web3: e9be7ef88585e252df50abc28538d6e4691c786e
   web3swift: 23cc365dd3b28e9b990813965af4bd031e108f64
 
-PODFILE CHECKSUM: d6c62629ccda86c4ffc4adef00b3f49140a9e928
+PODFILE CHECKSUM: 14267bd72080fbda397f3a9deadbed4cc0cb974e
 
 COCOAPODS: 1.5.3

@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
-import * as WalletService from '../../../../services/WalletService';
+import { WalletService } from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
 import { approve, disapprove } from '../../../../thunks';
 import { navigationProp } from '../../../../types/props';
@@ -28,7 +28,7 @@ class TokenDetails extends Component {
       asset: { assetData, symbol }
     } = this.props;
     const isUnlocked = assetData
-      ? WalletService.isUnlockedByAssetData(assetData)
+      ? WalletService.instance.isUnlockedByAssetData(assetData)
       : true;
 
     return (
@@ -151,7 +151,7 @@ class TokenDetails extends Component {
 
     if (!assetData) return;
 
-    const isUnlocked = WalletService.isUnlockedByAssetData(assetData);
+    const isUnlocked = WalletService.instance.isUnlockedByAssetData(assetData);
 
     if (isUnlocked) {
       this.props.dispatch(

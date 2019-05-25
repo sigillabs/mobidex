@@ -4,7 +4,7 @@ import { Text } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { connect as connectNavigation } from '../../../../navigation';
 import { navigationProp } from '../../../../types/props';
-import * as WalletService from '../../../../services/WalletService';
+import { WalletService } from '../../../../services/WalletService';
 import { styles } from '../../../../styles';
 import BigCenter from '../../../components/BigCenter';
 import Button from '../../../components/Button';
@@ -52,13 +52,15 @@ class BaseIntro extends Component {
               this.props.navigation.push('navigation.onboarding.ImportMnemonic')
             }
           />
-          <Button
-            large
-            title="Login With Bitski"
-            onPress={() =>
-              this.props.navigation.push('navigation.onboarding.BitskiLogin')
-            }
-          />
+          {
+            <Button
+              large
+              title="Login With Bitski"
+              onPress={() =>
+                this.props.navigation.push('navigation.onboarding.BitskiLogin')
+              }
+            />
+          }
         </Row>
       </BigCenter>
     );
@@ -66,7 +68,7 @@ class BaseIntro extends Component {
 
   async generateWallet() {
     try {
-      const mnemonic = await WalletService.generateMnemonics();
+      const mnemonic = await WalletService.instance.generateMnemonics();
       this.props.navigation.push('navigation.onboarding.PreviewMnemonic', {
         mnemonic: mnemonic.split(/\s+/),
         generated: true

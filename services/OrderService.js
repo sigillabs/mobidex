@@ -22,7 +22,7 @@ import {
   takerAmountFromMakerAmount
 } from '../utils';
 import * as AssetService from './AssetService';
-import * as WalletService from './WalletService';
+import { WalletService } from './WalletService';
 
 let _store;
 
@@ -233,7 +233,7 @@ export async function getFilledTakerAmounts(orders) {
   if (!orders) return null;
   if (!orders.length) return [];
 
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
 
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
@@ -291,7 +291,7 @@ export async function createOrder(limitOrder) {
     wallet: { address }
   } = _store.getState();
 
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
 
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
@@ -309,7 +309,7 @@ export async function createOrder(limitOrder) {
 }
 
 export async function signOrder(order) {
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
 
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
@@ -375,7 +375,7 @@ export async function getBuyAssetsQuoteAsync(
     relayer: { orderbooks }
   } = _store.getState();
 
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
@@ -494,7 +494,7 @@ export async function getSellAssetsQuoteAsync(
     relayer: { orderbooks }
   } = _store.getState();
 
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
   const ethereumClient = new EthereumClient(web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();

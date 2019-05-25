@@ -11,7 +11,7 @@ import {
   configureOrder,
   convertZeroExOrderToLimitOrder
 } from '../../../services/OrderService';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { colors } from '../../../styles';
 import {
   ActionErrorSuccessFlow,
@@ -98,11 +98,11 @@ class PreviewLimitOrder extends Component {
     for (const asset of assets) {
       wallet[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
       walletAfterTransaction[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
     }
 

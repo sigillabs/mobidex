@@ -4,14 +4,14 @@
 
 ## Table of Contents
 
-* [Setup](#setup)
-  * [Windows Specific Setup](#windows-specific-setup)
-  * [Mac OS X Specific Setup](#mac-os-x-specific-setup)
-  * [Linux Specific Setup](#linux-specific-setup)
-* [Available Scripts](#available-scripts)
-  * [npm start](#npm-start)
-  * [npm patch](#npm-test)
-* [Notes](#notes)
+- [Setup](#setup)
+  - [Windows Specific Setup](#windows-specific-setup)
+  - [Mac OS X Specific Setup](#mac-os-x-specific-setup)
+  - [Linux Specific Setup](#linux-specific-setup)
+- [Available Scripts](#available-scripts)
+  - [npm start](#npm-start)
+  - [npm patch](#npm-test)
+- [Notes](#notes)
 
 ## Setup
 
@@ -22,33 +22,36 @@ npm i
 
 System Dependencies:
 
-* node > 8.6.0 and < 11
-* g++
-* Android Studio
-* XCode
+- node > 8.6.0 and < 11
+- g++
+- Android Studio
+- XCode
 
 ### Windows Specific Setup
 
 Install git:
+
 - Download from the [official site.](https://git-scm.com/download/win)
 
 Install chocolatey package manager:
+
 - Follow the official guide in [Install page.](https://chocolatey.org/install)
 
 Using [chocolatey](https://chocolatey.org/install), run the following:
+
 ```
 cinst nodejs.install --version 8.6.0
 ```
 
-> Hint: Don't forget to do ```npm init``` to generate profile.json.
+> Hint: Don't forget to do `npm init` to generate profile.json.
 
 after the install has finished, run the following into the command line with **administration execution**:
+
 ```
 npm install -g --production windows-build-tools
 ```
 
-> Hint: Don't forget to install node-cli, node-gyp packages using ```npm install -g node-cli node-gyp``` if it's not installed.
-
+> Hint: Don't forget to install node-cli, node-gyp packages using `npm install -g node-cli node-gyp` if it's not installed.
 
 ### Mac OS X Specific Setup
 
@@ -66,15 +69,16 @@ brew install node
 
 ### Linux Specific Setup
 
-
 #### For Ubuntu, debian distros/based distros:
 
 You will need to install build tools and curl, git:
+
 ```
 $ sudo apt-get install -y build-essential curl git
 ```
 
 Install node 8.x using [NodeSource](https://nodesource.com/) repository:
+
 ```
 $ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
@@ -83,20 +87,21 @@ $ sudo apt-get install -y nodejs
 #### For RHEL, CentOS and Fedora distros/based distros:
 
 You will need to install build tools and curl, git:
+
 ```
 $ sudo dnf -y groupinstall 'Development Tools' && sudo dnf -y install curl git
 ```
 
 Install node 8.x using [NodeSource](https://nodesource.com/) repository:
+
 ```
 $ curl -sL https://rpm.nodesource.com/setup_8.x | sudo -E bash -
 $ sudo dnf -y install nodejs
 ```
 
-
 > Hints:<br />
-> Don't forget to install node-cli, node-gyp packages using ```$ npm install -g node-cli node-gyp``` if it's not installed.<br />
-> Don't forget to do ```npm init``` to generate profile.json.
+> Don't forget to install node-cli, node-gyp packages using `$ npm install -g node-cli node-gyp` if it's not installed.<br />
+> Don't forget to do `npm init` to generate profile.json.
 
 ### iOS
 
@@ -104,7 +109,13 @@ Run Mobidex from XCode to use the simulator. First do the following:
 
 1.  `pushd ios && bundle install --path .gems && bundle exec pod install && popd`
 2.  Open `ios/mobidex.xcworkspace` in XCode
-3.  Go to **Build Settings** for Pods > libsodium and disable **Use Header Maps**
+3.  Go to **Build Settings** for `Pods > libsodium` and disable **Use Header Maps**
+4.  Go to **Build Settings** for `Pods > secp256k1_swift` and do the following:
+    - disable **Use Header Maps**
+    - Add `"${PODS_ROOT}/secp256k1_swift/Classes"` with `non-recursive` to **Use Header Search Paths**
+    - Add `"${PODS_ROOT}/secp256k1_swift/Classes/secp256k1/include"` with `non-recursive` to **Use Header Search Paths**
+5.  Go to **Build Settings** for `Pods > Web3` and set **Swift Language Version** to `Swift 4`
+6.  Go to **Build Settings** for `Pods > web3swift` and set **Swift Language Version** to `Swift 5`
 
 Then, click the **play** icon at the top.
 
@@ -118,7 +129,7 @@ Run Mobidex in an Android emulator:
 4.  Sync gradle files
 5.  Click play!
 
-* Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
+- Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
 ## Available Scripts
 
@@ -161,7 +172,7 @@ Mobidex is an open source project. As such, there are many ways to contribute. S
 
 All issues with the Mobidex client are public. They can be found at https://github.com/sigillabs/mobidex/issues.
 
-1. Click *New Issue*
+1. Click _New Issue_
 2. Fill in the template
 3. Click submit
 
@@ -189,8 +200,8 @@ Web3.js does not load because of its dependence on node.js standard libraries. T
 
 See the for more details:
 
-* https://gist.github.com/parshap/e3063d9bf6058041b34b26b7166fd6bd
-* https://medium.com/@aakashns/using-core-node-js-modules-in-react-native-apps-64acd4d07140
+- https://gist.github.com/parshap/e3063d9bf6058041b34b26b7166fd6bd
+- https://medium.com/@aakashns/using-core-node-js-modules-in-react-native-apps-64acd4d07140
 
 ### Key management, Cryptography, and Authentication
 

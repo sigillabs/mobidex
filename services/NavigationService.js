@@ -1,9 +1,9 @@
 import { Linking } from 'react-native';
 import EthereumClient from '../clients/ethereum';
-import * as WalletService from './WalletService';
+import { WalletService } from './WalletService';
 
 export async function gotoEtherScan(txaddr) {
-  const web3 = WalletService.getWeb3();
+  const web3 = WalletService.instance.web3;
 
   const ethereumClient = new EthereumClient(web3);
   const networkId = await ethereumClient.getNetworkId();

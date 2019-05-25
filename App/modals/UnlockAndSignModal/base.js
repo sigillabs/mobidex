@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect as connectNavigation } from '../../../navigation';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import { navigationProp } from '../../../types/props';
 import Loading from '../../views/Loading';
 import UnlockWithTouchIdentification from './UnlockWithTouchIdentification';
@@ -38,8 +38,8 @@ class UnlockAndSignModal extends Component {
       return this.props.navigation.dismissModal();
     }
 
-    const supportsFingerPrint = await WalletService.supportsFingerPrintUnlock();
-    const supportsFaceID = await WalletService.supportsFaceIDUnlock();
+    const supportsFingerPrint = await WalletService.instance.supportsFingerPrintUnlock();
+    const supportsFaceID = await WalletService.instance.supportsFaceIDUnlock();
     if (supportsFingerPrint && !this.forceShowPin) {
       this.showTouchIdentification();
     } else if (supportsFaceID && !this.forceShowPin) {

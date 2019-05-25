@@ -4,7 +4,7 @@ import { InteractionManager, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux';
 import { styles } from '../../../../styles';
 import { connect as connectNavigation } from '../../../../navigation';
-import { authorizeBitski } from '../../../../thunks';
+import { WalletService } from '../../../../services/WalletService';
 import { navigationProp } from '../../../../types/props';
 import MutedText from '../../../components/MutedText';
 
@@ -26,11 +26,15 @@ class BaseBitskiLoginScreen extends Component {
   }
 
   async componentDidMount() {
-    let authorized = false;
-
     try {
-      await this.props.dispatch(authorizeBitski());
-      authorized = true;
+      const wallet = WalletService.instance.getInternalWallet('bitski');
+      if (!wallet) {
+        throw new Error('Failed to authorize.');
+      }
+
+      const authorized = await wallet.login();
+
+      this.setState({ authorizing: false, authorized });
     } catch (error) {
       InteractionManager.runAfterInteractions(() => {
         this.props.navigation.pop();
@@ -38,9 +42,9 @@ class BaseBitskiLoginScreen extends Component {
       InteractionManager.runAfterInteractions(() => {
         this.props.navigation.showErrorModal(error);
       });
-    }
 
-    this.setState({ authorizing: false, authorized });
+      this.setState({ authorizing: false });
+    }
   }
 
   render() {

@@ -12,6 +12,7 @@
 
 @interface RCT_EXTERN_MODULE(WalletManager, NSObject)
 
+RCT_EXTERN_METHOD(isWalletAvailable:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(supportsFingerPrintAuthentication:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(supportsFaceIDAuthentication:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(cancelFingerPrintAuthentication:(RCTResponseSenderBlock)callback)

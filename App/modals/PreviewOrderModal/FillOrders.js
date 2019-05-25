@@ -10,7 +10,7 @@ import { ZERO } from '../../../constants/0x';
 import { connect as connectNavigation } from '../../../navigation';
 import * as AssetService from '../../../services/AssetService';
 import * as OrderService from '../../../services/OrderService';
-import * as WalletService from '../../../services/WalletService';
+import { WalletService } from '../../../services/WalletService';
 import * as ZeroExService from '../../../services/ZeroExService';
 import { colors } from '../../../styles';
 import {
@@ -87,16 +87,16 @@ class PreviewFillOrders extends Component {
     const { side, amount } = this.props;
     const relayerFeeAsset = AssetService.getFeeAsset();
     const networkFeeAsset = AssetService.getNetworkFeeAsset();
-    const etherBalance = WalletService.getBalanceByAssetData(
+    const etherBalance = WalletService.instance.getBalanceByAssetData(
       networkFeeAsset.assetData
     );
-    const feeBalance = WalletService.getBalanceByAssetData(
+    const feeBalance = WalletService.instance.getBalanceByAssetData(
       relayerFeeAsset.assetData
     );
-    const quoteBalance = WalletService.getBalanceByAssetData(
+    const quoteBalance = WalletService.instance.getBalanceByAssetData(
       this.props.quote.assetData
     );
-    const baseBalance = WalletService.getBalanceByAssetData(
+    const baseBalance = WalletService.instance.getBalanceByAssetData(
       this.props.base.assetData
     );
     const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(
@@ -246,7 +246,7 @@ class PreviewFillOrders extends Component {
       }
 
       // 6. Load gas price
-      const gasPrice = WalletService.convertGasPriceToEth(
+      const gasPrice = WalletService.instance.convertGasPriceToEth(
         await this.props.dispatch(refreshGasPrice())
       );
 
@@ -291,11 +291,11 @@ class PreviewFillOrders extends Component {
     for (const asset of assets) {
       wallet[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
       walletAfterTransaction[asset.address] = {
         symbol: asset.symbol,
-        amount: WalletService.getBalanceByAddress(asset.address)
+        amount: WalletService.instance.getBalanceByAddress(asset.address)
       };
     }
 
