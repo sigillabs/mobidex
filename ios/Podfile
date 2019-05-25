@@ -9,4 +9,5 @@ target 'mobidex' do
 
   pod 'web3swift', '~> 2.1.3'
   pod 'AppAuth', '>= 0.94'
+  pod 'Bitski', '~> 0.4.2'
 end

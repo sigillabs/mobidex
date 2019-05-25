@@ -42,6 +42,7 @@
 		303E421F2265274800B834AD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 303E421E2265274800B834AD /* JavaScriptCore.framework */; };
 		30437C8C20E5ABAE00720DD0 /* Entitlements.pinfo in Resources */ = {isa = PBXBuildFile; fileRef = 30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */; };
 		30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30437CA920E5B6BE00720DD0 /* Device.swift */; };
+		304B90592296F35E00F074F6 /* BitskiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304B90582296F35E00F074F6 /* BitskiManager.swift */; };
 		304C60AD20F1D0C600C08882 /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 304C608920F1D0A900C08882 /* libRCTGoogleAnalyticsBridge.a */; };
 		304C60AF20F1D0E000C08882 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 304C60AE20F1D0DF00C08882 /* CoreData.framework */; };
 		304C60B120F1D0EB00C08882 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 304C60B020F1D0EB00C08882 /* SystemConfiguration.framework */; };
@@ -490,6 +491,7 @@
 		303E421E2265274800B834AD /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		30437C8B20E5ABAE00720DD0 /* Entitlements.pinfo */ = {isa = PBXFileReference; lastKnownFileType = text; name = Entitlements.pinfo; path = mobidex/Entitlements.pinfo; sourceTree = "<group>"; };
 		30437CA920E5B6BE00720DD0 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		304B90582296F35E00F074F6 /* BitskiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitskiManager.swift; sourceTree = "<group>"; };
 		304C607E20F1D0A900C08882 /* RCTGoogleAnalyticsBridge.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTGoogleAnalyticsBridge.xcodeproj; path = "../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/RCTGoogleAnalyticsBridge.xcodeproj"; sourceTree = "<group>"; };
 		304C60AE20F1D0DF00C08882 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		304C60B020F1D0EB00C08882 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -673,6 +675,7 @@
 				30EB9EFA20DB9D700088F4BF /* WalletManagerBridge.m */,
 				30EB9EFC20DB9E390088F4BF /* WalletManager.swift */,
 				30437CA920E5B6BE00720DD0 /* Device.swift */,
+				304B90582296F35E00F074F6 /* BitskiManager.swift */,
 			);
 			name = mobidex;
 			sourceTree = "<group>";
@@ -1691,6 +1694,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				30437CAA20E5B6BE00720DD0 /* Device.swift in Sources */,
+				304B90592296F35E00F074F6 /* BitskiManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
