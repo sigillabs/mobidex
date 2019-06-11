@@ -30,12 +30,12 @@ class Unlocking extends Component {
 
       try {
         if (tx) {
-          data = await WalletService.instance.signTransaction(
+          data = await WalletService.instance.wallet.signTransaction(
             tx,
             pin ? pin.slice(0, 6) : null
           );
         } else if (message) {
-          data = await WalletService.instance.signMessage(
+          data = await WalletService.instance.wallet.signMessage(
             message,
             pin ? pin.slice(0, 6) : null
           );

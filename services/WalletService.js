@@ -78,14 +78,6 @@ export class WalletService extends BaseService {
     return this.wallet.getWalletAddress();
   }
 
-  async signTransaction() {
-    return this.wallet.signTransaction();
-  }
-
-  async signMessage() {
-    return this.wallet.signMessage();
-  }
-
   async removeWallet() {
     try {
       return await this.wallet.removeWallet();

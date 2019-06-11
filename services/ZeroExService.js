@@ -4,11 +4,12 @@ import ZeroExClient from '../clients/0x';
 import EthereumClient from '../clients/ethereum';
 import { formatHexString } from '../lib/utils/format';
 import { findAssetByData, getFeeAsset } from './AssetService';
-import {
-  getAllowanceByAssetData,
-  getBalanceByAssetData,
-  getWeb3
-} from './WalletService';
+// import {
+//   getAllowanceByAssetData,
+//   getBalanceByAssetData,
+//   getWeb3
+// } from './WalletService';
+import { WalletService } from './WalletService';
 
 function parseMarketActionResult(result) {
   if (result.length !== 258) return null;
@@ -33,13 +34,12 @@ function parseMarketActionResult(result) {
 }
 
 export async function estimateMarketBuyOrders(orders, amount) {
-  const web3 = getWeb3();
-  const ethereumClient = new EthereumClient(web3);
+  const ethereumClient = new EthereumClient(WalletService.instance.web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
-  const gas = await web3.eth.estimateGas({
+  const gas = await WalletService.instance.web3.eth.estimateGas({
     from: formatHexString(account.toString()),
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
@@ -48,13 +48,12 @@ export async function estimateMarketBuyOrders(orders, amount) {
 }
 
 export async function callMarketBuyOrders(orders, amount) {
-  const web3 = getWeb3();
-  const ethereumClient = new EthereumClient(web3);
+  const ethereumClient = new EthereumClient(WalletService.instance.web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
-  const result = await web3.eth.call({
+  const result = await WalletService.instance.web3.eth.call({
     from: formatHexString(account.toString()),
     data: transactionEncoder.marketBuyOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
@@ -70,19 +69,19 @@ export async function validateMarketBuyOrders(orders, amount) {
   const takerAsset = findAssetByData(orders[0].takerAssetData);
   const feeAsset = getFeeAsset();
   const quoteBalance = Web3Wrapper.toBaseUnitAmount(
-    getBalanceByAssetData(takerAsset.assetData),
+    WalletService.getBalanceByAssetData(takerAsset.assetData),
     takerAsset.decimals
   );
   const feeBalance = Web3Wrapper.toBaseUnitAmount(
-    getBalanceByAssetData(feeAsset.assetData),
+    WalletService.getBalanceByAssetData(feeAsset.assetData),
     feeAsset.decimals
   );
   const quoteAllowance = Web3Wrapper.toBaseUnitAmount(
-    getAllowanceByAssetData(takerAsset.assetData),
+    WalletService.getAllowanceByAssetData(takerAsset.assetData),
     takerAsset.decimals
   );
   const feeAllowance = Web3Wrapper.toBaseUnitAmount(
-    getAllowanceByAssetData(feeAsset.assetData),
+    WalletService.getAllowanceByAssetData(feeAsset.assetData),
     feeAsset.decimals
   );
 
@@ -117,19 +116,19 @@ export async function validateMarketSellOrders(orders, amount) {
   const takerAsset = findAssetByData(orders[0].takerAssetData);
   const feeAsset = getFeeAsset();
   const baseBalance = Web3Wrapper.toBaseUnitAmount(
-    getBalanceByAssetData(takerAsset.assetData),
+    WalletService.getBalanceByAssetData(takerAsset.assetData),
     takerAsset.decimals
   );
   const feeBalance = Web3Wrapper.toBaseUnitAmount(
-    getBalanceByAssetData(feeAsset.assetData),
+    WalletService.getBalanceByAssetData(feeAsset.assetData),
     feeAsset.decimals
   );
   const baseAllowance = Web3Wrapper.toBaseUnitAmount(
-    getAllowanceByAssetData(takerAsset.assetData),
+    WalletService.getAllowanceByAssetData(takerAsset.assetData),
     takerAsset.decimals
   );
   const feeAllowance = Web3Wrapper.toBaseUnitAmount(
-    getAllowanceByAssetData(feeAsset.assetData),
+    WalletService.getAllowanceByAssetData(feeAsset.assetData),
     feeAsset.decimals
   );
 
@@ -157,13 +156,12 @@ export async function validateMarketSellOrders(orders, amount) {
 }
 
 export async function estimateMarketSellOrders(orders, amount) {
-  const web3 = getWeb3();
-  const ethereumClient = new EthereumClient(web3);
+  const ethereumClient = new EthereumClient(WalletService.instance.web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
-  const gas = await web3.eth.estimateGas({
+  const gas = await WalletService.instance.web3.eth.estimateGas({
     from: formatHexString(account.toString()),
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
@@ -172,13 +170,12 @@ export async function estimateMarketSellOrders(orders, amount) {
 }
 
 export async function callMarketSellOrders(orders, amount) {
-  const web3 = getWeb3();
-  const ethereumClient = new EthereumClient(web3);
+  const ethereumClient = new EthereumClient(WalletService.instance.web3);
   const zeroExClient = new ZeroExClient(ethereumClient);
   const wrappers = await zeroExClient.getContractWrappers();
   const transactionEncoder = await wrappers.exchange.transactionEncoderAsync();
   const account = await ethereumClient.getAccount();
-  const result = await web3.eth.call({
+  const result = await WalletService.instance.web3.eth.call({
     from: formatHexString(account.toString()),
     data: transactionEncoder.marketSellOrdersTx(orders, new BigNumber(amount)),
     to: wrappers.exchange.getContractAddress()
