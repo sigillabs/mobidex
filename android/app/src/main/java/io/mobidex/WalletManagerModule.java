@@ -156,25 +156,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void isWalletAvailable(Callback cb) {
-        loadKeypair(password, new Callback() {
-            @Override
-            public void invoke(Object... args) {
-                if (args.length == 1) {
-                    cb.invoke(args[0], null);
-                } else {
-                    cb.invoke(null, false);
-                }
-            }
-        }, new Callback() {
-            @Override
-            public void invoke(Object... args) {
-                if (args.length == 1) {
-                    cb.invoke(null, true);
-                } else {
-                    cb.invoke(null, false);
-                }
-            }
-        });
+        cb.invoke(null, getWalletFile() != null);
     }
 
     @ReactMethod
