@@ -31,6 +31,14 @@ export class WalletService extends BaseService {
     return Object.values(this.wallets).filter(wallet => wallet.available);
   }
 
+  get readyWallets() {
+    return Object.values(this.wallets).filter(wallet => wallet.ready);
+  }
+
+  get isReady() {
+    return this.readyWallets.length > 0;
+  }
+
   async initialize() {
     const { settings } = this.store.getState();
 

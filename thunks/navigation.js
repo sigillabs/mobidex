@@ -12,6 +12,7 @@ import {
 } from '../navigation';
 import * as AssetService from '../services/AssetService';
 import { cancelOrder } from './orders';
+import { refreshGasPrice } from './settings';
 import { setUnlimitedProxyAllowance, setNoProxyAllowance } from './wallet';
 
 /* eslint-disable */
@@ -86,7 +87,11 @@ export function approve(parentComponentId, assetData) {
   return async dispatch => {
     const asset = AssetService.findAssetByData(assetData);
     const actionOptions = {
-      action: () => dispatch(setUnlimitedProxyAllowance(asset.address)),
+      action: () =>
+        dispatch(async dispatch => {
+          await dispatch(refreshGasPrice());
+          await dispatch(setUnlimitedProxyAllowance(asset.address));
+        }),
       icon: <FontAwesome name="unlock" size={100} />,
       label: <MajorText>Unlocking...</MajorText>
     };

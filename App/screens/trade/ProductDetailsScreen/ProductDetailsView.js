@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { connect as connectNavigation } from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import { WalletService } from '../../../../services/WalletService';

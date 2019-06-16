@@ -10,12 +10,30 @@ import Foundation
 import Bitski
 import Web3
 
+struct BitskiManagerError: Error {
+  let message: String
+  
+  init(message: String) {
+    self.message = message
+  }
+}
+
 @objc(BitskiManager)
 class BitskiManager: NSObject {
   private var network: Bitski.Network? = nil;
   
   @objc(initialize:clientID:redirectURL:callback:) func initialize(network: String, clientID: String, redirectURL: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-    self.network = Bitski.Network.init(rawValue: network)
+    switch(network) {
+    case "mainnet":
+      self.network = Bitski.Network.mainnet
+      break;
+    case "kovan":
+      self.network = Bitski.Network.kovan
+      break;
+    default:
+      self.network = Bitski.Network.mainnet
+      break;
+    }
     
     Bitski.shared = Bitski(clientID: clientID, redirectURL: URL(string: redirectURL)!)
 
@@ -52,62 +70,68 @@ class BitskiManager: NSObject {
       callback(["Bitski not instantiated", NSNull()])
       return;
     }
-
-    guard let waited =  try? Bitski.shared?.getWeb3(network: self.network!).eth.accounts().wait(),
-      let addresses = waited,
-      addresses.count > 0 else {
-        callback(["Not logged in.", NSNull()])
-        return;
-    }
-    let address = addresses[0]
-    let data = EthereumData(bytes: Bytes.init(hexString: message as! String)!)
-    let response = try? bitski.getWeb3(network: self.network!).eth.sign(address: address, data: data).wait()
     
-    callback([NSNull(), response?.hex()])
+    let web3 = bitski.getWeb3(network: self.network!)
+    let data = EthereumData(bytes: hexToPaddedData(message).bytes)
+    
+    firstly {
+      web3.eth.accounts().firstValue
+    }.then { account in
+      web3.eth.sign(address: account, data: data)
+    }.done { signature in
+      callback([NSNull(), signature.hex()])
+    }.catch { error in
+      callback([error.localizedDescription, NSNull()])
+    }
   }
   
-  @objc(signTransaction:callback:) func signTransaction(tx: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc(sendTransaction:callback:) func sendTransaction(tx: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    if (tx.object(forKey: "gasPrice") == nil) {
+      tx.setValue("0x1", forKey: "gasPrice")
+    }
+    
+    guard let to: EthereumAddress = EthereumAddress(hexString: tx["to"] as! String) else {
+      callback(["`to` address is malformed.", NSNull()])
+      return;
+    }
+
+    let gas: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gas"] as! String))
+    let gasPrice: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gasPrice"] as! String))
+
+    var value: EthereumQuantity? = nil
+    if tx.object(forKey: "value") != nil {
+      print("value")
+      value = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["value"] as! String))
+    }
+
+    var data: EthereumData = EthereumData(bytes: [])
+    if tx.object(forKey: "data") != nil {
+      data = EthereumData(bytes: hexToPaddedData(tx["data"] as! String).bytes)
+    }
+
     guard let bitski = Bitski.shared else {
       callback(["Bitski not instantiated", NSNull()])
       return;
     }
-
-    let nonce: EthereumQuantity? = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["nonce"] as! String))
-    let to: EthereumAddress = EthereumAddress(hexString: tx["to"] as! String)!
-    var gas: EthereumQuantity? = nil
-    var gasPrice: EthereumQuantity? = nil
-    var value: EthereumQuantity? = nil
-    var from: EthereumAddress? = nil
-    var data: EthereumData = EthereumData(bytes: Bytes.init())
-
-    if (tx.object(forKey: "data") != nil) {
-      if let bytes = Bytes.init(hexString: tx["data"] as! String) {
-        data = EthereumData(bytes: bytes)
+    
+    let web3 = bitski.getWeb3(network: self.network!)
+    
+    firstly {
+      web3.eth.accounts().firstValue
+    }.done { account in
+      firstly {
+        web3.eth.getTransactionCount(address: account, block: .latest)
+      }.then { nonce -> Promise<EthereumData> in
+        let transaction = EthereumTransaction(nonce: nonce, gasPrice: gasPrice, gas: gas, from: account, to: to, value: value, data: data)
+        return web3.eth.sendTransaction(transaction: transaction)
+      }.done { transactionHash in
+        callback([NSNull(), transactionHash.hex()])
+      }.catch { error in
+        callback([error.localizedDescription, NSNull()])
       }
+    }.catch { error in
+      callback([error.localizedDescription, NSNull()])
     }
-
-    if (tx.object(forKey: "from") != nil) {
-      from = EthereumAddress(hexString: tx["from"] as! String)
-    }
-    
-    if (tx.object(forKey: "gas") != nil) {
-      gas = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gas"] as! String))
-    }
-    
-    if (tx.object(forKey: "gasPrice") != nil) {
-      gasPrice = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gasPrice"] as! String))
-    }
-    
-    if (tx.object(forKey: "value") != nil) {
-      value = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["value"] as! String))
-    } else {
-      value = EthereumQuantity(quantity: hexToPaddedBigUInt("0x0"))
-    }
-
-    let tx = EthereumTransaction(nonce: nonce, gasPrice: gasPrice, gas: gas, from: from, to: to, value: value, data: data)
-    let response = try? bitski.getWeb3(network: self.network!).eth.sendTransaction(transaction: tx).wait()
-
-    callback([NSNull(), response?.hex()])
   }
 
   @objc(login:) func login(callback: @escaping RCTResponseSenderBlock) -> Void {

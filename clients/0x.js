@@ -28,8 +28,10 @@ export default class ZeroExClient {
 
   @time
   async getContractWrappers() {
+    const options = this.ethereumClient.options || {};
     return new ContractWrappers(this.ethereumClient.getCurrentProvider(), {
-      networkId: await this.ethereumClient.getNetworkId()
+      networkId: await this.ethereumClient.getNetworkId(),
+      gasPrice: options.gasPrice
     });
   }
 

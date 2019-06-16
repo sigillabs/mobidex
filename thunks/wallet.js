@@ -21,8 +21,12 @@ import { deposit, withdraw } from './0x';
 export function loadWalletAddress() {
   return async dispatch => {
     try {
-      const address = await WalletService.instance.getWalletAddress();
-      dispatch(setWalletAddress(address));
+      if (WalletService.instance.isReady) {
+        const address = await WalletService.instance.getWalletAddress();
+        dispatch(setWalletAddress(address));
+      } else {
+        dispatch(setWalletAddress(null));
+      }
     } catch (error) {
       if (error.message && ~error.message.indexOf('Network is down')) {
         setOfflineRoot();
@@ -344,10 +348,16 @@ export function checkAndUnwrapEther(
 }
 
 export function setUnlimitedProxyAllowance(address) {
-  return async () => {
+  return async (dispatch, getState) => {
+    const {
+      settings: { gasPrice, gasLimit }
+    } = getState();
+
     const web3 = WalletService.instance.web3;
 
-    const ethereumClient = new EthereumClient(web3);
+    const ethereumClient = new EthereumClient(web3, {
+      gasPrice
+    });
     const tokenClient = new TokenClient(ethereumClient, address);
     const txhash = await tokenClient.setUnlimitedProxyAllowance();
     const activeTransaction = {
