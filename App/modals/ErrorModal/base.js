@@ -12,6 +12,7 @@ import AssetBuyerError from './AssetBuyerError';
 import RelayerError from './RelayerError';
 import TokenError from './TokenError';
 import ZeroExError from './ZeroExError';
+import InsufficientFundsError from './InsufficientFundsError';
 
 class BaseErrorModal extends Component {
   static get propTypes() {
@@ -29,6 +30,11 @@ class BaseErrorModal extends Component {
   renderRelayerErrors() {
     const error = this.props.error;
     return <RelayerError error={error} />;
+  }
+
+  renderInsufficientFundsError() {
+    const error = this.props.error;
+    return <InsufficientFundsError error={error} />;
   }
 
   renderTokenError() {
@@ -52,6 +58,8 @@ class BaseErrorModal extends Component {
       return this.renderAssetBuyerErrors();
     } else if (RelayerError.test(error)) {
       return this.renderRelayerErrors();
+    } else if (InsufficientFundsError.test(error)) {
+      return this.renderInsufficientFundsError();
     } else if (TokenError.test(error)) {
       return this.renderTokenError();
     } else if (ZeroExError.test(error)) {
