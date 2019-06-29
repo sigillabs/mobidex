@@ -87,7 +87,7 @@ class ProductDetailsView extends Component {
         <Button
           containerStyle={[{ width: 150 }, styles.justifyCenter]}
           icon={{
-            name: 'arrow-with-circle-left',
+            name: 'arrow-with-circle-down',
             size: 20,
             color: 'white',
             type: 'entypo'
@@ -109,7 +109,7 @@ class ProductDetailsView extends Component {
         <Button
           containerStyle={[{ width: 150 }, styles.justifyCenter]}
           icon={{
-            name: 'arrow-with-circle-right',
+            name: 'arrow-with-circle-up',
             size: 20,
             color: 'white',
             type: 'entypo'
