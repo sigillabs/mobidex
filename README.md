@@ -8,6 +8,8 @@
   - [Windows Specific Setup](#windows-specific-setup)
   - [Mac OS X Specific Setup](#mac-os-x-specific-setup)
   - [Linux Specific Setup](#linux-specific-setup)
+  - [Platform Setup](#platform-setup)
+    - [iOS](#ios)
 - [Available Scripts](#available-scripts)
   - [npm start](#npm-start)
   - [npm patch](#npm-test)
@@ -25,7 +27,7 @@ System Dependencies:
 - node > 8.6.0 and < 11
 - g++
 - Android Studio
-- XCode
+- XCode 10+
 
 ### Windows Specific Setup
 
@@ -103,21 +105,46 @@ $ sudo dnf -y install nodejs
 > Don't forget to install node-cli, node-gyp packages using `$ npm install -g node-cli node-gyp` if it's not installed.<br />
 > Don't forget to do `npm init` to generate profile.json.
 
+## Platform Setup
+
 ### iOS
 
-Run Mobidex from XCode to use the simulator. First do the following:
+> Note: Can only be done on a Mac OS X Specific Setup
 
-1.  `pushd ios && bundle install --path .gems && bundle exec pod install && popd`
-2.  Open `ios/mobidex.xcworkspace` in XCode
-3.  Go to **Build Settings** for `Pods > libsodium` and disable **Use Header Maps**
-4.  Go to **Build Settings** for `Pods > secp256k1_swift` and do the following:
-    - disable **Use Header Maps**
-    - Add `"${PODS_ROOT}/secp256k1_swift/Classes"` with `non-recursive` to **Use Header Search Paths**
-    - Add `"${PODS_ROOT}/secp256k1_swift/Classes/secp256k1/include"` with `non-recursive` to **Use Header Search Paths**
-5.  Go to **Build Settings** for `Pods > Web3` and set **Swift Language Version** to `Swift 4`
-6.  Go to **Build Settings** for `Pods > web3swift` and set **Swift Language Version** to `Swift 5`
+Additional Requirements
 
-Then, click the **play** icon at the top.
+- [bundler](https://bundler.io)
+
+To run Mobidex on the iOS simulator from XCode, follow these steps.
+
+1. From the Mobidex root  directory, install all the required javascript packages.
+
+  `npm install`
+
+2. Install all the required gems in your project space.  
+
+  > This command will change to the iOS working directory to setup the required Ruby gems in your local project.
+
+  `pushd ios && bundle install --path .gems && bundle exec pod install && popd`
+
+3.  Open `ios/mobidex.xcworkspace` in XCode
+
+4.  Select **Build Settings** for `Pods > secp256k1_swift` target and do the following:
+    > Tip: You'll notice there are 2  pods with similar names, we are only working with the one that has the underscore 'secp256k1_swift'
+
+    - Find and set **Use Header Maps** to "No"
+    - Find **Header Search Paths**
+      - add `"${PODS_ROOT}/secp256k1_swift/Classes"` with `non-recursive`
+      - add `"${PODS_ROOT}/secp256k1_swift/Classes/secp256k1/include"` with `non-recursive`
+
+
+5.  Select **Build Phases** for `Pods > secp256k1_swift` target, move `Headers` section up to the top.
+
+6.  Select **Build Settings** for `Pods > Web3` target, find and set **Swift Language Version** to `Swift 4`
+
+7.  Lastly, select **Build Settings** for `Pods > web3swift` target, find and set **Swift Language Version** to `Swift 5`
+
+Then, select your device simulator of choice and click the **play** icon at the top left corner of Xcode.
 
 ### Android
 
