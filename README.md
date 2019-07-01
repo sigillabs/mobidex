@@ -117,9 +117,7 @@ Additional Requirements
 
 To run Mobidex on the iOS simulator from XCode, follow these steps.
 
-1. From the Mobidex root  directory, install all the required javascript packages.
-
-  `npm install`
+1. Make sure you've ran the setup steps above, first.
 
 2. Install all the required gems in your project space.  
 
