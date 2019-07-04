@@ -10,6 +10,7 @@
   - [Linux Specific Setup](#linux-specific-setup)
   - [Platform Setup](#platform-setup)
     - [iOS](#ios)
+    - [Android](#android)
 - [Available Scripts](#available-scripts)
   - [npm start](#npm-start)
   - [npm patch](#npm-test)
@@ -148,15 +149,16 @@ Then, select your device simulator of choice and click the **play** icon at the 
 
 ### Android
 
-Run Mobidex in an Android emulator:
+Start develop in Android:
 
-1.  In the terminal, execute `npm start`.
-2.  Open android studio and import mobidex from the `android` directory
-3.  Comment out `android.enableAapt2=false` in `gradle.properties`
-4.  Sync gradle files
-5.  Click play!
+ 0. The first steps is your workstation is installed dependencies based in [react-native documentation](https://facebook.github.io/react-native/docs/getting-started) or follow the [this steps](#setup).
+ 1. install dependencies of project using yarn with command `yarn` or npm `npm install`.
+ 2. Connect the smartphone or start the your favorite emulator.
+ 3. Run the comand `react-native run-android` to compile and run the install project in android.
+ 4. Run the command `sudo rm -r node_modules/web3-contracts-loader/node_modules/web3`
+ 5. Run the command `sudo cp -R node_modules/web3/ node_modules/web3-contracts-loader/node_modules/`
+ 6. Run the command `react-native start` to run server js and loading the MobiDex app.
 
-- Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
 ## Available Scripts
 
