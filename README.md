@@ -151,7 +151,7 @@ Then, select your device simulator of choice and click the **play** icon at the 
 
 Start develop in Android:
 
- 0. The first steps is your workstation is installed dependencies based in [react-native documentation](https://facebook.github.io/react-native/docs/getting-started) or follow the [this steps](#setup).
+ 0. Make sure your system is setup for react-native.
  1. install dependencies of project using yarn with command `yarn` or npm `npm install`.
  2. Connect the smartphone or start the your favorite emulator.
  3. Run the comand `react-native run-android` to compile and run the install project in android.
