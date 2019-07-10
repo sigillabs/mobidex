@@ -82,7 +82,7 @@
         "web3": "^1.0.0-beta.21",
         "web3-contracts-loader": "https://github.com/generalpiston/web3-contracts-loader.git",
         "web3-core": "^1.0.0-beta.50",
-        "web3-provider-engine": "web3-provider-engine@15.0.0"
+        "web3-provider-engine": "github:generalpiston/web3-provider-engine#patch-1"
     },
     "devDependencies": {
         "@babel/core": "^7.4.3",
