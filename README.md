@@ -152,7 +152,7 @@ Then, select your device simulator of choice and click the **play** icon at the 
 Start develop in Android:
 
  0. Make sure your system is setup for react-native.
- 1. install dependencies of project using yarn with command `yarn` or npm `npm install`.
+ 1. install dependencies of project with command `npm install`.
  2. Connect the smartphone or start the your favorite emulator.
  3. Run the comand `react-native run-android` to compile and run the install project in android.
  4. Run the command `sudo rm -r node_modules/web3-contracts-loader/node_modules/web3`
