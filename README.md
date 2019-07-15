@@ -152,12 +152,12 @@ Then, select your device simulator of choice and click the **play** icon at the 
 Start develop in Android:
 
  0. Make sure your system is setup for react-native.
- 1. install dependencies of project with command `npm install`.
+ 1. Install dependencies of project with command `npm install`.
  2. Connect the smartphone or start the your favorite emulator.
  3. Run the comand `react-native run-android` to compile and run the install project in android.
  4. Run the command `sudo rm -r node_modules/web3-contracts-loader/node_modules/web3`
  5. Run the command `sudo cp -R node_modules/web3/ node_modules/web3-contracts-loader/node_modules/`
- 6. Run the command `react-native start` to run server js and loading the MobiDex app.
+ 6. Run the command `react-native start` to run server js and loading the Mobidex app.
 
 
 ## Available Scripts
