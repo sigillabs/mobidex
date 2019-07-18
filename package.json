@@ -3,8 +3,9 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "prepare": "npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3 && npm run patch:ethers",
+        "prepare": "npm run patch:0x && npm run patch:isomorphic-fetch && npm run patch:whatwg-fetch && npm run patch:web3 && npm run patch:ethers",
         "start": "node node_modules/react-native/local-cli/cli.js start",
+        "patch:0x": "node ./patches/zeroex-exchange-bug.js",
         "patch:ethers": "node ./patches/ethers.js",
         "patch:isomorphic-fetch": "node ./patches/isomorphic-fetch.js",
         "patch:whatwg-fetch": "node ./patches/whatwg-fetch.js",
