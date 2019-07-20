@@ -117,8 +117,8 @@ android {
         applicationId "io.mobidex"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 928
-        versionName "0.9.8"
+        versionCode 929
+        versionName "0.9.9"
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative57_5"
         multiDexEnabled true
         manifestPlaceholders = [
