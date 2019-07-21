@@ -106,11 +106,11 @@ export function startInf0xWebsockets() {
         onUpdate: (channel, tickers) => {
           if (channel === 'token-ticker') {
             for (const ticker of tickers) {
-              dispatch(updateTokenTicker(ticker));
+              dispatch(updateTokenTicker({ [ticker.base]: ticker }));
             }
           } else if (channel === 'forex-ticker') {
             for (const ticker of tickers) {
-              dispatch(updateForexTicker(ticker));
+              dispatch(updateForexTicker({ [ticker.base]: ticker }));
             }
           }
         }
