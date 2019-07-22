@@ -153,7 +153,7 @@ Start develop in Android:
 
  0. Make sure your system is setup for react-native.
  1. Install dependencies of project with command `npm install`.
- 2. Connect the smartphone or start the your favorite emulator.
+ 2. Connect the smartphone or start the your favorite [emulator](https://developer.android.com/studio/run/managing-avds).
  3. Run the comand `react-native run-android` to compile and run the install project in android.
  4. Run the command `react-native start` to run server js and loading the Mobidex app.
 
