@@ -10,6 +10,7 @@
   - [Linux Specific Setup](#linux-specific-setup)
   - [Platform Setup](#platform-setup)
     - [iOS](#ios)
+    - [Android](#android)
 - [Available Scripts](#available-scripts)
   - [npm start](#npm-start)
   - [npm patch](#npm-test)
@@ -148,15 +149,14 @@ Then, select your device simulator of choice and click the **play** icon at the 
 
 ### Android
 
-Run Mobidex in an Android emulator:
+Start develop in Android:
 
-1.  In the terminal, execute `npm start`.
-2.  Open android studio and import mobidex from the `android` directory
-3.  Comment out `android.enableAapt2=false` in `gradle.properties`
-4.  Sync gradle files
-5.  Click play!
+ 0. Make sure your system is setup for react-native.
+ 1. Install dependencies of project with command `npm install`.
+ 2. Connect the smartphone or start the your favorite emulator.
+ 3. Run the comand `react-native run-android` to compile and run the install project in android.
+ 4. Run the command `react-native start` to run server js and loading the Mobidex app.
 
-- Remember to start virtual device from android studio. More information can be found here: https://developer.android.com/studio/run/managing-avds.
 
 ## Available Scripts
 
