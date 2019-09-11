@@ -1,15 +1,18 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
-import { ContractDefinitionLoader } from 'web3-contracts-loader';
-import { ZERO } from '../constants/0x';
-import { cache, time } from '../lib/decorators/cls';
-import { formatHexString } from '../lib/utils/format';
-import { hex2a } from '../lib/utils';
-import ZeroExClient from './0x.js';
+import {BigNumber} from '@uniswap/sdk';
+import {ContractDefinitionLoader} from 'web3-contracts-loader';
+import {MAX_UINT256_HEX, ZERO} from '../constants';
+import {cache, time} from '../lib/decorators/cls';
+import {
+  bigIntToEthHex,
+  hex2a,
+  toBaseUnitAmount,
+  toUnitAmount,
+} from '../lib/utils';
 
 const TokenABI = require('../abi/Token.json');
 const BytesTokenABI = require('../abi/BytesToken.json');
 
+// TODO: Replace
 export default class TokenClient {
   constructor(ethereumClient, address) {
     this.ethereumClient = ethereumClient;
@@ -27,14 +30,14 @@ export default class TokenClient {
           ...TokenABI,
           networks: {
             [networkId]: {
-              address: this.address
-            }
-          }
-        }
+              address: this.address,
+            },
+          },
+        },
       },
       options: {
-        from: account
-      }
+        from: account,
+      },
     }).Token;
   }
 
@@ -52,14 +55,14 @@ export default class TokenClient {
           ...TokenABI,
           networks: {
             [networkId]: {
-              address: this.address
-            }
-          }
-        }
+              address: this.address,
+            },
+          },
+        },
       },
       options: {
-        from: account
-      }
+        from: account,
+      },
     }).Token;
     const bytesContract = ContractDefinitionLoader({
       web3: this.ethereumClient.getWeb3(),
@@ -68,14 +71,14 @@ export default class TokenClient {
           ...BytesTokenABI,
           networks: {
             [networkId]: {
-              address: this.address
-            }
-          }
-        }
+              address: this.address,
+            },
+          },
+        },
       },
       options: {
-        from: account
-      }
+        from: account,
+      },
     }).Token;
 
     let name = null;
@@ -131,7 +134,7 @@ export default class TokenClient {
       return null;
     }
 
-    let token = { address: this.address, name, symbol, decimals };
+    let token = {address: this.address, name, symbol, decimals};
 
     if (!token.name || !token.symbol || !token.decimals) {
       return null;
@@ -141,97 +144,43 @@ export default class TokenClient {
   }
 
   @time
-  @cache(function() {
-    return 'client:token:' + this.address + ':balance';
-  }, 365 * 24 * 60 * 60)
   async getBalance() {
-    const contractWrappers = await new ZeroExClient(
-      this.ethereumClient
-    ).getContractWrappers();
+    const contract = await this.getContract();
     const account = await this.ethereumClient.getAccount();
-    const balance = await contractWrappers.erc20Token.getBalanceAsync(
-      formatHexString(this.address.toString()),
-      formatHexString(account.toString())
-    );
-    return balance;
+    const balance = await contract.methods.balanceOf(account).call();
+    return new BigNumber(balance.toString());
   }
 
   @time
-  @cache(function() {
-    return 'client:token:' + this.address + ':allowance';
-  }, 365 * 24 * 60 * 60)
-  async getAllowance(account = null) {
-    const contractWrappers = await new ZeroExClient(
-      this.ethereumClient
-    ).getContractWrappers();
-
-    if (account == null) {
-      account = await this.ethereumClient.getAccount();
-    }
-
-    return await contractWrappers.erc20Token.getProxyAllowanceAsync(
-      formatHexString(this.address.toString()),
-      formatHexString(account.toString())
-    );
+  async getAllowance(spender) {
+    const contract = await this.getContract();
+    const account = await this.ethereumClient.getAccount();
+    const allowance = await contract.methods.allowance(account, spender).call();
+    return new BigNumber(allowance.toString());
   }
 
   @time
-  async setUnlimitedProxyAllowance(account = null) {
-    const contractWrappers = await new ZeroExClient(
-      this.ethereumClient
-    ).getContractWrappers();
-
-    if (account == null) {
-      account = await this.ethereumClient.getAccount();
-    }
-
-    return await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
-      formatHexString(this.address.toString()),
-      formatHexString(account.toString())
-    );
-  }
-
-  @time
-  async setProxyAllowance(account = null, amount = ZERO) {
-    const contractWrappers = await new ZeroExClient(
-      this.ethereumClient
-    ).getContractWrappers();
-
-    if (account == null) {
-      account = await this.ethereumClient.getAccount();
-    }
-
-    return await contractWrappers.erc20Token.setProxyAllowanceAsync(
-      formatHexString(this.address.toString()),
-      formatHexString(account.toString()),
-      amount
-    );
+  async unlock(spender) {
+    const contract = await this.getContract();
+    const result = await contract.methods
+      .approve(spender, MAX_UINT256_HEX)
+      .send();
+    return result;
   }
 
   @time
   async send(to, amount) {
-    const contractWrappers = await new ZeroExClient(
-      this.ethereumClient
-    ).getContractWrappers();
-    const account = await this.ethereumClient.getAccount();
-    const { decimals } = await this.get();
-    const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), decimals);
-    return await contractWrappers.erc20Token.transferAsync(
-      formatHexString(this.address.toString()),
-      formatHexString(account.toString()),
-      formatHexString(to.toString()),
-      value
-    );
-  }
-
-  @time
-  async transferTx(to, value) {
-    const contract = await this.getContract();
-    return contract.methods
-      .transfer(
-        formatHexString(to.toString()),
-        formatHexString(value.toString(16))
-      )
-      .encodeABI();
+    // const contractWrappers = await new ZeroExClient(
+    //   this.ethereumClient
+    // ).getContractWrappers();
+    // const account = await this.ethereumClient.getAccount();
+    // const { decimals } = await this.get();
+    // const value = toBaseUnitAmount(new BigNumber(amount), decimals);
+    // return await contractWrappers.erc20Token.transferAsync(
+    //   formatHexString(this.address.toString()),
+    //   formatHexString(account.toString()),
+    //   formatHexString(to.toString()),
+    //   value
+    // );
   }
 }

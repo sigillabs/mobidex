@@ -1,6 +1,6 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
-import { cache, time } from '../lib/decorators/cls';
+import {BigNumber} from '@uniswap/sdk';
+import {cache, time} from '../lib/decorators/cls';
+import {toBaseUnitAmount, toUnitAmount} from '../lib/utils';
 
 export default class EthereumClient {
   constructor(web3, options = null) {
@@ -17,13 +17,13 @@ export default class EthereumClient {
   }
 
   @time
-  @cache('ethereum:balance', 60)
+  @cache('ethereum:balance', 60, false, data => new BigNumber(data))
   async getBalance() {
     const account = await this.getAccount();
     const balance = await this.web3.eth.getBalance(
-      account.toString().toLowerCase()
+      account.toString().toLowerCase(),
     );
-    return new BigNumber(balance);
+    return new BigNumber(balance.toString());
   }
 
   @time
@@ -51,21 +51,21 @@ export default class EthereumClient {
     return await this.web3.eth.estimateGas({
       from: account,
       to,
-      data
+      data,
     });
   }
 
   @time
   async send(to, amount) {
     const sender = await this.getAccount();
-    const value = Web3Wrapper.toBaseUnitAmount(new BigNumber(amount), 18);
+    const value = toBaseUnitAmount(new BigNumber(amount), 18);
     const gasPrice = this.options ? this.options.gasPrice : undefined;
     return await new Promise((resolve, reject) => {
       const response = this.web3.eth.sendTransaction({
         from: sender,
         to,
         value,
-        gasPrice
+        gasPrice,
       });
       response.on('transactionHash', hash => resolve(hash));
       response.on('error', error => reject(error));

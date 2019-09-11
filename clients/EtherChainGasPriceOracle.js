@@ -1,6 +1,6 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
+import { BigNumber } from '@uniswap/sdk';
 import { time } from '../lib/decorators/cls';
+import { toBaseUnitAmount, toUnitAmount } from '../lib/utils';
 
 /**
  * Fetches gas recommendations from https://www.etherchain.org/tools/gasPriceOracle
@@ -28,11 +28,11 @@ export default class EtherChainGasPriceOracle {
     const { fast, safeLow, standard } = json;
 
     return {
-      low: Web3Wrapper.toBaseUnitAmount(new BigNumber(safeLow), 9),
+      low: toBaseUnitAmount(new BigNumber(safeLow), 9),
       lowWait: 30,
-      standard: Web3Wrapper.toBaseUnitAmount(new BigNumber(standard), 9),
+      standard: toBaseUnitAmount(new BigNumber(standard), 9),
       standardWait: 5,
-      high: Web3Wrapper.toBaseUnitAmount(new BigNumber(fast), 9),
+      high: toBaseUnitAmount(new BigNumber(fast), 9),
       highWait: 1
     };
   }

@@ -3,7 +3,6 @@ import { InteractionManager } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as AnalyticsService from '../services/AnalyticsService';
 
 let history = [];
 
@@ -13,10 +12,6 @@ Navigation.events().registerComponentDidDisappearListener(({ componentId }) => {
 
 Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
   history.push(componentId);
-});
-
-Navigation.events().registerComponentDidAppearListener(({ componentName }) => {
-  AnalyticsService.trackScreen(componentName);
 });
 
 export function waitForComponentAppear(
@@ -131,23 +126,6 @@ export async function getOfflineBottomTabs() {
           children: [
             {
               component: {
-                name: 'navigation.wallet.Accounts'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Wallet',
-              icon: wallet
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
                 name: 'navigation.Settings'
               }
             }
@@ -205,11 +183,9 @@ export async function setTabsRoot() {
 export async function getBottomTabs() {
   const icons = await Promise.all([
     FontAwesome.getImageSource('line-chart', 30),
-    Ionicons.getImageSource('ios-book', 30),
-    Ionicons.getImageSource('md-card', 30),
     Ionicons.getImageSource('ios-settings', 30)
   ]);
-  const [trade, orders, wallet, settings] = icons;
+  const [trade, settings] = icons;
   return {
     children: [
       {
@@ -225,42 +201,6 @@ export async function getBottomTabs() {
             bottomTab: {
               text: 'Trade',
               icon: trade
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
-                id: 'OrdersList',
-                name: 'navigation.orders.List'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Orders',
-              icon: orders,
-              badgeColor: 'red'
-            }
-          }
-        }
-      },
-      {
-        stack: {
-          children: [
-            {
-              component: {
-                name: 'navigation.wallet.Accounts'
-              }
-            }
-          ],
-          options: {
-            bottomTab: {
-              text: 'Wallet',
-              icon: wallet
             }
           }
         }

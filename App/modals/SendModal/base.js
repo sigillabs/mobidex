@@ -1,19 +1,18 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
+import {BigNumber} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { connect } from 'react-redux';
-import { ZERO } from '../../../constants/0x';
-import { connect as connectNavigation } from '../../../navigation';
-import { WalletService } from '../../../services/WalletService';
+import {connect} from 'react-redux';
+import {ZERO} from '../../../constants';
+import {connect as connectNavigation} from '../../../navigation';
+import {WalletService} from '../../../services/WalletService';
 import {
   ReceiptActionErrorSuccessFlow,
   sendEther,
-  sendTokens
+  sendTokens,
 } from '../../../thunks';
-import { navigationProp } from '../../../types/props';
-import { formatAmount } from '../../../lib/utils';
+import {navigationProp} from '../../../types/props';
+import {formatAmount} from '../../../lib/utils';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
 
@@ -22,7 +21,7 @@ class BaseSendScreen extends Component {
     return {
       navigation: navigationProp.isRequired,
       asset: PropTypes.object.isRequired,
-      dispatch: PropTypes.func.isRequired
+      dispatch: PropTypes.func.isRequired,
     };
   }
 
@@ -32,12 +31,12 @@ class BaseSendScreen extends Component {
     this.state = {
       amount: ZERO,
       address: '',
-      page: 0
+      page: 0,
     };
   }
 
   render() {
-    const { asset } = this.props;
+    const {asset} = this.props;
 
     switch (this.state.page) {
       case 0:
@@ -62,23 +61,25 @@ class BaseSendScreen extends Component {
 
   cancel = () => this.props.navigation.dismissModal();
 
-  previous = () => this.setState({ page: 0 });
+  previous = () => this.setState({page: 0});
 
   submitAmount = amount =>
     this.setState({
       amount: amount ? new BigNumber(amount) : ZERO,
-      page: 1
+      page: 1,
     });
 
   submitAddress = address => {
-    this.setState({ address });
+    this.setState({address});
     this.submit(address);
   };
 
   submit = async address => {
-    const { asset } = this.props;
-    const { amount } = this.state;
-    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(amount, asset.decimals);
+    const {asset} = this.props;
+    const {amount} = this.state;
+
+    // TODO: Replace
+    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
 
     // this.props.dispatch(
     //   ActionErrorSuccessFlow(
@@ -113,7 +114,7 @@ class BaseSendScreen extends Component {
       extraSections,
       gas,
       action,
-      value
+      value,
     } =
       asset.address === null
         ? await this.getSendEtherReceiptProps(address)
@@ -127,23 +128,24 @@ class BaseSendScreen extends Component {
           value,
           extraWalletData,
           extraUpdatedWalletData,
-          extraSections
+          extraSections,
         },
         {
           action,
           icon: <FontAwesome name="send" size={100} />,
-          label: `Sending ${asset.name}...`
+          label: `Sending ${asset.name}...`,
         },
         `Sent ${asset.name}`,
-        () => this.props.navigation.dismissModal()
-      )
+        () => this.props.navigation.dismissModal(),
+      ),
     );
   };
 
   async getSendEtherReceiptProps(address) {
-    const { asset } = this.props;
-    const { amount } = this.state;
-    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(amount, asset.decimals);
+    const {asset} = this.props;
+    const {amount} = this.state;
+    // TODO: Replace
+    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
 
     const to = address || this.state.address;
     const extraWalletData = [];
@@ -151,7 +153,8 @@ class BaseSendScreen extends Component {
     const extraSections = [];
     const gas = await WalletService.instance.estimateEthSend();
     const action = () => this.props.dispatch(sendEther(to, amount));
-    const value = baseUnitAmount;
+    // const value = baseUnitAmount;
+    const value = '0';
 
     return {
       to,
@@ -160,30 +163,32 @@ class BaseSendScreen extends Component {
       extraSections,
       gas,
       action,
-      value
+      value,
     };
   }
 
   async getSendTokenReceiptProps(address) {
-    const { asset } = this.props;
-    const { amount } = this.state;
-    const baseUnitAmount = Web3Wrapper.toBaseUnitAmount(amount, asset.decimals);
+    const {asset} = this.props;
+    const {amount} = this.state;
+    // TODO: Replace
+    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
+    baseUnitAmount = '0';
     const balance = await WalletService.instance.getBalanceByAssetData(
-      asset.assetData
+      asset.assetData,
     );
 
     const to = address || this.state.address;
     const extraWalletData = [
       {
         denomination: asset.symbol,
-        value: formatAmount(balance, 9)
-      }
+        value: formatAmount(balance, 9),
+      },
     ];
     const extraUpdatedWalletData = [
       {
         denomination: asset.symbol,
-        value: formatAmount(balance.sub(amount), 9)
-      }
+        value: formatAmount(balance.sub(amount), 9),
+      },
     ];
     const extraSections = [
       {
@@ -193,15 +198,15 @@ class BaseSendScreen extends Component {
             name: 'Amount',
             value: formatAmount(amount, 9),
             denomination: asset.symbol,
-            loss: true
-          }
-        ]
-      }
+            loss: true,
+          },
+        ],
+      },
     ];
     const gas = await WalletService.instance.estimateTokenSend(
       asset.address,
       to,
-      baseUnitAmount
+      baseUnitAmount,
     );
     const action = () => this.props.dispatch(sendTokens(asset, to, amount));
     const value = ZERO;
@@ -213,12 +218,12 @@ class BaseSendScreen extends Component {
       extraSections,
       gas,
       action,
-      value
+      value,
     };
   }
 }
 
 export default connect(
-  state => ({ ...state }),
-  dispatch => ({ dispatch })
+  state => ({...state}),
+  dispatch => ({dispatch}),
 )(connectNavigation(BaseSendScreen));

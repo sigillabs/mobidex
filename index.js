@@ -1,24 +1,19 @@
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 import 'node-libs-react-native/globals';
-import { I18nManager, YellowBox } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import {I18nManager, YellowBox} from 'react-native';
+import {Navigation} from 'react-native-navigation';
 import RNRestart from 'react-native-restart';
-import { setInitialBootRoot, setOnboardingRoot } from './navigation';
-import { registerHeaders } from './navigation/headers';
-import { registerModals } from './navigation/modals';
-import { registerScreens } from './navigation/screens';
-import { setStore as setStoreForAssetService } from './services/AssetService';
-import { setStore as setStoreForOrderService } from './services/OrderService';
-import { setStore as setStoreForTickerService } from './services/TickerService';
-import TimerService from './services/TimerService';
-import {
-  ActiveTransactionWatchdog,
-  TransactionService
-} from './services/TransactionService';
-import { WalletService } from './services/WalletService';
-import { initialize as initializeStore } from './store';
-import { loadWalletAddress } from './thunks';
-import { setExceptionHandlers } from './error-handlers';
+import {setInitialBootRoot, setOnboardingRoot} from './navigation';
+import {registerHeaders} from './navigation/headers';
+import {registerModals} from './navigation/modals';
+import {registerScreens} from './navigation/screens';
+import {setStore as setStoreForAssetService} from './services/AssetService';
+import {TransactionService} from './services/TransactionService';
+import {UniswapService} from './services/UniswapService';
+import {WalletService} from './services/WalletService';
+import {initialize as initializeStore} from './store';
+import {loadWalletAddress} from './thunks';
+import {setExceptionHandlers} from './error-handlers';
 
 if (I18nManager.isRTL) {
   I18nManager.allowRTL(false);
@@ -34,7 +29,7 @@ if (__DEV__) {
     'Warning:',
     'Method',
     'Module',
-    'MOBIDEX:'
+    'MOBIDEX:',
   ]);
 } else {
   setExceptionHandlers();
@@ -48,19 +43,16 @@ const initializeApp = (function initialize() {
     if (store) _store = store;
     if (++_count < 2) return;
 
-    TimerService.getInstance(60 * 1000).start();
     setStoreForAssetService(_store);
-    setStoreForOrderService(_store);
-    setStoreForTickerService(_store);
     new WalletService(_store);
+    new UniswapService(_store);
     new TransactionService(_store);
-    new ActiveTransactionWatchdog(_store).start();
 
     await WalletService.instance.initialize();
     await _store.dispatch(loadWalletAddress());
 
     const {
-      wallet: { address }
+      wallet: {address},
     } = _store.getState();
 
     registerScreens(_store);
@@ -70,13 +62,13 @@ const initializeApp = (function initialize() {
     Navigation.setDefaultOptions({
       statusBar: {
         visible: true,
-        style: 'dark'
+        style: 'dark',
       },
       topBar: {
         visible: false,
         drawBehind: true,
-        animate: true
-      }
+        animate: true,
+      },
     });
 
     if (address) {

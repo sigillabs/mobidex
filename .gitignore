@@ -61,5 +61,5 @@ android/app/gradlew
 android/app/gradlew.bat
 
 # Custom
-Pods
+/ios/Pods/
 ios/.gems

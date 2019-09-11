@@ -1,12 +1,11 @@
-import * as _ from 'lodash';
 import React from 'react';
 import { Navigation } from 'react-native-navigation';
-import { connect } from 'react-redux';
-import { toggleShowForex } from '../../../../actions';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { showModal } from '../../../../navigation';
 import NavigationProvider from '../../../NavigationProvider';
-import BaseProductScreen from './base';
+import Base from './base';
 
-class ProductScreen extends React.PureComponent {
+export default class ProductScreen extends React.PureComponent {
   static options() {
     return {
       topBar: {
@@ -18,14 +17,7 @@ class ProductScreen extends React.PureComponent {
         title: {
           text: 'Trade',
           alignment: 'center'
-        },
-        rightButtons: [
-          {
-            id: 'toggleForexButton',
-            text: 'WETH',
-            color: 'black'
-          }
-        ]
+        }
       }
     };
   }
@@ -35,36 +27,31 @@ class ProductScreen extends React.PureComponent {
     Navigation.events().bindComponent(this);
   }
 
-  componentDidUpdate() {
+  async componentWillMount() {
+    const source = await FontAwesome.getImageSource('qrcode', 24, '#000000');
     Navigation.mergeOptions(this.props.componentId, {
       topBar: {
         rightButtons: [
           {
-            id: 'toggleForexButton',
-            text: this.props.showForexPrices ? 'USD' : 'WETH',
-            color: 'black'
+            id: 'receive',
+            icon: source
           }
         ]
       }
     });
   }
 
+  navigationButtonPressed({ buttonId }) {
+    if (buttonId === 'receive') {
+      showModal('modals.Receive');
+    }
+  }
+
   render() {
     return (
       <NavigationProvider componentId={this.props.componentId}>
-        <BaseProductScreen {..._.omit(this.props, ['showForexPrices'])} />
+        <Base {...this.props} />
       </NavigationProvider>
     );
   }
-
-  navigationButtonPressed({ buttonId }) {
-    if (buttonId === 'toggleForexButton') {
-      this.props.dispatch(toggleShowForex());
-    }
-  }
 }
-
-export default connect(
-  ({ settings: { showForexPrices } }) => ({ showForexPrices }),
-  dispatch => ({ dispatch })
-)(ProductScreen);

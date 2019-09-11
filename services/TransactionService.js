@@ -1,48 +1,7 @@
-import { addActiveTransactions, removeActiveTransactions } from '../actions';
-import { cache } from '../lib/utils';
+import {addActiveTransactions, removeActiveTransactions} from '../actions';
+import {cache} from '../lib/utils';
 import BaseService from './BaseService';
-import BaseWatchdog from './BaseWatchdog';
-import { WalletService } from './WalletService';
-
-export class ActiveTransactionWatchdog extends BaseWatchdog {
-  constructor(store, timeout = 1) {
-    super(timeout);
-
-    this.store = store;
-  }
-
-  async exec() {
-    const {
-      wallet: { activeTransactions }
-    } = this.store.getState();
-
-    const web3 = WalletService.instance.web3;
-
-    if (web3) {
-      const txhashes = activeTransactions.map(({ id }) => id);
-
-      for (const txhash of txhashes) {
-        try {
-          const receipt = await new Promise((resolve, reject) => {
-            web3.eth.getTransactionReceipt(txhash, (err, receipt) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve(receipt);
-              }
-            });
-          });
-          if (receipt) {
-            TransactionService.instance.removeActiveTransaction({ id: txhash });
-          }
-        } catch (err) {
-          console.warn(err.message);
-          TransactionService.instance.removeActiveTransaction({ id: txhash });
-        }
-      }
-    }
-  }
-}
+import {WalletService} from './WalletService';
 
 export class TransactionService extends BaseService {
   async addActiveTransaction(tx) {
@@ -50,14 +9,14 @@ export class TransactionService extends BaseService {
 
     const {
       settings,
-      wallet: { activeTransactions }
+      wallet: {activeTransactions},
     } = this.store.getState();
     await cache(
       `transactions:${settings.network}:active`,
       async () => {
         return activeTransactions;
       },
-      0
+      0,
     );
   }
 
@@ -66,25 +25,25 @@ export class TransactionService extends BaseService {
 
     const {
       settings,
-      wallet: { activeTransactions }
+      wallet: {activeTransactions},
     } = this.store.getState();
     await cache(
       `transactions:${settings.network}:active`,
       async () => {
         return activeTransactions;
       },
-      0
+      0,
     );
   }
 
   async getActiveTransactions() {
-    const { settings } = this.store.getState();
+    const {settings} = this.store.getState();
     return await cache(
       `transactions:${settings.network}:active`,
       async () => {
         return [];
       },
-      60 * 60 * 24 * 7
+      60 * 60 * 24 * 7,
     );
   }
 }

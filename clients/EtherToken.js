@@ -1,6 +1,6 @@
-import { ContractDefinitionLoader } from 'web3-contracts-loader';
-import { time } from '../lib/decorators/cls';
-import { formatHexString } from '../lib/utils/format';
+import {ContractDefinitionLoader} from 'web3-contracts-loader';
+import {time} from '../lib/decorators/cls';
+import {formatHexString} from '../lib/utils';
 
 const Weth9ABI = require('../abi/WETH9.json');
 
@@ -24,14 +24,14 @@ export default class EtherToken {
             ...Weth9ABI,
             networks: {
               [networkId]: {
-                address: this.address
-              }
-            }
-          }
+                address: this.address,
+              },
+            },
+          },
         },
         options: {
-          from: account
-        }
+          from: account,
+        },
       }).WETH9;
     }
 

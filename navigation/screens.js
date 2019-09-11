@@ -2,11 +2,7 @@ import { Navigation } from 'react-native-navigation';
 import { Provider } from 'react-redux';
 import InitialLoadScreen from '../App/screens/InitialLoadScreen';
 import ProductScreen from '../App/screens/trade/ProductScreen';
-import CreateOrderScreen from '../App/screens/trade/CreateOrderScreen';
-import ProductDetailsScreen from '../App/screens/trade/ProductDetailsScreen';
-import OrdersScreen from '../App/screens/orders/OrdersScreen';
-import TransactionHistoryScreen from '../App/screens/orders/TransactionHistoryScreen';
-import AccountsScreen from '../App/screens/wallet/AccountsScreen';
+import DetailsScreen from '../App/screens/trade/DetailsScreen';
 import IntroScreen from '../App/screens/onboarding/IntroScreen';
 import ImportMnemonicScreen from '../App/screens/onboarding/ImportMnemonicScreen';
 import PreviewMnemonicScreen from '../App/screens/onboarding/PreviewMnemonicScreen';
@@ -66,36 +62,8 @@ export function registerScreens(store) {
   );
 
   Navigation.registerComponentWithRedux(
-    'navigation.trade.ProductDetails',
-    () => ProductDetailsScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.trade.CreateOrder',
-    () => CreateOrderScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.orders.List',
-    () => OrdersScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.orders.TransactionHistory',
-    () => TransactionHistoryScreen,
-    Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.wallet.Accounts',
-    () => AccountsScreen,
+    'navigation.trade.Details',
+    () => DetailsScreen,
     Provider,
     store
   );

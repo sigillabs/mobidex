@@ -1,10 +1,10 @@
-import * as _ from "lodash";
-import PropTypes from "prop-types";
-import React from "react";
-import { SafeAreaView, ScrollView, View } from "react-native";
-import { styles } from "../../styles";
-import { styleProp } from "../../types/props/styles";
-import Button from "../components/Button";
+import * as _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { SafeAreaView, ScrollView, View } from 'react-native';
+import { styles } from '../../styles';
+import { styleProp } from '../../types/props/styles';
+import Button from '../components/Button';
 
 export default class NotificationView extends React.Component {
   static get propTypes() {

@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text } from 'react-native-elements';
+import { formatSymbol } from '../../lib/utils';
 import { connect } from 'react-redux';
 import { fonts } from '../../styles';
-import { formatSymbol } from '../../lib/utils';
+import { addressProp } from '../../types/props';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
 import TokenIcon from '../components/TokenIcon';
-import * as TickerService from '../../services/TickerService';
-import OrderbookPrice from './OrderbookPrice';
-import OrderbookForexPrice from './OrderbookForexPrice';
 
 class LogoTicker extends Component {
   static get propTypes() {
     return {
-      showForexPrices: PropTypes.bool.isRequired,
       base: PropTypes.shape({
         symbol: PropTypes.string.isRequired
       }).isRequired,
@@ -44,18 +41,8 @@ class LogoTicker extends Component {
   }
 
   render() {
-    const {
-      avatarProps,
-      showForexPrices,
-      base,
-      quote,
-      rowStyle,
-      priceStyle
-    } = this.props;
-    const ticker = TickerService.getForexTicker(base.symbol);
-
-    if (showForexPrices && !ticker) return null;
-
+    const { avatarProps, base, quote, rowStyle, priceStyle } = this.props;
+    // TODO: Replace OrderbookPrice
     return (
       <Row style={[style.container, rowStyle]}>
         <TokenIcon
@@ -65,29 +52,8 @@ class LogoTicker extends Component {
           {...avatarProps}
         />
         <HorizontalPadding size={10} />
-        {showForexPrices ? (
-          <OrderbookForexPrice
-            style={[fonts.xlarge, priceStyle]}
-            quoteAssetData={quote.assetData}
-            baseAssetData={base.assetData}
-            default={0}
-            side={'buy'}
-          />
-        ) : (
-          <OrderbookPrice
-            style={[fonts.xlarge, priceStyle]}
-            quoteAssetData={quote.assetData}
-            baseAssetData={base.assetData}
-            default={0}
-            side={'buy'}
-          />
-        )}
-        {!showForexPrices ? (
-          <React.Fragment>
-            <HorizontalPadding size={3} />
-            <Text style={[{ marginTop: 3 }]}>{formatSymbol(quote.symbol)}</Text>
-          </React.Fragment>
-        ) : null}
+        {/**/}
+        <HorizontalPadding size={3} />
       </Row>
     );
   }
@@ -110,9 +76,6 @@ const style = {
 };
 
 export default connect(
-  state => ({
-    ticker: state.ticker,
-    showForexPrices: state.settings.showForexPrices
-  }),
+  state => ({}),
   dispatch => ({ dispatch })
 )(LogoTicker);

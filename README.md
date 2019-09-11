@@ -118,32 +118,21 @@ Additional Requirements
 
 To run Mobidex on the iOS simulator from XCode, follow these steps.
 
-1. From the Mobidex root  directory, install all the required javascript packages.
+1. From the Mobidex root directory, install all the required javascript packages.
 
-  `npm install`
+`npm install`
 
-2. Install all the required gems in your project space.  
+2. Install all the required gems in your project space.
 
-  > This command will change to the iOS working directory to setup the required Ruby gems in your local project.
+> This command will change to the iOS working directory to setup the required Ruby gems in your local project.
 
-  `pushd ios && bundle install --path .gems && bundle exec pod install && popd`
+`pushd ios && bundle install --path .gems && bundle exec pod install && popd`
 
 3.  Open `ios/mobidex.xcworkspace` in XCode
 
-4.  Select **Build Settings** for `Pods > secp256k1_swift` target and do the following:
-    > Tip: You'll notice there are 2  pods with similar names, we are only working with the one that has the underscore 'secp256k1_swift'
+4.  Select **Build Phases** for `Pods > secp256k1_swift` target and remove `secp256k1_swift-dummy.m`.
 
-    - Find and set **Use Header Maps** to "No"
-    - Find **Header Search Paths**
-      - add `"${PODS_ROOT}/secp256k1_swift/Classes"` with `non-recursive`
-      - add `"${PODS_ROOT}/secp256k1_swift/Classes/secp256k1/include"` with `non-recursive`
-
-
-5.  Select **Build Phases** for `Pods > secp256k1_swift` target, move `Headers` section up to the top.
-
-6.  Select **Build Settings** for `Pods > Web3` target, find and set **Swift Language Version** to `Swift 4`
-
-7.  Lastly, select **Build Settings** for `Pods > web3swift` target, find and set **Swift Language Version** to `Swift 5`
+    > Tip: You'll notice there are 2 pods with similar names, we are only working with the one that has the underscore 'secp256k1_swift'
 
 Then, select your device simulator of choice and click the **play** icon at the top left corner of Xcode.
 

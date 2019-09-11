@@ -1,10 +1,8 @@
-import { BigNumber } from '0x.js';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as TickerService from '../../../services/TickerService';
-import { formatAmount, formatMoney } from '../../../lib/utils';
+import { formatAmount } from '../../../lib/utils';
 import AddressInput from '../../components/AddressInput';
 import TwoColumnListItem from '../../components/TwoColumnListItem';
 import ConfirmationView from '../../views/ConfirmationView';
@@ -30,11 +28,6 @@ class AccountPage extends React.Component {
 
   render() {
     const { asset, amount } = this.props;
-    const forex = TickerService.getForexTicker(asset.symbol);
-    const forexAmount =
-      forex && forex.price
-        ? new BigNumber(amount).mul(forex.price).toNumber()
-        : null;
 
     return (
       <ConfirmationView
@@ -57,16 +50,6 @@ class AccountPage extends React.Component {
           rightStyle={{ flex: 1, color: 'black' }}
           rowStyle={{ flex: 0, width: '100%' }}
         />
-        {forexAmount ? (
-          <TwoColumnListItem
-            left="Amount"
-            right={formatMoney(forexAmount)}
-            style={{ marginBottom: 10, marginTop: 10 }}
-            leftStyle={{ flex: 1, color: 'black' }}
-            rightStyle={{ flex: 1, color: 'black' }}
-            rowStyle={{ flex: 0, width: '100%' }}
-          />
-        ) : null}
         <AddressInput
           placeholder="Address"
           onChangeText={v => this.setState({ address: v })}
@@ -89,7 +72,6 @@ class AccountPage extends React.Component {
 
 export default connect(
   state => ({
-    ticker: state.ticker,
     ...state
   }),
   dispatch => ({ dispatch })

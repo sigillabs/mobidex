@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import * as AssetService from '../../services/AssetService';
 import { fonts } from '../../styles';
+import { addressProp } from '../../types/props';
 import HorizontalPadding from '../components/HorizontalPadding';
 import Row from '../components/Row';
 import TokenIcon from '../components/TokenIcon';
-import TokenBalanceBySymbol from './TokenBalanceBySymbol';
 
 export default class LogoBalance extends Component {
   static get propTypes() {
     return {
-      symbol: PropTypes.string.isRequired,
+      token: addressProp.isRequired,
       avatarProps: PropTypes.shape({
         small: PropTypes.bool,
         medium: PropTypes.bool,
@@ -31,18 +32,17 @@ export default class LogoBalance extends Component {
   }
 
   render() {
-    const { avatarProps, symbol } = this.props;
+    const { avatarProps, token } = this.props;
 
     return (
       <Row style={[style.container]}>
         <TokenIcon
-          symbol={symbol}
+          address={token}
           showName={false}
           showSymbol={false}
           {...avatarProps}
         />
         <HorizontalPadding size={10} />
-        <TokenBalanceBySymbol symbol={symbol} style={[fonts.xlarge]} />
       </Row>
     );
   }

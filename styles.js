@@ -1,4 +1,4 @@
-import { BigNumber } from '0x.js';
+import { BigNumber } from '@uniswap/sdk';
 import { StyleSheet } from 'react-native';
 
 export const colors = {

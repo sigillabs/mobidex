@@ -1,4 +1,4 @@
-import { BigNumber } from '0x.js';
+import { BigNumber } from '@uniswap/sdk';
 import { setGasPrice } from '../actions';
 import EthGasStationInfo from '../clients/EthGasStationInfo.js';
 import EtherChainGasPriceOracle from '../clients/EtherChainGasPriceOracle.js';

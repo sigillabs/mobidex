@@ -5,7 +5,11 @@ module.exports = {
     commonjs: true,
     amd: true
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    '@react-native-community'
+  ],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 8,
@@ -22,5 +26,6 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'no-console': [1]
-  }
+  },
+  root: true
 };

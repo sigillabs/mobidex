@@ -1,6 +1,6 @@
-import { Web3Wrapper } from '@0xproject/web3-wrapper';
-import { BigNumber } from '0x.js';
+import { BigNumber } from '@uniswap/sdk';
 import { time } from '../lib/decorators/cls';
+import { toBaseUnitAmount, toUnitAmount } from '../lib/utils';
 
 /**
  * Fetches gas recommendations from https://ethgasstation.info
@@ -32,13 +32,13 @@ export default class EthGasStationInfo {
     const { average, avgWait, fast, fastWait, safeLow, safeLowWait } = json;
 
     return {
-      low: Web3Wrapper.toBaseUnitAmount(new BigNumber(safeLow).div(10), 9),
+      low: toBaseUnitAmount(new BigNumber(safeLow).div(10), 9),
       lowWait: safeLowWait,
       // medium: safeLow + (fast - safeLow) / 2,
       // mediumWait: safeLowWait - (safeLowWait - fastWait) / 2,
-      standard: Web3Wrapper.toBaseUnitAmount(new BigNumber(average).div(10), 9),
+      standard: toBaseUnitAmount(new BigNumber(average).div(10), 9),
       standardWait: avgWait,
-      high: Web3Wrapper.toBaseUnitAmount(new BigNumber(fast).div(10), 9),
+      high: toBaseUnitAmount(new BigNumber(fast).div(10), 9),
       highWait: fastWait
     };
   }

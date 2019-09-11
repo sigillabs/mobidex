@@ -5,7 +5,6 @@ import {
   setNativeExceptionHandler
 } from 'react-native-exception-handler';
 import RNRestart from 'react-native-restart';
-import * as AnalyticsService from './services/AnalyticsService';
 
 export function setExceptionHandlers() {
   setJSExceptionHandler((error, isFatal) => {
@@ -38,19 +37,5 @@ export function setExceptionHandlers() {
         );
       }
     }
-
-    if (error) {
-      AnalyticsService.trackEvent(isFatal ? 'crash' : 'error', 'report', {
-        error: `${error.name} ${error.message}`
-      });
-    } else {
-      AnalyticsService.trackEvent(isFatal ? 'crash' : 'error', 'report', {
-        error: 'Unknown error'
-      });
-    }
   }, true);
-
-  setNativeExceptionHandler(exceptionString => {
-    AnalyticsService.trackEvent('crash', 'report', 'FATAL: ' + exceptionString);
-  });
 }

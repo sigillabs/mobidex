@@ -1,0 +1,2 @@
+export const ETH_TO_TOKEN_SWAP_INPUT_GAS = 12757;
+export const TOKEN_TO_ETH_SWAP_INPUT_GAS = 47503;

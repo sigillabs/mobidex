@@ -5,32 +5,31 @@ import {
   Clipboard,
   RefreshControl,
   SafeAreaView,
-  ScrollView
+  ScrollView,
 } from 'react-native';
-import { ListItem, Text } from 'react-native-elements';
-import { connect } from 'react-redux';
-import { setGasLevel, setGasStation } from '../../actions';
-import { WalletService } from '../../services/WalletService';
-import { addReferrer, loadUser } from '../../thunks';
-import { showModal } from '../../navigation';
-import { clearState } from '../../lib/stores/app';
-import { colors, styles } from '../../styles';
-import { clearCache } from '../../lib/utils';
+import {ListItem, Text} from 'react-native-elements';
+import {connect} from 'react-redux';
+import {setGasLevel, setGasStation} from '../../actions';
+import {WalletService} from '../../services/WalletService';
+import {showModal} from '../../navigation';
+import {clearState} from '../../lib/stores/app';
+import {colors, styles} from '../../styles';
+import {clearCache} from '../../lib/utils';
 import Divider from '../components/Divider';
 import MutedText from '../components/MutedText';
 import ReferralCodeInput from '../components/ReferralCodeInput';
 import TouchableListItem from '../components/TouchableListItem';
 
 const GAS_STATIONS = [
-  { name: 'default', label: 'default' },
-  { name: 'eth-gas-station-info', label: 'ethgasstation.info' },
-  { name: 'ether-chain-gas-price-oracle', label: 'etherchain.info' }
+  {name: 'default', label: 'default'},
+  {name: 'eth-gas-station-info', label: 'ethgasstation.info'},
+  {name: 'ether-chain-gas-price-oracle', label: 'etherchain.info'},
 ];
 
 const GAS_LEVELS = [
-  { name: 'low', label: 'Slow  (< 30 min)' },
-  { name: 'standard', label: 'Average (< 15 min)' },
-  { name: 'high', label: 'Fast (< 2 min)' }
+  {name: 'low', label: 'Slow  (< 30 min)'},
+  {name: 'standard', label: 'Average (< 15 min)'},
+  {name: 'high', label: 'Fast (< 2 min)'},
 ];
 
 class SettingsScreen extends React.Component {
@@ -40,65 +39,37 @@ class SettingsScreen extends React.Component {
         visible: true,
         drawBehind: false,
         backButton: {
-          visible: false
+          visible: false,
         },
         title: {
           text: 'Settings',
-          alignment: 'center'
-        }
-      }
+          alignment: 'center',
+        },
+      },
     };
   }
 
   static propTypes = {
     network: PropTypes.number.isRequired,
-    mobidexEndpoint: PropTypes.string.isRequired,
-    relayerEndpoint: PropTypes.string.isRequired,
     forexCurrency: PropTypes.string.isRequired,
     quoteSymbol: PropTypes.string.isRequired,
     gasStation: PropTypes.string.isRequired,
     gasLevel: PropTypes.string.isRequired,
-    referralCode: PropTypes.string,
-    referrerCode: PropTypes.string,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      refreshing: false,
-      referralCodeError: false
-    };
-  }
-
-  componentDidMount() {
-    this.onRefresh();
-  }
 
   render() {
     const {
       network,
-      mobidexEndpoint,
-      relayerEndpoint,
       forexCurrency,
       quoteSymbol,
       gasStation,
       gasLevel,
-      referralCode,
-      referrerCode
     } = this.props;
 
     return (
       <SafeAreaView style={[styles.h100, styles.w100]}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }
-        >
+        <ScrollView>
           <ListItem
             title={<MutedText>Forex Currency</MutedText>}
             subtitle={<Text>{forexCurrency}</Text>}
@@ -107,55 +78,24 @@ class SettingsScreen extends React.Component {
             title={<MutedText>Quote Token</MutedText>}
             subtitle={<Text>{quoteSymbol}</Text>}
           />
-          <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
+          <Divider style={[styles.p2, {backgroundColor: colors.grey6}]} />
           <ListItem
             title={<MutedText>Network</MutedText>}
             subtitle={<Text>{network}</Text>}
           />
-          <ListItem
-            title={<MutedText>Relayer Endpoint</MutedText>}
-            subtitle={<Text>{relayerEndpoint}</Text>}
-          />
-          <ListItem
-            title={<MutedText>Mobidex Endpoint</MutedText>}
-            subtitle={<Text>{mobidexEndpoint}</Text>}
-          />
           <TouchableListItem
             title="Gas Level"
-            subtitle={
-              <Text>{_.find(GAS_LEVELS, { name: gasLevel }).label}</Text>
-            }
+            subtitle={<Text>{_.find(GAS_LEVELS, {name: gasLevel}).label}</Text>}
             onPress={this.showGasLevelSelect}
           />
           <TouchableListItem
             title="Gas Station"
             subtitle={
-              <Text>{_.find(GAS_STATIONS, { name: gasStation }).label}</Text>
+              <Text>{_.find(GAS_STATIONS, {name: gasStation}).label}</Text>
             }
             onPress={this.showGasStationSelect}
           />
-          {referrerCode ? (
-            <TouchableListItem
-              title="Referral Code"
-              subtitle={<Text>{referralCode}</Text>}
-              onPress={this.copyReferralCode}
-            />
-          ) : (
-            <ListItem
-              title={
-                <ReferralCodeInput
-                  onSubmit={this.addReferer}
-                  errorMessage={
-                    this.state.referralCodeError
-                      ? 'Referral code does not exist'
-                      : ' '
-                  }
-                  errorStyle={{ color: colors.error }}
-                />
-              }
-            />
-          )}
-          <Divider style={[styles.p2, { backgroundColor: colors.grey6 }]} />
+          <Divider style={[styles.p2, {backgroundColor: colors.grey6}]} />
           <TouchableListItem
             title="Clear Cache"
             subtitle={<Text>Tap Here</Text>}
@@ -179,15 +119,6 @@ class SettingsScreen extends React.Component {
     );
   }
 
-  onRefresh = async () => {
-    this.setState({ refreshing: true });
-    try {
-      await this.props.dispatch(loadUser());
-    } finally {
-      this.setState({ refreshing: false });
-    }
-  };
-
   clearCache = () => {
     clearState();
     clearCache();
@@ -205,7 +136,7 @@ class SettingsScreen extends React.Component {
       title: 'Select Gas Station',
       options: GAS_STATIONS,
       select: name => this.props.dispatch(setGasStation(name)),
-      selected: this.props.gasStation
+      selected: this.props.gasStation,
     });
   };
 
@@ -214,29 +145,14 @@ class SettingsScreen extends React.Component {
       title: 'Select Gas Level',
       options: GAS_LEVELS,
       select: name => this.props.dispatch(setGasLevel(name)),
-      selected: this.props.gasLevel
+      selected: this.props.gasLevel,
     });
-  };
-
-  addReferer = async code => {
-    try {
-      await this.props.dispatch(addReferrer(code));
-      this.setState({ referralCodeError: false });
-    } catch (err) {
-      this.setState({ referralCodeError: true });
-    }
-  };
-
-  copyReferralCode = () => {
-    Clipboard.setString(this.props.referralCode);
   };
 }
 
 export default connect(
   state => ({
     ...state.settings,
-    referralCode: state.wallet.referralCode,
-    referrerCode: state.wallet.referrerCode
   }),
-  dispatch => ({ dispatch })
+  dispatch => ({dispatch}),
 )(SettingsScreen);
