@@ -12,16 +12,22 @@ const PROD = {
   uniswap: {
     factoryAddress: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
   },
+  weth9: {
+    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  },
 };
 
 const STAGE = {
-  network: 42,
+  network: 4,
   // ethereumNodeEndpoint:
   //   'https://rinkby.infura.io/v3/9c07eacbc58e42fa9a5b5b19d8992787',
   ethereumNodeEndpoint:
     'https://eth-rinkby.alchemyapi.io/jsonrpc/luC74yyUWG5lXOj1yMaAIo8Ik5ZLqsti',
   uniswap: {
     factoryAddress: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
+  },
+  weth9: {
+    address: '0x1b45d86492d098b10fdbf382c537359f776f8dad  ',
   },
 };
 

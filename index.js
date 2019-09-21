@@ -3,7 +3,7 @@ import 'node-libs-react-native/globals';
 import {I18nManager, YellowBox} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import RNRestart from 'react-native-restart';
-import {setInitialBootRoot, setOnboardingRoot} from './navigation';
+import {setTabsRoot, setOnboardingRoot} from './navigation';
 import {registerHeaders} from './navigation/headers';
 import {registerModals} from './navigation/modals';
 import {registerScreens} from './navigation/screens';
@@ -72,7 +72,7 @@ const initializeApp = (function initialize() {
     });
 
     if (address) {
-      setInitialBootRoot();
+      setTabsRoot();
     } else {
       setOnboardingRoot();
     }

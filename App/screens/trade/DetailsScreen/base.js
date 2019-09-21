@@ -1,297 +1,84 @@
-import {
-  BigNumber,
-  tradeExactEthForTokens,
-  tradeExactTokensForEth,
-  getExecutionDetails,
-} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import {StyleSheet, RefreshControl, ScrollView, Text, View} from 'react-native';
-import {Slider} from 'react-native-elements';
+import {SafeAreaView, Text} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {connect} from 'react-redux';
-import {
-  ETH_TO_TOKEN_SWAP_INPUT_GAS,
-  MAX_UINT256,
-  TEN,
-  TOKEN_TO_ETH_SWAP_INPUT_GAS,
-  UNLOCKED_AMOUNT,
-  ZERO,
-} from '../../../../constants';
-import {bigIntToEthHex} from '../../../../lib/utils';
-import {
-  connect as connectNavigation,
-  showErrorModal,
-} from '../../../../navigation';
+import {UNLOCKED_AMOUNT, ZERO} from '../../../../constants';
+import {connect as connectNavigation} from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
-import {UniswapService} from '../../../../services/UniswapService';
-import {WalletService} from '../../../../services/WalletService';
-import {styles, fonts} from '../../../../styles';
-import {
-  navigationProp,
-  MarketDetailsProp,
-  BigNumberProp,
-} from '../../../../types/props';
-import {
-  ConfirmActionErrorSuccessFlow,
-  loadAllowance,
-  loadBalance,
-  refreshGasPrice,
-  unlock,
-} from '../../../../thunks';
-import withMarketDetails from '../../../hoc/uniswap/MarketDetails';
-import withExchangeContract from '../../../hoc/uniswap/ExchangeContract';
-import withEthereumBalance from '../../../hoc/ethereum/Balance';
-import withTokenBalance from '../../../hoc/token/Balance';
-import BigCenter from '../../../components/BigCenter';
-import Button from '../../../components/Button';
-import EthereumAmount from '../../../components/EthereumAmount';
-import EthereumIcon from '../../../components/EthereumIcon';
-import FormattedPercent from '../../../components/FormattedPercent';
-import FormattedSymbol from '../../../components/FormattedSymbol';
+import {styles} from '../../../../styles';
+import {BigNumberProp} from '../../../../types/props';
+import {ConfirmActionErrorSuccessFlow, unlock} from '../../../../thunks';
 import MajorText from '../../../components/MajorText';
-import Row from '../../../components/Row';
-import TokenIcon from '../../../components/TokenIcon';
+import withExchangeContract from '../../../hoc/uniswap/ExchangeContract';
 import EmptyWallet from './EmptyWallet';
-import TradeConfirmation from './TradeConfirmation';
+import SwapTokens from './SwapTokens';
+import UnwrapETH from './UnwrapETH';
 import UnlockConfirmation from './UnlockConfirmation';
-
-const style = StyleSheet.create({
-  container: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    flex: 0,
-  },
-  container2: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    flex: 0,
-  },
-});
+import UnlockTokenNotice from './UnlockTokenNotice';
 
 class BaseDetailsScreen extends Component {
   static get propTypes() {
     return {
-      navigation: navigationProp.isRequired,
-      tokenAddress: PropTypes.string.isRequired,
       loading: PropTypes.bool,
-      marketDetails: MarketDetailsProp,
+      tokenAddress: PropTypes.string.isRequired,
       ethereumBalance: BigNumberProp,
-      tokenBalance: BigNumberProp,
-      tokenAllowances: PropTypes.object,
-      gasPrice: BigNumberProp,
-      exchangeContractAddress: PropTypes.string,
-      ExchangeContract: PropTypes.object,
+      tokenAllowance: BigNumberProp,
+      exchangeContractAddress: PropTypes.string.isRequired,
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: 0,
-      refreshing: true,
-    };
+  get isLocked() {
+    const {tokenAllowance} = this.props;
+    return UNLOCKED_AMOUNT.isGreaterThan(tokenAllowance);
   }
 
-  componentWillMount() {
-    this.onRefresh();
+  componentDidMount() {
+    this.unlock();
   }
 
-  get networkFee() {
-    if (this.state.value < 0) {
-      return this.props.gasPrice.times(TOKEN_TO_ETH_SWAP_INPUT_GAS);
-    } else if (this.state.value > 0) {
-      return this.props.gasPrice.times(ETH_TO_TOKEN_SWAP_INPUT_GAS);
-    } else {
-      return 0;
-    }
-  }
-
-  get price() {
-    const {decimals: ethereumDecimals} = AssetService.findAssetByAddress('ETH');
-    return this.props.marketDetails.marketRate.rateInverted.times(
-      TEN.pow(ethereumDecimals),
-    );
-  }
-
-  get ratesInBaseUnits() {
-    const {decimals: tokenDecimals} = AssetService.findAssetByAddress(
-      this.props.tokenAddress,
-    );
-    const {decimals: ethereumDecimals} = AssetService.findAssetByAddress('ETH');
-    const rate = this.props.marketDetails.marketRate.rate.times(
-      TEN.pow(tokenDecimals - ethereumDecimals),
-    );
-    const rateInverted = this.props.marketDetails.marketRate.rateInverted.times(
-      TEN.pow(ethereumDecimals - tokenDecimals),
-    );
-    return {
-      rate,
-      rateInverted,
-    };
-  }
-
-  get ethereumBalanceChange() {
-    const {ethereumBalance, tokenBalance} = this.props;
-    const {
-      rate: rateBaseUnits,
-      rateInverted: rateInvertedBaseUnits,
-    } = this.ratesInBaseUnits;
-    const maxEthereumTransfer = rateInvertedBaseUnits.times(tokenBalance);
-
-    if (this.state.value < 0) {
-      return maxEthereumTransfer.times(-this.state.value).integerValue();
-    } else if (this.state.value > 0) {
-      if (ethereumBalance.isGreaterThan(this.networkFee)) {
-        return ethereumBalance
-          .minus(this.networkFee)
-          .times(-this.state.value)
-          .integerValue();
-      } else {
-        return 0;
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  get tokenBalanceChange() {
-    const {ethereumBalance, tokenBalance} = this.props;
-    const {
-      rate: rateBaseUnits,
-      rateInverted: rateInvertedBaseUnits,
-    } = this.ratesInBaseUnits;
-    const maxTokenTransfer = rateBaseUnits.times(
-      ethereumBalance.minus(this.networkFee),
-    );
-
-    if (this.state.value < 0) {
-      return tokenBalance.times(this.state.value).integerValue();
-    } else if (this.state.value > 0) {
-      return maxTokenTransfer.times(this.state.value).integerValue();
-    } else {
-      return 0;
-    }
+  componentDidUpdate() {
+    this.unlock();
   }
 
   render() {
-    if (this.props.loading || this.state.refreshing) {
-      return null;
+    if (this.props.loading) {
+      return <EmptyWallet />;
     }
 
     const {
       exchangeContractAddress,
       tokenAddress,
+      tokenAllowance,
       ethereumBalance,
-      tokenBalance,
     } = this.props;
 
-    if (ethereumBalance.isEqualTo(ZERO)) {
+    if (ZERO.isEqualTo(ethereumBalance)) {
       return <EmptyWallet />;
     }
 
-    const unlocked = UNLOCKED_AMOUNT.isLessThan(
-      this.props.tokenAllowances[exchangeContractAddress.toLowerCase()],
-    );
-
-    const updatedTokenBalance = tokenBalance
-      .plus(this.tokenBalanceChange)
-      .integerValue();
-    const updatedEthereumBalance = ethereumBalance
-      .plus(this.ethereumBalanceChange)
-      .integerValue();
+    if (
+      !AssetService.isEthereum(tokenAddress) &&
+      !UNLOCKED_AMOUNT.isLessThan(tokenAllowance)
+    ) {
+      return <UnlockTokenNotice tokenAddress={tokenAddress} />;
+    }
 
     return (
-      <ScrollView
-        contentContainerStyle={[styles.h100, styles.w100, styles.bigCenter]}>
-        <View style={style.container2}>
-          <TokenIcon
-            address={tokenAddress}
-            amount={updatedTokenBalance}
-            avatarProps={{size: 100}}
-            labelProps={{style: [fonts.large]}}
-            amountProps={{style: [fonts.large]}}
-          />
-        </View>
-        <Row style={[styles.center, styles.w100, styles.mv3]}>
-          <View style={styles.textCenter}>
-            <TokenIcon
-              address={null}
-              avatarProps={{size: 50}}
-              showAmount={false}
-              showName={false}
-              showSymbol={false}
-            />
-            <FormattedPercent
-              percent={-this.state.value}
-              style={styles.textCenter}
-            />
-          </View>
-          <View style={(styles.textCenter, styles.mh3)}>
-            <Slider
-              style={[styles.w100]}
-              value={this.state.value}
-              minimumValue={-1}
-              maximumValue={1}
-              step={0.01}
-              onValueChange={value => this.setState({value})}
-            />
-            <Row
-              style={StyleSheet.flatten([
-                styles.center,
-                styles.textCenter,
-                styles.w100,
-              ])}>
-              <Entypo name="swap" size={15} color="black" style={styles.mr1} />
-              <EthereumAmount amount={this.price} unit={'ether'} />
-              <Text> </Text>
-              <FormattedSymbol address={null} />
-            </Row>
-          </View>
-          <View style={styles.textCenter}>
-            <TokenIcon
-              address={tokenAddress}
-              avatarProps={{size: 50}}
-              showAmount={false}
-              showName={false}
-              showSymbol={false}
-            />
-            <FormattedPercent
-              percent={this.state.value}
-              style={styles.textCenter}
-            />
-          </View>
-        </Row>
-        <View style={style.container2}>
-          <EthereumIcon
-            address={tokenAddress}
-            amount={updatedEthereumBalance}
-            avatarProps={{size: 100}}
-            labelProps={{style: [fonts.large]}}
-            amountProps={{style: [fonts.large]}}
-          />
-        </View>
-
-        {unlocked ? (
-          <Button title={'Swap'} onPress={this.onSwap} />
+      <SafeAreaView style={[styles.h100, styles.w100, styles.flex1]}>
+        {AssetService.isEthereum(tokenAddress) ? (
+          <UnwrapETH />
         ) : (
-          <Button title={'Unlock'} onPress={this.onUnlock} />
+          <SwapTokens tokenAddress={tokenAddress} />
         )}
-      </ScrollView>
+      </SafeAreaView>
     );
   }
 
-  onUnlock = () => {
-    const {tokenAddress, exchangeContractAddress} = this.props;
+  unlock = () => {
+    if (this.props.loading || !this.isLocked) return;
+
+    const {exchangeContractAddress, tokenAddress} = this.props;
     const action = async () =>
       this.props.dispatch(unlock(tokenAddress, exchangeContractAddress));
     const actionOptions = {
@@ -314,109 +101,35 @@ class BaseDetailsScreen extends Component {
       ),
     );
   };
+}
 
-  onSwap = async () => {
-    const {ethereumBalance, ExchangeContract} = this.props;
+function extractProps(state, props) {
+  const {
+    wallet: {balances, allowances},
+    settings: {gasPrice},
+  } = state;
+  const {tokenAddress, exchangeContractAddress} = props;
+  const ethereumBalance = balances[null];
+  const tokenAllowances = allowances[tokenAddress.toLowerCase()];
 
-    if (ethereumBalance.isLessThan(this.networkFee)) {
-      return showErrorModal(
-        new Error('You do not have enough Ethereum to cover the network fee'),
-      );
-    }
+  let tokenAllowance = ZERO;
 
-    let tradeDetails = null;
-    if (this.state.value < 0) {
-      tradeDetails = await tradeExactTokensForEth(
-        this.props.tokenAddress,
-        this.tokenBalanceChange.absoluteValue(),
-      );
-    } else if (this.state.value > 0) {
-      tradeDetails = await tradeExactEthForTokens(
-        this.props.tokenAddress,
-        this.ethereumBalanceChange.absoluteValue(),
-      );
-    } else {
-      return;
-    }
+  if (exchangeContractAddress && tokenAllowances) {
+    tokenAllowance = tokenAllowances[exchangeContractAddress.toLowerCase()];
+  }
 
-    const executionDetails = await getExecutionDetails(tradeDetails);
-    const methodArguments = executionDetails.methodArguments.map(
-      bigIntToEthHex,
-    );
-    const txValue = bigIntToEthHex(executionDetails.value);
-    const action = async () =>
-      new Promise((resolve, reject) => {
-        ExchangeContract.methods[executionDetails.methodName]
-          .apply(ExchangeContract, methodArguments)
-          .send({value: txValue})
-          .on('transactionHash', hash => {
-            resolve(hash);
-          })
-          .on('receipt', receipt => {
-            console.log('receipt', receipt);
-          })
-          .on('confirmation', (confirmationNumber, receipt) => {
-            console.debug('confirmation', confirmationNumber, receipt);
-          })
-          .on('error', reject);
-      });
-    const actionOptions = {
-      action,
-      icon: <Entypo name="arrow-with-circle-up" size={100} />,
-      label: <MajorText>Swapping...</MajorText>,
-    };
-    const confirmationOptions = {
-      label: (
-        <TradeConfirmation
-          tradeDetails={tradeDetails}
-          executionDetails={executionDetails}
-        />
-      ),
-    };
-    this.props.dispatch(
-      ConfirmActionErrorSuccessFlow(
-        this.props.navigation.componentId,
-        confirmationOptions,
-        actionOptions,
-        <Text>
-          Swap transaction successfully sent to the Ethereum network. It takes a
-          few minutes for Ethereum to confirm the transaction.
-        </Text>,
-      ),
-    );
-  };
-
-  onRefresh = async () => {
-    this.setState({refreshing: true});
-
-    const {tokenAddress} = this.props;
-    const exchangeContractAddress = await UniswapService.instance.getExchangeAddressForToken(
-      tokenAddress,
-    );
-    await Promise.all([
-      this.props.dispatch(loadBalance(null, true)),
-      this.props.dispatch(loadBalance(tokenAddress, true)),
-      this.props.dispatch(
-        loadAllowance(tokenAddress, exchangeContractAddress, true),
-      ),
-      this.props.dispatch(refreshGasPrice(true)),
-    ]);
-
-    this.setState({refreshing: false});
+  return {
+    ethereumBalance,
+    tokenAllowance,
+    gasPrice,
   };
 }
 
 let DetailsScreen = connectNavigation(BaseDetailsScreen);
 DetailsScreen = connect(
-  ({wallet: {balances, allowances}, settings: {gasPrice}}, {tokenAddress}) => ({
-    ethereumBalance: balances[null],
-    tokenBalance: balances[tokenAddress],
-    tokenAllowances: allowances[tokenAddress],
-    gasPrice,
-  }),
+  extractProps,
   dispatch => ({dispatch}),
 )(DetailsScreen);
-DetailsScreen = withMarketDetails(DetailsScreen);
 DetailsScreen = withExchangeContract(DetailsScreen);
 
 export default DetailsScreen;

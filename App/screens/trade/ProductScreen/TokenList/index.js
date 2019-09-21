@@ -16,24 +16,6 @@ class BaseTokenList extends Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      refreshing: true,
-    };
-  }
-
-  componentDidMount() {
-    this.setState({refreshing: false});
-  }
-
-  componentDidUpdate() {
-    if (this.state.refreshing) {
-      this.setState({refreshing: false});
-    }
-  }
-
   render() {
     const {tokens} = this.props;
 
@@ -43,7 +25,7 @@ class BaseTokenList extends Component {
         keyExtractor={item => `token-${item.address}`}
         renderItem={({item}) => (
           <TokenItem
-            address={item.address}
+            tokenAddress={item.address}
             key={`token-${item.address}`}
             onPress={address =>
               this.props.navigation.push('navigation.trade.Details', {
@@ -52,8 +34,6 @@ class BaseTokenList extends Component {
             }
           />
         )}
-        refreshing={this.state.refreshing}
-        onRefresh={this.onRefresh}
         ListEmptyComponent={() => (
           <EmptyList
             wrapperStyle={{
@@ -67,10 +47,6 @@ class BaseTokenList extends Component {
       />
     );
   }
-
-  onRefresh = () => {
-    this.setState({refreshing: true});
-  };
 }
 
 const TokenList = connectNavigation(BaseTokenList);

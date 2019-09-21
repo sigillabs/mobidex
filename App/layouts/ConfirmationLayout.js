@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
-import { styles } from '../../styles';
+import {SafeAreaView, ScrollView, View} from 'react-native';
+import {styles} from '../../styles';
 import Button from '../components/Button';
 import Row from '../components/Row';
 
@@ -51,5 +51,9 @@ export default class ConfirmationLayout extends React.PureComponent {
 
   pressRight() {
     throw new Error('pressRight must be implemented.');
+  }
+
+  onRefresh() {
+    throw new Error('onRefresh must be implemented.');
   }
 }

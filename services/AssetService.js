@@ -14,8 +14,12 @@ export function setStore(store) {
   _store = store;
 }
 
+export function isEthereum(address) {
+  return address === null || address === 'ETH';
+}
+
 export function findAssetByAddress(address) {
-  if (address === null || address === 'ETH') {
+  if (isEthereum(address)) {
     return ETHEREUM_ASSET;
   }
   const {tokens} = _store.getState();

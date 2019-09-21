@@ -22,6 +22,7 @@ export default function withFactoryContract(
       this.state = {
         [passAddressName]: null,
         [passContractName]: null,
+        loading: true,
       };
     }
 
@@ -36,11 +37,18 @@ export default function withFactoryContract(
       this.setState({
         [passAddressName]: exchangeAddress,
         [passContractName]: exchangeContract,
+        loading: false,
       });
     }
 
     render() {
-      return <WrapperComponent {...this.state} {...this.props} />;
+      return (
+        <WrapperComponent
+          {...this.state}
+          {...this.props}
+          loading={this.props.loading || this.state.loading}
+        />
+      );
     }
   }
 

@@ -2,6 +2,7 @@ import {BigNumber} from '@uniswap/sdk';
 import {setAllowance, setBalance, setWalletAddress} from '../actions';
 import EthereumClient from '../clients/ethereum';
 import TokenClient from '../clients/token';
+import EtherToken from '../clients/EtherToken';
 import {MAX_UINT256} from '../constants';
 import {setOfflineRoot, showErrorModal} from '../navigation';
 import * as AssetService from '../services/AssetService';
@@ -97,5 +98,27 @@ export function unlock(token, exchange) {
     });
     const tokenClient = new TokenClient(ethereumClient, token);
     const txhash = await tokenClient.unlock(exchange);
+  };
+}
+
+export function unwrapAllETH() {
+  return async (dispatch, getState) => {
+    const {
+      settings: {
+        weth9: {address: WETHAddress},
+        gasPrice,
+        gasLimit,
+      },
+      wallet: {address},
+    } = getState();
+
+    const web3 = WalletService.instance.web3;
+    const ethereumClient = new EthereumClient(web3, {
+      gasPrice,
+    });
+    const etherTokenClient = new EtherToken(ethereumClient, WETHAddress);
+    const amount = await etherTokenClient.balanceOf(address);
+    const txhash = await tokenClient.withdraw(amount);
+    console.warn(txhash);
   };
 }

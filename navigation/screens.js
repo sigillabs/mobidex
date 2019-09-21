@@ -1,6 +1,5 @@
-import { Navigation } from 'react-native-navigation';
-import { Provider } from 'react-redux';
-import InitialLoadScreen from '../App/screens/InitialLoadScreen';
+import {Navigation} from 'react-native-navigation';
+import {Provider} from 'react-redux';
 import ProductScreen from '../App/screens/trade/ProductScreen';
 import DetailsScreen from '../App/screens/trade/DetailsScreen';
 import IntroScreen from '../App/screens/onboarding/IntroScreen';
@@ -16,69 +15,62 @@ export function registerScreens(store) {
     'navigation.onboarding.Introduction',
     () => IntroScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.ImportMnemonic',
     () => ImportMnemonicScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.PreviewMnemonic',
     () => PreviewMnemonicScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.Pin',
     () => PinScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.onboarding.BitskiLogin',
     () => BitskiLogin,
     Provider,
-    store
-  );
-
-  Navigation.registerComponentWithRedux(
-    'navigation.trade.InitialLoadScreen',
-    () => InitialLoadScreen,
-    Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.trade.Products',
     () => ProductScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.trade.Details',
     () => DetailsScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.Settings',
     () => SettingsScreen,
     Provider,
-    store
+    store,
   );
 
   Navigation.registerComponentWithRedux(
     'navigation.Offline',
     () => OfflineScreen,
     Provider,
-    store
+    store,
   );
 }

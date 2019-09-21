@@ -1,16 +1,16 @@
 import React from 'react';
-import { InteractionManager } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import {InteractionManager} from 'react-native';
+import {Navigation} from 'react-native-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 let history = [];
 
-Navigation.events().registerComponentDidDisappearListener(({ componentId }) => {
+Navigation.events().registerComponentDidDisappearListener(({componentId}) => {
   history.splice(history.indexOf(componentId), 1);
 });
 
-Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
+Navigation.events().registerComponentDidAppearListener(({componentId}) => {
   history.push(componentId);
 });
 
@@ -18,7 +18,7 @@ export function waitForComponentAppear(
   componentId,
   fn,
   wait = 50,
-  attempts = 20
+  attempts = 20,
 ) {
   let watcher = () => {
     if (~history.indexOf(componentId)) {
@@ -34,7 +34,7 @@ export function waitForComponentDisappear(
   componentId,
   fn,
   wait = 50,
-  attempts = 20
+  attempts = 20,
 ) {
   let watcher = () => {
     if (!~history.indexOf(componentId)) {
@@ -48,7 +48,7 @@ export function waitForComponentDisappear(
 
 export function buildNavigationComponent(id, name, props) {
   const component = {
-    name
+    name,
   };
 
   if (id) {
@@ -64,13 +64,13 @@ export function buildNavigationComponent(id, name, props) {
 
 export function showModal(name, props) {
   Navigation.showModal({
-    component: buildNavigationComponent(null, name, props)
+    component: buildNavigationComponent(null, name, props),
   });
 }
 
 export function showErrorModal(error) {
   Navigation.showModal({
-    component: buildNavigationComponent(null, 'modals.Error', { error })
+    component: buildNavigationComponent(null, 'modals.Error', {error}),
   });
 }
 
@@ -79,8 +79,8 @@ export function showSuccessModal(label, ok) {
     component: buildNavigationComponent(null, 'modals.Notification', {
       icon: <FontAwesome name="check-circle" size={100} />,
       label,
-      ok
-    })
+      ok,
+    }),
   });
 }
 
@@ -88,9 +88,9 @@ export function setOfflineRoot() {
   InteractionManager.runAfterInteractions(async () =>
     Navigation.setRoot({
       root: {
-        bottomTabs: await getOfflineBottomTabs()
-      }
-    })
+        bottomTabs: await getOfflineBottomTabs(),
+      },
+    }),
   );
 }
 
@@ -98,7 +98,7 @@ export async function getOfflineBottomTabs() {
   const icons = await Promise.all([
     Ionicons.getImageSource('md-funnel', 30),
     Ionicons.getImageSource('md-card', 30),
-    Ionicons.getImageSource('ios-settings', 30)
+    Ionicons.getImageSource('ios-settings', 30),
   ]);
   const [offline, wallet, settings] = icons;
   return {
@@ -108,37 +108,37 @@ export async function getOfflineBottomTabs() {
           children: [
             {
               component: {
-                name: 'navigation.Offline'
-              }
-            }
+                name: 'navigation.Offline',
+              },
+            },
           ],
           options: {
             bottomTab: {
               text: 'Offline',
               icon: offline,
-              badgeColor: 'red'
-            }
-          }
-        }
+              badgeColor: 'red',
+            },
+          },
+        },
       },
       {
         stack: {
           children: [
             {
               component: {
-                name: 'navigation.Settings'
-              }
-            }
+                name: 'navigation.Settings',
+              },
+            },
           ],
           options: {
             bottomTab: {
               text: 'Settings',
-              icon: settings
-            }
-          }
-        }
-      }
-    ]
+              icon: settings,
+            },
+          },
+        },
+      },
+    ],
   };
 }
 
@@ -149,41 +149,29 @@ export function setOnboardingRoot() {
         children: [
           {
             component: {
-              name: 'navigation.onboarding.Introduction'
-            }
-          }
-        ]
-      }
-    }
+              name: 'navigation.onboarding.Introduction',
+            },
+          },
+        ],
+      },
+    },
   });
-}
-
-export function setInitialBootRoot() {
-  InteractionManager.runAfterInteractions(async () =>
-    Navigation.setRoot({
-      root: {
-        component: {
-          name: 'navigation.trade.InitialLoadScreen'
-        }
-      }
-    })
-  );
 }
 
 export async function setTabsRoot() {
   InteractionManager.runAfterInteractions(async () =>
     Navigation.setRoot({
       root: {
-        bottomTabs: await getBottomTabs()
-      }
-    })
+        bottomTabs: await getBottomTabs(),
+      },
+    }),
   );
 }
 
 export async function getBottomTabs() {
   const icons = await Promise.all([
     FontAwesome.getImageSource('line-chart', 30),
-    Ionicons.getImageSource('ios-settings', 30)
+    Ionicons.getImageSource('ios-settings', 30),
   ]);
   const [trade, settings] = icons;
   return {
@@ -193,35 +181,35 @@ export async function getBottomTabs() {
           children: [
             {
               component: {
-                name: 'navigation.trade.Products'
-              }
-            }
+                name: 'navigation.trade.Products',
+              },
+            },
           ],
           options: {
             bottomTab: {
               text: 'Trade',
-              icon: trade
-            }
-          }
-        }
+              icon: trade,
+            },
+          },
+        },
       },
       {
         stack: {
           children: [
             {
               component: {
-                name: 'navigation.Settings'
-              }
-            }
+                name: 'navigation.Settings',
+              },
+            },
           ],
           options: {
             bottomTab: {
               text: 'Settings',
-              icon: settings
-            }
-          }
-        }
-      }
-    ]
+              icon: settings,
+            },
+          },
+        },
+      },
+    ],
   };
 }

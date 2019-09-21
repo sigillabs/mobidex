@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, Text, TouchableOpacity} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {TEN} from '../../../../../constants';
 import {styles} from '../../../../../styles';
@@ -20,27 +20,25 @@ import withMarketDetails from '../../../../hoc/uniswap/MarketDetails';
 class BaseTokenItem extends Component {
   static get propTypes() {
     return {
-      address: addressProp,
+      tokenAddress: addressProp,
       marketDetails: UniswapMarketDetailsProp,
       onPress: PropTypes.func.isRequired,
     };
   }
 
   render() {
-    const {address} = this.props;
+    const {tokenAddress} = this.props;
 
-    if (!address) return null;
-    if (!this.props.marketDetails) return null;
-    if (!this.props.marketDetails.marketRate) return null;
-    if (!this.props.marketDetails.marketRate.rateInverted) return null;
-    if (isNaN(this.props.marketDetails.marketRate.rateInverted)) return null;
+    if (!tokenAddress) return null;
 
-    const rate = this.props.marketDetails.marketRate.rateInverted.times(
-      TEN.pow(18),
-    );
+    const loading =
+      !this.props.marketDetails ||
+      !this.props.marketDetails.marketRate ||
+      !this.props.marketDetails.marketRate.rateInverted ||
+      isNaN(this.props.marketDetails.marketRate.rateInverted);
 
     return (
-      <TouchableOpacity onPress={() => this.props.onPress(address)}>
+      <TouchableOpacity onPress={() => this.props.onPress(tokenAddress)}>
         <ListItem
           roundAvatar
           bottomDivider
@@ -48,19 +46,14 @@ class BaseTokenItem extends Component {
             <Row style={[styles.flex1, styles.center, styles.mh2]}>
               <Col style={[styles.flex1, styles.alignLeft]}>
                 <TokenIcon
-                  address={address}
+                  address={tokenAddress}
                   style={{flex: 0}}
                   showName={false}
                   showSymbol={true}
                 />
               </Col>
               <Col style={[styles.flex3]}>
-                <Row>
-                  <EthereumAmount amount={rate} unit={'ether'} />
-                  <Text> </Text>
-                  <FormattedSymbol symbol="ETH" />
-                </Row>
-                <MutedText>Price</MutedText>
+                {loading ? this.renderLoading() : this.renderPrice()}
               </Col>
             </Row>
           }
@@ -69,8 +62,29 @@ class BaseTokenItem extends Component {
       </TouchableOpacity>
     );
   }
+
+  renderPrice() {
+    const rate = this.props.marketDetails.marketRate.rateInverted.times(
+      TEN.pow(18),
+    );
+
+    return (
+      <React.Fragment>
+        <Row>
+          <EthereumAmount amount={rate} unit={'ether'} />
+          <Text> </Text>
+          <FormattedSymbol symbol="ETH" />
+        </Row>
+        <MutedText>Price</MutedText>
+      </React.Fragment>
+    );
+  }
+
+  renderLoading() {
+    return <ActivityIndicator />;
+  }
 }
 
-const TokenItem = withMarketDetails(BaseTokenItem, 'address');
+const TokenItem = withMarketDetails(BaseTokenItem, 'tokenAddress');
 
 export default TokenItem;

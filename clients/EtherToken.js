@@ -1,6 +1,6 @@
 import {ContractDefinitionLoader} from 'web3-contracts-loader';
 import {time} from '../lib/decorators/cls';
-import {formatHexString} from '../lib/utils';
+import {bigIntToEthHex} from '../lib/utils';
 
 const Weth9ABI = require('../abi/WETH9.json');
 
@@ -39,16 +39,16 @@ export default class EtherToken {
   }
 
   @time
-  async depositTx() {
+  async balanceOf(account) {
     const contract = await this.getContract();
-    return contract.methods.deposit().encodeABI();
+    const amount = await contact.methods.balanceOf(account);
+    return result;
   }
 
   @time
-  async withdrawTx(wad) {
+  async withdraw(wad) {
     const contract = await this.getContract();
-    return contract.methods
-      .withdraw(formatHexString(wad.toString(16)))
-      .encodeABI();
+    const result = contract.methods.withdraw(bigIntToEthHex(wad)).send();
+    return result;
   }
 }
