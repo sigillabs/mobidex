@@ -2,9 +2,9 @@ package io.mobidex;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.widget.LinearLayout;
+
+import androidx.core.content.ContextCompat;
 
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.reactnativenavigation.NavigationActivity;

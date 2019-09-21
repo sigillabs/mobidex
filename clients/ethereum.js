@@ -1,11 +1,13 @@
 import {BigNumber} from '@uniswap/sdk';
 import {cache, time} from '../lib/decorators/cls';
-import {toBaseUnitAmount, toUnitAmount} from '../lib/utils';
+import {toBaseUnitAmount, toUnitAmount, bigIntToEthHex} from '../lib/utils';
 
 export default class EthereumClient {
   constructor(web3, options = null) {
     this.web3 = web3;
     this.options = options;
+
+    this.web3.currentProvider.setMaxListeners(32000);
   }
 
   getCurrentProvider() {
@@ -58,7 +60,7 @@ export default class EthereumClient {
   @time
   async send(to, amount) {
     const sender = await this.getAccount();
-    const value = toBaseUnitAmount(new BigNumber(amount), 18);
+    const value = bigIntToEthHex(amount);
     const gasPrice = this.options ? this.options.gasPrice : undefined;
     return await new Promise((resolve, reject) => {
       const response = this.web3.eth.sendTransaction({

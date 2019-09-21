@@ -10,42 +10,38 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.kethereum.bip32.ExtendedKey;
-import org.kethereum.bip39.Mnemonic;
-import org.kethereum.crypto.ECKeyPair;
+import org.kethereum.bip32.model.ExtendedKey;
+import org.kethereum.bip39.MnemonicKt;
 import org.kethereum.crypto.SignKt;
 import org.kethereum.model.Address;
+import org.kethereum.model.ECKeyPair;
 import org.kethereum.model.SignatureData;
 import org.kethereum.model.Transaction;
 import org.kethereum.wallet.WalletKt;
 
-import static java.util.Collections.emptyList;
-import static org.kethereum.bip32.BIP32.generateKey;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.Arrays;
+
+import static io.mobidex.WalletManagerKt.createTransaction;
+import static io.mobidex.WalletManagerKt.mnemonicToKey;
+import static org.kethereum.bip39.wordlists.WordlistKt.getWORDLIST_ENGLISH;
 import static org.kethereum.functions.TransactionRLPEncoderKt.encodeRLP;
-import static org.kethereum.keccakshortcut.KeccakKt.keccak;
 import static org.kethereum.wallet.WalletFileKt.generateWalletFile;
 import static org.kethereum.wallet.WalletFileKt.loadKeysFromWalletFile;
-import static org.kethereum.model.TransactionKt.createTransactionWithDefaults;
 
 public class WalletManagerModule extends ReactContextBaseJavaModule {
     private File walletDirectory;
     private PasscodeManager passcodeManager;
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
-    public static String bytesToHex(byte[] bytes) {
+    private static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
             int v = bytes[j] & 0xFF;
@@ -63,18 +59,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    public static List<Byte> hexStringToByteList(String s) {
-        String stripped = stripHexPrefix(s);
-        int len = stripped.length();
-        List<Byte> data = new LinkedList<Byte>();
-        for (int i = 0; i < len; i += 2) {
-            data.add((byte) ((Character.digit(stripped.charAt(i), 16) << 4)
-                    + Character.digit(stripped.charAt(i+1), 16)));
-        }
-        return data;
-    }
-
-    public static byte[] hexStringToByteArray(String s) {
+    private static byte[] hexStringToByteArray(String s) {
         String stripped = stripHexPrefix(s);
         int len = stripped.length();
         byte[] data = new byte[len / 2];
@@ -85,7 +70,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         return data;
     }
 
-    public static byte[] removeLeadingZeros(byte[] arr) {
+    private static byte[] removeLeadingZeros(byte[] arr) {
         int start = 0;
         while (arr[start] == 0) {
             start++;
@@ -97,7 +82,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    public static byte[] leftPadWithZeros(byte[] arr, int size) {
+    private static byte[] leftPadWithZeros(byte[] arr, int size) {
         if (arr.length >= size) {
             return arr;
         }
@@ -183,7 +168,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void generateMnemonics(Callback cb) {
         try {
-            String mnemonic = Mnemonic.INSTANCE.generateMnemonic(128);
+            String mnemonic = MnemonicKt.generateMnemonic(128, getWORDLIST_ENGLISH());
             cb.invoke(null, mnemonic);
         } catch(Exception e) {
             Log.e("WalletManager", e.getMessage());
@@ -193,8 +178,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void importWalletByMnemonics(final String mnemonic, final String password, final Callback cb) {
-        final byte[] seed = Mnemonic.INSTANCE.mnemonicToSeed(mnemonic, "");
-        final ExtendedKey key = generateKey(seed, "m/44'/60'/0'/0/0");
+        final ExtendedKey key = mnemonicToKey(mnemonic, "");
         final ECKeyPair pair = key.getKeyPair();
 
         if (!clearKeystorePath()) {
@@ -330,10 +314,10 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
         Address from = null;
         Address to = null;
         BigInteger value = new BigInteger("0");
-        List<Byte> data = emptyList();
+        byte[] data = null;
 
         if (tx.hasKey("data")) {
-            data = hexStringToByteList(tx.getString("data"));
+            data = hexStringToByteArray(tx.getString("data"));
         }
 
         if (tx.hasKey("gas")) {
@@ -360,7 +344,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
             value = new BigInteger(stripHexPrefix(tx.getString("value")), 16);
         }
 
-        Transaction transaction = createTransactionWithDefaults(null, null, from, gasLimit, gasPrice, data, nonce, to,null, value );
+        Transaction transaction = createTransaction(from, gasLimit, gasPrice, data, nonce, to, value );
         byte[] rlp = encodeRLP(transaction, null);
 
         loadKeypair(password, new Callback() {
@@ -378,9 +362,9 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
                 if (args.length == 1) {
                     SignatureData signature = SignKt.signMessage(((ECKeyPair)args[0]), rlp);
                     WritableMap response = Arguments.createMap();
-                    response.putString("r",signature.getR().toString(16));
-                    response.putString("s",signature.getS().toString(16));
-                    response.putString("v", new BigInteger(Byte.valueOf(signature.getV()).toString()).toString(16));
+                    response.putString("r", signature.getR().toString(16));
+                    response.putString("s", signature.getS().toString(16));
+                    response.putString("v", signature.getV().toString(16));
 
                     cb.invoke(null, response);
                 } else {
@@ -426,7 +410,7 @@ public class WalletManagerModule extends ReactContextBaseJavaModule {
 //                    Log.d("V", bytesToHex(new byte[]{signature.getV()}));
 
                     byte[] compressedSignature = ArrayUtils.addAll(r, s);
-                    compressedSignature = ArrayUtils.add(compressedSignature, signature.getV());
+                    compressedSignature = ArrayUtils.add(compressedSignature, signature.getV().byteValue());
 
                     cb.invoke(null, bytesToHex(compressedSignature));
                 } else {

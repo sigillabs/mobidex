@@ -1,8 +1,11 @@
 package io.mobidex;
 
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.ocetnik.timer.BackgroundTimerPackage;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 
@@ -31,8 +34,10 @@ public class MainApplication extends NavigationApplication {
     public List<ReactPackage> createAdditionalReactPackages() {
         return Arrays.<ReactPackage>asList(
             new ReactNativeExceptionHandlerPackage(),
-            new WalletManagerPackage(),
-            new BackgroundTimerPackage()
+            new RandomBytesPackage(),
+            new ReactNativeRestartPackage(),
+            new VectorIconsPackage(),
+            new WalletManagerPackage()
           );
     }
 }

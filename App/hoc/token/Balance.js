@@ -1,21 +1,20 @@
 import {BigNumber} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React from 'react';
-import EthereumClient from '../../../clients/ethereum';
-import TokenClient from '../../../clients/token';
+import {connect} from 'react-redux';
 import {ZERO} from '../../../constants';
-import {formatHexString} from '../../../lib/utils';
-import {WalletService} from '../../../services/WalletService';
+import {addressProp} from '../../../types/props';
+import {loadBalance} from '../../../thunks';
 
 export default function withTokenBalance(
   WrapperComponent,
-  passName = 'balance',
+  passName = 'tokenBalance',
   propName = 'tokenAddress',
 ) {
-  return class TokenBalance extends React.Component {
+  class TokenBalance extends React.Component {
     static get propTypes() {
       return {
-        [propName]: PropTypes.string.isRequired,
+        [propName]: addressProp,
         loading: PropTypes.bool,
       };
     }
@@ -35,14 +34,15 @@ export default function withTokenBalance(
       super(props);
 
       this.state = {
-        loading: true,
-        [passName]: ZERO,
-        error: false,
+        loading: false,
+        refreshing: true,
       };
     }
 
     componentDidMount() {
-      this.refresh();
+      if (this.state.loading) {
+        this.refresh();
+      }
     }
 
     componentDidUpdate() {
@@ -62,12 +62,22 @@ export default function withTokenBalance(
     }
 
     async refresh() {
-      const address = this.props[propName];
-      const ethereumClient = new EthereumClient(WalletService.instance.web3);
-      const tokenAddress = formatHexString(address);
-      const tokenClient = new TokenClient(ethereumClient, tokenAddress);
-      const balance = await tokenClient.getBalance();
-      this.setState({[passName]: new BigNumber(balance), loading: false});
+      this.setState({loading: false, refreshing: true});
+      await this.props.dispatch(loadBalance(this.props[propName]));
+      this.setState({loading: false, refreshing: false});
     }
-  };
+  }
+
+  function extractProps(state, props) {
+    const {
+      wallet: {balances},
+    } = state;
+    const {tokenAddress} = props;
+    return {[passName]: new BigNumber(balances[tokenAddress])};
+  }
+
+  return connect(
+    extractProps,
+    dispatch => ({dispatch}),
+  )(TokenBalance);
 }

@@ -1,4 +1,5 @@
 import {
+  BigNumber,
   tradeExactEthForTokens,
   tradeExactTokensForEth,
   getExecutionDetails,
@@ -340,8 +341,8 @@ class BaseSwapTokens extends Component {
 let SwapTokens = connectNavigation(BaseSwapTokens);
 SwapTokens = connect(
   ({wallet: {balances, allowances}, settings: {gasPrice}}, {tokenAddress}) => ({
-    ethereumBalance: balances[null],
-    tokenBalance: balances[tokenAddress],
+    ethereumBalance: new BigNumber(balances[null]),
+    tokenBalance: new BigNumber(balances[tokenAddress]),
     gasPrice,
   }),
   dispatch => ({dispatch}),

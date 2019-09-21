@@ -121,10 +121,6 @@ PODS:
   - RNAppAuth (1.0.0):
     - AppAuth (= 0.94.0)
     - React
-  - RNDeviceInfo (0.21.5):
-    - React
-  - RNSVG (9.4.0):
-    - React
   - RNVectorIcons (6.6.0):
     - React
   - secp256k1.swift (0.1.4)
@@ -188,8 +184,6 @@ DEPENDENCIES:
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler/ios`)
   - ReactNativeNavigation (from `../node_modules/react-native-navigation/ReactNativeNavigation.podspec`)
   - RNAppAuth (from `../node_modules/react-native-app-auth/ios`)
-  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
-  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - secp256k1.swift (~> 0.1)
   - Web3 (from `./Web3.podspec.json`)
@@ -269,10 +263,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native-navigation/ReactNativeNavigation.podspec"
   RNAppAuth:
     :path: "../node_modules/react-native-app-auth/ios"
-  RNDeviceInfo:
-    :path: "../node_modules/react-native-device-info"
-  RNSVG:
-    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Web3:
@@ -316,8 +306,6 @@ SPEC CHECKSUMS:
   ReactNativeExceptionHandler: 040b33d72849a0aa862d1dcb54008ccef77a935e
   ReactNativeNavigation: aad255980f20cc5d2001ed37972319f3789fea70
   RNAppAuth: eac16a338ed1117d8b7729b36de3b1a58b5e96f2
-  RNDeviceInfo: e7c5fcde13d40e161d8a27f6c5dc69c638936002
-  RNSVG: 9cb6e958c4b6a1f58185ac72a350b148947d6fed
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   secp256k1_swift: 4fc5c4b2d2c6d21ee8ccb868cdc92da12f38bed9
@@ -328,6 +316,6 @@ SPEC CHECKSUMS:
   web3swift: 23cc365dd3b28e9b990813965af4bd031e108f64
   yoga: 312528f5bbbba37b4dcea5ef00e8b4033fdd9411
 
-PODFILE CHECKSUM: f92057396a9213a9d4587e15743a32af7552f420
+PODFILE CHECKSUM: c07a07ca3ae7e047f5d06bfff619d73c8634acdc
 
 COCOAPODS: 1.7.5

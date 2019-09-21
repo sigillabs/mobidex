@@ -46,11 +46,11 @@ export function loadBalance(token) {
   return async dispatch => {
     const asset = AssetService.findAssetByAddress(token);
     const web3 = WalletService.instance.web3;
-    let address = asset.address;
+    let {address} = asset;
     let client = new EthereumClient(web3);
 
-    if (!asset.isEthereum) {
-      client = new TokenClient(client, asset.address);
+    if (!AssetService.isEthereum(token)) {
+      client = new TokenClient(client, address);
       address = address.toLowerCase();
     }
 
@@ -68,7 +68,7 @@ export function sendTokens(token, to, amount) {
 
     const web3 = WalletService.instance.web3;
     const ethereumClient = new EthereumClient(web3);
-    const tokenClient = new TokenClient(ethereumClient, token.address);
+    const tokenClient = new TokenClient(ethereumClient, token);
     const txhash = await tokenClient.send(to, amount);
   };
 }

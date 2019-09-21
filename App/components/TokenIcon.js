@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Image, View } from 'react-native';
-import { Avatar, Text } from 'react-native-elements';
+import React, {Component} from 'react';
+import {Image, View} from 'react-native';
+import {Avatar, Text} from 'react-native-elements';
 import * as AssetService from '../../services/AssetService';
-import { fonts, images, styles } from '../../styles';
-import { BigNumberProp } from '../../types/props';
-import { formatAmount, getImage } from '../../lib/utils';
+import {fonts, images, styles} from '../../styles';
+import {BigNumberProp} from '../../types/props';
+import {formatAmount, getImage} from '../../lib/utils';
 import Row from './Row';
 import TokenAmount from './TokenAmount';
 
@@ -20,7 +20,7 @@ export default class TokenIcon extends Component {
       labelProps: PropTypes.object,
       showName: PropTypes.bool,
       showSymbol: PropTypes.bool,
-      showAmount: PropTypes.bool
+      showAmount: PropTypes.bool,
     };
   }
 
@@ -28,7 +28,7 @@ export default class TokenIcon extends Component {
     return {
       showName: false,
       showSymbol: true,
-      showAmount: true
+      showAmount: true,
     };
   }
 
@@ -45,7 +45,7 @@ export default class TokenIcon extends Component {
       showAmount,
       ...rest
     } = this.props;
-    const { symbol, name } = AssetService.findAssetByAddress(address);
+    const {symbol, name} = AssetService.findAssetByAddress(address);
     const renderName = showName && Boolean(name);
     const renderSymbol = showSymbol && Boolean(symbol);
     const renderAmount = showAmount && amount !== null && amount !== undefined;
@@ -66,7 +66,7 @@ export default class TokenIcon extends Component {
         {renderRow ? (
           <Row>
             {renderAmount ? (
-              <>
+              <React.Fragment>
                 <TokenAmount
                   address={address}
                   amount={amount}
@@ -74,7 +74,7 @@ export default class TokenIcon extends Component {
                   {...amountProps}
                 />
                 <Text> </Text>
-              </>
+              </React.Fragment>
             ) : null}
             {renderSymbolOrName ? (
               <Text style={[fonts.small, styles.textCenter]} {...labelProps}>

@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {getMarketDetails, getTokenReserves} from '@uniswap/sdk';
+import * as AssetService from '../../../services/AssetService';
+import {addressProp} from '../../../types/props';
 
 export default function withMarketDetails(
   WrapperComponent,
@@ -10,7 +12,7 @@ export default function withMarketDetails(
   class BaseMarketDetails extends React.Component {
     static get propTypes() {
       return {
-        [propName]: PropTypes.string.isRequired,
+        [propName]: addressProp,
         network: PropTypes.number.isRequired,
         refresh: PropTypes.bool,
       };
@@ -60,10 +62,14 @@ export default function withMarketDetails(
     async refresh() {
       const {network} = this.props;
       const address = this.props[propName];
-      const tokenReserves = await getTokenReserves(address, network);
-      const marketDetails = await getMarketDetails(undefined, tokenReserves);
 
-      this.setState({marketDetails, loading: false});
+      if (!AssetService.isEthereum(address)) {
+        const tokenReserves = await getTokenReserves(address, network);
+        const marketDetails = await getMarketDetails(undefined, tokenReserves);
+        this.setState({marketDetails, loading: false});
+      }
+
+      this.setState({loading: false});
     }
   }
 

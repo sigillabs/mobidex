@@ -8,6 +8,13 @@ const ETHEREUM_ASSET = {
   isEthereum: true,
 };
 
+const WETH_ASSET = {
+  address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  symbol: 'WETH',
+  name: 'Wrapped Ethereum',
+  decimals: 18,
+};
+
 let _store;
 
 export function setStore(store) {
@@ -15,44 +22,28 @@ export function setStore(store) {
 }
 
 export function isEthereum(address) {
-  return address === null || address === 'ETH';
+  return address === undefined || address === null || address === 'ETH';
+}
+
+export function isWETH(address) {
+  return address === WETH_ASSET.address;
 }
 
 export function findAssetByAddress(address) {
   if (isEthereum(address)) {
-    return ETHEREUM_ASSET;
+    return getETHAsset();
+  }
+  if (isWETH(address)) {
+    return getWETHAsset();
   }
   const {tokens} = _store.getState();
   return _.find(tokens, {address: address.toLowerCase()});
 }
 
-export function getFeeAsset() {
-  const {
-    relayer: {assets},
-    settings: {feeSymbol},
-  } = _store.getState();
-  return _.find(assets, {symbol: feeSymbol});
-}
-
-export function getNetworkFeeAsset() {
-  const {
-    relayer: {assets},
-    settings: {networkFeeSymbol},
-  } = _store.getState();
-  return _.find(assets, {symbol: networkFeeSymbol});
-}
-
-export function getQuoteAsset() {
-  const {
-    relayer: {assets},
-    settings: {quoteSymbol},
-  } = _store.getState();
-  return _.find(assets, {symbol: quoteSymbol});
+export function getETHAsset() {
+  return ETHEREUM_ASSET;
 }
 
 export function getWETHAsset() {
-  const {
-    relayer: {assets},
-  } = _store.getState();
-  return _.find(assets, {symbol: 'WETH'});
+  return WETH_ASSET;
 }

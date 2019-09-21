@@ -27,14 +27,16 @@ target 'mobidex' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   pod 'ReactNativeNavigation', :podspec => '../node_modules/react-native-navigation/ReactNativeNavigation.podspec'
+  pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
+  pod 'ReactNativeExceptionHandler', :path => '../node_modules/react-native-exception-handler/ios'
+  pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'web3swift', '= 2.1.3', :modular_headers => true
   pod 'Web3', :podspec => './Web3.podspec.json'
   pod 'Bitski', :podspec => './Bitski.podspec.json', :modular_headers => true
   pod 'secp256k1.swift', '~> 0.1', :modular_headers => true
   pod 'AppAuth', '= 0.94', :modular_headers => true
-
-  pod 'RCTRestart', :path => '../node_modules/react-native-restart/ios'
 
   # target 'mobidexTests' do
   #   inherit! :search_paths

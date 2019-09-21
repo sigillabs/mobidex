@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { Component, Fragment } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Avatar, Text } from 'react-native-elements';
-import { formatAmount, formatSymbol, getImage } from '../../lib/utils';
+import React, {Component, Fragment} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {Avatar, Text} from 'react-native-elements';
+import {formatAmount, formatSymbol, getImage} from '../../lib/utils';
+import {addressProp} from '../../types/props';
 import FormattedSymbol from './FormattedSymbol';
 import MutedText from './MutedText';
 import BlinkingCursor from './BlinkingCursor';
+import TokenAmount from './TokenAmount';
 
 export default class InputTokenAmount extends Component {
   static get propTypes() {
     return {
+      tokenAddress: addressProp,
       label: PropTypes.string.isRequired,
       amount: PropTypes.oneOfType([PropTypes.node, PropTypes.string])
         .isRequired,
@@ -23,13 +26,13 @@ export default class InputTokenAmount extends Component {
         small: PropTypes.bool,
         medium: PropTypes.bool,
         large: PropTypes.bool,
-        xlarge: PropTypes.bool
+        xlarge: PropTypes.bool,
       }),
       cursorProps: PropTypes.object,
       amountStyle: PropTypes.object,
       amountContainerStyle: PropTypes.object,
       nameStyle: PropTypes.object,
-      symbolStyle: PropTypes.object
+      symbolStyle: PropTypes.object,
     };
   }
 
@@ -39,9 +42,9 @@ export default class InputTokenAmount extends Component {
         medium: true,
         rounded: true,
         activeOpacity: 0.7,
-        overlayContainerStyle: { backgroundColor: 'transparent' }
+        overlayContainerStyle: {backgroundColor: 'transparent'},
       },
-      format: true
+      format: true,
     };
   }
 
@@ -65,29 +68,24 @@ export default class InputTokenAmount extends Component {
       amountStyle,
       amountContainerStyle,
       cursor,
-      format
+      format,
+      tokenAddress,
     } = this.props;
 
-    if (typeof amount === 'string') {
-      const formattedAmount = format ? formatAmount(amount) : amount.toString();
-
-      return (
-        <View style={[style.amountContainer, amountContainerStyle]}>
-          <Text style={[amountStyle]}>{formattedAmount}</Text>
-          {cursor ? <BlinkingCursor /> : null}
-        </View>
-      );
-    } else {
-      return (
-        <View style={[style.amountContainer, amountContainerStyle]}>
-          {amount}
-        </View>
-      );
-    }
+    return (
+      <View style={[style.amountContainer, amountContainerStyle]}>
+        <TokenAmount
+          address={tokenAddress}
+          amount={amount}
+          style={[amountStyle]}
+        />
+        {cursor ? <BlinkingCursor /> : null}
+      </View>
+    );
   }
 
   renderIcon() {
-    const { avatarProps, icon, symbol } = this.props;
+    const {avatarProps, icon, symbol} = this.props;
 
     if (icon) {
       return icon;
@@ -103,7 +101,7 @@ export default class InputTokenAmount extends Component {
   }
 
   renderLabel() {
-    const { label } = this.props;
+    const {label} = this.props;
 
     if (!label) {
       return null;
@@ -113,7 +111,7 @@ export default class InputTokenAmount extends Component {
   }
 
   renderName() {
-    const { name, nameStyle } = this.props;
+    const {name, nameStyle} = this.props;
 
     if (!name) {
       return null;
@@ -123,7 +121,7 @@ export default class InputTokenAmount extends Component {
   }
 
   renderSymbol() {
-    const { symbol, symbolStyle } = this.props;
+    const {symbol, symbolStyle} = this.props;
 
     if (!symbol) {
       return null;
@@ -141,14 +139,14 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 10
+    padding: 10,
   },
   amountContainer: {
     marginLeft: 10,
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
-  symbol: { flex: 0, marginLeft: 10 },
-  name: { flex: 0, marginLeft: 10 }
+  symbol: {flex: 0, marginLeft: 10},
+  name: {flex: 0, marginLeft: 10},
 });

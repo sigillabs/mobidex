@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import * as AssetService from '../../../../services/AssetService';
 import {tokenProp} from '../../../../types/props';
 import TokenList from './TokenList';
 
@@ -12,8 +13,8 @@ class BaseProductScreen extends Component {
   }
 
   render() {
-    const {tokens} = this.props;
-
+    const tokens = this.props.tokens.slice();
+    tokens.unshift(AssetService.getETHAsset());
     return <TokenList tokens={tokens} />;
   }
 }

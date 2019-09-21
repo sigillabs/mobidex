@@ -2,21 +2,22 @@ import {BigNumber, formatFixedDecimals} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Text} from 'react-native-elements';
+import {ZERO} from '../../constants';
 import * as AssetService from '../../services/AssetService';
-import {BigNumberProp} from '../../types/props';
+import {addressProp, BigNumberProp} from '../../types/props';
 
 export default class TokenAmount extends React.PureComponent {
   static get propTypes() {
     return {
-      address: PropTypes.string.isRequired,
-      amount: BigNumberProp.isRequired,
+      address: addressProp,
+      amount: BigNumberProp,
     };
   }
 
   render() {
     const {address, amount, ...rest} = this.props;
     const {decimals} = AssetService.findAssetByAddress(address);
-    const formattedAmount = formatFixedDecimals(amount.toString(), decimals, {
+    const formattedAmount = formatFixedDecimals(amount || ZERO, decimals, {
       decimalPlaces: Math.floor(decimals / 3),
     });
 

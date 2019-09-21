@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
+import * as AssetService from '../../../services/AssetService';
 import {UniswapService} from '../../../services/UniswapService';
+import {addressProp} from '../../../types/props';
 
 export default function withFactoryContract(
   WrapperComponent,
@@ -11,7 +13,7 @@ export default function withFactoryContract(
   class BaseExchangeContract extends React.Component {
     static get propTypes() {
       return {
-        tokenAddress: PropTypes.string.isRequired,
+        tokenAddress: addressProp,
         factoryAddress: PropTypes.string.isRequired,
       };
     }
@@ -27,16 +29,24 @@ export default function withFactoryContract(
     }
 
     async componentDidMount() {
-      const exchangeAddress = await UniswapService.instance.getExchangeAddressForToken(
-        this.props.tokenAddress,
-      );
-      const exchangeContract = await UniswapService.instance.getExchangeContract(
-        exchangeAddress,
-      );
+      const {tokenAddress} = this.props;
+
+      if (!AssetService.isEthereum(tokenAddress)) {
+        const exchangeAddress = await UniswapService.instance.getExchangeAddressForToken(
+          tokenAddress,
+        );
+        const exchangeContract = await UniswapService.instance.getExchangeContract(
+          exchangeAddress,
+        );
+
+        this.setState({
+          [passAddressName]: exchangeAddress,
+          [passContractName]: exchangeContract,
+          loading: false,
+        });
+      }
 
       this.setState({
-        [passAddressName]: exchangeAddress,
-        [passContractName]: exchangeContract,
         loading: false,
       });
     }

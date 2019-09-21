@@ -16,6 +16,26 @@ class BaseTokenList extends Component {
     };
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      refreshing: true,
+    };
+  }
+
+  componentDidMount() {
+    if (this.state.refreshing) {
+      this.setState({refreshing: false});
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.refreshing) {
+      this.setState({refreshing: false});
+    }
+  }
+
   render() {
     const {tokens} = this.props;
 
@@ -32,6 +52,7 @@ class BaseTokenList extends Component {
                 tokenAddress: address,
               })
             }
+            refresh={this.state.refreshing}
           />
         )}
         ListEmptyComponent={() => (
@@ -44,6 +65,8 @@ class BaseTokenList extends Component {
             <MutedText style={{marginTop: 25}}>Loading Products</MutedText>
           </EmptyList>
         )}
+        onRefresh={() => this.setState({refreshing: true})}
+        refreshing={this.state.refreshing}
       />
     );
   }

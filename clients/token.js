@@ -4,6 +4,7 @@ import {MAX_UINT256_HEX, ZERO} from '../constants';
 import {cache, time} from '../lib/decorators/cls';
 import {
   bigIntToEthHex,
+  formatHexString,
   hex2a,
   toBaseUnitAmount,
   toUnitAmount,
@@ -170,17 +171,10 @@ export default class TokenClient {
 
   @time
   async send(to, amount) {
-    // const contractWrappers = await new ZeroExClient(
-    //   this.ethereumClient
-    // ).getContractWrappers();
-    // const account = await this.ethereumClient.getAccount();
-    // const { decimals } = await this.get();
-    // const value = toBaseUnitAmount(new BigNumber(amount), decimals);
-    // return await contractWrappers.erc20Token.transferAsync(
-    //   formatHexString(this.address.toString()),
-    //   formatHexString(account.toString()),
-    //   formatHexString(to.toString()),
-    //   value
-    // );
+    const contract = await this.getContract();
+    const result = await contract.methods
+      .transfer(formatHexString(to), bigIntToEthHex(amount))
+      .send();
+    return result;
   }
 }

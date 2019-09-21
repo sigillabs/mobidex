@@ -7,7 +7,7 @@ import {UNLOCKED_AMOUNT, ZERO} from '../../../../constants';
 import {connect as connectNavigation} from '../../../../navigation';
 import * as AssetService from '../../../../services/AssetService';
 import {styles} from '../../../../styles';
-import {BigNumberProp} from '../../../../types/props';
+import {addressProp, BigNumberProp} from '../../../../types/props';
 import {ConfirmActionErrorSuccessFlow, unlock} from '../../../../thunks';
 import MajorText from '../../../components/MajorText';
 import withExchangeContract from '../../../hoc/uniswap/ExchangeContract';
@@ -21,16 +21,19 @@ class BaseDetailsScreen extends Component {
   static get propTypes() {
     return {
       loading: PropTypes.bool,
-      tokenAddress: PropTypes.string.isRequired,
+      tokenAddress: addressProp,
       ethereumBalance: BigNumberProp,
       tokenAllowance: BigNumberProp,
-      exchangeContractAddress: PropTypes.string.isRequired,
+      exchangeContractAddress: addressProp,
     };
   }
 
   get isLocked() {
-    const {tokenAllowance} = this.props;
-    return UNLOCKED_AMOUNT.isGreaterThan(tokenAllowance);
+    const {tokenAddress, tokenAllowance} = this.props;
+    return (
+      !AssetService.isEthereum(tokenAddress) &&
+      UNLOCKED_AMOUNT.isGreaterThan(tokenAllowance)
+    );
   }
 
   componentDidMount() {
@@ -110,7 +113,8 @@ function extractProps(state, props) {
   } = state;
   const {tokenAddress, exchangeContractAddress} = props;
   const ethereumBalance = balances[null];
-  const tokenAllowances = allowances[tokenAddress.toLowerCase()];
+  const tokenAllowances =
+    allowances[tokenAddress ? tokenAddress.toLowerCase() : null];
 
   let tokenAllowance = ZERO;
 

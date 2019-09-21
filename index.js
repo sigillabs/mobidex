@@ -8,6 +8,7 @@ import {registerHeaders} from './navigation/headers';
 import {registerModals} from './navigation/modals';
 import {registerScreens} from './navigation/screens';
 import {setStore as setStoreForAssetService} from './services/AssetService';
+import {GasService} from './services/GasService';
 import {TransactionService} from './services/TransactionService';
 import {UniswapService} from './services/UniswapService';
 import {WalletService} from './services/WalletService';
@@ -21,6 +22,8 @@ if (I18nManager.isRTL) {
 }
 
 EventEmitter.defaultMaxListeners = 32000;
+EventEmitter.prototype.defaultMaxListeners = 32000;
+EventEmitter.prototype._maxListeners = 32000;
 
 if (__DEV__) {
   YellowBox.ignoreWarnings([
@@ -44,6 +47,7 @@ const initializeApp = (function initialize() {
     if (++_count < 2) return;
 
     setStoreForAssetService(_store);
+    new GasService(_store);
     new WalletService(_store);
     new UniswapService(_store);
     new TransactionService(_store);

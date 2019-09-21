@@ -35,30 +35,6 @@ export function ActionErrorSuccessFlow(
   };
 }
 
-export function ReceiptActionErrorSuccessFlow(
-  parentComponentId,
-  receiptOptions,
-  actionOptions,
-  successMessage,
-  ok,
-) {
-  return async dispatch => {
-    const _actionOptions = {
-      ...actionOptions,
-      callback: error => {
-        waitForComponentAppear(parentComponentId, () =>
-          error ? showErrorModal(error) : showSuccessModal(successMessage, ok),
-        );
-      },
-    };
-    const _receiptOptions = {
-      ...receiptOptions,
-      confirm: () => showModal('modals.Action', _actionOptions),
-    };
-    showModal('modals.Receipt', _receiptOptions);
-  };
-}
-
 export function ConfirmActionErrorSuccessFlow(
   parentComponentId,
   confirmationOptions,

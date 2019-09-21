@@ -1,26 +1,31 @@
 import {BigNumber} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import {Text} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {ZERO} from '../../../constants';
 import {connect as connectNavigation} from '../../../navigation';
+import * as AssetService from '../../../services/AssetService';
+import {GasService} from '../../../services/GasService';
 import {WalletService} from '../../../services/WalletService';
 import {
-  ReceiptActionErrorSuccessFlow,
+  ConfirmActionErrorSuccessFlow,
   sendEther,
   sendTokens,
 } from '../../../thunks';
-import {navigationProp} from '../../../types/props';
+import {addressProp, navigationProp} from '../../../types/props';
 import {formatAmount} from '../../../lib/utils';
+import MajorText from '../../components/MajorText';
 import AmountPage from './AmountPage';
 import AccountPage from './AccountPage';
+import SendConfirmation from './SendConfirmation';
 
 class BaseSendScreen extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
-      asset: PropTypes.object.isRequired,
+      tokenAddress: addressProp.isRequired,
       dispatch: PropTypes.func.isRequired,
     };
   }
@@ -36,13 +41,13 @@ class BaseSendScreen extends Component {
   }
 
   render() {
-    const {asset} = this.props;
+    const {tokenAddress} = this.props;
 
     switch (this.state.page) {
       case 0:
         return (
           <AmountPage
-            asset={asset}
+            tokenAddress={tokenAddress}
             onPrevious={this.cancel}
             onNext={this.submitAmount}
           />
@@ -50,7 +55,7 @@ class BaseSendScreen extends Component {
       case 1:
         return (
           <AccountPage
-            asset={asset}
+            tokenAddress={tokenAddress}
             amount={this.state.amount}
             onPrevious={this.previous}
             onNext={this.submitAddress}
@@ -75,155 +80,55 @@ class BaseSendScreen extends Component {
   };
 
   submit = async address => {
-    const {asset} = this.props;
+    const {tokenAddress, gasPrice} = this.props;
     const {amount} = this.state;
+    const asset = AssetService.findAssetByAddress(tokenAddress);
 
-    // TODO: Replace
-    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
+    let sendAction, gas;
+    if (AssetService.isEthereum(tokenAddress)) {
+      sendAction = sendEther;
+      gas = await GasService.instance.EthereumSend();
+    } else {
+      sendAction = (to, amount) => sendTokens(tokenAddress, to, amount);
+      gas = await GasService.instance.TokenTransfer(
+        tokenAddress,
+        address,
+        amount,
+      );
+    }
 
-    // this.props.dispatch(
-    //   ActionErrorSuccessFlow(
-    //     this.props.navigation.componentId,
-    //     {
-    //       action: async () => {
-    //         if (asset.address === null) {
-    //           await this.props.dispatch(
-    //             sendEther(address || this.state.address, this.state.amount)
-    //           );
-    //         } else {
-    //           await this.props.dispatch(
-    //             sendTokens(
-    //               asset,
-    //               address || this.state.address,
-    //               this.state.amount
-    //             )
-    //           );
-    //         }
-    //       },
-    //       icon: <FontAwesome name="send" size={100} />,
-    //       label: `Sending ${asset.name}...`
-    //     },
-    //     `Sent ${asset.name}`,
-    //     () => this.props.navigation.dismissModal()
-    //   )
-    // );
-
-    const {
-      extraWalletData,
-      extraUpdatedWalletData,
-      extraSections,
-      gas,
+    const action = async () => this.props.dispatch(sendAction(address, amount));
+    const actionOptions = {
       action,
-      value,
-    } =
-      asset.address === null
-        ? await this.getSendEtherReceiptProps(address)
-        : await this.getSendTokenReceiptProps(address);
-
+      icon: <FontAwesome name="send" size={100} />,
+      label: <MajorText>Sending...</MajorText>,
+    };
+    const confirmationOptions = {
+      label: (
+        <SendConfirmation
+          tokenAddress={tokenAddress}
+          to={address}
+          amount={amount}
+          gas={gas}
+          gasPrice={gasPrice}
+        />
+      ),
+    };
     this.props.dispatch(
-      ReceiptActionErrorSuccessFlow(
+      ConfirmActionErrorSuccessFlow(
         this.props.navigation.componentId,
-        {
-          gas,
-          value,
-          extraWalletData,
-          extraUpdatedWalletData,
-          extraSections,
-        },
-        {
-          action,
-          icon: <FontAwesome name="send" size={100} />,
-          label: `Sending ${asset.name}...`,
-        },
-        `Sent ${asset.name}`,
-        () => this.props.navigation.dismissModal(),
+        confirmationOptions,
+        actionOptions,
+        <Text>
+          Send transaction successfully sent to the Ethereum network. It takes a
+          few minutes for Ethereum to confirm the transaction.
+        </Text>,
       ),
     );
   };
-
-  async getSendEtherReceiptProps(address) {
-    const {asset} = this.props;
-    const {amount} = this.state;
-    // TODO: Replace
-    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
-
-    const to = address || this.state.address;
-    const extraWalletData = [];
-    const extraUpdatedWalletData = [];
-    const extraSections = [];
-    const gas = await WalletService.instance.estimateEthSend();
-    const action = () => this.props.dispatch(sendEther(to, amount));
-    // const value = baseUnitAmount;
-    const value = '0';
-
-    return {
-      to,
-      extraWalletData,
-      extraUpdatedWalletData,
-      extraSections,
-      gas,
-      action,
-      value,
-    };
-  }
-
-  async getSendTokenReceiptProps(address) {
-    const {asset} = this.props;
-    const {amount} = this.state;
-    // TODO: Replace
-    // const baseUnitAmount = toBaseUnitAmount(amount, asset.decimals);
-    baseUnitAmount = '0';
-    const balance = await WalletService.instance.getBalanceByAssetData(
-      asset.assetData,
-    );
-
-    const to = address || this.state.address;
-    const extraWalletData = [
-      {
-        denomination: asset.symbol,
-        value: formatAmount(balance, 9),
-      },
-    ];
-    const extraUpdatedWalletData = [
-      {
-        denomination: asset.symbol,
-        value: formatAmount(balance.sub(amount), 9),
-      },
-    ];
-    const extraSections = [
-      {
-        title: 'Transfering',
-        data: [
-          {
-            name: 'Amount',
-            value: formatAmount(amount, 9),
-            denomination: asset.symbol,
-            loss: true,
-          },
-        ],
-      },
-    ];
-    const gas = await WalletService.instance.estimateTokenSend(
-      asset.address,
-      to,
-      baseUnitAmount,
-    );
-    const action = () => this.props.dispatch(sendTokens(asset, to, amount));
-    const value = ZERO;
-
-    return {
-      to,
-      extraWalletData,
-      extraUpdatedWalletData,
-      extraSections,
-      gas,
-      action,
-      value,
-    };
-  }
 }
 
 export default connect(
-  state => ({...state}),
+  ({settings: {gasPrice}}) => ({gasPrice}),
   dispatch => ({dispatch}),
 )(connectNavigation(BaseSendScreen));

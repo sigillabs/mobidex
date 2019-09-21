@@ -1,12 +1,15 @@
-import { BigNumber } from '@uniswap/sdk';
+import {BigNumber} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { connect } from 'react-redux';
-import { WalletService } from '../../../services/WalletService';
-import { styles } from '../../../styles';
-import { refreshGasPrice } from '../../../thunks';
-import { formatAmount, isValidAmount } from '../../../lib/utils';
+import {connect} from 'react-redux';
+import * as AssetService from '../../../services/AssetService';
+import {GasService} from '../../../services/GasService';
+import {WalletService} from '../../../services/WalletService';
+import {styles} from '../../../styles';
+import {refreshGasPrice} from '../../../thunks';
+import {formatAmount, isValidAmount} from '../../../lib/utils';
+import {addressProp, BigNumberProp} from '../../../types/props';
 import MaxButton from '../../components/MaxButton';
 import Row from '../../components/Row';
 import InputTokenAmount from '../../components/InputTokenAmount';
@@ -16,10 +19,11 @@ import TwoButtonTokenAmountKeyboardLayout from '../../layouts/TwoButtonTokenAmou
 class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
   static get propTypes() {
     return {
-      gasPrice: PropTypes.instanceOf(BigNumber),
-      asset: PropTypes.object.isRequired,
+      balance: BigNumberProp,
+      gasPrice: BigNumberProp,
+      tokenAddress: addressProp,
       onPrevious: PropTypes.func.isRequired,
-      onNext: PropTypes.func.isRequired
+      onNext: PropTypes.func.isRequired,
     };
   }
 
@@ -28,7 +32,7 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
 
     this.state = {
       amount: [],
-      focus: 'amount'
+      focus: 'amount',
     };
   }
 
@@ -37,8 +41,8 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
   }
 
   renderTop() {
-    const { asset } = this.props;
-    const balance = WalletService.instance.getBalanceByAddress(asset.address);
+    const {tokenAddress, balance} = this.props;
+    const asset = AssetService.findAssetByAddress(tokenAddress);
 
     return (
       <React.Fragment>
@@ -49,13 +53,13 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
           containerStyle={{
             marginTop: 10,
             marginBottom: 10,
-            padding: 0
+            padding: 0,
           }}
-          symbolStyle={{ marginRight: 10 }}
+          symbolStyle={{marginRight: 10}}
           format={false}
           cursor={false}
           amount={formatAmount(balance ? balance : '0')}
-          onPress={() => this.setState({ focus: 'amount' })}
+          onPress={() => this.setState({focus: 'amount'})}
         />
         <Row style={[styles.w100, styles.flex1]}>
           <TouchableInputTokenAmount
@@ -65,14 +69,14 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
               flex: 1,
               marginTop: 10,
               marginBottom: 10,
-              padding: 0
+              padding: 0,
             }}
-            symbolStyle={{ marginRight: 10 }}
+            symbolStyle={{marginRight: 10}}
             format={false}
             cursor={this.state.focus === 'amount'}
-            cursorProps={{ style: { marginLeft: 2 } }}
+            cursorProps={{style: {marginLeft: 2}}}
             amount={this.state.amount.join('')}
-            onPress={() => this.setState({ focus: 'amount' })}
+            onPress={() => this.setState({focus: 'amount'})}
             wrapperStyle={[styles.flex1]}
           />
           <MaxButton
@@ -85,22 +89,22 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
   }
 
   getKeyboardProps() {
-    const { focus } = this.state;
+    const {focus} = this.state;
     return {
       decimal:
-        this.state[focus].indexOf('.') === -1 && this.state[focus].length > 0
+        this.state[focus].indexOf('.') === -1 && this.state[focus].length > 0,
     };
   }
 
   getButtonLeftProps() {
     return {
-      title: 'Cancel'
+      title: 'Cancel',
     };
   }
 
   getButtonRightProps() {
     return {
-      title: 'Next'
+      title: 'Next',
     };
   }
 
@@ -131,34 +135,40 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
     let amount = valueArray;
 
     this.setState({
-      amount
+      amount,
     });
   }
 
   setMaxTokenAmount = async () => {
-    const { asset } = this.props;
-    const balance = WalletService.instance.getBalanceByAddress(
-      asset.address || null
-    );
+    const {tokenAddress, balance, gasPrice} = this.props;
     let amount = balance;
 
-    if (!asset.address) {
+    if (AssetService.isEthereum(tokenAddress)) {
+      const gas = await GasService.instance.EthereumSend();
       const gasAmount = await WalletService.instance.estimateEthSend();
       const gasPrice = WalletService.instance.convertGasPriceToEth(
-        this.props.gasPrice
+        this.props.gasPrice,
       );
-      const gasFee = gasPrice.mul(gasAmount);
+      const gasFee = gasPrice.times(gasAmount);
 
-      amount = amount.sub(gasFee);
+      amount = amount.minus(gasFee).integerValue();
     }
 
     this.setColumn('amount', amount.toString().split(''));
   };
 }
 
+function extractProps(state, props) {
+  const {
+    wallet: {balances},
+    settings: {gasPrice},
+  } = state;
+  const {tokenAddress} = props;
+  const balance = balances[tokenAddress];
+  return {balance, gasPrice};
+}
+
 export default connect(
-  state => ({
-    gasPrice: state.settings.gasPrice
-  }),
-  dispatch => ({ dispatch })
+  extractProps,
+  dispatch => ({dispatch}),
 )(AmountPage);

@@ -140,12 +140,12 @@ Then, select your device simulator of choice and click the **play** icon at the 
 
 Start develop in Android:
 
- 0. Make sure your system is setup for react-native.
- 1. Install dependencies of project with command `npm install`.
- 2. Connect the smartphone or start the your favorite [emulator](https://developer.android.com/studio/run/managing-avds).
- 3. Run the comand `react-native run-android` to compile and run the install project in android.
- 4. Run the command `react-native start` to run server js and loading the Mobidex app.
-
+0.  Make sure your system is setup for react-native.
+1.  Install dependencies of project with command `npm install`.
+1.  Connect the smartphone or start the your favorite [emulator](https://developer.android.com/studio/run/managing-avds).
+1.  Change `native_modules.gradle` as per this [pull request](https://github.com/react-native-community/cli/pull/741/files).
+1.  Run the comand `react-native run-android` to compile and run the install project in android.
+1.  Run the command `react-native start` to run server js and loading the Mobidex app.
 
 ## Available Scripts
 
