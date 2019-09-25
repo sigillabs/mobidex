@@ -5,7 +5,6 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {connect} from 'react-redux';
 import * as AssetService from '../../../services/AssetService';
 import {GasService} from '../../../services/GasService';
-import {WalletService} from '../../../services/WalletService';
 import {styles} from '../../../styles';
 import {refreshGasPrice} from '../../../thunks';
 import {formatAmount, isValidAmount} from '../../../lib/utils';
@@ -145,11 +144,7 @@ class AmountPage extends TwoButtonTokenAmountKeyboardLayout {
 
     if (AssetService.isEthereum(tokenAddress)) {
       const gas = await GasService.instance.EthereumSend();
-      const gasAmount = await WalletService.instance.estimateEthSend();
-      const gasPrice = WalletService.instance.convertGasPriceToEth(
-        this.props.gasPrice,
-      );
-      const gasFee = gasPrice.times(gasAmount);
+      const gasFee = this.props.gasPrice.times(gas);
 
       amount = amount.minus(gasFee).integerValue();
     }
@@ -165,7 +160,7 @@ function extractProps(state, props) {
   } = state;
   const {tokenAddress} = props;
   const balance = balances[tokenAddress];
-  return {balance, gasPrice};
+  return {balance, gasPrice: new BigNumber(gasPrice)};
 }
 
 export default connect(

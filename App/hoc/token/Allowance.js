@@ -4,17 +4,18 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {ZERO} from '../../../constants';
 import {addressProp} from '../../../types/props';
-import {loadBalance} from '../../../thunks';
+import {loadAllowance} from '../../../thunks';
 
-export default function withTokenBalance(
+export default function withTokenAllowance(
   WrapperComponent,
-  passName = 'tokenBalance',
-  propName = 'tokenAddress',
+  passName = 'tokenAllowance',
+  tokenPropName = 'tokenAddress',
+  senderPropName = 'senderAddress',
 ) {
-  class TokenBalance extends React.Component {
+  class TokenAllowance extends React.Component {
     static get propTypes() {
       return {
-        [propName]: addressProp,
+        [tokenPropName]: addressProp,
         loading: PropTypes.bool,
       };
     }
@@ -56,28 +57,36 @@ export default function withTokenBalance(
         <WrapperComponent
           {...this.state}
           {...this.props}
-          loading={this.props.loading || this.state.loading}
+          loading={
+            this.props.loading || this.state.loading || this.state.refreshing
+          }
         />
       );
     }
 
     async refresh() {
+      if (!this.props[tokenPropName] || !this.props[senderPropName]) {
+        return;
+      }
+
       this.setState({loading: false, refreshing: true});
-      await this.props.dispatch(loadBalance(this.props[propName]));
+      await this.props.dispatch(
+        loadAllowance(this.props[tokenPropName], this.props[senderPropName]),
+      );
       this.setState({loading: false, refreshing: false});
     }
   }
 
   function extractProps(state, props) {
     const {
-      wallet: {balances},
+      wallet: {allowances},
     } = state;
     const {tokenAddress} = props;
-    return {[passName]: new BigNumber(balances[tokenAddress])};
+    return {[passName]: new BigNumber(allowances[tokenAddress])};
   }
 
   return connect(
     extractProps,
     dispatch => ({dispatch}),
-  )(TokenBalance);
+  )(TokenAllowance);
 }

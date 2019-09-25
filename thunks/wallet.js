@@ -122,3 +122,45 @@ export function unwrapAllETH() {
     console.warn(txhash);
   };
 }
+
+export function unwrap(amount) {
+  return async (dispatch, getState) => {
+    const {
+      settings: {
+        weth9: {address: WETHAddress},
+        gasPrice,
+        gasLimit,
+      },
+      wallet: {address},
+    } = getState();
+
+    const web3 = WalletService.instance.web3;
+    const ethereumClient = new EthereumClient(web3, {
+      gasPrice,
+    });
+    const etherTokenClient = new EtherToken(ethereumClient, WETHAddress);
+    const txhash = await tokenClient.withdraw(amount);
+    console.warn(txhash);
+  };
+}
+
+export function wrap(amount) {
+  return async (dispatch, getState) => {
+    const {
+      settings: {
+        weth9: {address: WETHAddress},
+        gasPrice,
+        gasLimit,
+      },
+      wallet: {address},
+    } = getState();
+
+    const web3 = WalletService.instance.web3;
+    const ethereumClient = new EthereumClient(web3, {
+      gasPrice,
+    });
+    const etherTokenClient = new EtherToken(ethereumClient, WETHAddress);
+    const txhash = await tokenClient.deposit(amount);
+    console.warn(txhash);
+  };
+}

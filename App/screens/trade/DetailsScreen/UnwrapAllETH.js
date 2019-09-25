@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import {BigNumber} from '@uniswap/sdk';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
@@ -23,19 +24,19 @@ import AssetIcon from '../../../components/EthereumIcon';
 import FormattedSymbol from '../../../components/FormattedSymbol';
 import MajorText from '../../../components/MajorText';
 import Row from '../../../components/Row';
+import Loading from '../../../views/Loading';
+import UnwrapConfirmation from './UnwrapConfirmation';
 
 const style = StyleSheet.create({
   container: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingTop: 10,
     paddingBottom: 10,
-    flex: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
-class BaseUnwrapETH extends Component {
+class BaseWrapETH extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
@@ -78,92 +79,28 @@ class BaseUnwrapETH extends Component {
     const {value} = this.state;
 
     if (!ethereumBalance || !WETHBalance) {
-      return null;
+      return <Loading />;
     }
-
-    const ETHUnitBalance = ethereumBalance.dividedBy(TEN.pow(18));
-    const WETHUnitBalance = WETHBalance.dividedBy(TEN.pow(18));
-    const border = ETHUnitBalance.plus(WETHUnitBalance);
-
-    let wei = TEN.pow(18)
-      .times(value)
-      .integerValue();
-    if (wei.isGreaterThan(ethereumBalance)) {
-      wei = ethereumBalance;
-    }
-    const updatedEthereumBalance = ethereumBalance.minus(wei);
-    const updatedWETHBalance = WETHBalance.plus(wei);
 
     return (
       <React.Fragment>
-        <View style={[styles.flex1]}>
-          <View style={style.container}>
-            <AssetIcon
-              amount={updatedEthereumBalance}
-              avatarProps={{size: 100}}
-              labelProps={{style: [fonts.large]}}
-              amountProps={{style: [fonts.large]}}
+        <View style={[styles.flex1, style.container]}>
+          <AssetIcon
+            amount={ethereumBalance}
+            avatarProps={{size: 50}}
+            labelProps={{style: [fonts.large]}}
+            amountProps={{style: [fonts.large]}}
+          />
+        </View>
+        {!ZERO.isEqualTo(WETHBalance) ? (
+          <View style={[styles.flex0]}>
+            <Button
+              title={'Unwrap'}
+              onPress={this.onUnwrap}
+              disabled={this.state.value === 0}
             />
           </View>
-          <Row style={[styles.center, styles.w100, styles.mv3]}>
-            <View style={styles.textCenter}>
-              <AssetIcon
-                avatarProps={{size: 50}}
-                showAmount={false}
-                showName={false}
-                showSymbol={false}
-              />
-            </View>
-            <View style={(styles.textCenter, styles.mh3)}>
-              <Slider
-                style={[styles.w100]}
-                value={this.state.value}
-                minimumValue={0}
-                maximumValue={border.toNumber()}
-                step={0.0001}
-                onValueChange={value => this.setState({value})}
-              />
-              <Row
-                style={StyleSheet.flatten([
-                  styles.center,
-                  styles.textCenter,
-                  styles.w100,
-                ])}>
-                <Entypo
-                  name="swap"
-                  size={15}
-                  color="black"
-                  style={styles.mr1}
-                />
-                <EthereumAmount amount={ethereumBalance} unit={'ether'} />
-                <Text> </Text>
-                <FormattedSymbol address={null} />
-              </Row>
-            </View>
-            <View style={styles.textCenter}>
-              <AssetIcon
-                address={WETHAddress}
-                avatarProps={{size: 50}}
-                showAmount={false}
-                showName={false}
-                showSymbol={false}
-              />
-            </View>
-          </Row>
-          <View style={style.container}>
-            <AssetIcon
-              address={WETHAddress}
-              amount={updatedWETHBalance}
-              avatarProps={{size: 100}}
-              labelProps={{style: [fonts.large]}}
-              amountProps={{style: [fonts.large]}}
-            />
-          </View>
-        </View>
-
-        <View style={[styles.flex0]}>
-          <Button title={'Unwrap'} onPress={this.onUnwrap} />
-        </View>
+        ) : null}
       </React.Fragment>
     );
   }
@@ -213,10 +150,10 @@ function extractProps(state, props) {
   };
 }
 
-let UnwrapETH = connectNavigation(BaseUnwrapETH);
-UnwrapETH = connect(
+let WrapETH = connectNavigation(BaseWrapETH);
+WrapETH = connect(
   extractProps,
   dispatch => ({dispatch}),
-)(UnwrapETH);
+)(WrapETH);
 
-export default UnwrapETH;
+export default WrapETH;

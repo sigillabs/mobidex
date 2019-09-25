@@ -151,7 +151,7 @@ android {
         applicationId "io.mobidex"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 933
+        versionCode 936
         versionName "0.10.0"
         missingDimensionStrategy "RNN.reactNativeVersion", "reactNative60"
         multiDexEnabled true

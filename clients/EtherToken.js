@@ -41,7 +41,7 @@ export default class EtherToken {
   @time
   async balanceOf(account) {
     const contract = await this.getContract();
-    const amount = await contact.methods.balanceOf(account);
+    const result = await contract.methods.balanceOf(account);
     return result;
   }
 

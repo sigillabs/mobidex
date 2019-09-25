@@ -34,14 +34,14 @@ import {
 } from '../../../../thunks';
 import withMarketDetails from '../../../hoc/uniswap/MarketDetails';
 import withExchangeContract from '../../../hoc/uniswap/ExchangeContract';
+import Loading from '../../../views/Loading';
+import AssetIcon from '../../../components/AssetIcon';
 import Button from '../../../components/Button';
 import EthereumAmount from '../../../components/EthereumAmount';
-import EthereumIcon from '../../../components/EthereumIcon';
 import FormattedPercent from '../../../components/FormattedPercent';
 import FormattedSymbol from '../../../components/FormattedSymbol';
 import MajorText from '../../../components/MajorText';
 import Row from '../../../components/Row';
-import TokenIcon from '../../../components/TokenIcon';
 import TradeConfirmation from './TradeConfirmation';
 
 const style = StyleSheet.create({
@@ -172,7 +172,7 @@ class BaseSwapTokens extends Component {
     } = this.props;
 
     if (loading || !ethereumBalance || !gasPrice) {
-      return null;
+      return <Loading />;
     }
 
     const updatedTokenBalance = tokenBalance
@@ -186,17 +186,17 @@ class BaseSwapTokens extends Component {
       <React.Fragment>
         <View style={[styles.flex1]}>
           <View style={style.container}>
-            <TokenIcon
+            <AssetIcon
               address={tokenAddress}
               amount={updatedTokenBalance}
-              avatarProps={{size: 100}}
+              avatarProps={{size: 50}}
               labelProps={{style: [fonts.large]}}
               amountProps={{style: [fonts.large]}}
             />
           </View>
           <Row style={[styles.center, styles.w100, styles.mv3]}>
             <View style={styles.textCenter}>
-              <TokenIcon
+              <AssetIcon
                 address={null}
                 avatarProps={{size: 50}}
                 showAmount={false}
@@ -235,7 +235,7 @@ class BaseSwapTokens extends Component {
               </Row>
             </View>
             <View style={styles.textCenter}>
-              <TokenIcon
+              <AssetIcon
                 address={tokenAddress}
                 avatarProps={{size: 50}}
                 showAmount={false}
@@ -249,10 +249,10 @@ class BaseSwapTokens extends Component {
             </View>
           </Row>
           <View style={style.container}>
-            <EthereumIcon
+            <AssetIcon
               address={tokenAddress}
               amount={updatedEthereumBalance}
-              avatarProps={{size: 100}}
+              avatarProps={{size: 50}}
               labelProps={{style: [fonts.large]}}
               amountProps={{style: [fonts.large]}}
             />

@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import {handleActions} from 'redux-actions';
 import * as Actions from '../constants/actions';
 

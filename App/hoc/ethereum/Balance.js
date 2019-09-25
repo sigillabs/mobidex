@@ -52,7 +52,9 @@ export default function withEthereumBalance(
         <WrapperComponent
           {...this.state}
           {...this.props}
-          loading={this.props.loading || this.state.loading}
+          loading={
+            this.props.loading || this.state.loading || this.state.refreshing
+          }
         />
       );
     }
