@@ -210,7 +210,7 @@ Any one can become a tester. Just join the Mobidex [telegram](https://t.me/mobid
 
 ## Notes
 
-### Web3 and 0x.js
+### Web3
 
 Web3.js does not load because of its dependence on node.js standard libraries. The majority of them are loaded via the `node-libs-react-native` library. In particular, the `crypto` library requires the `vm` library, which cannot be easily mocked or replaced. To circumvent this, I've forked `node-libs-react-native` and added a browserified crypto library: https://github.com/abec/node-libs-react-native.
 

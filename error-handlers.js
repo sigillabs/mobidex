@@ -1,8 +1,8 @@
 import 'node-libs-react-native/globals';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import {
   setJSExceptionHandler,
-  setNativeExceptionHandler
+  setNativeExceptionHandler,
 } from 'react-native-exception-handler';
 import RNRestart from 'react-native-restart';
 
@@ -18,10 +18,10 @@ export function setExceptionHandlers() {
           [
             {
               text: 'Restart',
-              onPress: () => RNRestart.Restart()
-            }
+              onPress: () => RNRestart.Restart(),
+            },
           ],
-          { cancelable: false }
+          {cancelable: false},
         );
       } else {
         Alert.alert(
@@ -30,10 +30,10 @@ export function setExceptionHandlers() {
           [
             {
               text: 'Restart',
-              onPress: () => RNRestart.Restart()
-            }
+              onPress: () => RNRestart.Restart(),
+            },
           ],
-          { cancelable: false }
+          {cancelable: false},
         );
       }
     }
