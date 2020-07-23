@@ -95,12 +95,21 @@ class BitskiManager: NSObject {
       return;
     }
 
-    let gas: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gas"] as! String))
-    let gasPrice: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gasPrice"] as! String))
+    // let gas: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gas"] as! String))
+    // let gasPrice: EthereumQuantity = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gasPrice"] as! String))
+
+    var gas: EthereumQuantity? = nil
+    if (tx.object(forKey: "gas") != nil) {
+      gas = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gas"] as! String))
+    }
+    
+    var gasPrice: EthereumQuantity? = nil
+    if (tx.object(forKey: "gasPrice") != nil) {
+      gasPrice = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["gasPrice"] as! String))
+    }
 
     var value: EthereumQuantity? = nil
     if tx.object(forKey: "value") != nil {
-      print("value")
       value = EthereumQuantity(quantity: hexToPaddedBigUInt(tx["value"] as! String))
     }
 

@@ -27,7 +27,7 @@ const STAGE = {
     factoryAddress: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
   },
   weth9: {
-    address: '0x1b45d86492d098b10fdbf382c537359f776f8dad  ',
+    address: '0x1b45d86492d098b10fdbf382c537359f776f8dad',
   },
 };
 
