@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text } from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import {
   connect as connectNavigation,
-  waitForComponentAppear
+  waitForComponentAppear,
 } from '../../../navigation';
-import { navigationProp } from '../../../types/props';
+import {navigationProp} from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import VerticalPadding from '../../components/VerticalPadding';
 import RotatingView from '../../components/RotatingView';
@@ -17,7 +17,7 @@ class BaseActionModal extends React.PureComponent {
       action: PropTypes.func.isRequired,
       callback: PropTypes.func.isRequired,
       icon: PropTypes.node.isRequired,
-      label: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired
+      label: PropTypes.oneOfType([PropTypes.node, PropTypes.string]).isRequired,
     };
   }
 
@@ -27,8 +27,8 @@ class BaseActionModal extends React.PureComponent {
         await this.props.action();
       } catch (err) {
         waitForComponentAppear(this.props.navigation.componentId, () => {
-          this.props.navigation.dismissModal();
           this.props.callback(err);
+          this.props.navigation.dismissModal();
         });
         return;
       }

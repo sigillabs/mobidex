@@ -19,12 +19,16 @@ export function waitForComponentAppear(
   fn,
   wait = 50,
   attempts = 20,
+  executeOnFailure = true,
 ) {
   let watcher = () => {
+    console.log('history', history, executeOnFailure);
     if (~history.indexOf(componentId)) {
-      fn();
+      return fn();
     } else if (attempts-- > 0) {
-      setTimeout(watcher, wait);
+      return setTimeout(watcher, wait);
+    } else if (executeOnFailure) {
+      return fn();
     }
   };
   watcher();
@@ -35,12 +39,15 @@ export function waitForComponentDisappear(
   fn,
   wait = 50,
   attempts = 20,
+  executeOnFailure = true,
 ) {
   let watcher = () => {
     if (!~history.indexOf(componentId)) {
-      fn();
+      return fn();
     } else if (attempts-- > 0) {
-      setTimeout(watcher, wait);
+      return setTimeout(watcher, wait);
+    } else if (executeOnFailure) {
+      return fn();
     }
   };
   watcher();

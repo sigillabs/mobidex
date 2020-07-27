@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Navigation } from 'react-native-navigation';
+import {Navigation} from 'react-native-navigation';
 import {
   buildNavigationComponent,
   NavigationContext,
   showModal,
   showErrorModal,
   waitForComponentAppear,
-  waitForComponentDisappear
+  waitForComponentDisappear,
 } from '../navigation';
 
 export default class NavigationProvider extends React.Component {
   static get propTypes() {
     return {
       componentId: PropTypes.string.isRequired,
-      children: PropTypes.node.isRequired
+      children: PropTypes.node.isRequired,
     };
   }
 
@@ -30,9 +30,8 @@ export default class NavigationProvider extends React.Component {
           showErrorModal: showErrorModal,
           dismissModal: this.dismissModal,
           waitForAppear: this.waitForAppear,
-          waitForDisappear: this.waitForDisappear
-        }}
-      >
+          waitForDisappear: this.waitForDisappear,
+        }}>
         {this.props.children}
       </NavigationContext.Provider>
     );
@@ -40,7 +39,7 @@ export default class NavigationProvider extends React.Component {
 
   push = (name, props) => {
     Navigation.push(this.props.componentId, {
-      component: buildNavigationComponent(null, name, props)
+      component: buildNavigationComponent(null, name, props),
     });
   };
 

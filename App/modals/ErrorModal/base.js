@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-elements';
+import React, {Component} from 'react';
+import {View} from 'react-native';
+import {Text} from 'react-native-elements';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { connect as connectNavigation } from '../../../navigation';
-import { colors } from '../../../styles';
-import { navigationProp } from '../../../types/props';
+import {connect as connectNavigation} from '../../../navigation';
+import {colors} from '../../../styles';
+import {navigationProp} from '../../../types/props';
 import BigCenter from '../../components/BigCenter';
 import Button from '../../components/Button.js';
 import AssetBuyerError from './AssetBuyerError';
@@ -18,7 +18,7 @@ class BaseErrorModal extends Component {
   static get propTypes() {
     return {
       navigation: navigationProp.isRequired,
-      error: PropTypes.object
+      error: PropTypes.object,
     };
   }
 
@@ -48,7 +48,7 @@ class BaseErrorModal extends Component {
   }
 
   renderMessage() {
-    const error = this.props.error;
+    const {error} = this.props;
     if (!error || !error.message) {
       return this.renderGeneral();
     }
@@ -76,13 +76,13 @@ class BaseErrorModal extends Component {
   render() {
     return (
       <BigCenter>
-        <Entypo name="emoji-sad" size={100} style={{ marginBottom: 25 }} />
+        <Entypo name="emoji-sad" size={100} style={{marginBottom: 25}} />
         <View>{this.renderMessage()}</View>
         <Button
           large
           title="Get Out Of Here"
           icon={<Entypo name="arrow-with-circle-left" color="white" />}
-          buttonStyle={{ borderRadius: 0 }}
+          buttonStyle={{borderRadius: 0}}
           onPress={this.props.navigation.dismissModal}
         />
       </BigCenter>
@@ -97,6 +97,6 @@ const styles = {
     fontSize: 18,
     color: colors.primary,
     paddingBottom: 10,
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 };

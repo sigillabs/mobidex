@@ -22,10 +22,10 @@ export function ActionErrorSuccessFlow(
   successMessage,
   ok,
 ) {
-  return async dispatch => {
+  return async (dispatch) => {
     const _actionOptions = {
       ...actionOptions,
-      callback: error => {
+      callback: (error) => {
         waitForComponentAppear(parentComponentId, () =>
           error ? showErrorModal(error) : showSuccessModal(successMessage, ok),
         );
@@ -42,10 +42,10 @@ export function ConfirmActionErrorSuccessFlow(
   successMessage,
   ok,
 ) {
-  return async dispatch => {
+  return async (dispatch) => {
     const _actionOptions = {
       ...actionOptions,
-      callback: error => {
+      callback: (error) => {
         waitForComponentAppear(parentComponentId, () =>
           error ? showErrorModal(error) : showSuccessModal(successMessage, ok),
         );
@@ -60,11 +60,11 @@ export function ConfirmActionErrorSuccessFlow(
 }
 
 export function approve(parentComponentId, assetData) {
-  return async dispatch => {
+  return async (dispatch) => {
     const asset = AssetService.findAssetByData(assetData);
     const actionOptions = {
       action: () =>
-        dispatch(async dispatch => {
+        dispatch(async (dispatch) => {
           await dispatch(refreshGasPrice());
           await dispatch(setUnlimitedProxyAllowance(asset.address));
         }),
@@ -94,7 +94,7 @@ export function approve(parentComponentId, assetData) {
 }
 
 export function disapprove(parentComponentId, assetData) {
-  return async dispatch => {
+  return async (dispatch) => {
     const asset = AssetService.findAssetByData(assetData);
     const actionOptions = {
       action: () => dispatch(setNoProxyAllowance(asset.address)),

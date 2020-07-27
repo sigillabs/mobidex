@@ -68,18 +68,18 @@ class BaseSendScreen extends Component {
 
   previous = () => this.setState({page: 0});
 
-  submitAmount = amount =>
+  submitAmount = (amount) =>
     this.setState({
       amount: amount ? new BigNumber(amount) : ZERO,
       page: 1,
     });
 
-  submitAddress = address => {
+  submitAddress = (address) => {
     this.setState({address});
     this.submit(address);
   };
 
-  submit = async address => {
+  submit = async (address) => {
     const {tokenAddress, gasPrice} = this.props;
     const {amount} = this.state;
     const asset = AssetService.findAssetByAddress(tokenAddress);
@@ -130,5 +130,5 @@ class BaseSendScreen extends Component {
 
 export default connect(
   ({settings: {gasPrice}}) => ({gasPrice}),
-  dispatch => ({dispatch}),
+  (dispatch) => ({dispatch}),
 )(connectNavigation(BaseSendScreen));

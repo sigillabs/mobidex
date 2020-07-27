@@ -43,7 +43,7 @@ export default class TokenClient {
   }
 
   @time
-  @cache(function() {
+  @cache(function () {
     return 'client:token:' + this.address;
   }, 365 * 24 * 60 * 60)
   async get() {
@@ -102,9 +102,7 @@ export default class TokenClient {
     if (!name) {
       try {
         name = await bytesContract.methods.name().call();
-        name = hex2a(name)
-          .trim()
-          .substring(1);
+        name = hex2a(name).trim().substring(1);
       } catch (err) {
         console.warn('MOBIDEX: ', 'Could not fetch name again', err);
       }
@@ -123,9 +121,7 @@ export default class TokenClient {
     if (!symbol) {
       try {
         symbol = await bytesContract.methods.symbol().call();
-        symbol = hex2a(symbol)
-          .trim()
-          .substring(1);
+        symbol = hex2a(symbol).trim().substring(1);
       } catch (err) {
         console.warn('MOBIDEX: ', 'Could not fetch symbol', err);
       }
