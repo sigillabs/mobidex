@@ -60,7 +60,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.2.0",
         "regenerator": "^0.12.3",
-        "shelljs": "^0.8.3",
+        "shelljs": "^0.8.5",
         "underscore": "^1.8.3",
         "url": "~0.10.1",
         "web3": "^1.0.0-beta.36",
