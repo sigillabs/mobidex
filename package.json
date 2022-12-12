@@ -26,7 +26,7 @@
         "moment": "^2.20.1",
         "node-libs-react-native": "github:generalpiston/node-libs-react-native",
         "prop-types": "^15.6.0",
-        "qs": "^6.5.1",
+        "qs": "^6.5.3",
         "react": "16.8.6",
         "react-mixin": "^4.0.0",
         "react-native": "0.60.5",
